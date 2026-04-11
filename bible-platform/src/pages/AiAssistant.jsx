@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Sparkles, Loader2, Wifi, WifiOff, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Sparkles, Loader2, Wifi, WifiOff, Zap, Settings, Eye, EyeOff, Key, ExternalLink, X, Check } from 'lucide-react';
 
 const SYSTEM_PROMPT = `당신은 성경 말씀 해석을 돕는 따뜻하고 지혜로운 신앙 도우미입니다.
 사용자가 성경 구절에 대해 질문하면, 한국어로 명확하고 감동적이며 깊이 있는 답변을 제공하세요.
@@ -10,13 +10,12 @@ const SYSTEM_PROMPT = `당신은 성경 말씀 해석을 돕는 따뜻하고 지
 const OLLAMA_API = 'http://localhost:11434/v1/chat/completions';
 const OLLAMA_MODEL = 'gemma3:4b';
 
-const GEMINI_KEY = 'AIzaSyDwjTGXhQQKAzy42rXO-X4UMUl4EC_k1nA';
-const GEMINI_API = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+const STORAGE_KEY = 'joshua_gemini_api_key';
 
 // Ollama 호출
 const callOllama = async (messages) => {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000); // 5초 타임아웃
+  const timeout = setTimeout(() => controller.abort(), 5000);
   try {
     const res = await fetch(OLLAMA_API, {
       method: 'POST',
@@ -38,15 +37,18 @@ const callOllama = async (messages) => {
   }
 };
 
-// Gemini 호출
-const callGemini = async (messages) => {
-  // 대화 히스토리 변환 (Gemini 형식)
+// Gemini 호출 (사용자 제공 키 사용)
+const callGemini = async (messages, apiKey) => {
+  if (!apiKey) throw new Error('NO_API_KEY');
+
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
   const contents = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
   }));
 
-  const res = await fetch(GEMINI_API, {
+  const res = await fetch(geminiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -57,7 +59,11 @@ const callGemini = async (messages) => {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `gemini_error:${res.status}`);
+    const msg = err?.error?.message || `gemini_error:${res.status}`;
+    if (res.status === 400 || res.status === 403) {
+      throw new Error('API_KEY_INVALID');
+    }
+    throw new Error(msg);
   }
   const data = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '응답을 받지 못했습니다.';
@@ -84,12 +90,54 @@ const AiAssistant = () => {
   const [aiSource, setAiSource] = useState(null); // 'ollama' | 'gemini' | null
   const bottomRef = useRef(null);
 
+  // API Key 설정 상태
+  const [showSettings, setShowSettings] = useState(false);
+  const [apiKey, setApiKey] = useState(() => {
+    try { return localStorage.getItem(STORAGE_KEY) || ''; } catch { return ''; }
+  });
+  const [keyInput, setKeyInput] = useState('');
+  const [showKey, setShowKey] = useState(false);
+  const [keySaved, setKeySaved] = useState(false);
+
+  useEffect(() => {
+    setKeyInput(apiKey);
+  }, [showSettings]);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  const saveApiKey = () => {
+    const trimmed = keyInput.trim();
+    setApiKey(trimmed);
+    try { localStorage.setItem(STORAGE_KEY, trimmed); } catch {}
+    setKeySaved(true);
+    setTimeout(() => setKeySaved(false), 2000);
+    if (trimmed) {
+      setTimeout(() => setShowSettings(false), 800);
+    }
+  };
+
+  const clearApiKey = () => {
+    setApiKey('');
+    setKeyInput('');
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
+
+    // API 키 없으면 설정 패널 보여주기
+    if (!apiKey) {
+      setShowSettings(true);
+      setMessages(prev => [...prev,
+        { role: 'user', content: input },
+        { role: 'assistant', content: '⚙️ Gemini API 키가 설정되지 않았습니다.\n\n위의 설정 버튼(⚙️)을 눌러 API 키를 입력해 주세요.\n\n🔗 API 키는 Google AI Studio에서 무료로 발급받을 수 있습니다:\nhttps://aistudio.google.com/apikey' },
+      ]);
+      setInput('');
+      return;
+    }
+
     const userMsg = { role: 'user', content: input };
     const history = [...messages.filter(m => m.role !== 'system'), userMsg];
     setMessages(prev => [...prev, userMsg]);
@@ -98,16 +146,21 @@ const AiAssistant = () => {
 
     let reply = '';
     try {
-      // 1순위: Ollama
+      // 1순위: Ollama (로컬)
       reply = await callOllama(history);
       setAiSource('ollama');
     } catch {
-      // 2순위: Gemini fallback
+      // 2순위: Gemini (사용자 키)
       try {
-        reply = await callGemini(history);
+        reply = await callGemini(history, apiKey);
         setAiSource('gemini');
       } catch (geminiErr) {
-        reply = `죄송합니다. AI 연결에 실패했습니다.\n\n오류: ${geminiErr.message}`;
+        if (geminiErr.message === 'API_KEY_INVALID') {
+          reply = '⚠️ API 키가 유효하지 않습니다.\n\n설정(⚙️)에서 올바른 Gemini API 키를 다시 입력해 주세요.\n\n키 발급: https://aistudio.google.com/apikey';
+          setShowSettings(true);
+        } else {
+          reply = `죄송합니다. AI 연결에 실패했습니다.\n\n오류: ${geminiErr.message}`;
+        }
         setAiSource(null);
       }
     }
@@ -116,16 +169,30 @@ const AiAssistant = () => {
     setLoading(false);
   };
 
+  const maskedKey = apiKey ? `${apiKey.slice(0, 8)}${'•'.repeat(Math.max(0, apiKey.length - 12))}${apiKey.slice(-4)}` : '';
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
       style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - var(--navbar-height) - var(--bottomnav-height) - 2rem)', maxWidth: '900px', margin: '0 auto' }}>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        <h2 className="serif-font" style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'var(--accent-gold)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-          <Sparkles size={24} /> 신앙 AI 도우미
-        </h2>
+      <div style={{ textAlign: 'center', marginBottom: '0.8rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+          <h2 className="serif-font" style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: 'var(--accent-gold)',
+            display: 'flex', alignItems: 'center', gap: '0.6rem', margin: 0 }}>
+            <Sparkles size={24} /> 신앙 AI 도우미
+          </h2>
+          <button onClick={() => setShowSettings(!showSettings)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '36px', height: '36px', borderRadius: '50%',
+              border: `1px solid ${showSettings ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
+              background: showSettings ? 'rgba(196,164,132,0.15)' : 'transparent',
+              color: showSettings ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}>
+            <Settings size={16} />
+          </button>
+        </div>
+
         {/* AI 연결 상태 뱃지 */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           {aiSource === 'ollama' && (
@@ -150,12 +217,95 @@ const AiAssistant = () => {
             </span>
           )}
           {aiSource === null && messages.length === 1 && (
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-              Ollama → Gemini 자동 연결
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Key size={12} />
+              {apiKey ? '키 설정됨 · Gemini 사용 가능' : 'API 키를 설정해 주세요'}
             </span>
           )}
         </div>
       </div>
+
+      {/* API Key Settings Panel */}
+      <AnimatePresence>
+        {showSettings && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginBottom: '0.8rem' }}
+            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+            style={{ overflow: 'hidden' }}>
+            <div className="glass-card" style={{ padding: '1.2rem 1.4rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                <h3 style={{ fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: 700,
+                  display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+                  <Key size={16} color="var(--accent-gold)" /> Gemini API 키 설정
+                </h3>
+                <button onClick={() => setShowSettings(false)}
+                  style={{ display: 'flex', padding: '0.3rem', color: 'var(--text-secondary)', cursor: 'pointer',
+                    borderRadius: '50%', border: 'none', background: 'transparent' }}>
+                  <X size={16} />
+                </button>
+              </div>
+
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '0.8rem' }}>
+                Google AI Studio에서 무료 API 키를 발급받아 입력하세요.
+                키는 이 브라우저에만 안전하게 저장됩니다.
+              </p>
+
+              <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem',
+                  color: 'var(--accent-gold)', fontWeight: 600, marginBottom: '1rem', textDecoration: 'none' }}>
+                <ExternalLink size={13} /> API 키 발급받기 (Google AI Studio)
+              </a>
+
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <div style={{ flex: 1, position: 'relative' }}>
+                  <input
+                    type={showKey ? 'text' : 'password'}
+                    value={keyInput}
+                    onChange={e => setKeyInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && saveApiKey()}
+                    placeholder="AIzaSy... 형식의 API 키 입력"
+                    style={{ width: '100%', padding: '0.75rem 2.8rem 0.75rem 1rem', borderRadius: '12px',
+                      border: '1px solid var(--glass-border)', background: 'var(--bg-secondary)',
+                      color: 'var(--text-primary)', fontSize: '0.9rem', outline: 'none',
+                      fontFamily: 'monospace' }} />
+                  <button onClick={() => setShowKey(!showKey)}
+                    style={{ position: 'absolute', right: '0.8rem', top: '50%', transform: 'translateY(-50%)',
+                      display: 'flex', padding: '0.3rem', color: 'var(--text-secondary)', cursor: 'pointer',
+                      border: 'none', background: 'transparent' }}>
+                    {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <button onClick={saveApiKey}
+                  style={{ padding: '0.75rem 1.2rem', borderRadius: '12px',
+                    background: keySaved ? 'rgba(91,191,110,0.15)' : 'var(--accent-gold)',
+                    color: keySaved ? '#5bbf6e' : '#fff',
+                    border: keySaved ? '1px solid rgba(91,191,110,0.3)' : 'none',
+                    cursor: 'pointer', fontWeight: 600, fontSize: '0.88rem',
+                    display: 'flex', alignItems: 'center', gap: '0.4rem',
+                    transition: 'all 0.2s', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  {keySaved ? <><Check size={14} /> 저장됨</> : '저장'}
+                </button>
+              </div>
+
+              {apiKey && (
+                <div style={{ marginTop: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '0.6rem 0.8rem', borderRadius: '8px', background: 'rgba(91,191,110,0.08)',
+                  border: '1px solid rgba(91,191,110,0.15)' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+                    ✅ 현재 키: {maskedKey}
+                  </span>
+                  <button onClick={clearApiKey}
+                    style={{ fontSize: '0.78rem', color: '#e53e3e', cursor: 'pointer',
+                      border: 'none', background: 'transparent', fontWeight: 600 }}>
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Suggestion chips */}
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
