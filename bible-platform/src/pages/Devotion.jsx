@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { UserContext } from '../context/UserContext';
 import { Download, X, Sparkles } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
 
@@ -54,38 +53,83 @@ const Devotion = () => {
 
   const formatDate = (iso) => new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  const handleDownloadPdf = async (devotion) => {
-    // 임시 DOM 엘리먼트에 렌더링해서 PDF 생성
-    const container = document.createElement('div');
-    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:700px;background:#1a1a1a;padding:40px;color:#eaeaea;font-family:serif';
-    container.innerHTML = `
-      <div style="text-align:center;margin-bottom:40px;border-bottom:1px solid rgba(255,235,59,0.3);padding-bottom:30px">
-        <p style="color:#d4af37;font-size:13px;font-weight:700;letter-spacing:3px;margin-bottom:15px">QUIET TIME</p>
-        <h2 style="font-size:36px;margin-bottom:12px;color:#fff">${devotion.verse}</h2>
-        <p style="color:rgba(255,255,255,0.6);font-size:13px">${formatDate(devotion.createdAt)}</p>
-      </div>
-      ${devotion.verseText ? `<div style="margin-bottom:35px;background:rgba(255,255,255,0.05);padding:25px;border-radius:12px;border-left:4px solid #d4af37"><p style="font-size:17px;line-height:1.8;font-style:italic;margin:0">&ldquo;${devotion.verseText}&rdquo;</p></div>` : ''}
-      <div style="display:flex;flex-direction:column;gap:30px">
-        ${devotion.feeling ? `<div><h4 style="color:#d4af37;font-size:16px;margin-bottom:12px">💭 묵상 (느낀 점)</h4><p style="font-size:15px;line-height:1.8;white-space:pre-wrap">${devotion.feeling}</p></div>` : ''}
-        ${devotion.apply ? `<div><h4 style="color:#d4af37;font-size:16px;margin-bottom:12px">🌱 삶에 적용하기</h4><p style="font-size:15px;line-height:1.8;white-space:pre-wrap">${devotion.apply}</p></div>` : ''}
-        ${devotion.prayer ? `<div><h4 style="color:#d4af37;font-size:16px;margin-bottom:12px">🙏 오늘의 기도</h4><p style="font-size:15px;line-height:1.8;white-space:pre-wrap">${devotion.prayer}</p></div>` : ''}
-      </div>
-      <div style="margin-top:60px;text-align:center;color:rgba(255,255,255,0.3);font-size:12px"><p>Joshua 말씀묵상</p></div>
-    `;
-    document.body.appendChild(container);
+  const handleDownloadPdf = (devotion) => {
     try {
-      const canvas = await html2canvas(container, { scale: 2, backgroundColor: '#1a1a1a', useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+      const maxW = pageW - margin * 2;
+      let y = margin;
+
+      const checkPage = (needed) => {
+        if (y + needed > pageH - margin) { pdf.addPage(); y = margin; }
+      };
+
+      // 제목
+      pdf.setFontSize(11);
+      pdf.setTextColor(180, 150, 80);
+      pdf.text('QUIET TIME', pageW / 2, y, { align: 'center' });
+      y += 10;
+
+      pdf.setFontSize(20);
+      pdf.setTextColor(40, 40, 40);
+      pdf.text(devotion.verse, pageW / 2, y, { align: 'center' });
+      y += 8;
+
+      pdf.setFontSize(9);
+      pdf.setTextColor(130, 130, 130);
+      pdf.text(formatDate(devotion.createdAt), pageW / 2, y, { align: 'center' });
+      y += 6;
+
+      // 구분선
+      pdf.setDrawColor(200, 180, 120);
+      pdf.line(margin, y, pageW - margin, y);
+      y += 10;
+
+      // 말씀 본문
+      if (devotion.verseText) {
+        pdf.setFontSize(11);
+        pdf.setTextColor(80, 80, 80);
+        const lines = pdf.splitTextToSize('"' + devotion.verseText + '"', maxW - 10);
+        checkPage(lines.length * 5 + 10);
+        pdf.text(lines, margin + 5, y);
+        y += lines.length * 5 + 10;
+      }
+
+      // 섹션 헬퍼
+      const addSection = (title, content) => {
+        if (!content) return;
+        checkPage(20);
+        pdf.setFontSize(12);
+        pdf.setTextColor(180, 150, 80);
+        pdf.text(title, margin, y);
+        y += 7;
+
+        pdf.setFontSize(10);
+        pdf.setTextColor(50, 50, 50);
+        const lines = pdf.splitTextToSize(content, maxW);
+        for (let i = 0; i < lines.length; i++) {
+          checkPage(6);
+          pdf.text(lines[i], margin, y);
+          y += 5;
+        }
+        y += 8;
+      };
+
+      addSection('묵상 (느낀 점)', devotion.feeling);
+      addSection('삶에 적용하기', devotion.apply);
+      addSection('오늘의 기도', devotion.prayer);
+
+      // 푸터
+      pdf.setFontSize(8);
+      pdf.setTextColor(180, 180, 180);
+      pdf.text('Joshua 말씀묵상', pageW / 2, pageH - 10, { align: 'center' });
+
       pdf.save(`QT묵상_${formatDate(devotion.createdAt)}.pdf`);
     } catch (err) {
       console.error('PDF Generate Error:', err);
-      alert('PDF 생성 중 오류가 발생했습니다.');
-    } finally {
-      document.body.removeChild(container);
+      alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
     }
   };
 

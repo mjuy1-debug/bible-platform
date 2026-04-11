@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search as SearchIcon, Tag, Heart, Loader2, X, ChevronDown } from 'lucide-react';
+import { Search as SearchIcon, Tag, Heart, Loader2, X, ChevronDown, BookOpen } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router-dom';
 
@@ -17,6 +17,12 @@ const BOOK_API_MAP = {
   '빌레몬서':57,'히브리서':58,'야고보서':59,'베드로전서':60,'베드로후서':61,'요한일서':62,
   '요한이서':63,'요한삼서':64,'유다서':65,'요한계시록':66,'애가':25,
 };
+
+// 역방향 매핑: 책 번호 → 한국어 이름
+const BOOK_NUM_TO_NAME = {};
+Object.entries(BOOK_API_MAP).forEach(([name, num]) => {
+  if (!BOOK_NUM_TO_NAME[num]) BOOK_NUM_TO_NAME[num] = name;
+});
 
 // 주제별 구절 (12개씩)
 const TOPIC_VERSES = {
@@ -201,6 +207,9 @@ const TOPIC_VERSES = {
 const TOPICS = Object.keys(TOPIC_VERSES);
 const PAGE_SIZE = 4; // 처음 보여줄 개수
 
+const cleanText = (html) =>
+  html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+
 const fetchVerse = async ({ book, ch, v }) => {
   const url = `https://bolls.life/get-chapter/KRV/${book}/${ch}/`;
   const res = await fetch(url, { headers: { Accept: 'application/json' } });
@@ -208,12 +217,66 @@ const fetchVerse = async ({ book, ch, v }) => {
   const data = await res.json();
   const verseObj = Array.isArray(data) ? data.find(item => item.verse === v) : null;
   if (!verseObj) throw new Error('verse not found');
-  return verseObj.text
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return cleanText(verseObj.text);
+};
+
+// 전체 성경 텍스트 검색: 주요 66권에서 키워드를 포함하는 구절 찾기
+const SEARCH_BOOKS = [
+  // 검색 우선 순위가 높은 책들 (시편, 잠언, 복음서, 서신서 등)
+  { num: 19, name: '시편',     chapters: [1,23,27,34,37,40,46,51,91,100,103,107,119,121,139,145,147] },
+  { num: 20, name: '잠언',     chapters: [1,2,3,4,9,10,11,15,16,22,31] },
+  { num: 23, name: '이사야',   chapters: [9,26,40,41,43,53,55,61] },
+  { num: 43, name: '요한복음', chapters: [1,3,10,13,14,15,16] },
+  { num: 40, name: '마태복음', chapters: [5,6,7,11,22,28] },
+  { num: 45, name: '로마서',   chapters: [5,8,10,12,15] },
+  { num: 46, name: '고린도전서', chapters: [1,10,13,15] },
+  { num: 49, name: '에베소서', chapters: [1,2,3,4,6] },
+  { num: 50, name: '빌립보서', chapters: [1,2,3,4] },
+  { num: 58, name: '히브리서', chapters: [4,10,11,12,13] },
+  { num: 59, name: '야고보서', chapters: [1,2,3,4,5] },
+  { num: 60, name: '베드로전서', chapters: [1,2,3,5] },
+  { num: 62, name: '요한일서', chapters: [1,3,4,5] },
+  { num: 24, name: '예레미야', chapters: [17,29,31,33] },
+  { num: 1,  name: '창세기',   chapters: [1,12,15,28] },
+  { num: 5,  name: '신명기',   chapters: [6,28,31,33] },
+  { num: 42, name: '누가복음', chapters: [1,6,10,15] },
+  { num: 48, name: '갈라디아서', chapters: [2,5,6] },
+  { num: 51, name: '골로새서', chapters: [1,3] },
+  { num: 66, name: '요한계시록', chapters: [1,2,21,22] },
+];
+
+const searchBibleText = async (keyword, maxResults = 12) => {
+  const results = [];
+  
+  for (const bookInfo of SEARCH_BOOKS) {
+    if (results.length >= maxResults) break;
+
+    for (const ch of bookInfo.chapters) {
+      if (results.length >= maxResults) break;
+
+      try {
+        const url = `https://bolls.life/get-chapter/KRV/${bookInfo.num}/${ch}/`;
+        const res = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!res.ok) continue;
+        const data = await res.json();
+
+        for (const verse of data) {
+          if (results.length >= maxResults) break;
+          const text = cleanText(verse.text);
+          if (text.includes(keyword)) {
+            results.push({
+              ref: `${bookInfo.name} ${ch}:${verse.verse}`,
+              text,
+            });
+          }
+        }
+      } catch {
+        continue;
+      }
+    }
+  }
+
+  return results;
 };
 
 // 구절 참조 파싱: "시편 23:1" → { book, ch, v }
@@ -232,9 +295,34 @@ const Search = () => {
   const [allResults, setAllResults] = useState([]);   // 전체 결과
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE); // 현재 보여줄 개수
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
   const [currentTopic, setCurrentTopic] = useState('');
+  const [searchMode, setSearchMode] = useState(''); // 'topic' | 'text' | 'ref'
+
+  const loadTopicVerses = useCallback(async (topicName) => {
+    setCurrentTopic(topicName);
+    setSearchMode('topic');
+    const verses = TOPIC_VERSES[topicName];
+    // 처음 PAGE_SIZE 개만 즉시 fetch
+    const firstBatch = await Promise.all(
+      verses.slice(0, PAGE_SIZE).map(async (info) => {
+        try { return { ref: info.ref, text: await fetchVerse(info), info }; }
+        catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
+      })
+    );
+    setAllResults(firstBatch);
+    setLoading(false);
+    // 나머지는 백그라운드로 fetch
+    if (verses.length > PAGE_SIZE) {
+      const rest = await Promise.all(
+        verses.slice(PAGE_SIZE).map(async (info) => {
+          try { return { ref: info.ref, text: await fetchVerse(info), info }; }
+          catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
+        })
+      );
+      setAllResults(prev => [...prev, ...rest]);
+    }
+  }, []);
 
   const doSearch = useCallback(async (q) => {
     const trimmed = q.trim();
@@ -244,6 +332,7 @@ const Search = () => {
     setAllResults([]);
     setVisibleCount(PAGE_SIZE);
     setCurrentTopic('');
+    setSearchMode('');
 
     try {
       // 1. 정확한 구절 참조 (예: 요한복음 3:16)
@@ -251,69 +340,41 @@ const Search = () => {
       if (parsed) {
         const text = await fetchVerse(parsed);
         setAllResults([{ ref: parsed.ref, text }]);
+        setSearchMode('ref');
         setLoading(false);
         return;
       }
 
-      // 2. 주제 키워드 검색
-      const matchedTopic = TOPICS.find(t => trimmed.includes(t));
+      // 2. 주제 키워드 매칭 (정확히 일치)
+      const matchedTopic = TOPICS.find(t => trimmed === t);
       if (matchedTopic) {
-        setCurrentTopic(matchedTopic);
-        const verses = TOPIC_VERSES[matchedTopic];
-        // 처음 PAGE_SIZE 개만 즉시 fetch
-        const firstBatch = await Promise.all(
-          verses.slice(0, PAGE_SIZE).map(async (info) => {
-            try { return { ref: info.ref, text: await fetchVerse(info), info }; }
-            catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
-          })
-        );
-        setAllResults(firstBatch);
-        setLoading(false);
-        // 나머지는 백그라운드로 fetch
-        if (verses.length > PAGE_SIZE) {
-          const rest = await Promise.all(
-            verses.slice(PAGE_SIZE).map(async (info) => {
-              try { return { ref: info.ref, text: await fetchVerse(info), info }; }
-              catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
-            })
-          );
-          setAllResults(prev => [...prev, ...rest]);
-        }
+        await loadTopicVerses(matchedTopic);
         return;
       }
 
-      // 3. 부분 매칭
+      // 3. 전체 성경 텍스트 검색 (이제 어떤 키워드든 검색 가능!)
+      setSearchMode('text');
+      const results = await searchBibleText(trimmed, 12);
+      if (results.length > 0) {
+        setAllResults(results);
+        setLoading(false);
+        return;
+      }
+
+      // 4. 부분 주제 매칭 (마지막 시도)
       const fuzzy = TOPICS.find(t => t.includes(trimmed) || trimmed.includes(t.substring(0, 2)));
       if (fuzzy) {
-        setCurrentTopic(fuzzy);
-        const verses = TOPIC_VERSES[fuzzy];
-        const firstBatch = await Promise.all(
-          verses.slice(0, PAGE_SIZE).map(async (info) => {
-            try { return { ref: info.ref, text: await fetchVerse(info), info }; }
-            catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
-          })
-        );
-        setAllResults(firstBatch);
-        setLoading(false);
-        if (verses.length > PAGE_SIZE) {
-          const rest = await Promise.all(
-            verses.slice(PAGE_SIZE).map(async (info) => {
-              try { return { ref: info.ref, text: await fetchVerse(info), info }; }
-              catch { return { ref: info.ref, text: '(본문 로딩 오류)', info }; }
-            })
-          );
-          setAllResults(prev => [...prev, ...rest]);
-        }
+        await loadTopicVerses(fuzzy);
         return;
       }
 
-      setError(`"${trimmed}"에 대한 말씀을 찾지 못했습니다. 주제어(위로, 사랑, 평안…)나 구절(요한복음 3:16)로 검색해 보세요.`);
+      setError(`"${trimmed}"이(가) 포함된 구절을 찾지 못했습니다. 다른 키워드로 시도해 보세요.`);
     } catch (e) {
       setError('말씀을 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loadTopicVerses]);
 
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + PAGE_SIZE);
@@ -333,7 +394,7 @@ const Search = () => {
           말씀 찾기
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-          주제어 또는 구절(예: 요한복음 3:16)로 검색하세요
+          어떤 단어든 검색하세요 — 성경 전체에서 찾아드립니다
         </p>
       </div>
 
@@ -344,12 +405,12 @@ const Search = () => {
         <input type="text" value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="위로, 믿음, 사랑… 또는 요한복음 3:16"
+          placeholder="예: 사랑, 두려움, 감사, 은혜, 요한복음 3:16"
           style={{ width: '100%', padding: '1rem 3.5rem 1rem 3rem', fontSize: '1rem', borderRadius: '30px',
             border: '1px solid var(--accent-gold)', background: 'var(--glass-bg)',
             color: 'var(--text-primary)', outline: 'none', boxShadow: 'var(--shadow-md)' }} />
         {query && (
-          <button onClick={() => { setQuery(''); setAllResults([]); setError(''); setCurrentTopic(''); }}
+          <button onClick={() => { setQuery(''); setAllResults([]); setError(''); setCurrentTopic(''); setSearchMode(''); }}
             style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', display: 'flex', padding: '0.3rem' }}>
             <X size={18} />
           </button>
@@ -360,7 +421,7 @@ const Search = () => {
         className="btn-primary"
         style={{ width: '100%', justifyContent: 'center', marginBottom: '1.5rem', opacity: !query.trim() ? 0.5 : 1 }}>
         {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <SearchIcon size={18} />}
-        {loading ? '검색 중...' : '말씀 검색'}
+        {loading ? '성경을 검색하는 중...' : '말씀 검색'}
       </button>
 
       {/* Topic Chips */}
@@ -395,9 +456,10 @@ const Search = () => {
       <AnimatePresence>
         {visibleResults.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-              "{query}" 검색 결과 — {visibleResults.length} / {allResults.length}개 구절
-              {allResults.length < TOPIC_VERSES[currentTopic]?.length && (
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <BookOpen size={13} />
+              {searchMode === 'text' ? `"${query}" 검색 결과` : `"${query}" 관련 말씀`} — {visibleResults.length} / {allResults.length}개 구절
+              {searchMode === 'topic' && allResults.length < TOPIC_VERSES[currentTopic]?.length && (
                 <span style={{ marginLeft: '0.5rem', color: 'var(--accent-gold)' }}>
                   (로딩 중...)
                 </span>

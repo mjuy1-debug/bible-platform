@@ -173,7 +173,7 @@ const AiAssistant = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
-      style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - var(--navbar-height) - var(--bottomnav-height) - 2rem)', maxWidth: '900px', margin: '0 auto' }}>
+      style={{ display: 'flex', flexDirection: 'column', height: 'calc(100dvh - var(--navbar-height) - var(--bottomnav-height) - 0.5rem)', maxWidth: '900px', margin: '0 auto' }}>
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '0.8rem' }}>
@@ -307,13 +307,13 @@ const AiAssistant = () => {
         )}
       </AnimatePresence>
 
-      {/* Suggestion chips */}
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
+      {/* Suggestion chips - 모바일에서 가로 스크롤 */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: '0.3rem', scrollbarWidth: 'none' }}>
         {SUGGESTIONS.map((s, i) => (
           <button key={i} onClick={() => setInput(s)}
-            style={{ padding: '0.35rem 0.9rem', borderRadius: '20px', border: '1px solid var(--glass-border)',
-              background: 'var(--glass-bg)', color: 'var(--text-secondary)', fontSize: '0.82rem', cursor: 'pointer',
-              transition: 'all 0.2s', minHeight: '32px', whiteSpace: 'nowrap' }}
+            style={{ padding: '0.3rem 0.8rem', borderRadius: '20px', border: '1px solid var(--glass-border)',
+              background: 'var(--glass-bg)', color: 'var(--text-secondary)', fontSize: '0.78rem', cursor: 'pointer',
+              transition: 'all 0.2s', minHeight: '28px', whiteSpace: 'nowrap', flexShrink: 0 }}
             onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent-gold)'; e.currentTarget.style.color = 'var(--accent-gold)'; }}
             onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
             {s}
@@ -322,22 +322,22 @@ const AiAssistant = () => {
       </div>
 
       {/* Chat window */}
-      <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0, minHeight: 0 }}>
+      <div className="glass-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0, minHeight: '200px' }}>
         {/* Messages */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem', minHeight: 0 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: 0 }}>
           {messages.map((msg, idx) => (
             <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               style={{
                 alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: 'min(80%, 640px)',
+                maxWidth: 'min(92%, 640px)',
                 background: msg.role === 'user' ? 'var(--accent-gold)' : 'var(--bg-secondary)',
                 color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
-                padding: '0.9rem 1.2rem',
+                padding: '0.8rem 1rem',
                 borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                 border: msg.role === 'assistant' ? '1px solid var(--glass-border)' : 'none',
                 boxShadow: 'var(--shadow-sm)',
               }}>
-              <p style={{ lineHeight: 1.85, whiteSpace: 'pre-wrap', wordBreak: 'keep-all', fontSize: '0.95rem' }}>
+              <p style={{ lineHeight: 1.8, whiteSpace: 'pre-wrap', wordBreak: 'keep-all', fontSize: 'clamp(0.92rem, 2.5vw, 1rem)' }}>
                 {msg.content}
               </p>
             </motion.div>
