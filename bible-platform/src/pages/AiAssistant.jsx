@@ -41,7 +41,7 @@ const callOllama = async (messages) => {
 const callGemini = async (messages, apiKey) => {
   if (!apiKey) throw new Error('NO_API_KEY');
 
-  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
   const contents = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
