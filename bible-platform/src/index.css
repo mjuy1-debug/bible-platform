@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+KR:wght@300;400;700&display=swap');
+
+:root {
+  --bg-primary: #FDFBF7;
+  --bg-secondary: #F5F0E6;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --accent-gold: #C4A484;
+  --accent-navy: #0F172A;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(196, 164, 132, 0.2);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Noto Serif KR', serif;
+  --font-size-base: 16px;
+  --navbar-height: 64px;
+  --bottomnav-height: 64px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #070D18;
+  --bg-secondary: #0F172A;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --accent-gold: #D4AF37;
+  --accent-navy: #1E293B;
+  --glass-bg: rgba(15, 23, 42, 0.72);
+  --glass-border: rgba(212, 175, 55, 0.15);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.55);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  font-size: var(--font-size-base);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  line-height: 1.6;
+  min-height: 100vh;
+  /* Safe area support for devices with notches */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+h1, h2, h3, h4, .serif-font { font-family: var(--font-serif); }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ─── Glass Card ─────────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent-gold);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.2s;
+  /* Minimum touch target */
+  min-height: 44px;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ─── Page Layout ────────────────────────────────────────── */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(var(--navbar-height) + 2rem) 2rem 2rem;
+}
+
+/* ─── Touch targets ──────────────────────────────────────── */
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+input, textarea, select {
+  font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* ─── Bottom navigation (mobile) ────────────────────────── */
+.bottom-nav-spacer {
+  display: none;
+}
+
+/* ─── Scroll utilities ───────────────────────────────────── */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
+
+/* ─── Read Page Layout ───────────────────────────────────── */
+.read-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.read-sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height) + 1rem);
+  max-height: calc(100vh - var(--navbar-height) - 2rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* ─── Media Queries ──────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .glass-card { padding: 1.5rem; }
+  .read-layout { grid-template-columns: 240px 1fr; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 56px;
+    --bottomnav-height: 60px;
+  }
+
+  .glass-card { padding: 1.2rem; border-radius: 16px; }
+
+  .page-container {
+    padding: calc(var(--navbar-height) + 1rem) 1rem calc(var(--bottomnav-height) + 1.5rem);
+  }
+
+  /* Bottom nav spacer */
+  .bottom-nav-spacer {
+    display: block;
+    height: var(--bottomnav-height);
+  }
+
+  /* Read page: stack vertically */
+  .read-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .read-sidebar {
+    position: relative;
+    top: 0;
+    max-height: none;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .glass-card { padding: 1rem; border-radius: 14px; }
+
+  .page-container {
+    padding: calc(var(--navbar-height) + 0.75rem) 0.75rem calc(var(--bottomnav-height) + 1.5rem);
+  }
+
+  h1, h2 { font-size: clamp(1.4rem, 5vw, 2rem); }
+}
+
+/* ─── Bible Player Mobile ────────────────────────────────── */
+@media (max-width: 768px) {
+  .bible-player-float {
+    right: 0 !important;
+    bottom: calc(var(--bottomnav-height)) !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .bible-player-float iframe {
+    width: 100% !important;
+    height: 200px !important;
+  }
+}
