@@ -2,7 +2,7 @@ import React, { useState, useContext, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, ChevronLeft, ChevronRight, Plus, X, Clock, MapPin,
-  Filter, Eye, EyeOff, Trash2, Edit3, CalendarDays, List, LayoutGrid, Download
+  Filter, Eye, EyeOff, Trash2, Edit3, CalendarDays, List, LayoutGrid, Download, AlignLeft
 } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import {
@@ -25,6 +25,7 @@ const Schedule = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [viewFile, setViewFile] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // 새 일정 폼
   const [newEvent, setNewEvent] = useState({
@@ -367,7 +368,7 @@ const Schedule = () => {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {monthEvents.sort((a, b) => a.date.localeCompare(b.date)).map(e => (
-                  <EventCard key={e.id} event={e} onDelete={deleteEvent} onEdit={openEditForm} compact />
+                  <EventCard key={e.id} event={e} onDelete={deleteEvent} onEdit={openEditForm} onSelect={setSelectedEvent} compact />
                 ))}
               </div>
             )}
@@ -605,24 +606,95 @@ const Schedule = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── Event Detail Modal ─── */}
+      <AnimatePresence>
+        {selectedEvent && (() => {
+          const colors = CATEGORY_COLORS[selectedEvent.category] || CATEGORY_COLORS.church;
+          return (
+            <motion.div
+              key="sel-event-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 4000,
+                background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '1.5rem',
+              }}
+              onClick={() => setSelectedEvent(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.92, opacity: 0 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                className="glass-card"
+                style={{ width: '100%', maxWidth: '480px', padding: '1.8rem' }}
+                onClick={e => e.stopPropagation()}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: colors.text,
+                      background: colors.bg, padding: '0.2rem 0.8rem', borderRadius: '20px', border: `1px solid ${colors.border}` }}>
+                      {CATEGORY_LABELS[selectedEvent.category]}
+                    </span>
+                  </div>
+                  <button onClick={() => setSelectedEvent(null)}
+                    style={{ padding: '0.3rem', background: 'var(--bg-secondary)', borderRadius: '50%',
+                      border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+                  {selectedEvent.title}
+                </h3>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <Calendar size={15} color="var(--accent-gold)" />
+                    <span>
+                      {selectedEvent.date.replace(/-/g, '.')}
+                      {selectedEvent.endDate && ` ~ ${selectedEvent.endDate.replace(/-/g, '.')}`}
+                      {selectedEvent.time && ` · ${selectedEvent.time}`}
+                    </span>
+                  </div>
+                  {selectedEvent.description && (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                      <AlignLeft size={15} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
+                      <span style={{ lineHeight: 1.6 }}>{selectedEvent.description}</span>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
     </motion.div>
   );
 };
 
 // 이벤트 카드 컴포넌트
-const EventCard = ({ event, onDelete, onEdit, compact = false }) => {
-  const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.personal;
+const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
+  const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.church;
   const [showConfirm, setShowConfirm] = useState(false);
 
   return (
-    <div style={{
-      display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
-      padding: compact ? '0.6rem 0.8rem' : '0.8rem 1rem',
-      borderRadius: '12px',
-      background: colors.bg,
-      border: `1px solid ${colors.border}`,
-      transition: 'all 0.15s',
-    }}>
+    <div
+      onClick={() => onSelect && onSelect(event)}
+      style={{
+        display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+        padding: compact ? '0.6rem 0.8rem' : '0.8rem 1rem',
+        borderRadius: '12px',
+        background: colors.bg,
+        border: `1px solid ${colors.border}`,
+        transition: 'all 0.15s',
+        cursor: onSelect ? 'pointer' : 'default',
+      }}>
       {/* Category dot */}
       <span style={{
         width: '8px', height: '8px', borderRadius: '50%',

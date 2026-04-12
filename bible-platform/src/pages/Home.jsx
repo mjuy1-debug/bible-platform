@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 
@@ -35,6 +35,7 @@ const Home = () => {
   const todayVerse = DAILY_VERSES[todayIdx];
 
   const upcoming = useMemo(() => getUpcomingEvents(events, 3), [events]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const [greeting, setGreeting] = useState('');
   useEffect(() => {
@@ -47,6 +48,7 @@ const Home = () => {
   }, []);
 
   return (
+    <>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
 
       {/* Hero */}
@@ -136,10 +138,10 @@ const Home = () => {
             </Link>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {upcoming.map(e => {
-              const colors = CATEGORY_COLORS[e.category];
+            {upcoming.map(ev => {
+              const colors = CATEGORY_COLORS[ev.category];
               return (
-                <Link key={e.id} to="/schedule" style={{ textDecoration: 'none' }}>
+                <div key={ev.id} onClick={() => setSelectedEvent(ev)} style={{ textDecoration: 'none', cursor: 'pointer' }}>
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: '0.8rem',
                     padding: '0.8rem 1rem', borderRadius: '12px',
@@ -150,18 +152,18 @@ const Home = () => {
                     onMouseOut={e => e.currentTarget.style.transform = ''}>
                     <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{e.title}</p>
+                      <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{ev.title}</p>
                       <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.75rem', color: colors.text }}>
-                        <span>{e.date.slice(5).replace('-', '/')}</span>
-                        {e.time && <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Clock size={10} /> {e.time}</span>}
+                        <span>{ev.date.slice(5).replace('-', '/')}</span>
+                        {ev.time && <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Clock size={10} /> {ev.time}</span>}
                         <span style={{ padding: '0 0.4rem', borderRadius: '6px', background: colors.bg, fontWeight: 600, fontSize: '0.68rem' }}>
-                          {CATEGORY_LABELS[e.category]}
+                          {CATEGORY_LABELS[ev.category]}
                         </span>
                       </div>
                     </div>
                     <ArrowRight size={14} color="var(--text-secondary)" />
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
@@ -195,6 +197,87 @@ const Home = () => {
         </div>
       </div>
     </motion.div>
+
+      {/* ─── Event Detail Modal ─── */}
+      <AnimatePresence>
+        {selectedEvent && (() => {
+          const colors = CATEGORY_COLORS[selectedEvent.category];
+          return (
+            <motion.div
+              key="event-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'fixed', inset: 0, zIndex: 3000,
+                background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '1.5rem',
+              }}
+              onClick={() => setSelectedEvent(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.92, opacity: 0 }}
+                transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                className="glass-card"
+                style={{ width: '100%', maxWidth: '480px', padding: '1.8rem' }}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: colors.text,
+                      background: colors.bg, padding: '0.2rem 0.8rem', borderRadius: '20px', border: `1px solid ${colors.border}` }}>
+                      {CATEGORY_LABELS[selectedEvent.category]}
+                    </span>
+                  </div>
+                  <button onClick={() => setSelectedEvent(null)}
+                    style={{ padding: '0.3rem', background: 'var(--bg-secondary)', borderRadius: '50%',
+                      border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* Title */}
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+                  {selectedEvent.title}
+                </h3>
+
+                {/* Details */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', marginBottom: '1.4rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <CalendarClock size={16} color="var(--accent-gold)" />
+                    <span>
+                      {selectedEvent.date.replace(/-/g, '.')}
+                      {selectedEvent.endDate && ` ~ ${selectedEvent.endDate.replace(/-/g, '.')}`}
+                      {selectedEvent.time && ` · ${selectedEvent.time}`}
+                    </span>
+                  </div>
+                  {selectedEvent.description && (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                      <AlignLeft size={16} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
+                      <span style={{ lineHeight: 1.6 }}>{selectedEvent.description}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer btn */}
+                <Link to="/schedule" onClick={() => setSelectedEvent(null)}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                    padding: '0.75rem', borderRadius: '10px', background: 'var(--accent-gold)',
+                    color: '#1a1a2e', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none',
+                    transition: 'opacity 0.2s' }}>
+                  전체 일정 보기 <ArrowRight size={16} />
+                </Link>
+              </motion.div>
+            </motion.div>
+          );
+        })()}
+      </AnimatePresence>
+    </>
   );
 };
 
