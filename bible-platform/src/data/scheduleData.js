@@ -37,37 +37,32 @@ export const HOLIDAYS_2026 = [
 ];
 
 // ═══════════════════════════════════════════════════
-// 2026년 교회 절기 (기독교 교회력)
+// 2026년 교회 절기 (개신교 기준)
 // ═══════════════════════════════════════════════════
 export const LITURGY_2026 = [
-  // ── 사순절 / 고난주간 ──
-  { id: 'l01', title: '재의 수요일', date: '2026-02-18', category: 'liturgy', description: '사순절 시작 — 회개와 금식의 40일' },
-  { id: 'l02', title: '사순절 시작', date: '2026-02-18', category: 'liturgy', description: '부활절까지 40일간의 절기' },
-  { id: 'l03', title: '종려주일', date: '2026-03-29', category: 'liturgy', description: '예수님의 예루살렘 입성 기념 — 고난주간 시작' },
-  { id: 'l04', title: '고난주간', date: '2026-03-30', endDate: '2026-04-04', category: 'liturgy', description: '예수님의 고난을 기억하는 한 주간' },
-  { id: 'l05', title: '세족 목요일', date: '2026-04-02', category: 'liturgy', description: '예수님이 제자들의 발을 씻기심' },
-  { id: 'l06', title: '성금요일', date: '2026-04-03', category: 'liturgy', description: '예수 그리스도의 십자가 고난과 죽음' },
-  { id: 'l07', title: '부활절', date: '2026-04-05', category: 'liturgy', description: '예수 그리스도의 부활 기념일' },
+  // ── 고난주간 / 부활절 ──
+  { id: 'l01', title: '종려주일', date: '2026-03-29', category: 'liturgy', description: '예수님의 예루살렘 입성 기념 — 고난주간 시작' },
+  { id: 'l02', title: '고난주간', date: '2026-03-30', endDate: '2026-04-04', category: 'liturgy', description: '예수님의 고난을 기억하는 한 주간' },
+  { id: 'l03', title: '성금요일', date: '2026-04-03', category: 'liturgy', description: '예수 그리스도의 십자가 고난과 죽음' },
+  { id: 'l04', title: '부활절', date: '2026-04-05', category: 'liturgy', description: '예수 그리스도의 부활 기념일' },
 
-  // ── 부활절 이후 ──
-  { id: 'l08', title: '승천일', date: '2026-05-14', category: 'liturgy', description: '예수님의 승천 기념일 (부활 후 40일)' },
-  { id: 'l09', title: '성령강림절', date: '2026-05-24', category: 'liturgy', description: '성령이 임하신 날 (오순절)' },
-  { id: 'l10', title: '삼위일체주일', date: '2026-05-31', category: 'liturgy', description: '성부·성자·성령 삼위일체 고백 주일' },
+  // ── 성령강림절 ──
+  { id: 'l05', title: '성령강림절', date: '2026-05-24', category: 'liturgy', description: '성령이 임하신 날 (오순절)' },
 
-  // ── 절기 주일 ──
-  { id: 'l11', title: '어린이주일', date: '2026-05-03', category: 'liturgy', description: '어린이들을 위한 축복 예배' },
-  { id: 'l12', title: '어버이주일', date: '2026-05-10', category: 'liturgy', description: '부모님을 공경하는 감사 예배' },
-  { id: 'l13', title: '맥추감사절', date: '2026-07-05', category: 'liturgy', description: '첫 열매 수확 감사 (초막절 유래)' },
-  { id: 'l14', title: '종교개혁주일', date: '2026-10-25', category: 'liturgy', description: '1517년 루터의 95개조 반박문 기념' },
-  { id: 'l15', title: '추수감사주일', date: '2026-11-15', category: 'liturgy', description: '한 해의 수확을 감사하는 예배' },
+  // ── 개신교 절기 주일 ──
+  { id: 'l06', title: '어린이주일', date: '2026-05-03', category: 'liturgy', description: '어린이들을 위한 축복 예배' },
+  { id: 'l07', title: '어버이주일', date: '2026-05-10', category: 'liturgy', description: '부모님을 공경하는 감사 예배' },
+  { id: 'l08', title: '맥추감사절', date: '2026-07-05', category: 'liturgy', description: '첫 열매 수확 감사 예배' },
+  { id: 'l09', title: '종교개혁주일', date: '2026-10-25', category: 'liturgy', description: '1517년 루터의 95개조 반박문 기념' },
+  { id: 'l10', title: '추수감사주일', date: '2026-11-15', category: 'liturgy', description: '한 해의 수확을 감사하는 예배' },
 
   // ── 대림절 / 성탄절 ──
-  { id: 'l16', title: '대림절 첫째주', date: '2026-11-29', category: 'liturgy', description: '대림절 시작 — 소망의 촛불' },
-  { id: 'l17', title: '대림절 둘째주', date: '2026-12-06', category: 'liturgy', description: '평화의 촛불' },
-  { id: 'l18', title: '대림절 셋째주', date: '2026-12-13', category: 'liturgy', description: '기쁨의 촛불' },
-  { id: 'l19', title: '대림절 넷째주', date: '2026-12-20', category: 'liturgy', description: '사랑의 촛불' },
-  { id: 'l20', title: '성탄절', date: '2026-12-25', category: 'liturgy', description: '예수 그리스도의 탄생 기념일' },
-  { id: 'l21', title: '송구영신예배', date: '2026-12-31', category: 'liturgy', description: '한 해를 보내고 새해를 맞이하는 예배' },
+  { id: 'l11', title: '대림절 첫째주', date: '2026-11-29', category: 'liturgy', description: '대림절 시작 — 소망의 촛불' },
+  { id: 'l12', title: '대림절 둘째주', date: '2026-12-06', category: 'liturgy', description: '평화의 촛불' },
+  { id: 'l13', title: '대림절 셋째주', date: '2026-12-13', category: 'liturgy', description: '기쁨의 촛불' },
+  { id: 'l14', title: '대림절 넷째주', date: '2026-12-20', category: 'liturgy', description: '사랑의 촛불' },
+  { id: 'l15', title: '성탄절', date: '2026-12-25', category: 'liturgy', description: '예수 그리스도의 탄생 기념일' },
+  { id: 'l16', title: '송구영신예배', date: '2026-12-31', category: 'liturgy', description: '한 해를 보내고 새해를 맞이하는 예배' },
 ];
 
 // ═══════════════════════════════════════════════════
