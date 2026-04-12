@@ -541,30 +541,15 @@ const Schedule = () => {
         )}
       </AnimatePresence>
 
-      {/* ═══ Code Export (Admin Only) ═══ */}
+      {/* ═══ Admin Save & Deploy (Admin Only) ═══ */}
       {import.meta.env.DEV && (
         <div style={{ marginTop: '3rem', padding: '1.5rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--accent-gold)', textAlign: 'center' }}>
-          <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>👨‍💻 관리자 전용: 일정 업데이트 데이터 추출</h4>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.2rem', lineHeight: 1.5 }}>
-            화면에서 수정한 일정들을 실제 서버/소스코드에 반영하려면 아래 버튼을 눌러보세요.<br/>
-            코드가 복사되면 <code style={{ color: 'var(--accent-gold)' }}>src/data/scheduleData.js</code> 파일의 <code>SAMPLE_EVENTS</code> 부분에 덮어쓰고 커밋하시면 됩니다.
+          <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>👨‍💻 관리자 전용: 일정 저장 및 배포</h4>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.2rem', lineHeight: 1.6 }}>
+            화면에서 수정한 일정들을 아래 버튼을 누르는 것만으로 자동 저장하고 GitHub에 배포합니다.<br/>
+            <span style={{ color: 'var(--accent-gold)', fontWeight: 600 }}>※ 이 기능을 사용하려면 별도 터미널에서 <code>npm run admin</code>을 먼저 실행해 두어야 합니다.</span>
           </p>
-          <button onClick={() => {
-            const dataToExport = events.filter(e => !['holiday', 'liturgy'].includes(e.category));
-            const codeLines = dataToExport.map((e, index) => {
-              const timeStr = e.time ? `time: '${e.time}', ` : '';
-              const endStr = e.endDate ? `endDate: '${e.endDate}', ` : '';
-              const descStr = e.description ? `, description: '${e.description.replace(/'/g, "\\'")}'` : '';
-              return `  { id: ${index + 1}, title: '${e.title}', date: '${e.date}', ${timeStr}${endStr}category: '${e.category}'${descStr} },`;
-            });
-            const finalCode = `export const SAMPLE_EVENTS = [\n  // ── 공휴일 + 교회 절기 자동 포함 ──\n  ...HOLIDAYS_2026,\n  ...LITURGY_2026,\n\n  // ── 사용자/교회 일정 ──\n${codeLines.join('\n')}\n];`;
-            navigator.clipboard.writeText(finalCode)
-              .then(() => alert('✅ 코드가 클립보드에 복사되었습니다!\n\nVS Code에서 src/data/scheduleData.js 파일을 열고 "SAMPLE_EVENTS" 부분을 덮어써주세요.'))
-              .catch(() => alert('복사에 실패했습니다. 브라우저 설정을 확인해주세요.'));
-          }}
-            className="btn-primary" style={{ padding: '0.8rem 1.5rem', display: 'inline-flex', gap: '0.6rem', margin: '0 auto', fontSize: '0.9rem' }}>
-            <Download size={18} /> 업데이트 코드 복사하기
-          </button>
+          <AdminSaveButton events={events} />
         </div>
       )}
 
@@ -694,6 +679,75 @@ const EventCard = ({ event, onDelete, onEdit, compact = false }) => {
             <Trash2 size={14} />
           </button>
         </div>
+      )}
+    </div>
+  );
+};
+
+// 관리자 저장 & 배포 버튼 컴포넌트
+const AdminSaveButton = ({ events }) => {
+  const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [message, setMessage] = useState('');
+
+  const handleSaveAndDeploy = async () => {
+    if (!window.confirm('현재 화면의 모든 일정을 저장하고 GitHub에 배포하시겠습니까?\n\n(npm run admin 서버가 실행 중이어야 합니다.)')) return;
+
+    setStatus('loading');
+    setMessage('');
+    try {
+      const res = await fetch('/api/admin/save-and-deploy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          events,
+          commitMessage: `일정 업데이트 (${new Date().toLocaleDateString('ko-KR')})`,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus('success');
+        setMessage(data.message);
+      } else {
+        setStatus('error');
+        setMessage(data.error || '알 수 없는 오류가 발생했습니다.');
+      }
+    } catch (e) {
+      setStatus('error');
+      setMessage('관리자 서버에 연결할 수 없습니다. 별도 터미널에서 npm run admin을 실행해 주세요.');
+    }
+    setTimeout(() => { setStatus('idle'); setMessage(''); }, 6000);
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem' }}>
+      <button
+        onClick={handleSaveAndDeploy}
+        disabled={status === 'loading'}
+        className="btn-primary"
+        style={{
+          padding: '0.85rem 2rem', display: 'inline-flex', gap: '0.7rem',
+          fontSize: '1rem', fontWeight: 700,
+          opacity: status === 'loading' ? 0.7 : 1,
+          cursor: status === 'loading' ? 'wait' : 'pointer',
+        }}
+      >
+        {status === 'loading'
+          ? <><span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⏳</span> 저장 및 배포 중...</>
+          : status === 'success'
+          ? '✅ 배포 완료!'
+          : status === 'error'
+          ? '❌ 오류 발생'
+          : <><Download size={18} /> 변경사항 저장하기 (GitHub 자동 배포)</>
+        }
+      </button>
+      {message && (
+        <p style={{
+          fontSize: '0.85rem', padding: '0.6rem 1rem', borderRadius: '8px', maxWidth: '480px',
+          color: status === 'success' ? '#2f855a' : '#e53e3e',
+          background: status === 'success' ? 'rgba(47,133,90,0.1)' : 'rgba(229,62,62,0.1)',
+          border: `1px solid ${status === 'success' ? '#2f855a' : '#e53e3e'}`,
+          textAlign: 'center',
+        }}>{message}</p>
       )}
     </div>
   );
