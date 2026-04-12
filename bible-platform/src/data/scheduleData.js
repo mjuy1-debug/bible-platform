@@ -142,7 +142,10 @@ export const getEventsForMonth = (events, year, month) => {
   const monthStart = `${year}-${String(month + 1).padStart(2, '0')}-01`;
   const nextMonth = month === 11 ? 0 : month + 1;
   const nextMonthYear = month === 11 ? year + 1 : year;
-  const monthEnd = new Date(nextMonthYear, nextMonth, 0).toISOString().split('T')[0];
+  
+  // get last day of the current month without timezone conversion issue
+  const lastDay = new Date(nextMonthYear, nextMonth, 0).getDate();
+  const monthEnd = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
   return events.filter((e) => {
     const start = e.date;
