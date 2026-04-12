@@ -21,7 +21,7 @@ const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(now.getMonth());
   const [selectedDate, setSelectedDate] = useState(null);
   const [activeTab, setActiveTab] = useState('monthly'); // 'annual' | 'monthly' | 'weekly' | 'add'
-  const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, personal: true });
+  const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, personal: true, holiday: true, liturgy: true });
   const [showAddForm, setShowAddForm] = useState(false);
 
   // 새 일정 폼
@@ -174,6 +174,8 @@ const Schedule = () => {
               const mEvents = getEventsForMonth(filteredEvents, currentYear, m);
               const joshuaCount = mEvents.filter(e => e.category === 'joshua').length;
               const churchCount = mEvents.filter(e => e.category === 'church').length;
+              const holidayCount = mEvents.filter(e => e.category === 'holiday').length;
+              const liturgyCount = mEvents.filter(e => e.category === 'liturgy').length;
               const isCurrentMonth = currentYear === now.getFullYear() && m === now.getMonth();
 
               return (
@@ -222,6 +224,18 @@ const Schedule = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
                           <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.church.dot }} />
                           <span style={{ color: CATEGORY_COLORS.church.text }}>교회 전체 {churchCount}건</span>
+                        </div>
+                      )}
+                      {holidayCount > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
+                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.holiday.dot }} />
+                          <span style={{ color: CATEGORY_COLORS.holiday.text }}>공휴일 {holidayCount}건</span>
+                        </div>
+                      )}
+                      {liturgyCount > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
+                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.liturgy.dot }} />
+                          <span style={{ color: CATEGORY_COLORS.liturgy.text }}>교회 절기 {liturgyCount}건</span>
                         </div>
                       )}
                       {/* 주요 일정 미리보기 */}
@@ -416,7 +430,9 @@ const Schedule = () => {
               {/* Category */}
               <label style={{ display: 'block', marginBottom: '0.3rem', fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 600 }}>카테고리</label>
               <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+                {Object.entries(CATEGORY_LABELS)
+                  .filter(([key]) => !['holiday', 'liturgy'].includes(key))
+                  .map(([key, label]) => {
                   const colors = CATEGORY_COLORS[key];
                   return (
                     <button key={key} onClick={() => setNewEvent(p => ({ ...p, category: key }))}
