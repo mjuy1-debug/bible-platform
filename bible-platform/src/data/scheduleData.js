@@ -73,6 +73,7 @@ export const SAMPLE_EVENTS = [
   ...HOLIDAYS_2026,
   ...LITURGY_2026,
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: '2026년 신년 감사예배' },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: '나라를 위한 특별 기도회' },
