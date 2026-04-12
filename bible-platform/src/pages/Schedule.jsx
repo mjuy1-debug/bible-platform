@@ -601,7 +601,7 @@ const Schedule = () => {
               {/* Viewer Area */}
               <div style={{ flex: 1, background: '#fff', borderRadius: '8px', overflowY: 'auto', position: 'relative' }}>
                 <img
-                  src={`${import.meta.env.BASE_URL}${viewFile.type}_plan.png`}
+                  src={`${import.meta.env.BASE_URL}${viewFile.type}_plan.png?v=${Date.now()}`}
                   alt={`${viewFile.title}`}
                   style={{ width: '100%', display: 'block', objectFit: 'contain' }}
                   onError={(e) => {
