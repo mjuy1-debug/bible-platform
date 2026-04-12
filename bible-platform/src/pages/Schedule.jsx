@@ -599,22 +599,22 @@ const Schedule = () => {
               </div>
 
               {/* Viewer Area */}
-              <div style={{ flex: 1, background: '#fff', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
-                <object
-                  data={`/${viewFile.type}_plan.pdf`}
-                  type="application/pdf"
-                  style={{ width: '100%', height: '100%', border: 'none' }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '2rem', textAlign: 'center', background: 'var(--bg-secondary)' }}>
-                    <p style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontWeight: 600 }}>파일을 화면에서 바로 볼 수 없는 환경이거나 파일이 없습니다.</p>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                      관리자 메뉴얼: <code>public/</code> 폴더에 <code>{viewFile.type}_plan.pdf</code> 파일을 넣어주세요.
-                    </p>
-                    <a href={`/${viewFile.type}_plan.pdf`} target="_blank" rel="noreferrer" className="btn-primary" style={{ display: 'inline-flex', padding: '0.6rem 1.2rem', textDecoration: 'none' }}>
-                      파일 강제 열기 시도
-                    </a>
-                  </div>
-                </object>
+              <div style={{ flex: 1, background: '#fff', borderRadius: '8px', overflowY: 'auto', position: 'relative' }}>
+                <img
+                  src={`/${viewFile.type}_plan.png`}
+                  alt={`${viewFile.title}`}
+                  style={{ width: '100%', display: 'block', objectFit: 'contain' }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '2rem', textAlign: 'center', background: 'var(--bg-secondary)' }}>
+                  <p style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontWeight: 600 }}>파일을 찾을 수 없습니다.</p>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                    관리자 가이드: <code>public/</code> 폴더에 <code>{viewFile.type}_plan.png</code> 이름의 이미지 파일을 넣어주세요.
+                  </p>
+                </div>
               </div>
             </motion.div>
           </motion.div>
