@@ -4,7 +4,6 @@
 export const CATEGORY_LABELS = {
   joshua: '여호수아 남전도회',
   church: '교회 전체',
-  personal: '개인',
   holiday: '공휴일',
   liturgy: '교회 절기',
 };
@@ -12,7 +11,6 @@ export const CATEGORY_LABELS = {
 export const CATEGORY_COLORS = {
   joshua: { bg: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.4)', text: '#D4AF37', dot: '#D4AF37' },
   church: { bg: 'rgba(79,134,198,0.15)', border: 'rgba(79,134,198,0.4)', text: '#4f86c6', dot: '#4f86c6' },
-  personal: { bg: 'rgba(91,191,110,0.15)', border: 'rgba(91,191,110,0.4)', text: '#5bbf6e', dot: '#5bbf6e' },
   holiday: { bg: 'rgba(229,62,62,0.12)', border: 'rgba(229,62,62,0.3)', text: '#e53e3e', dot: '#e53e3e' },
   liturgy: { bg: 'rgba(156,100,212,0.12)', border: 'rgba(156,100,212,0.35)', text: '#9c64d4', dot: '#9c64d4' },
 };
@@ -27,7 +25,7 @@ export const HOLIDAYS_2026 = [
   { id: 'h04', title: '설날 연휴', date: '2026-02-18', category: 'holiday', description: '설날 다음날' },
   { id: 'h05', title: '삼일절', date: '2026-03-01', category: 'holiday', description: '3·1 독립운동 기념일' },
   { id: 'h06', title: '어린이날', date: '2026-05-05', category: 'holiday', description: '어린이날' },
-  { id: 'h07', title: '부처님오신날', date: '2026-05-24', category: 'holiday', description: '음력 4월 8일' },
+
   { id: 'h08', title: '현충일', date: '2026-06-06', category: 'holiday', description: '호국영령 추모일' },
   { id: 'h09', title: '광복절', date: '2026-08-15', category: 'holiday', description: '광복 81주년' },
   { id: 'h10', title: '추석 연휴', date: '2026-09-24', category: 'holiday', description: '추석 전날' },

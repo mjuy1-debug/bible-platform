@@ -4,10 +4,10 @@ import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarC
 import { ThemeContext } from '../context/ThemeContext';
 
 const NAV_ITEMS = [
+  { to: '/schedule',  icon: CalendarClock, label: '일정' },
   { to: '/read',      icon: BookOpen,      label: '읽기' },
   { to: '/search',    icon: SearchIcon,    label: '찾기' },
   { to: '/plan',      icon: CalendarDays,  label: '플랜' },
-  { to: '/schedule',  icon: CalendarClock, label: '일정' },
   { to: '/devotion',  icon: BookHeart,     label: '묵상' },
   { to: '/favorites', icon: Heart,         label: '즐겨찾기' },
   { to: '/ai',        icon: Sparkles,      label: 'AI 도우미' },

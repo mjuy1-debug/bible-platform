@@ -21,7 +21,7 @@ const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(now.getMonth());
   const [selectedDate, setSelectedDate] = useState(null);
   const [activeTab, setActiveTab] = useState('monthly'); // 'annual' | 'monthly' | 'weekly' | 'add'
-  const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, personal: true, holiday: true, liturgy: true });
+  const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, holiday: true, liturgy: true });
   const [showAddForm, setShowAddForm] = useState(false);
 
   // 새 일정 폼
