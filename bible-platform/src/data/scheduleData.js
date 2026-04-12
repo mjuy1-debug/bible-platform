@@ -43,7 +43,6 @@ export const LITURGY_2026 = [
   // ── 고난주간 / 부활절 ──
   { id: 'l01', title: '종려주일', date: '2026-03-29', category: 'liturgy', description: '예수님의 예루살렘 입성 기념 — 고난주간 시작' },
   { id: 'l02', title: '고난주간', date: '2026-03-30', endDate: '2026-04-04', category: 'liturgy', description: '예수님의 고난을 기억하는 한 주간' },
-  { id: 'l03', title: '성금요일', date: '2026-04-03', category: 'liturgy', description: '예수 그리스도의 십자가 고난과 죽음' },
   { id: 'l04', title: '부활절', date: '2026-04-05', category: 'liturgy', description: '예수 그리스도의 부활 기념일' },
 
   // ── 성령강림절 ──
