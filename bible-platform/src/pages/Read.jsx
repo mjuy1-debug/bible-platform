@@ -4,6 +4,7 @@ import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
   AlertTriangle, RefreshCw, PlayCircle, Share2, Heart
 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { BIBLE_BOOKS } from '../data/bibleData';
 import { fetchChapter } from '../services/bibleService';
@@ -22,9 +23,16 @@ const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 
 const Read = () => {
   const { highlights, toggleHighlight, toggleFavorite, isFavorite } = useContext(UserContext);
+  const location = useLocation();
 
-  const [selectedBook, setSelectedBook] = useState(BIBLE_BOOKS[0]);
-  const [selectedChapter, setSelectedChapter] = useState(1);
+  // Plan 페이지에서 넘어온 경우 해당 책/장으로 초기화
+  const initBook = location.state?.bookId
+    ? BIBLE_BOOKS.find(b => b.id === location.state.bookId) || BIBLE_BOOKS[0]
+    : BIBLE_BOOKS[0];
+  const initChapter = location.state?.chapter || 1;
+
+  const [selectedBook, setSelectedBook] = useState(initBook);
+  const [selectedChapter, setSelectedChapter] = useState(initChapter);
   const [selectedVerse, setSelectedVerse] = useState(null);
   const [fontSize, setFontSize] = useState(1.15);
   const [showBookSelector, setShowBookSelector] = useState(false);

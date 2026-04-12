@@ -54,7 +54,7 @@ const callGemini = async (messages, apiKey) => {
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents,
-      generationConfig: { temperature: 0.85, maxOutputTokens: 1024 },
+      generationConfig: { temperature: 0.85, maxOutputTokens: 8192 },
     }),
   });
   if (!res.ok) {

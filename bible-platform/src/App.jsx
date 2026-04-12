@@ -8,6 +8,7 @@ import Read from './pages/Read';
 import Devotion from './pages/Devotion';
 import AiAssistant from './pages/AiAssistant';
 import Plan from './pages/Plan';
+import Schedule from './pages/Schedule';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Favorites from './pages/Favorites';
@@ -31,6 +32,7 @@ const AppInner = () => {
           <Route path="/devotion" element={<Devotion />} />
           <Route path="/ai" element={<AiAssistant />} />
           <Route path="/plan" element={<Plan />} />
+          <Route path="/schedule" element={<Schedule />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<Search />} />
           <Route path="/favorites" element={<Favorites />} />

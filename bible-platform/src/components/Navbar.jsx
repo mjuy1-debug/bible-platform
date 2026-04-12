@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, Search as SearchIcon, Heart, Menu, X } from 'lucide-react';
+import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 
 const NAV_ITEMS = [
-  { to: '/read',      icon: BookOpen,    label: '읽기' },
-  { to: '/search',    icon: SearchIcon,  label: '찾기' },
-  { to: '/plan',      icon: CalendarDays,label: '플랜' },
-  { to: '/devotion',  icon: BookHeart,   label: '묵상' },
-  { to: '/favorites', icon: Heart,       label: '즐겨찾기' },
-  { to: '/ai',        icon: Sparkles,    label: 'AI 도우미' },
-  { to: '/profile',   icon: User,        label: '프로필' },
+  { to: '/read',      icon: BookOpen,      label: '읽기' },
+  { to: '/search',    icon: SearchIcon,    label: '찾기' },
+  { to: '/plan',      icon: CalendarDays,  label: '플랜' },
+  { to: '/schedule',  icon: CalendarClock, label: '일정' },
+  { to: '/devotion',  icon: BookHeart,     label: '묵상' },
+  { to: '/favorites', icon: Heart,         label: '즐겨찾기' },
+  { to: '/ai',        icon: Sparkles,      label: 'AI 도우미' },
+  { to: '/profile',   icon: User,          label: '프로필' },
 ];
 
 const Navbar = () => {

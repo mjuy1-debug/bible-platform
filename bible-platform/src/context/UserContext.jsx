@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { DEFAULT_PLAN, generatePlan } from '../data/readingPlanData';
+import { SAMPLE_EVENTS } from '../data/scheduleData';
 
 export const UserContext = createContext();
 
@@ -7,26 +9,35 @@ const INITIAL_STATE = {
   devotions: [],
   highlights: {},
   planProgress: {
-    type: '1년통독',
-    totalDays: 365,
+    type: DEFAULT_PLAN.type,
+    totalDays: DEFAULT_PLAN.totalDays,
     completedDays: [],
-    dailySchedule: [
-      { day: 1, range: '창세기 1~3장', ref: '창 1-3' },
-      { day: 2, range: '창세기 4~6장', ref: '창 4-6' },
-      { day: 3, range: '창세기 7~9장', ref: '창 7-9' },
-      { day: 4, range: '창세기 10~11장', ref: '창 10-11' },
-      { day: 5, range: '창세기 12~14장', ref: '창 12-14' },
-      { day: 6, range: '창세기 15~17장', ref: '창 15-17' },
-      { day: 7, range: '창세기 18~20장', ref: '창 18-20' },
-    ]
-  }
+    dailySchedule: DEFAULT_PLAN.dailySchedule,
+    selectedBooks: DEFAULT_PLAN.selectedBooks,
+  },
+  events: SAMPLE_EVENTS,
 };
 
 export const UserProvider = ({ children }) => {
   const [state, setState] = useState(() => {
     try {
       const saved = localStorage.getItem('luxverbi_user');
-      return saved ? { ...INITIAL_STATE, ...JSON.parse(saved) } : INITIAL_STATE;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // 기존 데이터에 7일치 플랜만 있으면 새 365일 플랜으로 마이그레이션
+        if (parsed.planProgress && parsed.planProgress.dailySchedule && parsed.planProgress.dailySchedule.length <= 7) {
+          parsed.planProgress = {
+            ...INITIAL_STATE.planProgress,
+            completedDays: parsed.planProgress.completedDays || [],
+          };
+        }
+        // events 없으면 샘플 추가
+        if (!parsed.events) {
+          parsed.events = SAMPLE_EVENTS;
+        }
+        return { ...INITIAL_STATE, ...parsed };
+      }
+      return INITIAL_STATE;
     } catch {
       return INITIAL_STATE;
     }
@@ -82,6 +93,18 @@ export const UserProvider = ({ children }) => {
     showToast('오늘 말씀을 완료했습니다! 🎉');
   }, [showToast]);
 
+  const resetPlan = useCallback((type, selectedBookIds = []) => {
+    const newPlan = generatePlan(type, selectedBookIds);
+    setState(prev => ({
+      ...prev,
+      planProgress: {
+        ...newPlan,
+        completedDays: [],
+      },
+    }));
+    showToast('새 플랜이 설정되었습니다! 📖');
+  }, [showToast]);
+
   const toggleHighlight = useCallback((verseRef, color) => {
     setState(prev => {
       const current = prev.highlights[verseRef];
@@ -95,6 +118,31 @@ export const UserProvider = ({ children }) => {
     });
   }, []);
 
+  // ── 일정 관리 ──
+  const addEvent = useCallback((event) => {
+    setState(prev => ({
+      ...prev,
+      events: [...prev.events, { ...event, id: Date.now() }],
+    }));
+    showToast('일정이 추가되었습니다! 📅');
+  }, [showToast]);
+
+  const deleteEvent = useCallback((id) => {
+    setState(prev => ({
+      ...prev,
+      events: prev.events.filter(e => e.id !== id),
+    }));
+    showToast('일정이 삭제되었습니다.');
+  }, [showToast]);
+
+  const updateEvent = useCallback((id, updates) => {
+    setState(prev => ({
+      ...prev,
+      events: prev.events.map(e => e.id === id ? { ...e, ...updates } : e),
+    }));
+    showToast('일정이 수정되었습니다.');
+  }, [showToast]);
+
   return (
     <UserContext.Provider value={{
       ...state,
@@ -104,8 +152,12 @@ export const UserProvider = ({ children }) => {
       addDevotion,
       deleteDevotion,
       togglePlanDay,
+      resetPlan,
       toggleHighlight,
-      showToast
+      showToast,
+      addEvent,
+      deleteEvent,
+      updateEvent,
     }}>
       {children}
     </UserContext.Provider>

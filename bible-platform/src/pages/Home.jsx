@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
+import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 
 // 날별 말씀 (날짜 기반으로 순환)
 const DAILY_VERSES = [
@@ -16,21 +17,24 @@ const DAILY_VERSES = [
 ];
 
 const QUICK_LINKS = [
-  { to: '/read',      icon: BookOpen,    title: '성경 읽기',   desc: '말씀을 천천히 읽으며 하루를 시작해보세요.', color: '#4f86c6' },
-  { to: '/devotion',  icon: BookHeart,   title: '묵상 노트',   desc: '오늘 느낀 은혜를 기록으로 남겨보세요.', color: '#c4a484' },
-  { to: '/ai',        icon: Sparkles,    title: 'AI 도우미',   desc: '오늘 읽은 말씀을 함께 묵상해 드립니다.', color: '#9b7de8' },
-  { to: '/plan',      icon: CalendarDays,title: '통독 플랜',   desc: '1년 통독 오늘의 목표를 확인해보세요.', color: '#5bbf6e' },
-  { to: '/favorites', icon: Heart,       title: '즐겨찾기',    desc: '마음에 새긴 말씀들을 모아보세요.', color: '#e85b72' },
-  { to: '/search',    icon: Search,      title: '말씀 찾기',   desc: '원하는 구절을 빠르게 검색하세요.', color: '#f5a623' },
+  { to: '/read',      icon: BookOpen,      title: '성경 읽기',    desc: '말씀을 천천히 읽으며 하루를 시작해보세요.', color: '#4f86c6' },
+  { to: '/devotion',  icon: BookHeart,     title: '묵상 노트',    desc: '오늘 느낀 은혜를 기록으로 남겨보세요.', color: '#c4a484' },
+  { to: '/ai',        icon: Sparkles,      title: 'AI 도우미',    desc: '오늘 읽은 말씀을 함께 묵상해 드립니다.', color: '#9b7de8' },
+  { to: '/plan',      icon: CalendarDays,  title: '통독 플랜',    desc: '나만의 통독 플랜을 설정하고 실천해보세요.', color: '#5bbf6e' },
+  { to: '/schedule',  icon: CalendarClock, title: '일정 & 계획',  desc: '여호수아 남전도회와 교회 일정을 확인하세요.', color: '#e8a73d' },
+  { to: '/favorites', icon: Heart,         title: '즐겨찾기',     desc: '마음에 새긴 말씀들을 모아보세요.', color: '#e85b72' },
+  { to: '/search',    icon: Search,        title: '말씀 찾기',    desc: '원하는 구절을 빠르게 검색하세요.', color: '#f5a623' },
 ];
 
 const Home = () => {
-  const { planProgress, devotions, favorites } = useContext(UserContext);
+  const { planProgress, devotions, favorites, events } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
   const todayIdx = Math.floor(Date.now() / 86400000) % DAILY_VERSES.length;
   const todayVerse = DAILY_VERSES[todayIdx];
+
+  const upcoming = useMemo(() => getUpcomingEvents(events, 3), [events]);
 
   const [greeting, setGreeting] = useState('');
   useEffect(() => {
@@ -95,7 +99,7 @@ const Home = () => {
       </motion.div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.75rem, 2vw, 1.5rem)', maxWidth: '600px', margin: '0 auto 3rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.75rem, 2vw, 1.5rem)', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
         {[
           { label: '통독 진행률', value: `${pct}%`, to: '/plan' },
           { label: '저장한 묵상', value: `${devotions.length}편`, to: '/devotion' },
@@ -114,6 +118,55 @@ const Home = () => {
           </motion.div>
         ))}
       </div>
+
+      {/* Upcoming Events Widget */}
+      {upcoming.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          style={{ maxWidth: '720px', margin: '0 auto 2.5rem' }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+            <h3 className="serif-font" style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <CalendarClock size={18} color="var(--accent-gold)" /> 다가오는 일정
+            </h3>
+            <Link to="/schedule" style={{ fontSize: '0.82rem', color: 'var(--accent-gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              전체보기 <ArrowRight size={13} />
+            </Link>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {upcoming.map(e => {
+              const colors = CATEGORY_COLORS[e.category];
+              return (
+                <Link key={e.id} to="/schedule" style={{ textDecoration: 'none' }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.8rem',
+                    padding: '0.8rem 1rem', borderRadius: '12px',
+                    background: colors.bg, border: `1px solid ${colors.border}`,
+                    transition: 'transform 0.15s',
+                  }}
+                    onMouseOver={e => e.currentTarget.style.transform = 'translateX(4px)'}
+                    onMouseOut={e => e.currentTarget.style.transform = ''}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{e.title}</p>
+                      <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.75rem', color: colors.text }}>
+                        <span>{e.date.slice(5).replace('-', '/')}</span>
+                        {e.time && <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Clock size={10} /> {e.time}</span>}
+                        <span style={{ padding: '0 0.4rem', borderRadius: '6px', background: colors.bg, fontWeight: 600, fontSize: '0.68rem' }}>
+                          {CATEGORY_LABELS[e.category]}
+                        </span>
+                      </div>
+                    </div>
+                    <ArrowRight size={14} color="var(--text-secondary)" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
 
       {/* Quick Links */}
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>

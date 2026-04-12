@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon } from 'lucide-react';
+import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon, CalendarClock } from 'lucide-react';
 
 const TABS = [
-  { to: '/read',    icon: BookOpen,    label: '읽기' },
-  { to: '/search',  icon: SearchIcon,  label: '찾기' },
-  { to: '/devotion',icon: BookHeart,   label: '묵상' },
-  { to: '/ai',      icon: Sparkles,    label: 'AI' },
-  { to: '/profile', icon: User,        label: '프로필' },
+  { to: '/read',     icon: BookOpen,      label: '읽기' },
+  { to: '/search',   icon: SearchIcon,    label: '찾기' },
+  { to: '/schedule', icon: CalendarClock, label: '일정' },
+  { to: '/devotion', icon: BookHeart,     label: '묵상' },
+  { to: '/ai',       icon: Sparkles,      label: 'AI' },
+  { to: '/profile',  icon: User,          label: '프로필' },
 ];
 
 const BottomNav = () => {
