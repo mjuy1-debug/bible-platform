@@ -31,10 +31,9 @@ export const UserProvider = ({ children }) => {
             completedDays: parsed.planProgress.completedDays || [],
           };
         }
-        // events 없으면 샘플 추가
-        if (!parsed.events) {
-          parsed.events = SAMPLE_EVENTS;
-        }
+        // 외부 업데이트 시 브라우저 캐시 무시하고 항상 최신 데이터를 불러옴
+        parsed.events = SAMPLE_EVENTS;
+        
         return { ...INITIAL_STATE, ...parsed };
       }
       return INITIAL_STATE;
