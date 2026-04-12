@@ -136,11 +136,19 @@ export const getEventsForDate = (events, dateStr) => {
 };
 
 /**
- * 특정 월의 이벤트 반환
+ * 특정 월의 이벤트 반환 (걸쳐있는 연속 일정도 포함)
  */
 export const getEventsForMonth = (events, year, month) => {
-  const prefix = `${year}-${String(month + 1).padStart(2, '0')}`;
-  return events.filter((e) => e.date.startsWith(prefix));
+  const monthStart = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const nextMonth = month === 11 ? 0 : month + 1;
+  const nextMonthYear = month === 11 ? year + 1 : year;
+  const monthEnd = new Date(nextMonthYear, nextMonth, 0).toISOString().split('T')[0];
+
+  return events.filter((e) => {
+    const start = e.date;
+    const end = e.endDate || e.date;
+    return start <= monthEnd && end >= monthStart;
+  });
 };
 
 /**

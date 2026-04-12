@@ -24,6 +24,7 @@ const Schedule = () => {
   const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, holiday: true, liturgy: true });
   const [showAddForm, setShowAddForm] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [viewFile, setViewFile] = useState(null);
 
   // 새 일정 폼
   const [newEvent, setNewEvent] = useState({
@@ -183,6 +184,28 @@ const Schedule = () => {
       {/* ═══ Annual View ═══ */}
       {activeTab === 'annual' && (
         <div>
+          {/* Annual Plan Files Buttons */}
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <button onClick={() => setViewFile({ type: 'joshua', title: '여호수아 연간계획표' })}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.6rem 1.2rem', borderRadius: '8px',
+                background: 'rgba(212,175,55,0.15)', border: '1px solid var(--accent-gold)',
+                color: 'var(--accent-gold)', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s'
+              }}>
+              <CalendarDays size={16} /> 여호수아 계획표 열기
+            </button>
+            <button onClick={() => setViewFile({ type: 'church', title: '교회 전체 연간계획표' })}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                padding: '0.6rem 1.2rem', borderRadius: '8px',
+                background: 'rgba(79,134,198,0.15)', border: '1px solid #4f86c6',
+                color: '#4f86c6', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s'
+              }}>
+              <LayoutGrid size={16} /> 교회 계획표 열기
+            </button>
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
             <button onClick={() => setCurrentYear(y => y - 1)} style={{ display: 'flex', padding: '0.5rem', borderRadius: '50%', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)', color: 'var(--text-primary)', cursor: 'pointer' }}>
               <ChevronLeft size={18} />
@@ -544,6 +567,59 @@ const Schedule = () => {
           </button>
         </div>
       )}
+
+      {/* ═══ File Viewer Modal ═══ */}
+      <AnimatePresence>
+        {viewFile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 3000,
+              background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(5px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '1rem',
+            }}
+            onClick={() => setViewFile(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="glass-card"
+              style={{ width: '100%', maxWidth: '1000px', height: '85vh', maxHeight: '900px', display: 'flex', flexDirection: 'column' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexShrink: 0 }}>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>{viewFile.title}</h3>
+                <button onClick={() => setViewFile(null)} style={{ padding: '0.4rem', color: 'var(--text-secondary)', cursor: 'pointer', background: 'var(--bg-secondary)', borderRadius: '50%', border: '1px solid var(--glass-border)' }}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Viewer Area */}
+              <div style={{ flex: 1, background: '#fff', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
+                <object
+                  data={`/${viewFile.type}_plan.pdf`}
+                  type="application/pdf"
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '2rem', textAlign: 'center', background: 'var(--bg-secondary)' }}>
+                    <p style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontWeight: 600 }}>파일을 화면에서 바로 볼 수 없는 환경이거나 파일이 없습니다.</p>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                      관리자 메뉴얼: <code>public/</code> 폴더에 <code>{viewFile.type}_plan.pdf</code> 파일을 넣어주세요.
+                    </p>
+                    <a href={`/${viewFile.type}_plan.pdf`} target="_blank" rel="noreferrer" className="btn-primary" style={{ display: 'inline-flex', padding: '0.6rem 1.2rem', textDecoration: 'none' }}>
+                      파일 강제 열기 시도
+                    </a>
+                  </div>
+                </object>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
@@ -597,20 +673,23 @@ const EventCard = ({ event, onDelete, onEdit, compact = false }) => {
       {/* Admin Actions */}
       {import.meta.env.DEV && !['holiday', 'liturgy'].includes(event.category) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', flexShrink: 0, borderLeft: '1px solid var(--glass-border)', paddingLeft: '0.5rem', marginLeft: '0.2rem' }}>
-          <button onClick={() => onEdit(event)} style={{ display: 'flex', padding: '0.3rem', color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: '6px', transition: 'background 0.2s' }} title="수정">
+          <button onClick={(e) => { e.stopPropagation(); onEdit(event); }} style={{ display: 'flex', padding: '0.3rem', color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: '6px', transition: 'background 0.2s' }} title="수정">
             <Edit3 size={14} />
           </button>
           <button
-            onClick={() => {
-              if (showConfirm) { onDelete(event.id); } else { setShowConfirm(true); setTimeout(() => setShowConfirm(false), 2000); }
+            onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm("이 일정을 삭제하시겠습니까?")) {
+                onDelete(event.id);
+              }
             }}
             style={{
               display: 'flex', padding: '0.3rem', cursor: 'pointer',
-              color: showConfirm ? '#e53e3e' : 'var(--text-secondary)',
-              background: showConfirm ? 'rgba(229,62,62,0.1)' : 'transparent',
+              color: 'var(--text-secondary)',
+              background: 'transparent',
               borderRadius: '6px', transition: 'all 0.2s',
             }}
-            title={showConfirm ? '다시 클릭하면 삭제됩니다' : '삭제'}
+            title="삭제"
           >
             <Trash2 size={14} />
           </button>
