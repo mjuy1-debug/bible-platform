@@ -1,4 +1,5 @@
 import React, { useState, useContext, useRef, useCallback, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserContext } from '../context/UserContext';
 import { Download, X, Sparkles } from 'lucide-react';
@@ -24,6 +25,7 @@ const Devotion = () => {
   useEffect(() => {
     if (location.state?.verse) {
       const bookId = inferBookIdFromVerse(location.state.verse);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQtQuestions(getQTQuestions(bookId));
     }
   }, [location.state]);
@@ -79,9 +81,24 @@ const Devotion = () => {
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // 첫 페이지 추가
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // 내용이 길어서 다음 페이지가 필요한 경우 짤림 방지 (다중 페이지)
+      while (heightLeft > 0) {
+        position -= pageHeight; // 페이지 높이만큼 위로 올려서 다음 영역이 보이게 함
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
       pdf.save(`QT묵상_${formatDate(devotion.createdAt)}.pdf`);
 
     } catch (err) {
@@ -186,12 +203,6 @@ const Devotion = () => {
                   className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer' }}
                   onClick={() => setSelectedDevotion(d)}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDownloadPdf(d); }}
-                      title="PDF 다운로드"
-                      style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '20px', padding: '0.3rem 0.8rem', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600 }}>
-                      <Download size={13} /> PDF
-                    </button>
                     <button onClick={(e) => { e.stopPropagation(); deleteDevotion(d.id); }}
                       style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>
                       ×

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useContext } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search as SearchIcon, Tag, Heart, Loader2, X, ChevronDown, BookOpen } from 'lucide-react';
 import { UserContext } from '../context/UserContext';

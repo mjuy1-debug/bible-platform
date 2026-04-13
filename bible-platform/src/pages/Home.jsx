@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
@@ -29,6 +30,7 @@ const Home = () => {
   const [greeting, setGreeting] = useState('');
   useEffect(() => {
     const h = new Date().getHours();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (h < 5)  setGreeting('아직 밤이 깊네요. 말씀 안에서 쉬세요 🌙');
     else if (h < 12) setGreeting('좋은 아침이에요 ☀️ 오늘도 말씀으로 시작해요');
     else if (h < 17) setGreeting('오후에도 말씀과 함께해요 🌿');
@@ -163,6 +165,7 @@ const Home = () => {
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
         <h2 className="serif-font" style={{ fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', marginBottom: '1.5rem', textAlign: 'center' }}>빠른 이동</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 'clamp(0.75rem, 2vw, 1.2rem)' }}>
+          {/* eslint-disable-next-line no-unused-vars */}
           {QUICK_LINKS.map(({ to, icon: Icon, title, desc, color }, i) => (
             <motion.div key={to} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + i * 0.07 }}>
               <Link to={to} style={{ display: 'block', textDecoration: 'none' }}>
