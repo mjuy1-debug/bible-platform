@@ -96,32 +96,44 @@ export const UserProvider = ({ children }) => {
   }, [state.favorites]);
 
   const addDevotion = useCallback(async (devotion) => {
-    const newDevotion = { ...devotion, id: Date.now(), createdAt: new Date().toISOString() };
+    const newDevotion = { ...devotion, id: Date.now(), createdAt: new Date().toISOString(), isShared: false };
     
-    // 로컬 스토리지 저장 (내 기기)
+    // 로컬 스토리지 저장 (비공개)
     setState(prev => ({
       ...prev,
       devotions: [newDevotion, ...prev.devotions]
     }));
     
-    // 로그인한 유저의 경우 온라인 커뮤니티(Firestore)에도 함께 공유 저장
-    if (currentUser) {
-      try {
-        await addDoc(collection(db, 'sharedDevotions'), {
-          ...devotion,
-          userId: currentUser.uid,
-          userName: currentUser.displayName || '익명',
-          userPhoto: currentUser.photoURL || '',
-          createdAt: serverTimestamp()
-        });
-      } catch (err) {
-        console.error('커뮤니티 공유 실패:', err);
-      }
-    }
-    
-    showToast('묵상이 저장되었습니다. 🙏');
-  }, [showToast, currentUser]);
+    showToast('나의 묵상에 저장되었습니다. 🙏');
+  }, [showToast]);
 
+  const shareDevotion = useCallback(async (devotion) => {
+    if (!currentUser) {
+      showToast('공유하려면 로그인이 필요합니다.', 'error');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'sharedDevotions'), {
+        ...devotion,
+        userId: currentUser.uid,
+        userName: currentUser.displayName || '익명',
+        userPhoto: currentUser.photoURL || '',
+        createdAt: serverTimestamp()
+      });
+
+      // 로컬 데이터에도 '공유됨' 상태 업데이트
+      setState(prev => ({
+        ...prev,
+        devotions: prev.devotions.map(d => d.id === devotion.id ? { ...d, isShared: true } : d)
+      }));
+
+      showToast('나눔터에 묵상을 공유했습니다! 🌐');
+    } catch (err) {
+      console.error('커뮤니티 공유 실패:', err);
+      showToast('공유 중 오류가 발생했습니다.', 'error');
+    }
+  }, [showToast, currentUser]);
   const deleteDevotion = useCallback((id) => {
     setState(prev => ({ ...prev, devotions: prev.devotions.filter(d => d.id !== id) }));
     showToast('묵상이 삭제되었습니다.');
@@ -207,6 +219,7 @@ export const UserProvider = ({ children }) => {
       currentUser,
       loginWithGoogle,
       logout,
+      shareDevotion,
     }}>
       {children}
     </UserContext.Provider>

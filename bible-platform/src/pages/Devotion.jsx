@@ -11,7 +11,7 @@ import { db } from '../services/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 
 const Devotion = () => {
-  const { devotions, addDevotion, deleteDevotion } = useContext(UserContext);
+  const { devotions, addDevotion, deleteDevotion, shareDevotion } = useContext(UserContext);
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('write');
   const [form, setForm] = useState({
@@ -119,6 +119,92 @@ const Devotion = () => {
       alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
     }
   };
+
+  // 선택된 묵상이 있을 경우 전체화면 읽기 모드로 렌더링
+  if (selectedDevotion) {
+    return (
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '3rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <button 
+            onClick={() => setSelectedDevotion(null)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}
+          >
+            <X size={20} /> 목록으로
+          </button>
+          <div style={{ display: 'flex', gap: '0.8rem' }}>
+            <button
+              onClick={() => handleDownloadPdf(selectedDevotion)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '0.5rem 1rem', borderRadius: '30px', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+            >
+              <Download size={16} /> PDF 저장
+            </button>
+            {activeTab === 'list' && (
+              selectedDevotion.isShared ? (
+                <button disabled style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(212,175,55,0.1)', color: 'var(--accent-gold)', padding: '0.5rem 1rem', borderRadius: '30px', border: '1px solid var(--accent-gold)', fontSize: '0.85rem', cursor: 'default' }}>
+                  공유 완료됨
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    shareDevotion(selectedDevotion);
+                    setSelectedDevotion({ ...selectedDevotion, isShared: true });
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--accent-gold)', color: '#111', padding: '0.5rem 1rem', borderRadius: '30px', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}
+                >
+                  나눔터에 공유 🌐
+                </button>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* 캡처될 QT 형식 컨텐츠 */}
+        <div ref={pdfRef} className="glass-card" style={{ padding: 'clamp(1.5rem, 5vw, 3rem)' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 235, 59, 0.2)', paddingBottom: '1.5rem' }}>
+            <p style={{ color: 'var(--accent-gold)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '0.8rem' }}>QUIET TIME</p>
+            <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)', color: 'var(--text-primary)', marginBottom: '0.8rem' }}>{selectedDevotion.verse}</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+              {selectedDevotion.createdAt ? (selectedDevotion.createdAt.toDate ? formatDate(selectedDevotion.createdAt.toDate().toISOString()) : formatDate(selectedDevotion.createdAt)) : ''}
+              {selectedDevotion.userName && ` · ${selectedDevotion.userName}`}
+            </p>
+          </div>
+
+          {selectedDevotion.verseText && (
+            <div style={{ marginBottom: '2.5rem', background: 'rgba(212,175,55,0.05)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '15px', borderLeft: '4px solid var(--accent-gold)' }}>
+              <p className="serif-font" style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', lineHeight: 1.8, fontStyle: 'italic', margin: 0, color: 'var(--text-primary)' }}>"{selectedDevotion.verseText}"</p>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+            <div>
+              <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.3rem' }}>💭</span> 묵상 (느낀 점)
+              </h4>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.feeling}</p>
+            </div>
+            
+            {selectedDevotion.apply && (
+              <div>
+                <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.3rem' }}>✨</span> 적용
+                </h4>
+                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.apply}</p>
+              </div>
+            )}
+
+            {selectedDevotion.prayer && (
+              <div>
+                <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.3rem' }}>🙏</span> 기도
+                </h4>
+                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.prayer}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -265,86 +351,6 @@ const Devotion = () => {
         </motion.div>
       )}
 
-      {/* QT 세부 보기 및 PDF 다운로드 모달 */}
-      <AnimatePresence>
-        {selectedDevotion && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(1rem, 3vw, 2rem)' }}
-            onClick={() => setSelectedDevotion(null)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              style={{ background: '#1a1a1a', padding: 'clamp(1.5rem, 4vw, 3rem)', borderRadius: '20px', maxWidth: '800px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: '1px solid rgba(255, 235, 59, 0.2)' }}
-              onClick={e => e.stopPropagation()}
-            >
-              <button 
-                onClick={() => setSelectedDevotion(null)}
-                style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}
-              >
-                <X size={24} />
-              </button>
-
-              <button
-                onClick={() => handleDownloadPdf(selectedDevotion)}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--accent-gold)', color: '#111', padding: '0.6rem 1.2rem', borderRadius: '30px', border: 'none', cursor: 'pointer', fontWeight: 600, margin: '0 auto 2rem auto' }}
-              >
-                <Download size={18} />
-                PDF로 다운로드
-              </button>
-
-              {/* 캡처될 QT 형식 컨텐츠 */}
-              <div ref={pdfRef} style={{ background: '#1a1a1a', padding: 'clamp(1rem, 3vw, 2rem)', color: '#eaeaea' }}>
-                <div style={{ textAlign: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 235, 59, 0.3)', paddingBottom: '1.5rem' }}>
-                  <p style={{ color: 'var(--accent-gold)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '0.8rem' }}>QUIET TIME</p>
-                  <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)', color: '#fff', marginBottom: '0.8rem' }}>{selectedDevotion.verse}</h2>
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
-                    {selectedDevotion.createdAt ? (selectedDevotion.createdAt.toDate ? formatDate(selectedDevotion.createdAt.toDate().toISOString()) : formatDate(selectedDevotion.createdAt)) : ''}
-                  </p>
-                </div>
-
-                {selectedDevotion.verseText && (
-                  <div style={{ marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '15px', borderLeft: '4px solid var(--accent-gold)' }}>
-                    <p className="serif-font" style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', lineHeight: 1.7, fontStyle: 'italic', margin: 0 }}>"{selectedDevotion.verseText}"</p>
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                  <div>
-                    <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '1.3rem' }}>💭</span> 묵상 (느낀 점)
-                    </h4>
-                    <p style={{ fontSize: '1.05rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{selectedDevotion.feeling}</p>
-                  </div>
-                  
-                  {selectedDevotion.apply && (
-                    <div>
-                      <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '1.3rem' }}>🌱</span> 삶에 적용하기
-                      </h4>
-                      <p style={{ fontSize: '1.05rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{selectedDevotion.apply}</p>
-                    </div>
-                  )}
-
-                  {selectedDevotion.prayer && (
-                    <div>
-                      <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '1.3rem' }}>🙏</span> 오늘의 기도
-                      </h4>
-                      <p style={{ fontSize: '1.05rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{selectedDevotion.prayer}</p>
-                    </div>
-                  )}
-                </div>
-                
-                <div style={{ marginTop: '4rem', textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>
-                  <p>Joshua 말씀묵상</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
   );
 };
 
