@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
+import { db } from '../services/firebase';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 
 const Devotion = () => {
   const { devotions, addDevotion, deleteDevotion } = useContext(UserContext);
@@ -19,7 +21,18 @@ const Devotion = () => {
   });
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const [qtQuestions, setQtQuestions] = useState([]);
+  const [sharedDevotions, setSharedDevotions] = useState([]);
   const pdfRef = useRef(null);
+  
+  // 파이어베이스 나눔터 실시간 동기화
+  useEffect(() => {
+    const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSharedDevotions(docs);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // 즉시 QT 질문 생성 (즐겨찾기에서 넘어온 경우)
   useEffect(() => {
@@ -112,12 +125,12 @@ const Devotion = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 className="serif-font" style={{ fontSize: '2rem', color: 'var(--accent-gold)' }}>묵상 노트</h2>
         <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)' }}>
-          {['write', 'list'].map(tab => (
+          {['write', 'list', 'shared'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               style={{ padding: '0.5rem 1.5rem', borderRadius: '30px', border: 'none', cursor: 'pointer',
                 background: activeTab === tab ? 'var(--accent-gold)' : 'transparent',
-                color: activeTab === tab ? '#fff' : 'var(--text-secondary)', fontWeight: 600, transition: 'all 0.2s' }}>
-              {tab === 'write' ? '새 묵상 쓰기' : `나의 묵상 (${devotions.length})`}
+                color: activeTab === tab ? '#111' : 'var(--text-secondary)', fontWeight: 600, transition: 'all 0.2s' }}>
+              {tab === 'write' ? '새 묵상 쓰기' : tab === 'list' ? `나의 묵상 (${devotions.length})` : '나눔터'}
             </button>
           ))}
         </div>
@@ -186,7 +199,7 @@ const Devotion = () => {
             묵상 저장하기 ✨
           </button>
         </motion.div>
-      ) : (
+      ) : activeTab === 'list' ? (
         <motion.div key="list" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           {devotions.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-secondary)' }}>
@@ -209,6 +222,37 @@ const Devotion = () => {
                     </button>
                   </div>
                   <p style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600, marginBottom: '0.5rem' }}>{formatDate(d.createdAt)}</p>
+                  <h3 className="serif-font" style={{ fontSize: '1.2rem', marginBottom: '0.8rem' }}>{d.verse}</h3>
+                  {d.feeling && <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{d.feeling}</p>}
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginTop: '0.8rem' }}>클릭하면 전체 보기 →</p>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      ) : (
+        <motion.div key="shared" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          {sharedDevotions.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-secondary)' }}>
+              <Sparkles size={40} color="var(--accent-gold)" style={{ opacity: 0.5, marginBottom: '1rem', margin: '0 auto' }} />
+              <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>아직 나누어진 묵상이 없습니다.</p>
+              <p style={{ fontSize: '0.9rem' }}>첫 번째로 묵상을 나누어보세요!</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+              {sharedDevotions.map((d) => (
+                <motion.div key={d.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                  className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer', borderTop: '3px solid var(--accent-gold)' }}
+                  onClick={() => setSelectedDevotion(d)}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.2rem' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      {d.userPhoto ? <img src={d.userPhoto} alt={d.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '0.8rem' }}>✨</span>}
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{d.userName}</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--accent-gold)' }}>{d.createdAt ? formatDate(d.createdAt.toDate ? d.createdAt.toDate().toISOString() : d.createdAt) : ''}</p>
+                    </div>
+                  </div>
                   <h3 className="serif-font" style={{ fontSize: '1.2rem', marginBottom: '0.8rem' }}>{d.verse}</h3>
                   {d.feeling && <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{d.feeling}</p>}
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginTop: '0.8rem' }}>클릭하면 전체 보기 →</p>

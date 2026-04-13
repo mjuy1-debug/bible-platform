@@ -4,24 +4,37 @@ import { Bookmark, History, Trash2, User } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
+
+  // 프로필 정보 설정
+  const displayName = currentUser ? currentUser.displayName : '로그인되지 않음';
+  const photoUrl = currentUser ? currentUser.photoURL : null;
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} style={{ maxWidth: '900px', margin: '0 auto' }}>
       {/* Profile Header */}
       <div className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-gold), #8B6914)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <User size={40} color="#fff" />
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+          {photoUrl ? <img src={photoUrl} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={40} color="#fff" />}
         </div>
         <div style={{ flex: 1 }}>
-          <h2 className="serif-font" style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>믿음의 자녀</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          <h2 className="serif-font" style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>{displayName}</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
             즐겨찾기 {favorites.length}개 · 묵상 {devotions.length}편 · 통독 진행률 {pct}%
           </p>
-          <div style={{ width: '200px', height: '6px', background: 'var(--bg-secondary)', borderRadius: '3px', marginTop: '0.8rem', overflow: 'hidden' }}>
+          {!currentUser ? (
+            <button onClick={loginWithGoogle} style={{ padding: '0.4rem 1rem', background: '#4285F4', color: '#fff', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
+              Google 계정으로 로그인 (클라우드 연동)
+            </button>
+          ) : (
+            <button onClick={logout} style={{ padding: '0.4rem 1rem', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-secondary)', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem' }}>
+              로그아웃
+            </button>
+          )}
+          <div style={{ width: '200px', height: '6px', background: 'var(--bg-secondary)', borderRadius: '3px', marginTop: '1rem', overflow: 'hidden' }}>
             <motion.div style={{ height: '100%', background: 'var(--accent-gold)', borderRadius: '3px' }}
               initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1 }} />
           </div>

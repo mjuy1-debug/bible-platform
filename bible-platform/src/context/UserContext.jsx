@@ -1,6 +1,9 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { DEFAULT_PLAN, generatePlan } from '../data/readingPlanData';
 import { SAMPLE_EVENTS } from '../data/scheduleData';
+import { auth, db, googleProvider } from '../services/firebase';
+import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export const UserContext = createContext();
 
@@ -19,21 +22,16 @@ const INITIAL_STATE = {
 };
 
 export const UserProvider = ({ children }) => {
+  // -- 로컬 스토리지 데이터 복구 부분 유지 --
   const [state, setState] = useState(() => {
     try {
       const saved = localStorage.getItem('luxverbi_user');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // 기존 데이터에 7일치 플랜만 있으면 새 365일 플랜으로 마이그레이션
         if (parsed.planProgress && parsed.planProgress.dailySchedule && parsed.planProgress.dailySchedule.length <= 7) {
-          parsed.planProgress = {
-            ...INITIAL_STATE.planProgress,
-            completedDays: parsed.planProgress.completedDays || [],
-          };
+          parsed.planProgress = { ...INITIAL_STATE.planProgress, completedDays: parsed.planProgress.completedDays || [] };
         }
-        // 외부 업데이트 시 브라우저 캐시 무시하고 항상 최신 데이터를 불러옴
         parsed.events = SAMPLE_EVENTS;
-        
         return { ...INITIAL_STATE, ...parsed };
       }
       return INITIAL_STATE;
@@ -43,6 +41,35 @@ export const UserProvider = ({ children }) => {
   });
 
   const [toast, setToast] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // 파이어베이스 로그인 상태 감지
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const loginWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      showToast('로그인에 성공했습니다! 🎉');
+    // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      showToast('로그인 중 문제가 발생했습니다.', 'error');
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      showToast('로그아웃 되었습니다.');
+    // eslint-disable-next-line no-unused-vars
+    } catch (error) {
+      showToast('로그아웃 중 오류가 발생했습니다.', 'error');
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('luxverbi_user', JSON.stringify(state));
@@ -68,13 +95,32 @@ export const UserProvider = ({ children }) => {
     return state.favorites.some(f => f.ref === ref);
   }, [state.favorites]);
 
-  const addDevotion = useCallback((devotion) => {
+  const addDevotion = useCallback(async (devotion) => {
+    const newDevotion = { ...devotion, id: Date.now(), createdAt: new Date().toISOString() };
+    
+    // 로컬 스토리지 저장 (내 기기)
     setState(prev => ({
       ...prev,
-      devotions: [{ ...devotion, id: Date.now(), createdAt: new Date().toISOString() }, ...prev.devotions]
+      devotions: [newDevotion, ...prev.devotions]
     }));
+    
+    // 로그인한 유저의 경우 온라인 커뮤니티(Firestore)에도 함께 공유 저장
+    if (currentUser) {
+      try {
+        await addDoc(collection(db, 'sharedDevotions'), {
+          ...devotion,
+          userId: currentUser.uid,
+          userName: currentUser.displayName || '익명',
+          userPhoto: currentUser.photoURL || '',
+          createdAt: serverTimestamp()
+        });
+      } catch (err) {
+        console.error('커뮤니티 공유 실패:', err);
+      }
+    }
+    
     showToast('묵상이 저장되었습니다. 🙏');
-  }, [showToast]);
+  }, [showToast, currentUser]);
 
   const deleteDevotion = useCallback((id) => {
     setState(prev => ({ ...prev, devotions: prev.devotions.filter(d => d.id !== id) }));
@@ -158,6 +204,9 @@ export const UserProvider = ({ children }) => {
       addEvent,
       deleteEvent,
       updateEvent,
+      currentUser,
+      loginWithGoogle,
+      logout,
     }}>
       {children}
     </UserContext.Provider>
