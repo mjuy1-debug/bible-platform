@@ -250,7 +250,9 @@ const Devotion = () => {
                     </div>
                     <div>
                       <p style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>{d.userName}</p>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--accent-gold)' }}>{d.createdAt ? formatDate(d.createdAt.toDate ? d.createdAt.toDate().toISOString() : d.createdAt) : ''}</p>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--accent-gold)' }}>
+                        {d.createdAt ? (d.createdAt.toDate ? formatDate(d.createdAt.toDate().toISOString()) : formatDate(d.createdAt)) : ''}
+                      </p>
                     </div>
                   </div>
                   <h3 className="serif-font" style={{ fontSize: '1.2rem', marginBottom: '0.8rem' }}>{d.verse}</h3>
@@ -268,12 +270,12 @@ const Devotion = () => {
         {selectedDevotion && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(1rem, 3vw, 2rem)' }}
             onClick={() => setSelectedDevotion(null)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              style={{ background: '#1a1a1a', padding: 'clamp(1.5rem, 5vw, 3rem)', borderRadius: '20px', maxWidth: '800px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: '1px solid rgba(255, 235, 59, 0.2)' }}
+              style={{ background: '#1a1a1a', padding: 'clamp(1.5rem, 4vw, 3rem)', borderRadius: '20px', maxWidth: '800px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: '1px solid rgba(255, 235, 59, 0.2)' }}
               onClick={e => e.stopPropagation()}
             >
               <button 
@@ -292,16 +294,18 @@ const Devotion = () => {
               </button>
 
               {/* 캡처될 QT 형식 컨텐츠 */}
-              <div ref={pdfRef} style={{ background: '#1a1a1a', padding: '2rem', color: '#eaeaea' }}>
-                <div style={{ textAlign: 'center', marginBottom: '3rem', borderBottom: '1px solid rgba(255, 235, 59, 0.3)', paddingBottom: '2rem' }}>
-                  <p style={{ color: 'var(--accent-gold)', fontSize: '1rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '1rem' }}>QUIET TIME</p>
-                  <h2 className="serif-font" style={{ fontSize: '2.4rem', color: '#fff', marginBottom: '1rem' }}>{selectedDevotion.verse}</h2>
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>{formatDate(selectedDevotion.createdAt)}</p>
+              <div ref={pdfRef} style={{ background: '#1a1a1a', padding: 'clamp(1rem, 3vw, 2rem)', color: '#eaeaea' }}>
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 235, 59, 0.3)', paddingBottom: '1.5rem' }}>
+                  <p style={{ color: 'var(--accent-gold)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '0.8rem' }}>QUIET TIME</p>
+                  <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)', color: '#fff', marginBottom: '0.8rem' }}>{selectedDevotion.verse}</h2>
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
+                    {selectedDevotion.createdAt ? (selectedDevotion.createdAt.toDate ? formatDate(selectedDevotion.createdAt.toDate().toISOString()) : formatDate(selectedDevotion.createdAt)) : ''}
+                  </p>
                 </div>
 
                 {selectedDevotion.verseText && (
-                  <div style={{ marginBottom: '2.5rem', background: 'rgba(255,255,255,0.05)', padding: '2rem', borderRadius: '15px', borderLeft: '4px solid var(--accent-gold)' }}>
-                    <p className="serif-font" style={{ fontSize: '1.15rem', lineHeight: 1.8, fontStyle: 'italic', margin: 0 }}>"{selectedDevotion.verseText}"</p>
+                  <div style={{ marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', padding: 'clamp(1.2rem, 4vw, 2rem)', borderRadius: '15px', borderLeft: '4px solid var(--accent-gold)' }}>
+                    <p className="serif-font" style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', lineHeight: 1.7, fontStyle: 'italic', margin: 0 }}>"{selectedDevotion.verseText}"</p>
                   </div>
                 )}
 
