@@ -273,7 +273,7 @@ const Devotion = () => {
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              style={{ background: '#1a1a1a', padding: '3rem', borderRadius: '20px', maxWidth: '700px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: '1px solid rgba(255, 235, 59, 0.2)' }}
+              style={{ background: '#1a1a1a', padding: 'clamp(1.5rem, 5vw, 3rem)', borderRadius: '20px', maxWidth: '800px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative', border: '1px solid rgba(255, 235, 59, 0.2)' }}
               onClick={e => e.stopPropagation()}
             >
               <button 
