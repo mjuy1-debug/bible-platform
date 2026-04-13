@@ -10,7 +10,7 @@ import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
 import { db } from '../services/firebase';
 import {
   collection, query, orderBy, onSnapshot,
-  addDoc, serverTimestamp, doc, deleteDoc
+  addDoc, serverTimestamp, doc, deleteDoc, updateDoc, increment
 } from 'firebase/firestore';
 
 const Devotion = () => {
@@ -112,6 +112,10 @@ const Devotion = () => {
         userPhoto: currentUser.photoURL || '',
         createdAt: serverTimestamp(),
       });
+      // 상위 문서의 댓글 수 +1
+      await updateDoc(doc(db, 'sharedDevotions', selectedDevotion.id), {
+        commentCount: increment(1)
+      });
       setCommentText('');
     } catch (err) {
       console.error('댓글 작성 실패:', err);
@@ -125,6 +129,10 @@ const Devotion = () => {
     if (!selectedDevotion) return;
     try {
       await deleteDoc(doc(db, 'sharedDevotions', selectedDevotion.id, 'comments', commentId));
+      // 상위 문서의 댓글 수 -1
+      await updateDoc(doc(db, 'sharedDevotions', selectedDevotion.id), {
+        commentCount: increment(-1)
+      });
     } catch (err) {
       console.error('댓글 삭제 실패:', err);
     }
@@ -491,7 +499,14 @@ const Devotion = () => {
                   </div>
                   <h3 className="serif-font" style={{ fontSize: '1.2rem', marginBottom: '0.8rem' }}>{d.verse}</h3>
                   {d.feeling && <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{d.feeling}</p>}
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginTop: '0.8rem' }}>클릭하면 전체 보기 →</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem' }}>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>클릭하면 전체 보기 →</p>
+                    {d.commentCount > 0 && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
+                        💬 댓글 {d.commentCount}
+                      </span>
+                    )}
+                  </div>
                 </motion.div>
               ))}
             </div>
