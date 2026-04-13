@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef, useCallback, useEffect } from 'rea
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserContext } from '../context/UserContext';
-import { Download, X, Sparkles, Send, Trash2 } from 'lucide-react';
+import { Download, X, Sparkles } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -44,24 +44,27 @@ const Devotion = () => {
     return () => unsubscribe();
   }, []);
 
-  // 선택된 나눔터 묵상의 댓글 실시간 동기화
+  // 선택된 나눔터 묵상의 댓글 실시간 동기화 (orderBy 없이 → 클라이언트 정렬)
   useEffect(() => {
     if (!selectedDevotion || activeTab !== 'shared') {
       setComments([]);
       return;
     }
-    // Firestore 경로에는 string ID 필요 (로컬 숫자 id 방지)
     const devotionFirestoreId = String(selectedDevotion.id);
     let unsubscribe = () => {};
     try {
-      const q = query(
-        collection(db, 'sharedDevotions', devotionFirestoreId, 'comments'),
-        orderBy('createdAt', 'asc')
-      );
+      const q = collection(db, 'sharedDevotions', devotionFirestoreId, 'comments');
       unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          setComments(snapshot.docs.map(d => ({ ...d.data(), id: d.id })));
+          const loaded = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+          // 클라이언트에서 시간순 정렬
+          loaded.sort((a, b) => {
+            const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+            const tb = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+            return ta - tb;
+          });
+          setComments(loaded);
         },
         (err) => console.error('댓글 로딩 오류:', err)
       );
@@ -291,9 +294,9 @@ const Devotion = () => {
                           {currentUser && currentUser.uid === c.userId && (
                             <button
                               onClick={() => handleDeleteComment(c.id)}
-                              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex', alignItems: 'center' }}
+                              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0 2px', display: 'flex', alignItems: 'center', fontSize: '0.85rem', lineHeight: 1 }}
                             >
-                              <Trash2 size={13} />
+                              ×
                             </button>
                           )}
                         </div>
@@ -322,13 +325,13 @@ const Devotion = () => {
                   rows={2}
                   style={{ ...inputStyle, fontSize: '0.92rem', flex: 1, resize: 'none', padding: '0.75rem' }}
                 />
-                <button
-                  onClick={handleAddComment}
-                  disabled={submittingComment || !commentText.trim()}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: commentText.trim() ? 'var(--accent-gold)' : 'rgba(255,255,255,0.1)', color: commentText.trim() ? '#111' : 'var(--text-secondary)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', cursor: commentText.trim() ? 'pointer' : 'default', flexShrink: 0, transition: 'all 0.2s' }}
-                >
-                  <Send size={18} />
-                </button>
+                  <button
+                    onClick={handleAddComment}
+                    disabled={submittingComment || !commentText.trim()}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: commentText.trim() ? 'var(--accent-gold)' : 'rgba(255,255,255,0.1)', color: commentText.trim() ? '#111' : 'var(--text-secondary)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', cursor: commentText.trim() ? 'pointer' : 'default', flexShrink: 0, transition: 'all 0.2s', fontSize: '1.1rem', fontWeight: 700 }}
+                  >
+                    ↑
+                  </button>
               </div>
             ) : (
               <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px' }}>
