@@ -350,7 +350,7 @@ const Devotion = () => {
           )}
         </motion.div>
       )}
-
+    </motion.div>
   );
 };
 
