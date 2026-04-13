@@ -74,6 +74,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: '2026년 신년 감사예배' },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: '나라를 위한 특별 기도회' },
@@ -92,8 +93,11 @@ export const SAMPLE_EVENTS = [
   { id: 15, title: '교회본당 대청소', date: '2026-03-28', category: 'church', description: '교회본당 대청소' },
   { id: 16, title: '수양관 밭갈이', date: '2026-03-29', category: 'joshua', description: '수양관 밭갈이' },
   { id: 17, title: '부활주일(계란전도대회)', date: '2026-04-05', category: 'church', description: '부활주일(계란전도대회)' },
-  { id: 18, title: '주일학교일일수련회', date: '2026-04-18', category: 'joshua', description: '주일학교일일수련회,차량봉사' },
-  { id: 19, title: '루디아나들이', date: '2026-04-26', category: 'joshua', description: '루디아나들이,차량봉사' },
+  { id: 18, title: '주일학교일일수련회', date: '2026-04-18', category: 'joshua', description: '[장소]강촌벧엘수양관, [식사]요안나, [차량]남전도회' },
+  { id: 19, title: '루디아봄나들이', date: '2026-04-26', category: 'joshua', description: '[장소]호명산, [운전]남전도회' },
+  { id: 20, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'church', description: '[대상자]나오미' },
+  { id: 21, title: '4월달 건축헌신예배', date: '2026-04-12', category: 'church' },
+  { id: 22, title: '어린이주일예배 주교탐방', date: '2026-05-03', category: 'joshua', description: '[장소]잠실키자니아, [운전]남전도회' },
 ];
 
 /**
