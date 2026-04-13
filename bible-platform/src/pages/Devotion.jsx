@@ -37,7 +37,8 @@ const Devotion = () => {
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Firestore 문서 ID가 항상 유지되도록 spread 순서 수정
+      const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
     });
     return () => unsubscribe();
@@ -49,13 +50,24 @@ const Devotion = () => {
       setComments([]);
       return;
     }
-    const q = query(
-      collection(db, 'sharedDevotions', selectedDevotion.id, 'comments'),
-      orderBy('createdAt', 'asc')
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setComments(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
+    // Firestore 경로에는 string ID 필요 (로컬 숫자 id 방지)
+    const devotionFirestoreId = String(selectedDevotion.id);
+    let unsubscribe = () => {};
+    try {
+      const q = query(
+        collection(db, 'sharedDevotions', devotionFirestoreId, 'comments'),
+        orderBy('createdAt', 'asc')
+      );
+      unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          setComments(snapshot.docs.map(d => ({ ...d.data(), id: d.id })));
+        },
+        (err) => console.error('댓글 로딩 오류:', err)
+      );
+    } catch (err) {
+      console.error('댓글 구독 설정 오류:', err);
+    }
     return () => unsubscribe();
   }, [selectedDevotion, activeTab]);
 
