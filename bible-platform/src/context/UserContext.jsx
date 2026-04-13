@@ -3,7 +3,7 @@ import { DEFAULT_PLAN, generatePlan } from '../data/readingPlanData';
 import { SAMPLE_EVENTS } from '../data/scheduleData';
 import { auth, db, googleProvider } from '../services/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 
 export const UserContext = createContext();
 
@@ -134,10 +134,25 @@ export const UserProvider = ({ children }) => {
       showToast('공유 중 오류가 발생했습니다.', 'error');
     }
   }, [showToast, currentUser]);
-  const deleteDevotion = useCallback((id) => {
+  const deleteDevotion = useCallback(async (id) => {
+    // 1. 내 기기(로컬)에서 삭제
     setState(prev => ({ ...prev, devotions: prev.devotions.filter(d => d.id !== id) }));
-    showToast('묵상이 삭제되었습니다.');
-  }, [showToast]);
+    
+    // 2. 나눔터(서버)에 공유된 내역이 있다면 함께 찾아 삭제
+    if (currentUser) {
+      try {
+        const q = query(collection(db, 'sharedDevotions'), where('id', '==', id), where('userId', '==', currentUser.uid));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(async (docSnap) => {
+          await deleteDoc(doc(db, 'sharedDevotions', docSnap.id));
+        });
+      } catch (err) {
+        console.error('서버 연동 삭제 실패:', err);
+      }
+    }
+
+    showToast('묵상이 완전히 삭제되었습니다.');
+  }, [showToast, currentUser]);
 
   const deleteSharedDevotion = useCallback(async (docId) => {
     if (!currentUser) return;
