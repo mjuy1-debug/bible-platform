@@ -56,15 +56,20 @@ const Devotion = () => {
       const q = collection(db, 'sharedDevotions', devotionFirestoreId, 'comments');
       unsubscribe = onSnapshot(
         q,
-        (snapshot) => {
+        async (snapshot) => {
           const loaded = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
-          // 클라이언트에서 시간순 정렬
           loaded.sort((a, b) => {
             const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
             const tb = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
             return ta - tb;
           });
           setComments(loaded);
+          // 실제 댓글 수를 상위 문서에 동기화 (기존 데이터 수정 포함)
+          try {
+            await updateDoc(doc(db, 'sharedDevotions', devotionFirestoreId), {
+              commentCount: loaded.length
+            });
+          } catch (_) { /* 문서 없으면 무시 */ }
         },
         (err) => console.error('댓글 로딩 오류:', err)
       );
