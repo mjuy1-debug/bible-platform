@@ -206,10 +206,38 @@ export const inferBookIdFromVerse = (verseStr) => {
     { keywords: ['요한계시록', '계시록', '계'], id: 'rev' },
   ];
 
+  // 1단계: 2글자 이상 키워드로 먼저 검색 (오매칭 방지)
   for (const entry of map) {
     for (const kw of entry.keywords) {
-      if (verseStr.includes(kw)) return entry.id;
+      if (kw.length >= 2 && verseStr.includes(kw)) return entry.id;
     }
   }
+
+  // 2단계: 단일 글자 약어 + 뒤에 숫자가 오는 패턴만 검색 (예: "행 1", "막1", "시 23")
+  const singleCharMap = [
+    { kw: '창', id: 'gen' }, { kw: '출', id: 'exo' }, { kw: '레', id: 'lev' },
+    { kw: '민', id: 'num' }, { kw: '수', id: 'jos' }, { kw: '삿', id: 'jdg' },
+    { kw: '룻', id: 'rut' }, { kw: '스', id: 'ezr' }, { kw: '느', id: 'neh' },
+    { kw: '에', id: 'est' }, { kw: '욥', id: 'job' }, { kw: '시', id: 'psa' },
+    { kw: '잠', id: 'pro' }, { kw: '전', id: 'ecc' }, { kw: '아', id: 'sng' },
+    { kw: '사', id: 'isa' }, { kw: '렘', id: 'jer' }, { kw: '애', id: 'lam' },
+    { kw: '겔', id: 'eze' }, { kw: '단', id: 'dan' }, { kw: '호', id: 'hos' },
+    { kw: '욜', id: 'joe' }, { kw: '암', id: 'amo' }, { kw: '옵', id: 'oba' },
+    { kw: '욘', id: 'jon' }, { kw: '미', id: 'mic' }, { kw: '나', id: 'nah' },
+    { kw: '합', id: 'hab' }, { kw: '습', id: 'zep' }, { kw: '학', id: 'hag' },
+    { kw: '슥', id: 'zec' }, { kw: '말', id: 'mal' }, { kw: '마', id: 'mat' },
+    { kw: '막', id: 'mar' }, { kw: '눅', id: 'luk' }, { kw: '행', id: 'act' },
+    { kw: '롬', id: 'rom' }, { kw: '갈', id: 'gal' }, { kw: '엡', id: 'eph' },
+    { kw: '빌', id: 'php' }, { kw: '골', id: 'col' }, { kw: '히', id: 'heb' },
+    { kw: '약', id: 'jam' }, { kw: '유', id: 'jud' }, { kw: '계', id: 'rev' },
+    { kw: '신', id: 'deu' },
+  ];
+
+  for (const { kw, id } of singleCharMap) {
+    // 약어 뒤에 공백 없이 또는 공백 후 바로 숫자가 오는 패턴만 매칭
+    const regex = new RegExp(`(?:^|[\\s(])${kw}\\s*\\d`);
+    if (regex.test(verseStr)) return id;
+  }
+
   return null;
 };

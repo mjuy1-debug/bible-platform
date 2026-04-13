@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserContext';
 import { Download, X, Sparkles } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
 
 const Devotion = () => {
@@ -53,80 +54,36 @@ const Devotion = () => {
 
   const formatDate = (iso) => new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  const handleDownloadPdf = (devotion) => {
+  const handleDownloadPdf = async (devotion) => {
+    if (!pdfRef.current) return;
+
     try {
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const margin = 20;
-      const maxW = pageW - margin * 2;
-      let y = margin;
+      // 캡처 전에 스타일 임시 조정 (다크모드에서도 깔끔하게 나오도록)
+      const element = pdfRef.current;
+      const originalBackground = element.style.background;
+      element.style.background = '#1a1a1a'; // 다크 테마 배경 고정
 
-      const checkPage = (needed) => {
-        if (y + needed > pageH - margin) { pdf.addPage(); y = margin; }
-      };
+      const canvas = await html2canvas(element, {
+        scale: 2, // 해상도 2배로 올려서 선명하게
+        useCORS: true,
+        backgroundColor: '#1a1a1a',
+      });
 
-      // 제목
-      pdf.setFontSize(11);
-      pdf.setTextColor(180, 150, 80);
-      pdf.text('QUIET TIME', pageW / 2, y, { align: 'center' });
-      y += 10;
+      element.style.background = originalBackground; // 복구
 
-      pdf.setFontSize(20);
-      pdf.setTextColor(40, 40, 40);
-      pdf.text(devotion.verse, pageW / 2, y, { align: 'center' });
-      y += 8;
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-      pdf.setFontSize(9);
-      pdf.setTextColor(130, 130, 130);
-      pdf.text(formatDate(devotion.createdAt), pageW / 2, y, { align: 'center' });
-      y += 6;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      // 구분선
-      pdf.setDrawColor(200, 180, 120);
-      pdf.line(margin, y, pageW - margin, y);
-      y += 10;
-
-      // 말씀 본문
-      if (devotion.verseText) {
-        pdf.setFontSize(11);
-        pdf.setTextColor(80, 80, 80);
-        const lines = pdf.splitTextToSize('"' + devotion.verseText + '"', maxW - 10);
-        checkPage(lines.length * 5 + 10);
-        pdf.text(lines, margin + 5, y);
-        y += lines.length * 5 + 10;
-      }
-
-      // 섹션 헬퍼
-      const addSection = (title, content) => {
-        if (!content) return;
-        checkPage(20);
-        pdf.setFontSize(12);
-        pdf.setTextColor(180, 150, 80);
-        pdf.text(title, margin, y);
-        y += 7;
-
-        pdf.setFontSize(10);
-        pdf.setTextColor(50, 50, 50);
-        const lines = pdf.splitTextToSize(content, maxW);
-        for (let i = 0; i < lines.length; i++) {
-          checkPage(6);
-          pdf.text(lines[i], margin, y);
-          y += 5;
-        }
-        y += 8;
-      };
-
-      addSection('묵상 (느낀 점)', devotion.feeling);
-      addSection('삶에 적용하기', devotion.apply);
-      addSection('오늘의 기도', devotion.prayer);
-
-      // 푸터
-      pdf.setFontSize(8);
-      pdf.setTextColor(180, 180, 180);
-      pdf.text('Joshua 말씀묵상', pageW / 2, pageH - 10, { align: 'center' });
-
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`QT묵상_${formatDate(devotion.createdAt)}.pdf`);
+
     } catch (err) {
       console.error('PDF Generate Error:', err);
       alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);

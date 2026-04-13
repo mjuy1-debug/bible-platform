@@ -127,10 +127,11 @@ export const UserProvider = ({ children }) => {
   }, [showToast]);
 
   const deleteEvent = useCallback((id) => {
-    setState(prev => ({
-      ...prev,
-      events: prev.events.filter(e => e.id !== id),
-    }));
+    setState(prev => {
+      // Loose equality in case string vs number mismatch
+      const newEvents = prev.events.filter(e => String(e.id) !== String(id));
+      return { ...prev, events: newEvents };
+    });
     showToast('일정이 삭제되었습니다.');
   }, [showToast]);
 

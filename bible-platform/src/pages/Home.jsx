@@ -4,17 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
-
-// 날별 말씀 (날짜 기반으로 순환)
-const DAILY_VERSES = [
-  { text: '여호와는 나의 목자시니 내게 부족함이 없으리로다.', ref: '시편 23:1' },
-  { text: '내가 네게 명령한 것이 아니냐 강하고 담대하라 두려워하지 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라.', ref: '여호수아 1:9' },
-  { text: '하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라.', ref: '요한복음 3:16' },
-  { text: '내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라.', ref: '빌립보서 4:13' },
-  { text: '주의 말씀은 내 발에 등이요 내 길에 빛이니이다.', ref: '시편 119:105' },
-  { text: '항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이것이 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라.', ref: '데살로니가전서 5:16-18' },
-  { text: '너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라 너는 범사에 그를 인정하라 그리하면 네 길을 지도하시리라.', ref: '잠언 3:5-6' },
-];
+import { getTodayVerse } from '../data/dailyVerses';
 
 const QUICK_LINKS = [
   { to: '/read',      icon: BookOpen,      title: '성경 읽기',    desc: '말씀을 천천히 읽으며 하루를 시작해보세요.', color: '#4f86c6' },
@@ -31,8 +21,7 @@ const Home = () => {
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
-  const todayIdx = Math.floor(Date.now() / 86400000) % DAILY_VERSES.length;
-  const todayVerse = DAILY_VERSES[todayIdx];
+  const todayVerse = getTodayVerse();
 
   const upcoming = useMemo(() => getUpcomingEvents(events, 3), [events]);
   const [selectedEvent, setSelectedEvent] = useState(null);
