@@ -2,13 +2,16 @@ import React, { useState, useContext, useRef, useCallback, useEffect } from 'rea
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserContext } from '../context/UserContext';
-import { Download, X, Sparkles } from 'lucide-react';
+import { Download, X, Sparkles, Send, Trash2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
 import { db } from '../services/firebase';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import {
+  collection, query, orderBy, onSnapshot,
+  addDoc, serverTimestamp, doc, deleteDoc
+} from 'firebase/firestore';
 
 const Devotion = () => {
   const { devotions, addDevotion, deleteDevotion, shareDevotion, currentUser, deleteSharedDevotion } = useContext(UserContext);
@@ -22,17 +25,39 @@ const Devotion = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const [qtQuestions, setQtQuestions] = useState([]);
   const [sharedDevotions, setSharedDevotions] = useState([]);
+
+  // 댓글 관련 상태
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
+  const [submittingComment, setSubmittingComment] = useState(false);
+
   const pdfRef = useRef(null);
-  
+
   // 파이어베이스 나눔터 실시간 동기화
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       setSharedDevotions(docs);
     });
     return () => unsubscribe();
   }, []);
+
+  // 선택된 나눔터 묵상의 댓글 실시간 동기화
+  useEffect(() => {
+    if (!selectedDevotion || activeTab !== 'shared') {
+      setComments([]);
+      return;
+    }
+    const q = query(
+      collection(db, 'sharedDevotions', selectedDevotion.id, 'comments'),
+      orderBy('createdAt', 'asc')
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setComments(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsubscribe();
+  }, [selectedDevotion, activeTab]);
 
   // 즉시 QT 질문 생성 (즐겨찾기에서 넘어온 경우)
   useEffect(() => {
@@ -59,6 +84,37 @@ const Devotion = () => {
     setActiveTab('list');
   };
 
+  // 댓글 추가
+  const handleAddComment = async () => {
+    if (!currentUser) { alert('댓글을 작성하려면 로그인이 필요합니다.'); return; }
+    if (!commentText.trim() || !selectedDevotion) return;
+    setSubmittingComment(true);
+    try {
+      await addDoc(collection(db, 'sharedDevotions', selectedDevotion.id, 'comments'), {
+        text: commentText.trim(),
+        userId: currentUser.uid,
+        userName: currentUser.displayName || '익명',
+        userPhoto: currentUser.photoURL || '',
+        createdAt: serverTimestamp(),
+      });
+      setCommentText('');
+    } catch (err) {
+      console.error('댓글 작성 실패:', err);
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  // 댓글 삭제 (본인 댓글만)
+  const handleDeleteComment = async (commentId) => {
+    if (!selectedDevotion) return;
+    try {
+      await deleteDoc(doc(db, 'sharedDevotions', selectedDevotion.id, 'comments', commentId));
+    } catch (err) {
+      console.error('댓글 삭제 실패:', err);
+    }
+  };
+
   const inputStyle = {
     width: '100%', padding: '1rem', borderRadius: '10px',
     border: '1px solid var(--glass-border)', background: 'transparent',
@@ -68,64 +124,50 @@ const Devotion = () => {
   const labelStyle = { display: 'block', marginBottom: '0.5rem', color: 'var(--accent-gold)', fontWeight: 600, fontSize: '0.9rem' };
 
   const formatDate = (iso) => new Date(iso).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  const formatDatetime = (ts) => {
+    if (!ts) return '';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  };
 
   const handleDownloadPdf = async (devotion) => {
     if (!pdfRef.current) return;
-
     try {
-      // 캡처 전에 스타일 임시 조정 (다크모드에서도 깔끔하게 나오도록)
       const element = pdfRef.current;
       const originalBackground = element.style.background;
-      element.style.background = '#1a1a1a'; // 다크 테마 배경 고정
-
-      const canvas = await html2canvas(element, {
-        scale: 2, // 해상도 2배로 올려서 선명하게
-        useCORS: true,
-        backgroundColor: '#1a1a1a',
-      });
-
-      element.style.background = originalBackground; // 복구
-
+      element.style.background = '#1a1a1a';
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#1a1a1a' });
+      element.style.background = originalBackground;
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
       let heightLeft = imgHeight;
       let position = 0;
-
-      // 첫 페이지 추가
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
       heightLeft -= pageHeight;
-
-      // 내용이 길어서 다음 페이지가 필요한 경우 짤림 방지 (다중 페이지)
       while (heightLeft > 0) {
-        position -= pageHeight; // 페이지 높이만큼 위로 올려서 다음 영역이 보이게 함
+        position -= pageHeight;
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
         heightLeft -= pageHeight;
       }
-
       pdf.save(`QT묵상_${formatDate(devotion.createdAt)}.pdf`);
-
     } catch (err) {
       console.error('PDF Generate Error:', err);
       alert('PDF 생성 중 오류가 발생했습니다: ' + err.message);
     }
   };
 
-  // 선택된 묵상이 있을 경우 전체화면 읽기 모드로 렌더링
+  // 선택된 묵상이 있을 경우 전체화면 읽기 모드
   if (selectedDevotion) {
+    const isSharedTab = activeTab === 'shared';
     return (
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '3rem' }}>
+        {/* 상단 버튼 바 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <button 
+          <button
             onClick={() => setSelectedDevotion(null)}
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1rem', fontWeight: 600 }}
           >
@@ -158,8 +200,8 @@ const Devotion = () => {
           </div>
         </div>
 
-        {/* 캡처될 QT 형식 컨텐츠 */}
-        <div ref={pdfRef} className="glass-card" style={{ padding: 'clamp(1.5rem, 5vw, 3rem)' }}>
+        {/* 묵상 본문 */}
+        <div ref={pdfRef} className="glass-card" style={{ padding: 'clamp(1.5rem, 5vw, 3rem)', marginBottom: '2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 235, 59, 0.2)', paddingBottom: '1.5rem' }}>
             <p style={{ color: 'var(--accent-gold)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '0.8rem' }}>QUIET TIME</p>
             <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)', color: 'var(--text-primary)', marginBottom: '0.8rem' }}>{selectedDevotion.verse}</h2>
@@ -182,7 +224,6 @@ const Devotion = () => {
               </h4>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.feeling}</p>
             </div>
-            
             {selectedDevotion.apply && (
               <div>
                 <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -191,7 +232,6 @@ const Devotion = () => {
                 <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.apply}</p>
               </div>
             )}
-
             {selectedDevotion.prayer && (
               <div>
                 <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -202,6 +242,89 @@ const Devotion = () => {
             )}
           </div>
         </div>
+
+        {/* 댓글 섹션 - 나눔터 묵상일 때만 표시 */}
+        {isSharedTab && (
+          <div className="glass-card" style={{ padding: 'clamp(1.2rem, 4vw, 2rem)' }}>
+            <h4 style={{ color: 'var(--accent-gold)', fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              💬 댓글 {comments.length > 0 && <span style={{ background: 'var(--accent-gold)', color: '#111', borderRadius: '20px', padding: '0.1rem 0.6rem', fontSize: '0.8rem' }}>{comments.length}</span>}
+            </h4>
+
+            {/* 댓글 목록 */}
+            {comments.length === 0 ? (
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center', padding: '1.5rem 0', opacity: 0.7 }}>
+                첫 번째 댓글을 남겨보세요 🌱
+              </p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+                {comments.map((c) => (
+                  <motion.div
+                    key={c.id}
+                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+                    style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}
+                  >
+                    {/* 프로필 아이콘 */}
+                    <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {c.userPhoto
+                        ? <img src={c.userPhoto} alt={c.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ fontSize: '0.85rem' }}>✨</span>
+                      }
+                    </div>
+                    {/* 댓글 말풍선 */}
+                    <div style={{ flex: 1, background: 'rgba(255,255,255,0.04)', borderRadius: '12px', padding: '0.75rem 1rem', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>{c.userName}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{formatDatetime(c.createdAt)}</span>
+                          {currentUser && currentUser.uid === c.userId && (
+                            <button
+                              onClick={() => handleDeleteComment(c.id)}
+                              style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', padding: '0', display: 'flex', alignItems: 'center' }}
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--text-primary)', margin: 0, whiteSpace: 'pre-wrap' }}>{c.text}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* 댓글 입력창 */}
+            {currentUser ? (
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {currentUser.photoURL
+                    ? <img src={currentUser.photoURL} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <span style={{ fontSize: '0.85rem' }}>✨</span>
+                  }
+                </div>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddComment(); } }}
+                  placeholder="댓글을 입력하세요... (Enter로 전송)"
+                  rows={2}
+                  style={{ ...inputStyle, fontSize: '0.92rem', flex: 1, resize: 'none', padding: '0.75rem' }}
+                />
+                <button
+                  onClick={handleAddComment}
+                  disabled={submittingComment || !commentText.trim()}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: commentText.trim() ? 'var(--accent-gold)' : 'rgba(255,255,255,0.1)', color: commentText.trim() ? '#111' : 'var(--text-secondary)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', cursor: commentText.trim() ? 'pointer' : 'default', flexShrink: 0, transition: 'all 0.2s' }}
+                >
+                  <Send size={18} />
+                </button>
+              </div>
+            ) : (
+              <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.9rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px' }}>
+                댓글을 작성하려면 <strong>Google 로그인</strong>이 필요합니다.
+              </p>
+            )}
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -330,9 +453,9 @@ const Devotion = () => {
                 <motion.div key={d.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                   className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer', borderTop: '3px solid var(--accent-gold)' }}
                   onClick={() => setSelectedDevotion(d)}>
-                  
+
                   {currentUser && currentUser.uid === d.userId && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '0.5rem', position: 'absolute', top: '1rem', right: '1rem' }}>
+                    <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
                       <button onClick={(e) => { e.stopPropagation(); deleteSharedDevotion(d.id); }}
                         style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>
                         ×
