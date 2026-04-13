@@ -192,7 +192,7 @@ const Devotion = () => {
   if (selectedDevotion) {
     const isSharedTab = activeTab === 'shared';
     return (
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '3rem' }}>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} style={{ paddingBottom: '3rem' }}>
         {/* 상단 버튼 바 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <button
@@ -229,7 +229,7 @@ const Devotion = () => {
         </div>
 
         {/* 묵상 본문 */}
-        <div ref={pdfRef} className="glass-card" style={{ padding: 'clamp(1.5rem, 5vw, 3rem)', marginBottom: '2rem' }}>
+        <div ref={pdfRef} className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255, 235, 59, 0.2)', paddingBottom: '1.5rem' }}>
             <p style={{ color: 'var(--accent-gold)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '2px', marginBottom: '0.8rem' }}>QUIET TIME</p>
             <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)', color: 'var(--text-primary)', marginBottom: '0.8rem' }}>{selectedDevotion.verse}</h2>
