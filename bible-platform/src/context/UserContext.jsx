@@ -55,9 +55,9 @@ export const UserProvider = ({ children }) => {
     try {
       await signInWithPopup(auth, googleProvider);
       showToast('로그인에 성공했습니다! 🎉');
-    // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      showToast('로그인 중 문제가 발생했습니다.', 'error');
+      console.error('Google Login Error:', error);
+      showToast(`로그인 실패: ${error.message}`, 'error');
     }
   };
 
