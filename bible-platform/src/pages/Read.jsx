@@ -187,7 +187,7 @@ const Read = () => {
 
 
       {/* ── Bible Text ── */}
-      <div className="glass-card" style={{ padding: 'clamp(1.5rem, 4vw, 3rem)', minHeight: '400px' }}>
+      <div className="glass-card" style={{ padding: 'clamp(0.5rem, 3vw, 3rem)', minHeight: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', marginBottom: '0.8rem' }}>
             {selectedBook.name} {selectedChapter}장
@@ -281,10 +281,10 @@ const Read = () => {
                     onClick={() => handleVerseClick(v)}
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '2.8rem 1fr',
+                      gridTemplateColumns: '2.2rem 1fr',
                       alignItems: 'baseline',
                       gap: '0',
-                      padding: '0.55rem 0.8rem',
+                      padding: '0.5rem 0.3rem',
                       borderRadius: '10px',
                       cursor: 'pointer',
                       background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
@@ -298,7 +298,7 @@ const Read = () => {
                       fontSize: `${fontSize * 0.72}rem`,
                       lineHeight: `${fontSize * 2.1}rem`,
                       textAlign: 'right',
-                      paddingRight: '0.75rem',
+                      paddingRight: '0.5rem',
                       fontStyle: 'normal',
                       userSelect: 'none',
                       flexShrink: 0,
