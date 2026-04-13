@@ -11,7 +11,7 @@ import { db } from '../services/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 
 const Devotion = () => {
-  const { devotions, addDevotion, deleteDevotion, shareDevotion } = useContext(UserContext);
+  const { devotions, addDevotion, deleteDevotion, shareDevotion, currentUser, deleteSharedDevotion } = useContext(UserContext);
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('write');
   const [form, setForm] = useState({
@@ -330,7 +330,17 @@ const Devotion = () => {
                 <motion.div key={d.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                   className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer', borderTop: '3px solid var(--accent-gold)' }}
                   onClick={() => setSelectedDevotion(d)}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.2rem' }}>
+                  
+                  {currentUser && currentUser.uid === d.userId && (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginBottom: '0.5rem', position: 'absolute', top: '1rem', right: '1rem' }}>
+                      <button onClick={(e) => { e.stopPropagation(); deleteSharedDevotion(d.id); }}
+                        style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>
+                        ×
+                      </button>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.2rem', paddingRight: '2rem' }}>
                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {d.userPhoto ? <img src={d.userPhoto} alt={d.userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '0.8rem' }}>✨</span>}
                     </div>

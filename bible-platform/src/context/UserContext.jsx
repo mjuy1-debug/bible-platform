@@ -3,7 +3,7 @@ import { DEFAULT_PLAN, generatePlan } from '../data/readingPlanData';
 import { SAMPLE_EVENTS } from '../data/scheduleData';
 import { auth, db, googleProvider } from '../services/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, deleteDoc } from 'firebase/firestore';
 
 export const UserContext = createContext();
 
@@ -139,6 +139,26 @@ export const UserProvider = ({ children }) => {
     showToast('묵상이 삭제되었습니다.');
   }, [showToast]);
 
+  const deleteSharedDevotion = useCallback(async (docId) => {
+    if (!currentUser) return;
+    try {
+      await deleteDoc(doc(db, 'sharedDevotions', docId));
+      
+      // 혹시 로컬에도 동일한 데이터가 있다면 isShared 상태를 false로 바꿔줍니다.
+      setState(prev => ({
+        ...prev,
+        devotions: prev.devotions.map(d => 
+          (d.id === docId || d.sharedDocId === docId) ? { ...d, isShared: false } : d
+        )
+      }));
+
+      showToast('나눔터에서 묵상이 삭제되었습니다.');
+    } catch (err) {
+      console.error('커뮤니티 삭제 실패:', err);
+      showToast('삭제 중 오류가 발생했습니다.', 'error');
+    }
+  }, [showToast, currentUser]);
+
   const togglePlanDay = useCallback((day) => {
     setState(prev => {
       const completed = prev.planProgress.completedDays;
@@ -220,6 +240,7 @@ export const UserProvider = ({ children }) => {
       loginWithGoogle,
       logout,
       shareDevotion,
+      deleteSharedDevotion,
     }}>
       {children}
     </UserContext.Provider>
