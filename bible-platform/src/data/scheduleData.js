@@ -99,13 +99,8 @@ export const SAMPLE_EVENTS = [
   { id: 20, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'church', description: '[대상자]나오미' },
   { id: 21, title: '4월달 건축헌신예배', date: '2026-04-12', category: 'church' },
   { id: 22, title: '어린이주일예배 주교탐방', date: '2026-05-03', category: 'joshua', description: '[장소]잠실키자니아, [운전]남전도회' },
-  { id: 23, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'church', description: '주교 탐방 
-- 장      소 : 잠실키자니아
-- 운      전 : 남전도회' },
-  { id: 24, title: '[어버이주일예배&아외예배]', date: '2026-05-10', category: 'church', description: '어버이주일예배 & 야외예배 
-- 주      최 : 남전도회
-- 장      소 : 강촌벧엘수양관
-- 식      사 : 요안나,루디아' },
+  { id: 23, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'church', description: `주교 탐방 \n- 장      소 : 잠실키자니아\n- 운      전 : 남전도회` },
+  { id: 24, title: '[어버이주일예배&아외예배]', date: '2026-05-10', category: 'church', description: `어버이주일예배 & 야외예배 \n- 주      최 : 남전도회\n- 장      소 : 강촌벧엘수양관\n- 식      사 : 요안나,루디아` },
 ];
 
 /**

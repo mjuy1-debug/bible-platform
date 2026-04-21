@@ -45,8 +45,10 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
     const eventLines = userEvents.map((e, idx) => {
       const timeStr = e.time ? `, time: '${e.time}'` : '';
       const endStr = e.endDate ? `, endDate: '${e.endDate}'` : '';
-      const descStr = e.description ? `, description: '${e.description.replace(/'/g, "\\'")}'` : '';
-      return `  { id: ${idx + 1}, title: '${e.title}', date: '${e.date}'${timeStr}${endStr}, category: '${e.category}'${descStr} },`;
+      const safeTitle = e.title ? e.title.replace(/'/g, "\\'") : '';
+      const safeDesc = e.description ? e.description.replace(/`/g, "\\`").replace(/\$/g, "\\$") : '';
+      const descStr = safeDesc ? `, description: \`${safeDesc}\`` : '';
+      return `  { id: ${idx + 1}, title: '${safeTitle}', date: '${e.date}'${timeStr}${endStr}, category: '${e.category}'${descStr} },`;
     }).join('\n');
 
     const newEventsBlock = `  // ── 사용자/교회 일정 ──\n${eventLines}`;
