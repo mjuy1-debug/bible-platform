@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { getQTQuestions, inferBookIdFromVerse } from '../data/qtQuestions';
+import { fetchChapter } from '../services/bibleService';
 import { db } from '../services/firebase';
 import {
   collection, query, orderBy, onSnapshot,
@@ -88,12 +89,46 @@ const Devotion = () => {
     }
   }, [location.state]);
 
-  // 성경구절 입력 완료 시 QT 질문 자동 생성
-  const handleVerseBlur = useCallback(() => {
+  // 성경구절 입력 완료 시 QT 질문 및 본문 텍스트 자동 생성
+  const handleVerseBlur = useCallback(async () => {
     if (!form.verse.trim()) { setQtQuestions([]); return; }
+    
     const bookId = inferBookIdFromVerse(form.verse);
-    setQtQuestions(getQTQuestions(bookId));
-  }, [form.verse]);
+    if (bookId) {
+      setQtQuestions(getQTQuestions(bookId));
+      
+      // 본문 텍스트가 비어있을 경우에만 자동 불러오기 시도
+      if (!form.verseText.trim()) {
+        try {
+          const numbers = form.verse.match(/\d+/g);
+          if (numbers && numbers.length >= 1) {
+            const chapter = parseInt(numbers[0], 10);
+            const startVerse = numbers.length >= 2 ? parseInt(numbers[1], 10) : null;
+            const endVerse = numbers.length >= 3 ? parseInt(numbers[2], 10) : startVerse;
+            
+            const chapterData = await fetchChapter(bookId, chapter);
+            if (chapterData && chapterData.length > 0) {
+              let fetchedText = '';
+              if (startVerse) {
+                const versesToInclude = chapterData.filter(v => v.verse >= startVerse && v.verse <= (endVerse || startVerse));
+                fetchedText = versesToInclude.map(v => `${v.verse} ${v.text}`).join('\n');
+              } else {
+                fetchedText = chapterData.map(v => `${v.verse} ${v.text}`).join('\n');
+              }
+              
+              if (fetchedText) {
+                setForm(prev => ({ ...prev, verseText: fetchedText }));
+              }
+            }
+          }
+        } catch (err) {
+          console.error('말씀 자동 불러오기 실패:', err);
+        }
+      }
+    } else {
+      setQtQuestions([]);
+    }
+  }, [form.verse, form.verseText]);
 
   const handleChange = (field) => (e) => setForm(prev => ({ ...prev, [field]: e.target.value }));
 

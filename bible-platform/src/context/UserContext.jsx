@@ -114,13 +114,21 @@ export const UserProvider = ({ children }) => {
     }
 
     try {
-      await addDoc(collection(db, 'sharedDevotions'), {
-        ...devotion,
+      // 로컬 데이터에 undefined 값이 포함되어 있으면 Firestore 저장 시 에러가 발생하므로 명시적으로 페이로드를 생성합니다.
+      const payload = {
+        id: devotion.id || Date.now(),
+        verse: devotion.verse || '',
+        verseText: devotion.verseText || '',
+        feeling: devotion.feeling || '',
+        apply: devotion.apply || '',
+        prayer: devotion.prayer || '',
         userId: currentUser.uid,
         userName: currentUser.displayName || '익명',
         userPhoto: currentUser.photoURL || '',
         createdAt: serverTimestamp()
-      });
+      };
+
+      await addDoc(collection(db, 'sharedDevotions'), payload);
 
       // 로컬 데이터에도 '공유됨' 상태 업데이트
       setState(prev => ({
@@ -131,7 +139,7 @@ export const UserProvider = ({ children }) => {
       showToast('나눔터에 묵상을 공유했습니다! 🌐');
     } catch (err) {
       console.error('커뮤니티 공유 실패:', err);
-      showToast('공유 중 오류가 발생했습니다.', 'error');
+      showToast(`공유 중 오류가 발생했습니다: ${err.message}`, 'error');
     }
   }, [showToast, currentUser]);
   const deleteDevotion = useCallback(async (id) => {

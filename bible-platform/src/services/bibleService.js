@@ -1,9 +1,9 @@
-// 성경 API 서비스 (bolls.life - 무료, 인증 불필요)
-// 한국어 개역개정(RNKRV) 번역 사용
-// API 문서: https://bolls.life/api/
+// 성경 API 서비스
+// 로컬 JSON 파일 우선 로드 (public/bible/{bookId}.json)
+// 로컬 파일 없을 시 bolls.life API (KRV 개역한글) 폴백
 
 const BASE_URL = 'https://bolls.life';
-const TRANSLATION = 'KRV'; // 개역한글판 (bolls.life 지원 한국어 번역)
+const TRANSLATION = 'KRV'; // 개역한글판 (폴백용)
 
 // bolls.life 책 번호 매핑 (1-39 구약, 40-66 신약)
 export const BOOK_NUMBER_MAP = {
@@ -23,17 +23,52 @@ export const BOOK_NUMBER_MAP = {
   jud: 65, rev: 66,
 };
 
-// 캐시: 한번 받아온 데이터는 메모리에 저장
+// 메모리 캐시: 한번 받아온 데이터는 저장
 const cache = {};
+
+// 로컬 JSON 파일에서 책 전체를 로드하는 캐시
+const bookCache = {};
+
+/**
+ * 로컬 JSON에서 특정 책 데이터를 로드
+ * public/bible/{bookId}.json 형식
+ */
+const loadLocalBook = async (bookId) => {
+  if (bookCache[bookId] !== undefined) return bookCache[bookId];
+
+  try {
+    const res = await fetch(`/bible/${bookId}.json`);
+    if (!res.ok) {
+      bookCache[bookId] = null;
+      return null;
+    }
+    const data = await res.json();
+    bookCache[bookId] = data;
+    return data;
+  } catch {
+    bookCache[bookId] = null;
+    return null;
+  }
+};
 
 /**
  * 특정 책/장의 성경 구절 배열을 반환
+ * 로컬 JSON 우선 → bolls.life API 폴백
  * @returns {Promise<Array<{verse: number, text: string}>>}
  */
 export const fetchChapter = async (bookId, chapter) => {
   const cacheKey = `${bookId}-${chapter}`;
   if (cache[cacheKey]) return cache[cacheKey];
 
+  // 1. 로컬 JSON 파일에서 시도
+  const bookData = await loadLocalBook(bookId);
+  if (bookData && bookData[String(chapter)] && bookData[String(chapter)].length > 0) {
+    const verses = bookData[String(chapter)];
+    cache[cacheKey] = verses;
+    return verses;
+  }
+
+  // 2. 폴백: bolls.life API 호출
   const bookNum = BOOK_NUMBER_MAP[bookId];
   if (!bookNum) throw new Error(`알 수 없는 책 ID: ${bookId}`);
 
@@ -47,12 +82,10 @@ export const fetchChapter = async (bookId, chapter) => {
     throw new Error(`API 오류 ${res.status}: ${bookId} ${chapter}장`);
   }
 
-  // bolls.life 응답 형식: [{pk, verse, text}, ...]
   const raw = await res.json();
 
   const verses = raw.map((v) => ({
     verse: v.verse,
-    // HTML 태그 제거 및 텍스트 정리
     text: v.text
       .replace(/<[^>]+>/g, '')
       .replace(/&nbsp;/g, ' ')
@@ -69,4 +102,5 @@ export const fetchChapter = async (bookId, chapter) => {
 
 export const clearCache = () => {
   Object.keys(cache).forEach((k) => delete cache[k]);
+  Object.keys(bookCache).forEach((k) => delete bookCache[k]);
 };

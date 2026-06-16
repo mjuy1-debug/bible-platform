@@ -234,7 +234,7 @@ const Read = () => {
             );
           })()}
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
-            {loading ? '말씀을 불러오는 중...' : verses.length > 0 ? `총 ${verses.length}절 · 구절 클릭 시 하이라이트/즐겨찾기` : ''}
+            {loading ? '말씀을 불러오는 중...' : verses.length > 0 ? `총 ${verses.length}절 · 개역한글판 · 구절 클릭 시 하이라이트/즐겨찾기` : ''}
           </p>
         </div>
 
