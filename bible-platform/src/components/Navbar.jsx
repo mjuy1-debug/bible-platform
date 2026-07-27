@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X } from 'lucide-react';
+import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 
 const NAV_ITEMS = [
   { to: '/schedule',  icon: CalendarClock, label: '일정' },
+  { to: '/sermon',    icon: MonitorPlay,   label: '말씀' },
   { to: '/read',      icon: BookOpen,      label: '읽기' },
   { to: '/search',    icon: SearchIcon,    label: '찾기' },
   { to: '/plan',      icon: CalendarDays,  label: '플랜' },

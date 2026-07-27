@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon, CalendarClock } from 'lucide-react';
+import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon, CalendarClock, MonitorPlay } from 'lucide-react';
 
 const TABS = [
   { to: '/schedule', icon: CalendarClock, label: '일정' },
+  { to: '/sermon',   icon: MonitorPlay,   label: '말씀' },
   { to: '/read',     icon: BookOpen,      label: '읽기' },
   { to: '/search',   icon: SearchIcon,    label: '찾기' },
   { to: '/devotion', icon: BookHeart,     label: '묵상' },

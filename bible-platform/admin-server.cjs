@@ -9,9 +9,8 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-app.use(express.json({ limit: '50mb' }));
 
-// CORS (Vite 개발 서버에서 호출 허용)
+// CORS (Vite 개발 서버에서 호출 허용) - 에러 발생 시에도 CORS 헤더가 포함되도록 최상단에 배치
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -19,6 +18,10 @@ app.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
+
+// 파일 크기 제한을 50mb로 넉넉하게 늘림 (PDF 업로드용)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const SCHEDULE_DATA_PATH = path.join(__dirname, 'src', 'data', 'scheduleData.js');
 const SERMON_DATA_PATH = path.join(__dirname, 'src', 'data', 'sermonData.js');
