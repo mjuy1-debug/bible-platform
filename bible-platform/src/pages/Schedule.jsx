@@ -21,7 +21,11 @@ const Schedule = () => {
   const [currentMonth, setCurrentMonth] = useState(now.getMonth());
   const [selectedDate, setSelectedDate] = useState(null);
   const [activeTab, setActiveTab] = useState('monthly'); // 'annual' | 'monthly' | 'weekly' | 'add'
-  const [categoryFilter, setCategoryFilter] = useState({ joshua: true, church: true, holiday: true, liturgy: true });
+  const [categoryFilter, setCategoryFilter] = useState(() => {
+    const initial = {};
+    Object.keys(CATEGORY_LABELS).forEach(k => initial[k] = true);
+    return initial;
+  });
   const [showAddForm, setShowAddForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [viewFile, setViewFile] = useState(null);
@@ -29,7 +33,7 @@ const Schedule = () => {
 
   // 새 일정 폼
   const [newEvent, setNewEvent] = useState({
-    title: '', date: '', time: '', endDate: '', category: 'joshua', description: '',
+    title: '', date: '', time: '', endDate: '', category: 'normal', description: '',
   });
 
   const filteredEvents = useMemo(() => {
@@ -90,7 +94,7 @@ const Schedule = () => {
       addEvent(payload);
     }
     
-    setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'joshua', description: '' });
+    setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'normal', description: '' });
     setEditId(null);
     setShowAddForm(false);
   };
@@ -102,7 +106,7 @@ const Schedule = () => {
       date: ev.date || '',
       time: ev.time || '',
       endDate: ev.endDate || '',
-      category: ev.category || 'joshua',
+      category: ev.category || 'normal',
       description: ev.description || '',
     });
     setShowAddForm(true);
@@ -144,7 +148,7 @@ const Schedule = () => {
           </button>
         ))}
         {import.meta.env.DEV && (
-          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'joshua', description: '' }); setShowAddForm(true); }}
+          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'normal', description: '' }); setShowAddForm(true); }}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.55rem 1.2rem', borderRadius: '30px',
@@ -220,10 +224,6 @@ const Schedule = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: '1rem' }}>
             {MONTH_NAMES.map((name, m) => {
               const mEvents = getEventsForMonth(filteredEvents, currentYear, m);
-              const joshuaCount = mEvents.filter(e => e.category === 'joshua').length;
-              const churchCount = mEvents.filter(e => e.category === 'church').length;
-              const holidayCount = mEvents.filter(e => e.category === 'holiday').length;
-              const liturgyCount = mEvents.filter(e => e.category === 'liturgy').length;
               const isCurrentMonth = currentYear === now.getFullYear() && m === now.getMonth();
 
               return (
@@ -262,30 +262,18 @@ const Schedule = () => {
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>일정 없음</p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                      {joshuaCount > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.joshua.dot }} />
-                          <span style={{ color: CATEGORY_COLORS.joshua.text }}>남전도회 {joshuaCount}건</span>
-                        </div>
-                      )}
-                      {churchCount > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.church.dot }} />
-                          <span style={{ color: CATEGORY_COLORS.church.text }}>교회 전체 {churchCount}건</span>
-                        </div>
-                      )}
-                      {holidayCount > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.holiday.dot }} />
-                          <span style={{ color: CATEGORY_COLORS.holiday.text }}>공휴일 {holidayCount}건</span>
-                        </div>
-                      )}
-                      {liturgyCount > 0 && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem' }}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS.liturgy.dot }} />
-                          <span style={{ color: CATEGORY_COLORS.liturgy.text }}>교회 절기 {liturgyCount}건</span>
-                        </div>
-                      )}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                        {Object.keys(CATEGORY_LABELS).map(key => {
+                          const count = mEvents.filter(e => e.category === key).length;
+                          if (count === 0) return null;
+                          return (
+                            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem' }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: CATEGORY_COLORS[key].dot }} />
+                              <span style={{ color: CATEGORY_COLORS[key].text }}>{CATEGORY_LABELS[key]} {count}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                       {/* 주요 일정 미리보기 */}
                       <div style={{ marginTop: '0.3rem', borderTop: '1px solid var(--glass-border)', paddingTop: '0.4rem' }}>
                         {mEvents.slice(0, 2).map(e => (
@@ -610,7 +598,7 @@ const Schedule = () => {
       {/* ─── Event Detail Modal ─── */}
       <AnimatePresence>
         {selectedEvent && (() => {
-          const colors = CATEGORY_COLORS[selectedEvent.category] || CATEGORY_COLORS.church;
+          const colors = CATEGORY_COLORS[selectedEvent.category] || CATEGORY_COLORS.normal;
           return (
             <motion.div
               key="sel-event-modal"
@@ -680,7 +668,7 @@ const Schedule = () => {
 
 // 이벤트 카드 컴포넌트
 const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
-  const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.church;
+  const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.normal;
   const [showConfirm, setShowConfirm] = useState(false);
 
   return (

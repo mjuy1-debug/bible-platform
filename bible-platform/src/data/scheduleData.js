@@ -2,14 +2,32 @@
 // category: 'joshua' | 'church' | 'personal' | 'holiday' | 'liturgy'
 
 export const CATEGORY_LABELS = {
-  joshua: '여호수아 남전도회',
-  church: '교회 전체',
+  normal: '보통',
+  joshua: '여호수아남전도회',
+  caleb: '갈렙남전도회',
+  joanna: '요안나여전도회',
+  lydia: '루디아여전도회',
+  naomi: '나오미여전도회',
+  joseph: '요셉청년부',
+  students: '학생부',
+  sunday_school: '주일학교',
+  zion: '시온성가대',
+  church: '교회 전체 (기존)',
   holiday: '공휴일',
   liturgy: '교회 절기',
 };
 
 export const CATEGORY_COLORS = {
+  normal: { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', text: '#64748b', dot: '#64748b' },
   joshua: { bg: 'rgba(212,175,55,0.15)', border: 'rgba(212,175,55,0.4)', text: '#D4AF37', dot: '#D4AF37' },
+  caleb: { bg: 'rgba(20,184,166,0.15)', border: 'rgba(20,184,166,0.4)', text: '#0d9488', dot: '#0d9488' },
+  joanna: { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.35)', text: '#db2777', dot: '#db2777' },
+  lydia: { bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.35)', text: '#9333ea', dot: '#9333ea' },
+  naomi: { bg: 'rgba(244,63,94,0.12)', border: 'rgba(244,63,94,0.35)', text: '#e11d48', dot: '#e11d48' },
+  joseph: { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)', text: '#2563eb', dot: '#2563eb' },
+  students: { bg: 'rgba(6,182,212,0.12)', border: 'rgba(6,182,212,0.35)', text: '#0891b2', dot: '#0891b2' },
+  sunday_school: { bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)', text: '#d97706', dot: '#d97706' },
+  zion: { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.35)', text: '#4f46e5', dot: '#4f46e5' },
   church: { bg: 'rgba(79,134,198,0.15)', border: 'rgba(79,134,198,0.4)', text: '#4f86c6', dot: '#4f86c6' },
   holiday: { bg: 'rgba(229,62,62,0.12)', border: 'rgba(229,62,62,0.3)', text: '#e53e3e', dot: '#e53e3e' },
   liturgy: { bg: 'rgba(156,100,212,0.12)', border: 'rgba(156,100,212,0.35)', text: '#9c64d4', dot: '#9c64d4' },
