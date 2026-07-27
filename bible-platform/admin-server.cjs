@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // CORS (Vite 개발 서버에서 호출 허용)
 app.use((req, res, next) => {
@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 });
 
 const SCHEDULE_DATA_PATH = path.join(__dirname, 'src', 'data', 'scheduleData.js');
+const SERMON_DATA_PATH = path.join(__dirname, 'src', 'data', 'sermonData.js');
 
 // ── 현재 scheduleData.js 내용 확인용 (선택적) ──
 app.get('/api/admin/status', (req, res) => {
@@ -94,6 +95,72 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
     res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!' });
   } catch (err) {
     console.error('❌ 오류:', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ── 설교 저장 + git commit + push ──
+app.post('/api/admin/save-sermons', (req, res) => {
+  const { sermons, commitMessage } = req.body;
+
+  if (!sermons || !Array.isArray(sermons)) {
+    return res.status(400).json({ ok: false, error: '유효한 sermons 배열이 필요합니다.' });
+  }
+
+  try {
+    const fileContent = `export const SERMONS = ${JSON.stringify(sermons, null, 2)};\n`;
+
+    fs.writeFileSync(SERMON_DATA_PATH, fileContent, 'utf-8');
+    console.log('✅ sermonData.js 파일 저장 완료');
+
+    // git add
+    execSync('git add src/data/sermonData.js', { cwd: __dirname, encoding: 'utf-8' });
+
+    // git commit
+    const msg = commitMessage || '관리자: 말씀 업데이트';
+    execSync(`git commit -m "${msg}"`, { cwd: __dirname, encoding: 'utf-8' });
+    console.log('✅ git commit 완료');
+
+    // git push
+    execSync('git push origin main', { cwd: __dirname, encoding: 'utf-8' });
+    console.log('✅ git push 완료');
+
+    // GitHub Pages 배포
+    console.log('⏳ 실제 앱(GitHub Pages)에 배포 중입니다... (1~2분 소요)');
+    execSync('npm run deploy', { cwd: __dirname, encoding: 'utf-8' });
+    console.log('✅ GitHub Pages 배포 완료');
+
+    res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!' });
+  } catch (err) {
+    console.error('❌ 오류:', err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/admin/upload-pdf', (req, res) => {
+  const { fileName, fileData } = req.body;
+  if (!fileName || !fileData) {
+    return res.status(400).json({ ok: false, error: '파일명과 데이터가 필요합니다.' });
+  }
+
+  try {
+    const publicPdfsPath = path.join(__dirname, 'public', 'pdfs');
+    if (!fs.existsSync(publicPdfsPath)) {
+      fs.mkdirSync(publicPdfsPath, { recursive: true });
+    }
+
+    const filePath = path.join(publicPdfsPath, fileName);
+    // base64 decoding
+    const base64Data = fileData.replace(/^data:application\/pdf;base64,/, '');
+    fs.writeFileSync(filePath, base64Data, 'base64');
+    
+    // git add (배포에 포함되도록)
+    execSync(`git add public/pdfs/${fileName}`, { cwd: __dirname, encoding: 'utf-8' });
+
+    console.log(`✅ PDF 파일 업로드 완료: ${fileName}`);
+    res.json({ ok: true, fileUrl: `/pdfs/${fileName}` });
+  } catch (err) {
+    console.error('❌ 업로드 오류:', err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
