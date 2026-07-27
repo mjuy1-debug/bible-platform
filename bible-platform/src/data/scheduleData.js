@@ -103,6 +103,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -161,6 +162,12 @@ export const SAMPLE_EVENTS = [
 - 봉      사 : 전도부&기관전도부원들` },
   { id: 38, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
   { id: 39, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua' },
+  { id: 40, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua', description: `[남전도회]수양관 텃밭작업` },
+  { id: 41, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `학생부 수련회
+
+- 차량운행 : 강태구집사님` },
+  { id: 42, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua', description: `[남전도회] 연합 수련회` },
+  { id: 43, title: '[남전도회]연합특송', date: '2026-08-30', category: 'joshua', description: `[남전도회]연합특송` },
 ];
 
 /**
