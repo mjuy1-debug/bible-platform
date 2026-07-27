@@ -77,6 +77,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -117,6 +118,24 @@ export const SAMPLE_EVENTS = [
   { id: 31, title: '[6월달] 월삭예배', date: '2026-06-01', time: '05:00', category: 'church', description: `[6월달] 월삭예배` },
   { id: 32, title: '[요안나]여전도회 1일수련회', date: '2026-06-12', time: '17:00', endDate: '2026-06-13', category: 'church', description: `[요안나]여전도회 1일수련회` },
   { id: 33, title: '[2/4분기]전도대회', date: '2026-06-28', time: '00:30', category: 'church', description: `[2/4분기]전도대회` },
+  { id: 34, title: '주교여름수련회', date: '2026-07-30', endDate: '2026-08-01', category: 'church', description: `- 날      짜 : 7/30-8/1(목-토)
+- 주      제 : “ 체인지업 “
+- 회      비 : “ 10,000원 “
+- 식      사 : 요안나
+- 차      량 : 갈렙,여호수아` },
+  { id: 35, title: '요안나 1일수련회', date: '2026-08-21', endDate: '2026-08-22', category: 'church', description: `- 날      짜 : 8/21-22(금-토)
+- 주      제 : “ ? “
+- 회      비 : “ 20,000원“
+- 장      소 : 강촌벧엘수양관
+- 차      량 : 각자가` },
+  { id: 36, title: '요셉청년부 1일 수련회', date: '2026-07-10', endDate: '2026-07-11', category: 'church', description: `- 날      짜 : 7/10-11(금-토)
+- 주      제 : “ 오른손이 하는 일을 왼손이 “
+- 회      비 : 20,000원
+- 장      소 : 강촌벧엘수양관` },
+  { id: 37, title: '2/4분기 전도대회', date: '2026-07-05', category: 'church', description: `- 주      최 : 전도부
+- 봉      사 : 전도부&기관전도부원들` },
+  { id: 38, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
+  { id: 39, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua' },
 ];
 
 /**
