@@ -8,7 +8,6 @@ export default function Sermons() {
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedSummary, setSelectedSummary] = useState(null);
   
   // Admin states
   const [showAddForm, setShowAddForm] = useState(false);
@@ -34,6 +33,20 @@ export default function Sermons() {
   const getThumbnail = (url) => {
     const id = extractId(url);
     return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://via.placeholder.com/320x180?text=No+Video';
+  };
+
+  const getPdfViewerUrl = (pdfPath) => {
+    if (!pdfPath) return "";
+    const relativePath = pdfPath.replace(/^\//, '');
+    
+    if (import.meta.env.DEV) {
+      // 로컬 환경에서는 기본 브라우저 뷰어 사용
+      return `${import.meta.env.BASE_URL}${relativePath}`;
+    }
+    
+    // 배포 환경(GitHub Pages)에서는 모바일 호환을 위해 구글 Docs 뷰어 사용
+    const fullUrl = `https://mjuy1-debug.github.io/bible-platform/${relativePath}`;
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
   };
 
   // Admin functions
@@ -216,14 +229,7 @@ export default function Sermons() {
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.4 }}>{sermon.title}</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{sermon.scripture} | {sermon.preacher}</p>
               
-              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {(sermon.summary || sermon.file) ? (
-                  <button onClick={(e) => { e.stopPropagation(); setSelectedSummary(sermon); }} 
-                    style={{ padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid var(--accent-gold)', background: 'rgba(212,175,55,0.1)', color: 'var(--accent-gold)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
-                    <FileText size={14} /> 말씀요약
-                  </button>
-                ) : <div />}
-                
+              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {import.meta.env.DEV && (
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button onClick={(e) => handleEdit(sermon, e)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><Edit2 size={16} /></button>
@@ -256,50 +262,44 @@ export default function Sermons() {
         </div>
       )}
 
-      {/* Video Modal */}
+      {/* Combined Video & Summary Modal */}
       <AnimatePresence>
         {selectedVideo && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
             onClick={() => setSelectedVideo(null)}>
-            <button onClick={() => setSelectedVideo(null)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}><X size={32} /></button>
-            <div style={{ width: '100%', maxWidth: '900px', aspectRatio: '16/9', background: '#000', borderRadius: '8px', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
-              <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Summary Modal */}
-      <AnimatePresence>
-        {selectedSummary && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
-            onClick={() => setSelectedSummary(null)}>
+            
             <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
-              className="glass-card" style={{ width: '100%', maxWidth: '600px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+              style={{ width: '100%', maxWidth: '800px', maxHeight: '90vh', background: 'var(--bg-primary)', borderRadius: '12px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}
+              onClick={e => e.stopPropagation()}>
               
-              <div style={{ padding: '1.2rem 1.5rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent-gold)' }}>말씀 요약</h3>
-                <button onClick={() => setSelectedSummary(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><X size={24} /></button>
+              {/* Header / Close button */}
+              <button onClick={() => setSelectedVideo(null)} style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}>
+                <X size={20} />
+              </button>
+
+              {/* Video Player */}
+              <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', flexShrink: 0 }}>
+                <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
               </div>
               
-              <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, color: 'var(--text-primary)', lineHeight: 1.6, whiteSpace: 'pre-wrap', display: 'flex', flexDirection: 'column' }}>
-                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem' }}>{selectedSummary.title}</h4>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{selectedSummary.date} | {selectedSummary.scripture} | {selectedSummary.preacher}</p>
+              {/* Sermon Details */}
+              <div style={{ padding: '1.5rem', overflowY: 'auto', flex: 1, color: 'var(--text-primary)' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--accent-gold)' }}>{selectedVideo.title}</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
                 
-                {selectedSummary.summary && (
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    {selectedSummary.summary}
+                {selectedVideo.summary && (
+                  <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                    {selectedVideo.summary}
                   </div>
                 )}
 
-                {selectedSummary.file && (
+                {selectedVideo.file && (
                   <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ height: '50vh', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden' }}>
-                      <iframe src={`${import.meta.env.BASE_URL}${selectedSummary.file.replace(/^\//, '')}`} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
+                    <div style={{ height: '55vh', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+                      <iframe src={getPdfViewerUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
-                    <a href={`${import.meta.env.BASE_URL}${selectedSummary.file.replace(/^\//, '')}`} download 
+                    <a href={`${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download 
                       style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#fff', textDecoration: 'none', fontWeight: 600 }}>
                       <Download size={18} /> 설교 요약 PDF 다운로드
                     </a>
