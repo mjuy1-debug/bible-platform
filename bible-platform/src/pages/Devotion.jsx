@@ -11,7 +11,7 @@ import { fetchChapter } from '../services/bibleService';
 import { db } from '../services/firebase';
 import {
   collection, query, orderBy, onSnapshot,
-  addDoc, serverTimestamp, doc, deleteDoc, updateDoc, increment
+  addDoc, serverTimestamp, doc, deleteDoc, updateDoc, increment, getDocs
 } from 'firebase/firestore';
 
 const Devotion = () => {
@@ -37,10 +37,20 @@ const Devotion = () => {
   // 파이어베이스 나눔터 실시간 동기화
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      // Firestore 문서 ID가 항상 유지되도록 spread 순서 수정
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
+
+      // commentCount 필드가 없는 구 문서들을 일괄 수정 (비동기, 화면 반영 지연 없이)
+      for (const docData of docs) {
+        if (docData.commentCount === undefined || docData.commentCount === null) {
+          try {
+            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docData.id, 'comments'));
+            const realCount = commentsSnap.size;
+            await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
+          } catch (_) { /* 무시 */ }
+        }
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -57,7 +67,7 @@ const Devotion = () => {
       const q = collection(db, 'sharedDevotions', devotionFirestoreId, 'comments');
       unsubscribe = onSnapshot(
         q,
-        (snapshot) => {
+        async (snapshot) => {
           const loaded = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
           loaded.sort((a, b) => {
             const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
@@ -65,6 +75,12 @@ const Devotion = () => {
             return ta - tb;
           });
           setComments(loaded);
+          // 실제 댓글 수로 parent 문서 동기화 (ground truth)
+          try {
+            await updateDoc(doc(db, 'sharedDevotions', devotionFirestoreId), {
+              commentCount: loaded.length
+            });
+          } catch (_) { /* 문서 없으면 무시 */ }
         },
         (err) => console.error('댓글 로딩 오류:', err)
       );
