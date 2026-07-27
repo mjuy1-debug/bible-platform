@@ -34,36 +34,35 @@ const Devotion = () => {
 
   const pdfRef = useRef(null);
 
-  // 파이어베이스 나눔터 실시간 동기화 (순수 리스너 - updateDoc 없음)
+  // 파이어베이스 나눔터 실시간 동기화
+  const processedDocsRef = useRef(new Set());
+
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
+
+      // commentCount가 0/null/undefined 인 문서들의 실제 댓글 수로 일괄 수정
+      // 무한 루프나 깜박임을 막기 위해 각 문서는 한 번만 체크합니다.
+      for (const docData of docs) {
+        if (!docData.commentCount && !processedDocsRef.current.has(docData.id)) {
+          processedDocsRef.current.add(docData.id);
+          try {
+            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docData.id, 'comments'));
+            const realCount = commentsSnap.size;
+            if (realCount > 0 && realCount !== docData.commentCount) {
+              await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
+            }
+          } catch (err) {
+            console.error('댓글 수 복구 오류:', err);
+          }
+        }
+      }
     });
     return () => unsubscribe();
   }, []);
 
-  // 최초 1회: commentCount가 잘못된(0/null/undefined) 구 문서들을 일괄 수정
-  // onSnapshot 내부에서 updateDoc 하면 snapshot이 재발화 → 깜박임 발생하므로 분리
-  useEffect(() => {
-    const fixBrokenCommentCounts = async () => {
-      try {
-        const snapshot = await getDocs(query(collection(db, 'sharedDevotions')));
-        for (const docSnap of snapshot.docs) {
-          const data = docSnap.data();
-          if (!data.commentCount) {
-            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docSnap.id, 'comments'));
-            const realCount = commentsSnap.size;
-            if (realCount > 0) {
-              await updateDoc(doc(db, 'sharedDevotions', docSnap.id), { commentCount: realCount });
-            }
-          }
-        }
-      } catch (_) { /* 무시 */ }
-    };
-    fixBrokenCommentCounts();
-  }, []);
 
   // 선택된 나눔터 묵상의 댓글 실시간 동기화 (orderBy 없이 → 클라이언트 정렬)
   useEffect(() => {
