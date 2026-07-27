@@ -102,6 +102,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -121,11 +122,11 @@ export const SAMPLE_EVENTS = [
   { id: 16, title: '수양관 밭갈이', date: '2026-03-29', category: 'joshua', description: `수양관 밭갈이` },
   { id: 17, title: '부활주일(계란전도대회)', date: '2026-04-05', category: 'church', description: `부활주일(계란전도대회)` },
   { id: 18, title: '주일학교일일수련회', date: '2026-04-18', category: 'joshua', description: `[장소]강촌벧엘수양관, [식사]요안나, [차량]남전도회` },
-  { id: 19, title: '루디아봄나들이', date: '2026-04-26', category: 'joshua', description: `[장소]호명산, [운전]남전도회` },
-  { id: 20, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'church', description: `[대상자]나오미` },
+  { id: 19, title: '루디아봄나들이', date: '2026-04-26', category: 'lydia', description: `[장소]호명산, [운전]남전도회` },
+  { id: 20, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'joseph', description: `[대상자]나오미` },
   { id: 21, title: '4월달 건축헌신예배', date: '2026-04-12', category: 'church' },
   { id: 22, title: '어린이주일예배 주교탐방', date: '2026-05-03', category: 'joshua', description: `[장소]잠실키자니아, [운전]남전도회` },
-  { id: 23, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'church', description: `주교 탐방 
+  { id: 23, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'sunday_school', description: `주교 탐방 
 - 장      소 : 잠실키자니아
 - 운      전 : 남전도회` },
   { id: 24, title: '[어버이주일예배&아외예배]', date: '2026-05-10', category: 'church', description: `어버이주일예배 & 야외예배 
@@ -136,23 +137,23 @@ export const SAMPLE_EVENTS = [
   { id: 26, title: '[나보타스 방문]목사님,사모님', date: '2026-06-16', time: '03:00', endDate: '2026-06-17', category: 'church', description: `나보타스 성전건축 “관계로 목사님,사모님께서 
 필리핀 지교회를 가십니다` },
   { id: 27, title: '[2/4분기] 선교헌신예배', date: '2026-06-21', time: '11:00', category: 'church', description: `[2/4분기] 선교헌신예배` },
-  { id: 28, title: '[요안나,루디아] 연합헌신예배', date: '2026-06-28', time: '11:00', category: 'church', description: `[요안나,루디아] 연합헌신예배` },
-  { id: 29, title: '[2/4분기] 청년부 특별 기도회', date: '2026-06-15', time: '00:00', endDate: '2026-06-17', category: 'church', description: `[2/4분기] 청년부 특별 기도회` },
-  { id: 30, title: '[청년부]제2차 섬김의날', date: '2026-07-05', time: '13:00', category: 'church', description: `[청년부]제2차 섬김의날` },
+  { id: 28, title: '[요안나,루디아] 연합헌신예배', date: '2026-06-28', time: '11:00', category: 'joanna', description: `[요안나,루디아] 연합헌신예배` },
+  { id: 29, title: '[2/4분기] 청년부 특별 기도회', date: '2026-06-15', time: '00:00', endDate: '2026-06-17', category: 'joseph', description: `[2/4분기] 청년부 특별 기도회` },
+  { id: 30, title: '[청년부]제2차 섬김의날', date: '2026-07-05', time: '13:00', category: 'joseph', description: `[청년부]제2차 섬김의날` },
   { id: 31, title: '[6월달] 월삭예배', date: '2026-06-01', time: '05:00', category: 'church', description: `[6월달] 월삭예배` },
-  { id: 32, title: '[요안나]여전도회 1일수련회', date: '2026-06-12', time: '17:00', endDate: '2026-06-13', category: 'church', description: `[요안나]여전도회 1일수련회` },
+  { id: 32, title: '[요안나]여전도회 1일수련회', date: '2026-06-12', time: '17:00', endDate: '2026-06-13', category: 'joanna', description: `[요안나]여전도회 1일수련회` },
   { id: 33, title: '[2/4분기]전도대회', date: '2026-06-28', time: '00:30', category: 'church', description: `[2/4분기]전도대회` },
-  { id: 34, title: '주교여름수련회', date: '2026-07-30', endDate: '2026-08-01', category: 'church', description: `- 날      짜 : 7/30-8/1(목-토)
+  { id: 34, title: '주교여름수련회', date: '2026-07-30', endDate: '2026-08-01', category: 'sunday_school', description: `- 날      짜 : 7/30-8/1(목-토)
 - 주      제 : “ 체인지업 “
 - 회      비 : “ 10,000원 “
 - 식      사 : 요안나
 - 차      량 : 갈렙,여호수아` },
-  { id: 35, title: '요안나 1일수련회', date: '2026-08-21', endDate: '2026-08-22', category: 'church', description: `- 날      짜 : 8/21-22(금-토)
+  { id: 35, title: '요안나 1일수련회', date: '2026-08-21', endDate: '2026-08-22', category: 'joanna', description: `- 날      짜 : 8/21-22(금-토)
 - 주      제 : “ ? “
 - 회      비 : “ 20,000원“
 - 장      소 : 강촌벧엘수양관
 - 차      량 : 각자가` },
-  { id: 36, title: '요셉청년부 1일 수련회', date: '2026-07-10', endDate: '2026-07-11', category: 'church', description: `- 날      짜 : 7/10-11(금-토)
+  { id: 36, title: '요셉청년부 1일 수련회', date: '2026-07-10', endDate: '2026-07-11', category: 'joseph', description: `- 날      짜 : 7/10-11(금-토)
 - 주      제 : “ 오른손이 하는 일을 왼손이 “
 - 회      비 : 20,000원
 - 장      소 : 강촌벧엘수양관` },
