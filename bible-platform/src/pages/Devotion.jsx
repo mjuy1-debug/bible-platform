@@ -41,13 +41,16 @@ const Devotion = () => {
       const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
 
-      // commentCount 필드가 없는 구 문서들을 일괄 수정 (비동기, 화면 반영 지연 없이)
+      // commentCount가 0/null/undefined 인 문서들의 실제 댓글 수로 일괄 수정
+      // (commentCount=0으로 잘못 저장된 경우도 포함)
       for (const docData of docs) {
-        if (docData.commentCount === undefined || docData.commentCount === null) {
+        if (!docData.commentCount) {
           try {
             const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docData.id, 'comments'));
             const realCount = commentsSnap.size;
-            await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
+            if (realCount !== docData.commentCount) {
+              await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
+            }
           } catch (_) { /* 무시 */ }
         }
       }
