@@ -57,7 +57,7 @@ const Devotion = () => {
       const q = collection(db, 'sharedDevotions', devotionFirestoreId, 'comments');
       unsubscribe = onSnapshot(
         q,
-        async (snapshot) => {
+        (snapshot) => {
           const loaded = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
           loaded.sort((a, b) => {
             const ta = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
@@ -65,12 +65,6 @@ const Devotion = () => {
             return ta - tb;
           });
           setComments(loaded);
-          // 실제 댓글 수를 상위 문서에 동기화 (기존 데이터 수정 포함)
-          try {
-            await updateDoc(doc(db, 'sharedDevotions', devotionFirestoreId), {
-              commentCount: loaded.length
-            });
-          } catch (_) { /* 문서 없으면 무시 */ }
         },
         (err) => console.error('댓글 로딩 오류:', err)
       );
@@ -541,7 +535,7 @@ const Devotion = () => {
                   {d.feeling && <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{d.feeling}</p>}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>클릭하면 전체 보기 →</p>
-                    {d.commentCount > 0 && (
+                    {((d.commentCount || 0) > 0) && (
                       <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
                         💬 댓글 {d.commentCount}
                       </span>
