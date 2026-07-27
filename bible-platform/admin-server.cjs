@@ -83,6 +83,14 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
     });
     console.log('✅ git push 완료');
 
+    // 5. GitHub Pages 실제 배포 (gh-pages)
+    console.log('⏳ 실제 앱(GitHub Pages)에 배포 중입니다... (1~2분 소요)');
+    execSync('npm run deploy', {
+      cwd: __dirname,
+      encoding: 'utf-8',
+    });
+    console.log('✅ GitHub Pages 배포 완료');
+
     res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!' });
   } catch (err) {
     console.error('❌ 오류:', err.message);

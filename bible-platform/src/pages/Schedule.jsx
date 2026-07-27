@@ -665,7 +665,7 @@ const Schedule = () => {
                   {selectedEvent.description && (
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                       <AlignLeft size={15} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
-                      <span style={{ lineHeight: 1.6 }}>{selectedEvent.description}</span>
+                      <span style={{ lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{selectedEvent.description}</span>
                     </div>
                   )}
                 </div>
@@ -721,7 +721,7 @@ const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
           </span>
         </div>
         {!compact && event.description && (
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.3rem', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.3rem', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
             {event.description}
           </p>
         )}
