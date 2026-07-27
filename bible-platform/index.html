@@ -23,6 +23,18 @@
     <meta name="twitter:title" content="Joshua 말씀묵상 - 여호수아 남전도회" />
     <meta name="twitter:description" content="여호수아 남전도회 말씀묵상 앱. 성경 읽기, 묵상 노트, 교회 일정을 한 곳에서 관리하세요." />
     <meta name="twitter:image" content="https://mjuy1-debug.github.io/bible-platform/og_image.png" />
+
+    <!-- GitHub Pages SPA 새로고침 리다이렉트 복원 스크립트 -->
+    <script>
+      (function() {
+        var qs = window.location.search;
+        if (qs && qs.indexOf('?p=') === 0) {
+          var decoded = decodeURIComponent(qs.slice(3).replace(/&qs=1$/, ''));
+          var newPath = '/' + decoded;
+          window.history.replaceState(null, null, '/bible-platform' + newPath);
+        }
+      }());
+    </script>
   </head>
   <body>
     <div id="root"></div>
