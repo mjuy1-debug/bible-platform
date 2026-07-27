@@ -5,11 +5,16 @@
     <title>여호수아 성경앱</title>
     <script>
       // GitHub Pages SPA 새로고침 404 해결 스크립트
-      // 현재 URL 경로를 쿼리 파라미터로 인코딩하여 루트로 리다이렉트
       var l = window.location;
+      var repoName = 'bible-platform';
+      var pathParts = l.pathname.split('/');
+      var repoIndex = pathParts.indexOf(repoName);
+      // repo 이름 이후의 경로만 추출 (ex: /bible-platform/schedule -> schedule)
+      var pathAfterRepo = pathParts.slice(repoIndex + 1).join('/');
+
       l.replace(
-        l.protocol + '//' + l.host + l.pathname.split('/').slice(0, 2).join('/') +
-        '/?p=' + encodeURIComponent(l.pathname.slice(1) + l.search) + '&qs=1' +
+        l.protocol + '//' + l.host + '/' + repoName +
+        '/?p=' + encodeURIComponent(pathAfterRepo + l.search) + '&qs=1' +
         l.hash
       );
     </script>

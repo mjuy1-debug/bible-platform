@@ -30,8 +30,8 @@
         var qs = window.location.search;
         if (qs && qs.indexOf('?p=') === 0) {
           var decoded = decodeURIComponent(qs.slice(3).replace(/&qs=1$/, ''));
-          var newPath = '/' + decoded;
-          window.history.replaceState(null, null, '/bible-platform' + newPath);
+          // decoded = 'schedule' 형태 (repo 이름 제외)
+          window.history.replaceState(null, null, '/bible-platform/' + decoded);
         }
       }());
     </script>
