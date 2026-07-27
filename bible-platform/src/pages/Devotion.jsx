@@ -34,28 +34,35 @@ const Devotion = () => {
 
   const pdfRef = useRef(null);
 
-  // 파이어베이스 나눔터 실시간 동기화
+  // 파이어베이스 나눔터 실시간 동기화 (순수 리스너 - updateDoc 없음)
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
-
-      // commentCount가 0/null/undefined 인 문서들의 실제 댓글 수로 일괄 수정
-      // (commentCount=0으로 잘못 저장된 경우도 포함)
-      for (const docData of docs) {
-        if (!docData.commentCount) {
-          try {
-            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docData.id, 'comments'));
-            const realCount = commentsSnap.size;
-            if (realCount !== docData.commentCount) {
-              await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
-            }
-          } catch (_) { /* 무시 */ }
-        }
-      }
     });
     return () => unsubscribe();
+  }, []);
+
+  // 최초 1회: commentCount가 잘못된(0/null/undefined) 구 문서들을 일괄 수정
+  // onSnapshot 내부에서 updateDoc 하면 snapshot이 재발화 → 깜박임 발생하므로 분리
+  useEffect(() => {
+    const fixBrokenCommentCounts = async () => {
+      try {
+        const snapshot = await getDocs(query(collection(db, 'sharedDevotions')));
+        for (const docSnap of snapshot.docs) {
+          const data = docSnap.data();
+          if (!data.commentCount) {
+            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docSnap.id, 'comments'));
+            const realCount = commentsSnap.size;
+            if (realCount > 0) {
+              await updateDoc(doc(db, 'sharedDevotions', docSnap.id), { commentCount: realCount });
+            }
+          }
+        }
+      } catch (_) { /* 무시 */ }
+    };
+    fixBrokenCommentCounts();
   }, []);
 
   // 선택된 나눔터 묵상의 댓글 실시간 동기화 (orderBy 없이 → 클라이언트 정렬)
