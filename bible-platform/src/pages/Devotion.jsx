@@ -14,6 +14,49 @@ import {
   addDoc, serverTimestamp, doc, deleteDoc, updateDoc, increment, getDocs
 } from 'firebase/firestore';
 
+// 개별 카드의 댓글 수를 확인하고 뱃지를 렌더링하는 컴포넌트
+const CommentBadge = ({ devotion }) => {
+  const [count, setCount] = useState(devotion.commentCount || 0);
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    // 이미 0보다 큰 정상적인 commentCount가 있으면 그대로 사용
+    if (devotion.commentCount > 0) {
+      setCount(devotion.commentCount);
+      return;
+    }
+
+    // commentCount가 없거나 0인 경우, 실제 댓글이 있는지 비동기로 확인 (Self-heal)
+    const verifyCount = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'sharedDevotions', String(devotion.id), 'comments'));
+        if (isMounted) {
+          const realCount = snap.size;
+          setCount(realCount);
+          // 실제로는 댓글이 있는데 0으로 저장되어 있다면 조용히 Firestore 업데이트
+          if (realCount > 0 && realCount !== devotion.commentCount) {
+             updateDoc(doc(db, 'sharedDevotions', String(devotion.id)), { commentCount: realCount }).catch(()=>{});
+          }
+        }
+      } catch (err) {
+        // 무시
+      }
+    };
+    verifyCount();
+
+    return () => { isMounted = false; };
+  }, [devotion.id, devotion.commentCount]);
+
+  if (count <= 0) return null;
+
+  return (
+    <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
+      💬 댓글 {count}
+    </span>
+  );
+};
+
 const Devotion = () => {
   const { devotions, addDevotion, deleteDevotion, shareDevotion, currentUser, deleteSharedDevotion } = useContext(UserContext);
   const location = useLocation();
@@ -34,31 +77,12 @@ const Devotion = () => {
 
   const pdfRef = useRef(null);
 
-  // 파이어베이스 나눔터 실시간 동기화
-  const processedDocsRef = useRef(new Set());
-
+  // 파이어베이스 나눔터 실시간 동기화 (순수 리스너)
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
       setSharedDevotions(docs);
-
-      // commentCount가 0/null/undefined 인 문서들의 실제 댓글 수로 일괄 수정
-      // 무한 루프나 깜박임을 막기 위해 각 문서는 한 번만 체크합니다.
-      for (const docData of docs) {
-        if (!docData.commentCount && !processedDocsRef.current.has(docData.id)) {
-          processedDocsRef.current.add(docData.id);
-          try {
-            const commentsSnap = await getDocs(collection(db, 'sharedDevotions', docData.id, 'comments'));
-            const realCount = commentsSnap.size;
-            if (realCount > 0 && realCount !== docData.commentCount) {
-              await updateDoc(doc(db, 'sharedDevotions', docData.id), { commentCount: realCount });
-            }
-          } catch (err) {
-            console.error('댓글 수 복구 오류:', err);
-          }
-        }
-      }
     });
     return () => unsubscribe();
   }, []);
@@ -560,11 +584,8 @@ const Devotion = () => {
                   {d.feeling && <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{d.feeling}</p>}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.8rem' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>클릭하면 전체 보기 →</p>
-                    {((d.commentCount || 0) > 0) && (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
-                        💬 댓글 {d.commentCount}
-                      </span>
-                    )}
+                    <CommentBadge devotion={d} />
+
                   </div>
                 </motion.div>
               ))}
