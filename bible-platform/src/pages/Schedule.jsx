@@ -641,7 +641,7 @@ const Schedule = () => {
                 exit={{ scale: 0.92, opacity: 0 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 className="glass-card"
-                style={{ width: '100%', maxWidth: '480px', padding: '1.8rem' }}
+                style={{ width: '90%', maxWidth: '480px', padding: 'clamp(1.2rem, 5vw, 1.8rem)' }}
                 onClick={e => e.stopPropagation()}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
@@ -666,14 +666,14 @@ const Schedule = () => {
                   </button>
                 </div>
 
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4 }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4, wordBreak: 'keep-all' }}>
                   {selectedEvent.title}
                 </h3>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                    <Calendar size={15} color="var(--accent-gold)" />
-                    <span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.7rem', color: 'var(--text-secondary)', fontSize: '0.9rem', wordBreak: 'keep-all' }}>
+                    <Calendar size={15} color="var(--accent-gold)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ lineHeight: 1.4 }}>
                       {selectedEvent.date.replace(/-/g, '.')}
                       {selectedEvent.endDate && ` ~ ${selectedEvent.endDate.replace(/-/g, '.')}`}
                       {selectedEvent.time && ` · ${selectedEvent.time}`}
