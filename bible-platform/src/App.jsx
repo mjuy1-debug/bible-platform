@@ -15,7 +15,6 @@ import Favorites from './pages/Favorites';
 import Sermons from './pages/Sermons';
 import VerseCard from './pages/VerseCard';
 import Prayer from './pages/Prayer';
-import Stats from './pages/Stats';
 import PrayerWall from './pages/PrayerWall';
 import Groups from './pages/Groups';
 import Bulletin from './pages/Bulletin';
@@ -61,7 +60,6 @@ const AppInner = () => {
           <Route path="/sermon" element={<Sermons />} />
           <Route path="/verse-card" element={<VerseCard />} />
           <Route path="/prayer" element={<Prayer />} />
-          <Route path="/stats" element={<Stats />} />
           <Route path="/prayer-wall" element={<PrayerWall />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/bulletin" element={<Bulletin />} />

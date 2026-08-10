@@ -6,6 +6,8 @@ import { messaging, getToken, VAPID_KEY } from '../services/firebase';
 import { db } from '../services/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 
+import Stats from './Stats';
+
 const Profile = () => {
   const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
@@ -63,7 +65,10 @@ const Profile = () => {
         showToast && showToast('이 브라우저는 푸시 알림을 지원하지 않습니다.');
         return;
       }
-      const permission = await Notification.requestPermission();
+      let permission = Notification.permission;
+      if (permission === 'default') {
+        permission = await Notification.requestPermission();
+      }
       if (permission !== 'granted') {
         showToast && showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.');
         return;
@@ -109,9 +114,9 @@ const Profile = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} style={{ maxWidth: '820px', margin: '0 auto' }}>
       {/* Profile Header */}
-      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
+      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-gold), #8B6914)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
           {photoUrl ? <img src={photoUrl} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={40} color="#fff" />}

@@ -104,7 +104,7 @@ export default function Memorize() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ maxWidth: '800px', margin: '0 auto' }}
+        style={{ maxWidth: '820px', margin: '0 auto' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
           <Brain size={32} color="var(--accent-gold)" />
