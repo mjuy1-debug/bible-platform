@@ -172,7 +172,7 @@ export default function Bulletin() {
         {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
       </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', alignItems: 'stretch' }}>
         
         {/* Row 1, Left: 주일 오전 예배 */}
         <div>
@@ -216,19 +216,10 @@ export default function Bulletin() {
               <img src={bulletin.newsImageUrl} alt="교회 소식 첨부 이미지" style={{ maxWidth: '100%', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
             </div>
           )}
-
-          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px', marginTop: bulletin.newsImageUrl ? '10px' : '30px' }}>♥ 화도벧엘교회 필리핀지교회들 ♥</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px', marginBottom: '30px' }}>
-            {STATIC_INFO.branches.map((branch, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>👤</span> {branch.name} : {branch.pastor}
-              </div>
-            ))}
-          </div>
         </div>
         
-        {/* Row 2, Left: 성도의 기본생활, 기도제목 */}
-        <div>
+        {/* Row 2, Left: 성도의 기본생활, 기도제목, 지교회 */}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
@@ -238,7 +229,7 @@ export default function Bulletin() {
             </div>
           </div>
 
-          <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '12px', border: '1px solid #bee3f8' }}>
+          <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '12px', border: '1px solid #bee3f8', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>벧엘교회 성도들의 기도 제목과 목표</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
               {STATIC_INFO.prayers.map((prayer, i) => (
@@ -246,30 +237,41 @@ export default function Bulletin() {
               ))}
             </div>
           </div>
+
+          <div style={{ background: '#fffbeb', padding: '20px', borderRadius: '12px', border: '1px solid #fde68a', flex: 1 }}>
+            <h3 style={{ textAlign: 'center', color: '#92400e', marginBottom: '16px', fontSize: '16px' }}>♥ 화도벧엘교회 필리핀지교회들 ♥</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px' }}>
+              {STATIC_INFO.branches.map((branch, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e' }}>
+                  <span>👤</span> {branch.name} : {branch.pastor}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Row 2, Right: 예배 시간 안내 */}
-        <div>
-          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
-          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', border: '1px solid #bee3f8', textAlign: 'center' }}>
+        <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
+          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', flex: 1 }}>
             <thead>
-              <tr style={{ background: '#ebf8ff' }}>
-                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>일시</th>
-                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>예배종류</th>
-                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>장소</th>
+              <tr style={{ background: '#f0fdf4' }}>
+                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>일시</th>
+                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>예배종류</th>
+                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>장소</th>
               </tr>
             </thead>
             <tbody>
               {STATIC_INFO.schedule.map((item, i) => (
                 <tr key={i}>
-                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.time}</td>
-                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.name}</td>
-                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.place}</td>
+                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.time}</td>
+                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.name}</td>
+                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.place}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div style={{ textAlign: 'center', background: '#ebf8ff', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#2b6cb0', fontWeight: 'bold' }}>
+          <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
           </div>
         </div>
