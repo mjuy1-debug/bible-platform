@@ -104,6 +104,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -163,11 +164,39 @@ export const SAMPLE_EVENTS = [
   { id: 38, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
   { id: 39, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua' },
   { id: 40, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua', description: `[남전도회]수양관 텃밭작업` },
-  { id: 41, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `학생부 수련회
+  { id: 41, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `- 날      짜 : 8/13-15(목-토), 
+      - 주      제 : “ 예수안에 거하는 믿음 “
+      - 회      비 : “ \20,000 “
+      - 장      소 : 강촌벧엘수양관
+      - 식      사 : 루디아
+      - 차      량 : 갈렙,여호수아
+      - 출      발 : 7:30AM` },
+  { id: 42, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua', description: `[남전도회] 연합 수련회
 
-- 차량운행 : 강태구집사님` },
-  { id: 42, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua', description: `[남전도회] 연합 수련회` },
+장       소 : 강촌벧엘수양관
+주       제 : 그리스도의 마음을 품어라
+성경말씀 : 빌립보서 2장5절 말씀
+              " 너희 안에 이 마음을 품어라 
+                곧 그리스도의 마음이니 "
+목       표 : 겸손으로 섬기고 순종으로 하나 되는 남전도회
+
+[일   정]
+
+1부  도착예배
+       사회 : 이민우 여호수아회장
+       기도 : 노혁 갈렙회장
+2부  경배와 찬양&마음문 열기
+        진행 : 이민우 여호수아회장
+3부  간식타임&친교시간
+4부  찬양배우기(갈렙&여호수아 특송)
+       레크레이션&게임
+        진행 : 노혁 갈렙회장
+5부  기도회&결단식
+        진행 : 이민우 여호수아회장
+      * 개인,교회,가정,남전도회를 위한기도 *
+6부  정리정돈&식사후귀가` },
   { id: 43, title: '[남전도회]연합특송', date: '2026-08-30', category: 'joshua', description: `[남전도회]연합특송` },
+  { id: 44, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
 ];
 
 /**
