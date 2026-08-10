@@ -84,6 +84,7 @@ export default function Bulletin() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [worshipOrder, setWorshipOrder] = useState([...DEFAULT_WORSHIP_ORDER]);
   const [news, setNews] = useState([...DEFAULT_NEWS]);
+  const [newsSubtitle, setNewsSubtitle] = useState(''); // 교회 소식 부제목/공지 문구
   const [newsImageFile, setNewsImageFile] = useState(null); // 교회 소식 이미지
   const [isUploading, setIsUploading] = useState(false);
   const [editingBulletin, setEditingBulletin] = useState(null); // 수정 중인 주보 ID
@@ -121,6 +122,7 @@ export default function Bulletin() {
         date,
         worshipOrder: worshipOrder.filter(w => w.type || w.content || w.leader),
         news: news.filter(n => n.trim() !== ''),
+        newsSubtitle: newsSubtitle.trim(),
         newsImageUrl,
         isDigital: true,
         uploadedBy: currentUser.uid,
@@ -130,6 +132,7 @@ export default function Bulletin() {
       setTitle('');
       setWorshipOrder([...DEFAULT_WORSHIP_ORDER]);
       setNews([...DEFAULT_NEWS]);
+      setNewsSubtitle('');
       setNewsImageFile(null);
       setIsUploadMode(false);
       if (showToast) showToast('스마트 주보가 발행되었습니다.');
@@ -157,6 +160,7 @@ export default function Bulletin() {
         date,
         worshipOrder: worshipOrder.filter(w => w.type || w.content || w.leader),
         news: news.filter(n => n.trim() !== ''),
+        newsSubtitle: newsSubtitle.trim(),
         newsImageUrl,
       });
       setEditingBulletin(null);
@@ -205,6 +209,7 @@ export default function Bulletin() {
     setDate(bulletin.date || new Date().toISOString().split('T')[0]);
     setWorshipOrder(bulletin.worshipOrder?.length ? bulletin.worshipOrder : [...DEFAULT_WORSHIP_ORDER]);
     setNews(bulletin.news?.length ? bulletin.news : [...DEFAULT_NEWS]);
+    setNewsSubtitle(bulletin.newsSubtitle || '');
     setNewsImageFile(null);
     setIsUploadMode(true);
   };
@@ -258,7 +263,14 @@ export default function Bulletin() {
             <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
             교회 소식
           </h2>
-          
+
+          {/* 교회 소식 부제목/공지 문구 */}
+          {bulletin.newsSubtitle && (
+            <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', whiteSpace: 'pre-wrap', fontSize: '14px', color: '#2b4a70', lineHeight: 1.7 }}>
+              {bulletin.newsSubtitle}
+            </div>
+          )}
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px', fontSize: '15px' }}>
             {bulletin.news?.map((newsItem, idx) => (
               <div key={idx} style={{ display: 'flex', gap: '8px' }}>
@@ -381,6 +393,21 @@ export default function Bulletin() {
 
             <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
               <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--accent-gold)' }}>교회 소식</h3>
+
+              {/* 교회 소식 부제목/공지 문구 */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '6px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                  📢 소식 부제목 / 환영 · 공지 문구 <span style={{ color: 'var(--text-secondary)', fontWeight: 'normal' }}>(선택 · 줄바꿈 가능, 번호 항목 위에 표시됩니다)</span>
+                </label>
+                <textarea
+                  value={newsSubtitle}
+                  onChange={(e) => setNewsSubtitle(e.target.value)}
+                  placeholder={'예)\n[환 영] 우리 교회에 처음 나오신 분들은 진심으로 환영합니다.\n* 전도하는 교회, 전도하는 성도, 전도하는 기관이 됩시다.\nP/s" 김애라님, 화도벧엘교회 교우 되심을 축하합니다. "'}
+                  rows={5}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--accent-gold)', color: 'var(--text-primary)', resize: 'vertical', fontSize: '14px', lineHeight: 1.6 }}
+                />
+              </div>
+
               {news.map((n, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                   <textarea value={n} onChange={(e) => handleNewsChange(idx, e.target.value)} placeholder="소식을 입력하세요 (줄바꿈 가능)" rows={3} style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'vertical' }} />
