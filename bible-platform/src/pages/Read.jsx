@@ -22,7 +22,7 @@ const OLD_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'old');
 const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 
 const Read = () => {
-  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite } = useContext(UserContext);
+  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite, memorized } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -443,7 +443,7 @@ const Read = () => {
                     onClick={() => handleVerseClick(v)}
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '2.2rem 1fr',
+                      gridTemplateColumns: '2.2rem 1fr auto',
                       alignItems: 'baseline',
                       gap: '0',
                       padding: '0.5rem 0.3rem',
@@ -481,6 +481,26 @@ const Read = () => {
                       }}>
                       {v.text}
                     </span>
+                    {/* 암송 완료 배지 */}
+                    {memorized && memorized[ref] && (
+                      <span
+                        title="암송 완료한 구절"
+                        style={{
+                          fontSize: '0.7rem',
+                          background: 'rgba(212,175,55,0.15)',
+                          color: 'var(--accent-gold)',
+                          borderRadius: '8px',
+                          padding: '0.1rem 0.4rem',
+                          fontWeight: 'bold',
+                          alignSelf: 'center',
+                          marginLeft: '0.3rem',
+                          whiteSpace: 'nowrap',
+                          userSelect: 'none',
+                        }}
+                      >
+                        🧠
+                      </span>
+                    )}
                   </div>
 
                   {/* Inline Action Toolbar removed for floating toolbar */}

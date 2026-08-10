@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, RefreshCw, Star, BookOpen, Trophy, Trash2, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { Brain, RefreshCw, Star, BookOpen, Trophy, Trash2, Lightbulb, ChevronDown, ChevronUp, CheckSquare, Square, BookMarked } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const VERSES = [
   { text: "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라", ref: "요한복음 3:16" },
@@ -37,6 +38,8 @@ function saveRecords(records) {
 
 export default function Memorize() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { memorized, toggleMemorized } = useContext(UserContext);
   const [verse, setVerse] = useState("");
   const [reference, setReference] = useState("");
   const [difficulty, setDifficulty] = useState(0.25);
@@ -392,31 +395,51 @@ export default function Memorize() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <AnimatePresence>
                     {records.map((rec, idx) => (
-                      <motion.div
-                        key={rec.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: idx * 0.04 }}
-                        style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', padding: '1rem 1.2rem', border: '1px solid var(--glass-border)', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}
-                      >
-                        <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>
-                          {rec.difficulty === '초급' ? '🌱' : rec.difficulty === '중급' ? '🔥' : '⚡'}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          {rec.ref && <div style={{ color: 'var(--accent-gold)', fontWeight: 'bold', fontSize: '0.85rem', marginBottom: '0.3rem' }}>{rec.ref}</div>}
-                          <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.95rem', lineHeight: '1.6', wordBreak: 'keep-all', color: 'var(--text-primary)' }}>
-                            {rec.text.length > 60 ? rec.text.slice(0, 60) + '...' : rec.text}
-                          </p>
-                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{rec.date} {rec.time}</span>
-                            <span style={{ fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', color: 'var(--accent-gold)', padding: '0.1rem 0.5rem', borderRadius: '10px' }}>{rec.difficulty}</span>
+                        <motion.div
+                          key={rec.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ delay: idx * 0.04 }}
+                          style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', padding: '1rem 1.2rem', border: `1px solid ${rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.5)' : 'var(--glass-border)'}`, display: 'flex', gap: '1rem', alignItems: 'flex-start', background: rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.05)' : 'var(--bg-secondary)' }}
+                        >
+                          <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>
+                            {rec.difficulty === '초급' ? '🌱' : rec.difficulty === '중급' ? '🔥' : '⚡'}
                           </div>
-                        </div>
-                        <button onClick={() => deleteRecord(rec.id)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0, padding: '0.25rem', borderRadius: '6px' }} title="기록 삭제">
-                          <Trash2 size={16} />
-                        </button>
-                      </motion.div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            {rec.ref && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                                <span style={{ color: 'var(--accent-gold)', fontWeight: 'bold', fontSize: '0.85rem' }}>{rec.ref}</span>
+                                {memorized[rec.ref] && (
+                                  <span style={{ fontSize: '0.7rem', background: 'rgba(212,175,55,0.2)', color: 'var(--accent-gold)', padding: '0.1rem 0.5rem', borderRadius: '10px', fontWeight: 'bold' }}>🧠 읽기 표시됨</span>
+                                )}
+                              </div>
+                            )}
+                            <p style={{ margin: '0 0 0.4rem 0', fontSize: '0.95rem', lineHeight: '1.6', wordBreak: 'keep-all', color: 'var(--text-primary)' }}>
+                              {rec.text.length > 60 ? rec.text.slice(0, 60) + '...' : rec.text}
+                            </p>
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{rec.date} {rec.time}</span>
+                              <span style={{ fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', color: 'var(--accent-gold)', padding: '0.1rem 0.5rem', borderRadius: '10px' }}>{rec.difficulty}</span>
+                            </div>
+                          </div>
+                          {/* 읽기 탭 표시 체크박스 */}
+                          {rec.ref && (
+                            <button
+                              onClick={() => toggleMemorized(rec.ref)}
+                              title={memorized[rec.ref] ? '읽기 탭 표시 해제' : '읽기 탭에 암송 완료 표시'}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, padding: '0.25rem', color: memorized[rec.ref] ? 'var(--accent-gold)' : 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}
+                            >
+                              {memorized[rec.ref]
+                                ? <CheckSquare size={20} />
+                                : <Square size={20} />}
+                              <span style={{ fontSize: '0.6rem', whiteSpace: 'nowrap' }}>읽기 표시</span>
+                            </button>
+                          )}
+                          <button onClick={() => deleteRecord(rec.id)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', flexShrink: 0, padding: '0.25rem', borderRadius: '6px' }} title="기록 삭제">
+                            <Trash2 size={16} />
+                          </button>
+                        </motion.div>
                     ))}
                   </AnimatePresence>
                 </div>

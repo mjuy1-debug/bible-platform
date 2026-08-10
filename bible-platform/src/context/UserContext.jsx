@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   favorites: [],
   devotions: [],
   highlights: {},
+  memorized: {},
   prayers: [],
   streak: { current: 0, longest: 0, lastCompletedDate: null },
   planProgress: {
@@ -331,6 +332,16 @@ export const UserProvider = ({ children }) => {
     showToast('새 플랜이 설정되었습니다! 📖');
   }, [showToast]);
 
+  // ── 암송 완료 표시 ──
+  const toggleMemorized = useCallback((verseRef) => {
+    setState(prev => {
+      const newMemorized = { ...prev.memorized };
+      if (newMemorized[verseRef]) { delete newMemorized[verseRef]; }
+      else { newMemorized[verseRef] = true; }
+      return { ...prev, memorized: newMemorized };
+    });
+  }, []);
+
   // ── 하이라이트 ──
   const toggleHighlight = useCallback((verseRef, color) => {
     setState(prev => {
@@ -418,6 +429,7 @@ export const UserProvider = ({ children }) => {
       resetPlan,
       toggleHighlight,
       removeHighlight,
+      toggleMemorized,
       showToast,
       addPrayer,
       togglePrayerAnswered,
