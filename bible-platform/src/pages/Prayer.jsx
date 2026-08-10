@@ -72,7 +72,7 @@ const Prayer = () => {
   const rate = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', color: 'var(--text-primary, #fff)' }}>
+    <div style={{ padding: '2rem', maxWidth: '820px', margin: '0 auto', color: 'var(--text-primary, #fff)' }}>
       <header style={{ marginBottom: '2rem', textAlign: 'center' }}>
         <h1 style={{ fontSize: '2rem', color: 'var(--accent-gold, #d4af37)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           기도 노트 🙏
