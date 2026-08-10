@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bookmark, History, Trash2, User } from 'lucide-react';
+import { Bookmark, History, Trash2, User, Bell } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
@@ -11,6 +11,20 @@ const Profile = () => {
   // 프로필 정보 설정
   const displayName = currentUser ? currentUser.displayName : '로그인되지 않음';
   const photoUrl = currentUser ? currentUser.photoURL : null;
+
+  const [pushEnabled, setPushEnabled] = useState(false);
+
+  const handlePushToggle = () => {
+    if (!pushEnabled) {
+      if (window.confirm("알림 권한을 허용하시겠습니까?")) {
+        setPushEnabled(true);
+        if (typeof window.showToast === 'function') window.showToast("푸시 알림이 활성화되었습니다. 🔔");
+      }
+    } else {
+      setPushEnabled(false);
+      if (typeof window.showToast === 'function') window.showToast("푸시 알림이 해제되었습니다.");
+    }
+  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} style={{ maxWidth: '900px', margin: '0 auto' }}>
@@ -54,6 +68,37 @@ const Profile = () => {
             <motion.div style={{ height: '100%', background: 'var(--accent-gold)', borderRadius: '3px' }}
               initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1 }} />
           </div>
+        </div>
+      </div>
+
+      {/* Push Notifications Settings */}
+      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <div style={{ background: 'rgba(196,164,132,0.1)', padding: '0.6rem', borderRadius: '50%' }}>
+            <Bell size={20} color="var(--accent-gold)" />
+          </div>
+          <div>
+            <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-primary)' }}>매일 묵상 알림</h4>
+            <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>아침 8시에 오늘의 말씀 알림을 받습니다.</p>
+          </div>
+        </div>
+        
+        {/* iOS style toggle switch */}
+        <div 
+          onClick={handlePushToggle}
+          style={{
+            width: '50px', height: '28px', borderRadius: '14px',
+            background: pushEnabled ? '#81c784' : 'var(--glass-border)',
+            display: 'flex', alignItems: 'center', cursor: 'pointer',
+            padding: '2px', transition: 'background 0.3s'
+          }}
+        >
+          <motion.div 
+            layout 
+            style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#fff', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}
+            animate={{ x: pushEnabled ? 22 : 0 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          />
         </div>
       </div>
 

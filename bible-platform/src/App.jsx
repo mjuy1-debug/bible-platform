@@ -19,6 +19,8 @@ import Stats from './pages/Stats';
 import PrayerWall from './pages/PrayerWall';
 import Groups from './pages/Groups';
 import Bulletin from './pages/Bulletin';
+import Memorize from './pages/Memorize';
+import BibleMap from './pages/BibleMap';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { useContext } from 'react';
@@ -50,6 +52,8 @@ const AppInner = () => {
           <Route path="/prayer-wall" element={<PrayerWall />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/bulletin" element={<Bulletin />} />
+          <Route path="/memorize" element={<Memorize />} />
+          <Route path="/bible-map" element={<BibleMap />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

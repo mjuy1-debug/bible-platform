@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper } from 'lucide-react';
+import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper, Brain, Map } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 
 const NAV_ITEMS = [
@@ -15,6 +15,8 @@ const NAV_ITEMS = [
   { to: '/prayer-wall', icon: MessageSquare, label: '공동 기도' },
   { to: '/groups',    icon: Users,         label: '소그룹' },
   { to: '/bulletin',  icon: Newspaper,     label: '주보' },
+  { to: '/memorize',  icon: Brain,         label: '암송 훈련' },
+  { to: '/bible-map', icon: Map,           label: '성경 지도' },
   { to: '/stats',     icon: BarChart2,     label: '통계' },
   { to: '/ai',        icon: Sparkles,      label: 'AI 도우미' },
   { to: '/profile',   icon: User,          label: '프로필' },
