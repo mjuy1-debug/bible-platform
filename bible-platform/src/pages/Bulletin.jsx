@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft, Edit, Plus, Trash2, Save, FileText, Image as ImageIcon } from 'lucide-react';
 import { db, storage } from '../services/firebase';
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserContext } from '../context/UserContext';
 
@@ -86,8 +86,9 @@ export default function Bulletin() {
   const [news, setNews] = useState([...DEFAULT_NEWS]);
   const [newsImageFile, setNewsImageFile] = useState(null); // 교회 소식 이미지
   const [isUploading, setIsUploading] = useState(false);
+  const [editingBulletin, setEditingBulletin] = useState(null); // 수정 중인 주보 ID
 
-  const isAdmin = !!currentUser; // 테스트를 위해 로그인한 누구나 주보를 올릴 수 있게 허용
+  const isAdmin = !!currentUser;
 
   useEffect(() => {
     const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
@@ -136,6 +137,35 @@ export default function Bulletin() {
     }
   };
 
+  const handleUpdateDigital = async (e) => {
+    e.preventDefault();
+    if (!editingBulletin) return;
+    setIsUploading(true);
+    try {
+      let newsImageUrl = editingBulletin.newsImageUrl || null;
+      if (newsImageFile) {
+        const storageRef = ref(storage, `bulletins/news_${Date.now()}_${newsImageFile.name}`);
+        await uploadBytes(storageRef, newsImageFile);
+        newsImageUrl = await getDownloadURL(storageRef);
+      }
+      await updateDoc(doc(db, 'bulletins', editingBulletin), {
+        title,
+        date,
+        worshipOrder: worshipOrder.filter(w => w.type || w.content || w.leader),
+        news: news.filter(n => n.trim() !== ''),
+        newsImageUrl,
+      });
+      setEditingBulletin(null);
+      setIsUploadMode(false);
+      if (showToast) showToast('주보가 수정되었습니다.');
+    } catch (err) {
+      console.error(err);
+      if (showToast) showToast('수정 실패');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleNewsChange = (index, value) => {
     const newNews = [...news];
     newNews[index] = value;
@@ -163,6 +193,16 @@ export default function Bulletin() {
     } else {
       if (showToast) showToast('불러올 스마트 주보가 없습니다.');
     }
+  };
+
+  const startEdit = (bulletin) => {
+    setEditingBulletin(bulletin.id);
+    setTitle(bulletin.title || '');
+    setDate(bulletin.date || new Date().toISOString().split('T')[0]);
+    setWorshipOrder(bulletin.worshipOrder?.length ? bulletin.worshipOrder : [...DEFAULT_WORSHIP_ORDER]);
+    setNews(bulletin.news?.length ? bulletin.news : [...DEFAULT_NEWS]);
+    setNewsImageFile(null);
+    setIsUploadMode(true);
   };
 
   // --- Rendering Helpers ---
@@ -303,13 +343,13 @@ export default function Bulletin() {
       {isUploadMode && isAdmin ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>새 스마트 주보 작성</h2>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>{editingBulletin ? '주보 수정' : '새 스마트 주보 작성'}</h2>
             <button type="button" onClick={loadLastBulletin} style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
               지난주 주보 복사하기
             </button>
           </div>
 
-          <form onSubmit={handleCreateDigital} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <form onSubmit={editingBulletin ? handleUpdateDigital : handleCreateDigital} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 300px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>주보 제목</label>
@@ -368,7 +408,7 @@ export default function Bulletin() {
             </div>
 
             <button type="submit" disabled={isUploading} style={{ padding: '16px', background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', cursor: isUploading ? 'not-allowed' : 'pointer', marginTop: '16px', opacity: isUploading ? 0.7 : 1 }}>
-              {isUploading ? '발행 중...' : '스마트 주보 발행하기'}
+              {isUploading ? '저장 중...' : editingBulletin ? '주보 수정 저장' : '스마트 주보 발행하기'}
             </button>
           </form>
         </motion.div>
@@ -401,19 +441,29 @@ export default function Bulletin() {
                     <Calendar size={14} /> {bulletin.date}
                   </div>
                 </div>
-                {isAdmin && (
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (window.confirm('주보를 정말 삭제하시겠습니까?')) {
-                        deleteDoc(doc(db, 'bulletins', bulletin.id));
-                        if (showToast) showToast('주보가 삭제되었습니다.');
-                      }
-                    }}
-                    style={{ background: 'rgba(255,0,0,0.1)', border: 'none', color: '#ff4d4f', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                {isAdmin && bulletin.isDigital && (
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); startEdit(bulletin); }}
+                      style={{ background: 'rgba(212,175,55,0.15)', border: 'none', color: 'var(--accent-gold)', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                      title="수정"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm('주보를 정말 삭제하시겠습니까?')) {
+                          deleteDoc(doc(db, 'bulletins', bulletin.id));
+                          if (showToast) showToast('주보가 삭제되었습니다.');
+                        }
+                      }}
+                      style={{ background: 'rgba(255,0,0,0.1)', border: 'none', color: '#ff4d4f', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                      title="삭제"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>
