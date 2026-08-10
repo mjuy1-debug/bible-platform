@@ -6,41 +6,6 @@ import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, delete
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserContext } from '../context/UserContext';
 
-// 우측 스크롤 힌트 컴포넌트
-const ScrollHint = () => (
-  <div style={{
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '4px',
-    marginTop: '8px',
-    padding: '6px 14px',
-    borderRadius: '20px',
-    background: 'linear-gradient(90deg, #d4af37, #fde68a)',
-    color: '#713f12',
-    fontSize: '13px',
-    fontWeight: '900',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    animation: 'scrollHintMove 1.5s ease-in-out infinite',
-    userSelect: 'none',
-    pointerEvents: 'none',
-  }}>
-    옆으로 밀어보기 <span style={{ letterSpacing: '-2px', fontSize: '14px' }}>❯❯</span>
-    <style>{`
-      @keyframes scrollHintMove {
-        0%, 100% { transform: translateX(0); }
-        50% { transform: translateX(6px); }
-      }
-      .hide-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-      }
-      .hide-scrollbar::-webkit-scrollbar {
-        display: none; /* Chrome, Safari and Opera */
-      }
-    `}</style>
-  </div>
-);
-
 const STATIC_INFO = {
   basicLife: [
     "온전한 주일 성수 (출 20:8 ~ 11)",
@@ -242,7 +207,7 @@ export default function Bulletin() {
 
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
-    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', margin: '0 -20px', padding: '0 20px 20px 20px' }} className="hide-scrollbar">
+    <div style={{ margin: '0 -20px', padding: '0 20px 20px 20px' }}>
       <div style={{ minWidth: '768px', maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
         <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
           {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
@@ -268,9 +233,6 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ScrollHint />
-            </div>
           </div>
           <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
         </div>
@@ -307,9 +269,6 @@ export default function Bulletin() {
               {STATIC_INFO.basicLife.map((life, i) => (
                 <div key={i}>• {life}</div>
               ))}
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <ScrollHint />
-              </div>
             </div>
           </div>
 
@@ -356,9 +315,6 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <ScrollHint />
-            </div>
           </div>
           <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)

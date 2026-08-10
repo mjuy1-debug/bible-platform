@@ -458,13 +458,13 @@ export default function Groups() {
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '16px' }}>초대 코드로 참여</h3>
             <form onSubmit={handleJoinGroup} style={{ display: 'flex', gap: '8px' }}>
               <input 
-                required type="text" placeholder="6자리 초대 코드"
+                required type="text" placeholder="6자리 코드"
                 value={inviteCodeInput}
                 onChange={(e) => setInviteCodeInput(e.target.value.toUpperCase())}
                 maxLength={6}
-                style={{ flex: 1, padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', textTransform: 'uppercase' }}
+                style={{ flex: 1, maxWidth: '140px', padding: '10px 12px', fontSize: '14px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', textTransform: 'uppercase' }}
               />
-              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0 20px', fontWeight: 'bold', cursor: 'pointer' }}>참여</button>
+              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0 16px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer' }}>참여</button>
             </form>
           </div>
         </div>
