@@ -88,7 +88,11 @@ export default function Bulletin() {
   const [isUploading, setIsUploading] = useState(false);
   const [editingBulletin, setEditingBulletin] = useState(null); // 수정 중인 주보 ID
 
-  const isAdmin = currentUser && (currentUser.email?.includes('admin') || currentUser.displayName?.includes('관리자'));
+  const isAdmin = currentUser && (
+    currentUser.email?.includes('admin') || 
+    currentUser.displayName?.includes('관리자') || 
+    currentUser.displayName?.includes('유정파파')
+  );
 
   useEffect(() => {
     const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
