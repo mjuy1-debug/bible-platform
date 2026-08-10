@@ -12,18 +12,59 @@ const Profile = () => {
   const displayName = currentUser ? currentUser.displayName : '로그인되지 않음';
   const photoUrl = currentUser ? currentUser.photoURL : null;
 
-  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushEnabled, setPushEnabled] = useState(() => localStorage.getItem('push_enabled') === 'true');
+  const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '8', 10));
+  const [notifMinute, setNotifMinute] = useState(() => parseInt(localStorage.getItem('push_minute') || '0', 10));
 
-  const handlePushToggle = () => {
-    if (!pushEnabled) {
-      if (window.confirm("알림 권한을 허용하시겠습니까?")) {
-        setPushEnabled(true);
-        if (typeof window.showToast === 'function') window.showToast("푸시 알림이 활성화되었습니다. 🔔");
+  // 알림 스케줄러: 1분마다 현재 시간 확인 → 설정된 시간에 일치하면 알림 발사
+  React.useEffect(() => {
+    if (!pushEnabled) return;
+    const interval = setInterval(() => {
+      if (Notification.permission !== 'granted') return;
+      const now = new Date();
+      if (now.getHours() === notifHour && now.getMinutes() === notifMinute) {
+        // 하루에 한 번만 알림 (중복 방지)
+        const todayKey = `push_fired_${now.toDateString()}`;
+        if (!localStorage.getItem(todayKey)) {
+          localStorage.setItem(todayKey, 'true');
+          new Notification('오늘의 말씀 묵상 ✨', {
+            body: '오늘의 말씀을 읽고 하루를 시작해보세요. 하나님의 은혜가 충만하기를 기도합니다. 🙏',
+            icon: '/icon.png'
+          });
+        }
       }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [pushEnabled, notifHour, notifMinute]);
+
+  const handlePushToggle = async () => {
+    if (!pushEnabled) {
+      if (Notification.permission === 'default') {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          showToast && showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.');
+          return;
+        }
+      } else if (Notification.permission === 'denied') {
+        showToast && showToast('알림이 차단되어 있습니다. 브라우저 설정에서 알림을 허용해 주세요.');
+        return;
+      }
+      setPushEnabled(true);
+      localStorage.setItem('push_enabled', 'true');
+      showToast && showToast(`매일 ${notifHour}시 ${String(notifMinute).padStart(2,'0')}분에 알림을 받습니다. 🔔`);
     } else {
       setPushEnabled(false);
-      if (typeof window.showToast === 'function') window.showToast("푸시 알림이 해제되었습니다.");
+      localStorage.setItem('push_enabled', 'false');
+      showToast && showToast('알림이 해제되었습니다.');
     }
+  };
+
+  const handleTimeChange = (hour, minute) => {
+    setNotifHour(hour);
+    setNotifMinute(minute);
+    localStorage.setItem('push_hour', hour);
+    localStorage.setItem('push_minute', minute);
+    if (pushEnabled) showToast && showToast(`알림 시간이 ${hour}시 ${String(minute).padStart(2,'0')}분으로 변경되었습니다.`);
   };
 
   return (
@@ -90,33 +131,66 @@ const Profile = () => {
       </div>
 
       {/* Push Notifications Settings */}
-      <div className="glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <div style={{ background: 'rgba(196,164,132,0.1)', padding: '0.6rem', borderRadius: '50%' }}>
-            <Bell size={20} color="var(--accent-gold)" />
+      <div className="glass-card" style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <div style={{ background: 'rgba(196,164,132,0.1)', padding: '0.6rem', borderRadius: '50%' }}>
+              <Bell size={20} color="var(--accent-gold)" />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-primary)' }}>매일 묵상 알림</h4>
+              <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                {pushEnabled ? `매일 ${notifHour}시 ${String(notifMinute).padStart(2,'0')}분에 알림을 받습니다. 🔔` : '알림이 해제되어 있습니다.'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-primary)' }}>매일 묵상 알림</h4>
-            <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>아침 8시에 오늘의 말씀 알림을 받습니다.</p>
+
+          {/* iOS style toggle switch */}
+          <div
+            onClick={handlePushToggle}
+            style={{
+              width: '50px', height: '28px', borderRadius: '14px',
+              background: pushEnabled ? '#81c784' : 'var(--glass-border)',
+              display: 'flex', alignItems: 'center', cursor: 'pointer',
+              padding: '2px', transition: 'background 0.3s', flexShrink: 0
+            }}
+          >
+            <motion.div
+              layout
+              style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#fff', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}
+              animate={{ x: pushEnabled ? 22 : 0 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            />
           </div>
         </div>
-        
-        {/* iOS style toggle switch */}
-        <div 
-          onClick={handlePushToggle}
-          style={{
-            width: '50px', height: '28px', borderRadius: '14px',
-            background: pushEnabled ? '#81c784' : 'var(--glass-border)',
-            display: 'flex', alignItems: 'center', cursor: 'pointer',
-            padding: '2px', transition: 'background 0.3s'
-          }}
-        >
-          <motion.div 
-            layout 
-            style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#fff', boxShadow: '0 2px 5px rgba(0,0,0,0.2)' }}
-            animate={{ x: pushEnabled ? 22 : 0 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-          />
+
+        {/* 시간 선택 (always visible) */}
+        <div style={{ marginTop: '1.2rem', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', minWidth: '70px' }}>⏰ 알림 시간</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <select
+              value={notifHour}
+              onChange={(e) => handleTimeChange(Number(e.target.value), notifMinute)}
+              style={{ padding: '0.4rem 0.7rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '1rem', cursor: 'pointer' }}
+            >
+              {Array.from({ length: 24 }, (_, i) => (
+                <option key={i} value={i}>{String(i).padStart(2,'0')}시</option>
+              ))}
+            </select>
+            <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold' }}>:</span>
+            <select
+              value={notifMinute}
+              onChange={(e) => handleTimeChange(notifHour, Number(e.target.value))}
+              style={{ padding: '0.4rem 0.7rem', borderRadius: '8px', background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '1rem', cursor: 'pointer' }}
+            >
+              {[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map(m => (
+                <option key={m} value={m}>{String(m).padStart(2,'0')}분</option>
+              ))}
+            </select>
+          </div>
+          {!pushEnabled && (
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>알림 활성화 후 적용됩니다</span>
+          )}
         </div>
       </div>
 
