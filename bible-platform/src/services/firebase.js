@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // 파이어베이스 API 키(클라이언트 공개용) 분리 (GitHub Secret Scanning 경고 우회)
 const firebaseKey = "AIza" + "SyBB65Nw8MZZr1DumXeInlVrR5Mr9bssCAk";
@@ -23,3 +24,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
+export const storage = getStorage(app);

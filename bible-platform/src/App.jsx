@@ -16,6 +16,9 @@ import Sermons from './pages/Sermons';
 import VerseCard from './pages/VerseCard';
 import Prayer from './pages/Prayer';
 import Stats from './pages/Stats';
+import PrayerWall from './pages/PrayerWall';
+import Groups from './pages/Groups';
+import Bulletin from './pages/Bulletin';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { useContext } from 'react';
@@ -44,6 +47,9 @@ const AppInner = () => {
           <Route path="/verse-card" element={<VerseCard />} />
           <Route path="/prayer" element={<Prayer />} />
           <Route path="/stats" element={<Stats />} />
+          <Route path="/prayer-wall" element={<PrayerWall />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/bulletin" element={<Bulletin />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
