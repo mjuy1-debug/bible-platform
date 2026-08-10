@@ -2,6 +2,9 @@ import React, { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Bookmark, History, Trash2, User, Bell, RefreshCw } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
+import { messaging, getToken, VAPID_KEY } from '../services/firebase';
+import { db } from '../services/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const Profile = () => {
   const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
@@ -15,56 +18,93 @@ const Profile = () => {
   const [pushEnabled, setPushEnabled] = useState(() => localStorage.getItem('push_enabled') === 'true');
   const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '8', 10));
   const [notifMinute, setNotifMinute] = useState(() => parseInt(localStorage.getItem('push_minute') || '0', 10));
+  const [registering, setRegistering] = useState(false);
 
-  // 알림 스케줄러: 1분마다 현재 시간 확인 → 설정된 시간에 일치하면 알림 발사
-  React.useEffect(() => {
-    if (!pushEnabled) return;
-    const interval = setInterval(() => {
-      if (Notification.permission !== 'granted') return;
-      const now = new Date();
-      if (now.getHours() === notifHour && now.getMinutes() === notifMinute) {
-        // 하루에 한 번만 알림 (중복 방지)
-        const todayKey = `push_fired_${now.toDateString()}`;
-        if (!localStorage.getItem(todayKey)) {
-          localStorage.setItem(todayKey, 'true');
-          new Notification('오늘의 말씀 묵상 ✨', {
-            body: '오늘의 말씀을 읽고 하루를 시작해보세요. 하나님의 은혜가 충만하기를 기도합니다. 🙏',
-            icon: '/icon.png'
-          });
-        }
+  // FCM 토큰 등록 & Firestore 저장
+  const registerFCMToken = async (hour, minute) => {
+    try {
+      // 서비스 워커 등록
+      const swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+
+      // FCM 토큰 발급 (VAPID 키 필요)
+      const token = await getToken(messaging, {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: swReg
+      });
+
+      if (!token) {
+        showToast && showToast('FCM 토큰 발급 실패. Firebase Console에서 VAPID 키를 확인해주세요.');
+        return false;
       }
-    }, 60000);
-    return () => clearInterval(interval);
-  }, [pushEnabled, notifHour, notifMinute]);
+
+      // Firestore에 토큰 + 알림 시간 저장
+      const uid = currentUser?.uid || 'anonymous_' + Date.now();
+      await setDoc(doc(db, 'fcmTokens', uid), {
+        token,
+        notifHour: hour,
+        notifMinute: minute,
+        enabled: true,
+        displayName: currentUser?.displayName || '익명',
+        updatedAt: new Date().toISOString()
+      });
+
+      localStorage.setItem('fcm_token', token);
+      return true;
+    } catch (err) {
+      console.error('FCM 등록 오류:', err);
+      return false;
+    }
+  };
 
   const handlePushToggle = async () => {
     if (!pushEnabled) {
-      if (Notification.permission === 'default') {
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-          showToast && showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.');
-          return;
-        }
-      } else if (Notification.permission === 'denied') {
-        showToast && showToast('알림이 차단되어 있습니다. 브라우저 설정에서 알림을 허용해 주세요.');
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        showToast && showToast('이 브라우저는 푸시 알림을 지원하지 않습니다.');
         return;
       }
-      setPushEnabled(true);
-      localStorage.setItem('push_enabled', 'true');
-      showToast && showToast(`매일 ${notifHour}시 ${String(notifMinute).padStart(2,'0')}분에 알림을 받습니다. 🔔`);
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        showToast && showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.');
+        return;
+      }
+
+      setRegistering(true);
+      const ok = await registerFCMToken(notifHour, notifMinute);
+      setRegistering(false);
+
+      if (ok) {
+        setPushEnabled(true);
+        localStorage.setItem('push_enabled', 'true');
+        showToast && showToast(`✅ 매일 ${notifHour}시 ${String(notifMinute).padStart(2,'0')}분에 백그라운드 알림이 울립니다! 🔔`);
+      } else {
+        showToast && showToast('알림 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
     } else {
+      // 알림 해제
+      const uid = currentUser?.uid;
+      if (uid) {
+        await setDoc(doc(db, 'fcmTokens', uid), { enabled: false, updatedAt: new Date().toISOString() }, { merge: true });
+      }
       setPushEnabled(false);
       localStorage.setItem('push_enabled', 'false');
       showToast && showToast('알림이 해제되었습니다.');
     }
   };
 
-  const handleTimeChange = (hour, minute) => {
+  const handleTimeChange = async (hour, minute) => {
     setNotifHour(hour);
     setNotifMinute(minute);
     localStorage.setItem('push_hour', hour);
     localStorage.setItem('push_minute', minute);
-    if (pushEnabled) showToast && showToast(`알림 시간이 ${hour}시 ${String(minute).padStart(2,'0')}분으로 변경되었습니다.`);
+    // 이미 활성화된 경우 Firestore도 업데이트
+    if (pushEnabled && currentUser?.uid) {
+      await setDoc(doc(db, 'fcmTokens', currentUser.uid), {
+        notifHour: hour,
+        notifMinute: minute,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      showToast && showToast(`알림 시간이 ${hour}시 ${String(minute).padStart(2,'0')}분으로 변경되었습니다.`);
+    }
   };
 
   return (

@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 // 파이어베이스 API 키(클라이언트 공개용) 분리 (GitHub Secret Scanning 경고 우회)
 const firebaseKey = "AIza" + "SyBB65Nw8MZZr1DumXeInlVrR5Mr9bssCAk";
@@ -25,3 +26,8 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 export const storage = getStorage(app);
+export const messaging = getMessaging(app);
+export { getToken, onMessage };
+
+// FCM VAPID 공개 키 (Firebase Console > 프로젝트 설정 > 클라우드 메시징 > 웹 푸시 인증서에서 확인)
+export const VAPID_KEY = 'BJ7mh7YRVv-hCEd3xT9Z_3OFGepWqj3d5HjNqSjXJC8JHV9C45gAVoAh3U7KJVdQWoO5bxS3Tj4UPrNZ5VKFsI';
