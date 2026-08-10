@@ -49,7 +49,11 @@ export default function BibleMap() {
       const searchTarget = location.state.searchLoc;
       setSearchQuery(searchTarget);
       
-      const found = locationsData.find(l => l.name.includes(searchTarget) || l.englishName.toLowerCase().includes(searchTarget.toLowerCase()));
+      const found = locationsData.find(l => 
+        l.name.includes(searchTarget) || 
+        (l.name_en && l.name_en.toLowerCase().includes(searchTarget.toLowerCase())) ||
+        (l.name_ko_alt && l.name_ko_alt.some(alt => alt.includes(searchTarget)))
+      );
       if (found) {
         setSelectedLoc(found);
         setDrawerOpen(true);
@@ -59,7 +63,10 @@ export default function BibleMap() {
 
   // Filter locations
   const filteredLocations = locationsData.filter(loc => {
-    const matchSearch = loc.name.includes(searchQuery) || loc.englishName.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLower = searchQuery.toLowerCase();
+    const matchSearch = loc.name.includes(searchQuery) || 
+      (loc.name_en && loc.name_en.toLowerCase().includes(searchLower)) ||
+      (loc.name_ko_alt && loc.name_ko_alt.some(alt => alt.includes(searchQuery)));
     const matchFilter = activeFilter === "전체" || loc.type === activeFilter;
     return matchSearch && matchFilter;
   });
@@ -127,11 +134,24 @@ export default function BibleMap() {
             >
               <Popup>
                 <div style={{ color: '#333' }}>
-                  <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', fontWeight: 'bold' }}>{loc.name}</h3>
-                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>{loc.englishName} • {loc.type}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>{loc.name}</h3>
+                    {loc.status === '확인 필요' && (
+                      <span style={{ fontSize: '10px', background: '#ffebee', color: '#c62828', padding: '2px 4px', borderRadius: '4px' }}>검수요망</span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
+                    {loc.name_en} • {loc.type}
+                  </div>
+                  {loc.name_ko_alt && loc.name_ko_alt.length > 0 && (
+                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '8px' }}>
+                      다른 이름: {loc.name_ko_alt.join(', ')}
+                    </div>
+                  )}
                   {loc.verses && loc.verses.length > 0 && (
                     <div style={{ fontSize: '12px' }}>
-                      <strong>관련 구절:</strong> {loc.verses.join(', ')}
+                      <strong>관련 구절:</strong> {loc.verses.slice(0, 3).join(', ')}
+                      {loc.verses.length > 3 && ' ...'}
                     </div>
                   )}
                 </div>
@@ -156,8 +176,18 @@ export default function BibleMap() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                   <MapPin color="var(--accent-gold)" size={24} />
                   <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--accent-gold)' }}>{selectedLoc.name}</h2>
+                  {selectedLoc.status === '확인 필요' && (
+                    <span style={{ fontSize: '12px', background: 'rgba(244, 67, 54, 0.1)', color: '#f44336', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(244, 67, 54, 0.3)' }}>음역 검수요망</span>
+                  )}
                 </div>
-                <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{selectedLoc.englishName} | {selectedLoc.type}</div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '4px' }}>
+                  <span style={{ fontWeight: 600 }}>{selectedLoc.name_en}</span> | {selectedLoc.type}
+                </div>
+                {selectedLoc.name_ko_alt && selectedLoc.name_ko_alt.length > 0 && (
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
+                    <span style={{ opacity: 0.7 }}>대체어/다른표기: </span> {selectedLoc.name_ko_alt.join(', ')}
+                  </div>
+                )}
               </div>
               <button onClick={() => setDrawerOpen(false)} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '50%', padding: '8px', color: 'var(--text-primary)', cursor: 'pointer' }}>
                 <X size={20} />
