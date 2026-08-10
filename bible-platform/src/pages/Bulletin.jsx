@@ -180,17 +180,19 @@ export default function Bulletin() {
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
             주일 오전 예배
           </h2>
-          <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', marginBottom: '20px', wordBreak: 'break-word' }}>
-            <tbody>
-              {bulletin.worshipOrder?.map((item, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                  <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
-                  <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
-                  <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+            <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
+              <tbody>
+                {bulletin.worshipOrder?.map((item, idx) => (
+                  <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
+                    <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
+                    <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
+                    <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
         </div>
 
@@ -253,24 +255,26 @@ export default function Bulletin() {
         {/* Row 2, Right: 예배 시간 안내 */}
         <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0', height: '100%', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
-          <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', flex: 1, wordBreak: 'break-word' }}>
-            <thead>
-              <tr style={{ background: '#f0fdf4' }}>
-                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>일시</th>
-                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>예배종류</th>
-                <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>장소</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STATIC_INFO.schedule.map((item, i) => (
-                <tr key={i}>
-                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.time}</td>
-                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.name}</td>
-                  <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.place}</td>
+          <div style={{ overflowX: 'auto', flex: 1, paddingBottom: '4px' }}>
+            <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', whiteSpace: 'nowrap', minWidth: '300px' }}>
+              <thead>
+                <tr style={{ background: '#f0fdf4' }}>
+                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>일시</th>
+                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>예배종류</th>
+                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>장소</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {STATIC_INFO.schedule.map((item, i) => (
+                  <tr key={i}>
+                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.time}</td>
+                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.name}</td>
+                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.place}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
           </div>
