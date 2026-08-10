@@ -2,19 +2,29 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
 
-const QUICK_LINKS = [
-  { to: '/read',      icon: BookOpen,      title: '성경 읽기',    desc: '말씀을 천천히 읽으며 하루를 시작해보세요.', color: '#4f86c6' },
-  { to: '/devotion',  icon: BookHeart,     title: '묵상 노트',    desc: '오늘 느낀 은혜를 기록으로 남겨보세요.', color: '#c4a484' },
-  { to: '/ai',        icon: Sparkles,      title: 'AI 도우미',    desc: '오늘 읽은 말씀을 함께 묵상해 드립니다.', color: '#9b7de8' },
-  { to: '/plan',      icon: CalendarDays,  title: '통독 플랜',    desc: '나만의 통독 플랜을 설정하고 실천해보세요.', color: '#5bbf6e' },
-  { to: '/schedule',  icon: CalendarClock, title: '일정 & 계획',  desc: '여호수아 남전도회와 교회 일정을 확인하세요.', color: '#e8a73d' },
-  { to: '/favorites', icon: Heart,         title: '즐겨찾기',     desc: '마음에 새긴 말씀들을 모아보세요.', color: '#e85b72' },
-  { to: '/search',    icon: Search,        title: '말씀 찾기',    desc: '원하는 구절을 빠르게 검색하세요.', color: '#f5a623' },
+// 홈화면 퀵 링크 - 주요 기능
+const MAIN_LINKS = [
+  { to: '/read',       icon: BookOpen,     title: '성경 읽기',   color: '#4f86c6' },
+  { to: '/devotion',   icon: BookHeart,    title: '묵상 노트',   color: '#c4a484' },
+  { to: '/plan',       icon: CalendarDays, title: '통독 플랜',   color: '#5bbf6e' },
+  { to: '/ai',         icon: Sparkles,     title: 'AI 도우미',   color: '#9b7de8' },
+  { to: '/memorize',   icon: Brain,        title: '말씀 암송',   color: '#64b5f6' },
+  { to: '/favorites',  icon: Heart,        title: '즐겨찾기',    color: '#e85b72' },
+];
+
+// 커뮤니티 & 기타
+const COMMUNITY_LINKS = [
+  { to: '/schedule',   icon: CalendarClock, title: '일정 & 계획',  color: '#e8a73d' },
+  { to: '/bulletin',   icon: FileText,      title: '교회 주보',   color: '#ff8a65' },
+  { to: '/prayer-wall',icon: Handshake,     title: '공동 기도',   color: '#81c784' },
+  { to: '/groups',     icon: Users,         title: '소그룹',        color: '#4db6ac' },
+  { to: '/bible-map',  icon: Map,           title: '성경 지도',   color: '#ba68c8' },
+  { to: '/search',     icon: Search,        title: '말씀 검색',   color: '#f5a623' },
 ];
 
 const Home = () => {
@@ -62,7 +72,7 @@ const Home = () => {
             background: 'linear-gradient(135deg, var(--text-primary) 40%, var(--accent-gold))',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          Joshua 말씀묵상
+          BethelChurch 말씀묵상
         </motion.h1>
         <motion.p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>
@@ -161,27 +171,45 @@ const Home = () => {
         </motion.div>
       )}
 
-      {/* Quick Links */}
-      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-        <h2 className="serif-font" style={{ fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', marginBottom: '1.5rem', textAlign: 'center' }}>빠른 이동</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 'clamp(0.75rem, 2vw, 1.2rem)' }}>
-          {/* eslint-disable-next-line no-unused-vars */}
-          {QUICK_LINKS.map(({ to, icon: Icon, title, desc, color }, i) => (
-            <motion.div key={to} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + i * 0.07 }}>
-              <Link to={to} style={{ display: 'block', textDecoration: 'none' }}>
-                <div className="glass-card" style={{ height: '100%', padding: 'clamp(1rem, 3vw, 1.5rem)',
-                  transition: 'transform 0.25s, box-shadow 0.25s, border-color 0.25s' }}
-                  onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = color; }}
+      {/* Quick Links - Main Features */}
+      <div style={{ maxWidth: '960px', margin: '0 auto 2rem' }}>
+        <h2 className="serif-font" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', marginBottom: '1rem', color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.82rem', fontWeight: 700 }}>✦ 주요 기능</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
+          {MAIN_LINKS.map(({ to, icon: Icon, title, color }, i) => (
+            <motion.div key={to} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 + i * 0.06 }}>
+              <Link to={to} style={{ textDecoration: 'none' }}>
+                <div className="glass-card" style={{ padding: 'clamp(0.9rem, 2.5vw, 1.3rem)', textAlign: 'center',
+                  transition: 'transform 0.2s, border-color 0.2s', cursor: 'pointer' }}
+                  onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = color; }}
                   onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = ''; }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: color + '22',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.9rem' }}>
-                    <Icon size={20} color={color} />
+                  <div style={{ width: '44px', height: '44px', borderRadius: '14px', background: color + '22',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.7rem' }}>
+                    <Icon size={22} color={color} />
                   </div>
-                  <h3 style={{ fontSize: 'clamp(0.95rem, 2.2vw, 1.1rem)', marginBottom: '0.4rem', color: 'var(--text-primary)' }}>{title}</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: 'clamp(0.78rem, 1.8vw, 0.88rem)', lineHeight: 1.55, wordBreak: 'keep-all' }}>{desc}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '1rem', color, fontSize: '0.82rem', fontWeight: 600 }}>
-                    시작하기 <ArrowRight size={13} />
+                  <p style={{ fontSize: 'clamp(0.82rem, 2vw, 0.95rem)', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Links - Community */}
+      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+        <h2 style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase' }}>✦ 커뮤니티 & 탐색</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
+          {COMMUNITY_LINKS.map(({ to, icon: Icon, title, color }, i) => (
+            <motion.div key={to} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.06 }}>
+              <Link to={to} style={{ textDecoration: 'none' }}>
+                <div className="glass-card" style={{ padding: 'clamp(0.9rem, 2.5vw, 1.3rem)', textAlign: 'center',
+                  transition: 'transform 0.2s, border-color 0.2s', cursor: 'pointer' }}
+                  onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = color; }}
+                  onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = ''; }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '14px', background: color + '22',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.7rem' }}>
+                    <Icon size={22} color={color} />
                   </div>
+                  <p style={{ fontSize: 'clamp(0.82rem, 2vw, 0.95rem)', fontWeight: 700, color: 'var(--text-primary)' }}>{title}</p>
                 </div>
               </Link>
             </motion.div>

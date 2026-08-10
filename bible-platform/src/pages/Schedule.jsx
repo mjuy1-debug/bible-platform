@@ -136,7 +136,7 @@ const Schedule = () => {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h2 className="serif-font" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--accent-gold)' }}>
-          여호수아 일정 & 계획
+          BethelChurch 일정 & 계획
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
           남전도회 · 교회 전체 일정을 한눈에 확인하세요
@@ -203,14 +203,14 @@ const Schedule = () => {
         <div>
           {/* Annual Plan Files Buttons */}
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-            <button onClick={() => setViewFile({ type: 'joshua', title: '여호수아 연간계획표' })}
+            <button onClick={() => setViewFile({ type: 'joshua', title: 'BethelChurch 연간계획표' })}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
                 padding: '0.6rem 1.2rem', borderRadius: '8px',
                 background: 'rgba(212,175,55,0.15)', border: '1px solid var(--accent-gold)',
                 color: 'var(--accent-gold)', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s'
               }}>
-              <CalendarDays size={16} /> 여호수아 계획표 열기
+              <CalendarDays size={16} /> BethelChurch 계획표 열기
             </button>
             <button onClick={() => setViewFile({ type: 'church', title: '교회 전체 연간계획표' })}
               style={{
