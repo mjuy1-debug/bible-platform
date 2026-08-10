@@ -47,5 +47,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
+
+    // ✅ 푸시 알림 토큰
+    match /fcmTokens/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if true; // 익명 기기도 토큰을 저장할 수 있도록 허용
+    }
   }
 }

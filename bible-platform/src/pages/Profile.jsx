@@ -23,8 +23,9 @@ const Profile = () => {
   // FCM 토큰 등록 & Firestore 저장
   const registerFCMToken = async (hour, minute) => {
     try {
-      // 서비스 워커 등록
-      const swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      // 서비스 워커 등록 (GitHub Pages 경로 문제 해결)
+      const swUrl = `${import.meta.env.BASE_URL}firebase-messaging-sw.js`;
+      const swReg = await navigator.serviceWorker.register(swUrl);
 
       // FCM 토큰 발급 (VAPID 키 필요)
       const token = await getToken(messaging, {
