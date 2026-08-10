@@ -171,8 +171,8 @@ export const SAMPLE_EVENTS = [
   { id: 36, title: '2/4분기 전도대회', date: '2026-07-05', category: 'church', description: `- 주      최 : 전도부
 - 봉      사 : 전도부&기관전도부원들` },
   { id: 37, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
-  { id: 38, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua,caleb' },
-  { id: 39, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua,caleb', description: `[남전도회]수양관 텃밭작업` },
+  { id: 38, title: '남전도회 수양관봉사', date: '2026-07-19', category: ['joshua', 'caleb'] },
+  { id: 39, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: ['joshua', 'caleb'], description: `[남전도회]수양관 텃밭작업` },
   { id: 40, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `- 날      짜 : 8/13-15(목-토), 
       - 주      제 : “ 예수안에 거하는 믿음 “
       - 회      비 : “ ₩20,000 “
@@ -180,7 +180,7 @@ export const SAMPLE_EVENTS = [
       - 식      사 : 루디아
       - 차      량 : 갈렙,여호수아
       - 출      발 : 7:30AM` },
-  { id: 41, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua,caleb', description: `[남전도회] 연합 수련회
+  { id: 41, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: ['joshua', 'caleb'], description: `[남전도회] 연합 수련회
 
 장       소 : 강촌벧엘수양관
 주       제 : 그리스도의 마음을 품어라
@@ -205,7 +205,7 @@ export const SAMPLE_EVENTS = [
         진행 : 이민우 여호수아회장
       * 개인,교회,가정,남전도회를 위한기도 *
 6부  정리정돈&식사후귀가` },
-  { id: 42, title: '[남전도회]연합특송', date: '2026-08-30', category: 'joshua,caleb', description: `[남전도회]연합특송` },
+  { id: 42, title: '[남전도회]연합특송', date: '2026-08-30', category: ['joshua', 'caleb'], description: `[남전도회]연합특송` },
   { id: 43, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
 ];
 
