@@ -14,6 +14,8 @@ const INITIAL_STATE = {
   favorites: [],
   devotions: [],
   highlights: {},
+  prayers: [],
+  streak: { current: 0, longest: 0, lastCompletedDate: null },
   planProgress: {
     type: DEFAULT_PLAN.type,
     totalDays: DEFAULT_PLAN.totalDays,
@@ -274,14 +276,53 @@ export const UserProvider = ({ children }) => {
     }
   }, [showToast, currentUser]);
 
-  // ── 통독 플랜 ──
+  // 스트릭 로직 포함
   const togglePlanDay = useCallback((day) => {
     setState(prev => {
       const completed = prev.planProgress.completedDays;
       const newCompleted = completed.includes(day) ? completed.filter(d => d !== day) : [...completed, day];
-      return { ...prev, planProgress: { ...prev.planProgress, completedDays: newCompleted } };
+      
+      // 스트릭 계산
+      let newStreak = { ...prev.streak };
+      if (!completed.includes(day)) {
+        const today = new Date().toDateString();
+        const last = newStreak.lastCompletedDate;
+        if (last === today) {
+          // already done today, no change
+        } else if (last === new Date(Date.now() - 86400000).toDateString()) {
+          newStreak.current += 1;
+        } else {
+          newStreak.current = 1;
+        }
+        newStreak.lastCompletedDate = today;
+        if (newStreak.current > newStreak.longest) newStreak.longest = newStreak.current;
+      }
+      
+      return { ...prev, planProgress: { ...prev.planProgress, completedDays: newCompleted }, streak: newStreak };
     });
     showToast('오늘 말씀을 완료했습니다! 🎉');
+  }, [showToast]);
+
+  // 기도 제목 CRUD
+  const addPrayer = useCallback((prayer) => {
+    const newPrayer = { ...prayer, id: Date.now(), createdAt: new Date().toISOString(), answered: false, answeredAt: null };
+    setState(prev => ({ ...prev, prayers: [newPrayer, ...prev.prayers] }));
+    showToast('기도 제목이 추가되었습니다. 🙏');
+  }, [showToast]);
+
+  const togglePrayerAnswered = useCallback((id) => {
+    setState(prev => ({
+      ...prev,
+      prayers: prev.prayers.map(p => p.id === id
+        ? { ...p, answered: !p.answered, answeredAt: !p.answered ? new Date().toISOString() : null }
+        : p
+      )
+    }));
+  }, []);
+
+  const deletePrayer = useCallback((id) => {
+    setState(prev => ({ ...prev, prayers: prev.prayers.filter(p => p.id !== id) }));
+    showToast('기도 제목이 삭제되었습니다.');
   }, [showToast]);
 
   const resetPlan = useCallback((type, selectedBookIds = []) => {
@@ -338,6 +379,9 @@ export const UserProvider = ({ children }) => {
       toggleHighlight,
       removeHighlight,
       showToast,
+      addPrayer,
+      togglePrayerAnswered,
+      deletePrayer,
       addEvent,
       deleteEvent,
       updateEvent,

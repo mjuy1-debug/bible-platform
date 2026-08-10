@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -70,6 +70,24 @@ const Read = () => {
     const textStr = sortedVerses.map(v => `${v.verse} ${v.text}`).join('\n');
     
     navigate('/devotion', { state: { verse: verseStr, verseText: textStr } });
+    setSelectedVerses({});
+  };
+
+  const handleMakeCard = () => {
+    const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
+    if (sortedVerses.length === 0) return;
+    const bookName = sortedVerses[0].book;
+    const chapter = sortedVerses[0].chapter;
+    const verseNumbers = sortedVerses.map(v => v.verse);
+    let ranges = [];
+    let start = verseNumbers[0], prev = verseNumbers[0];
+    for (let i = 1; i < verseNumbers.length; i++) {
+      if (verseNumbers[i] === prev + 1) { prev = verseNumbers[i]; }
+      else { ranges.push(start === prev ? `${start}` : `${start}-${prev}`); start = verseNumbers[i]; prev = verseNumbers[i]; }
+    }
+    ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+    const refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
+    navigate('/verse-card', { state: { verses: sortedVerses, refText } });
     setSelectedVerses({});
   };
 
@@ -492,6 +510,13 @@ const Read = () => {
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                <button onClick={handleMakeCard}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: '#81c784', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <Image size={16} /> 카드
+                </button>
+
                 <button onClick={handleWriteDevotion}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
                     background: 'transparent', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer',
