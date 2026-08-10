@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>여호수아 성경앱</title>
+    <script>
+      // GitHub Pages SPA 새로고침 404 해결 스크립트
+      var l = window.location;
+      var repoName = 'bible-platform';
+      var pathParts = l.pathname.split('/');
+      var repoIndex = pathParts.indexOf(repoName);
+      // repo 이름 이후의 경로만 추출 (ex: /bible-platform/schedule -> schedule)
+      var pathAfterRepo = pathParts.slice(repoIndex + 1).join('/');
+
+      l.replace(
+        l.protocol + '//' + l.host + '/' + repoName +
+        '/?p=' + encodeURIComponent(pathAfterRepo + l.search) + '&qs=1' +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
