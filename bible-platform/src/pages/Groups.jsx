@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Plus, Copy, Check, X, ChevronRight } from 'lucide-react';
 import { db } from '../services/firebase';
-import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
 export default function Groups() {
@@ -24,6 +24,7 @@ export default function Groups() {
   const [newPostText, setNewPostText] = useState('');
   const [newPostVerse, setNewPostVerse] = useState('');
   const [todayVerseInput, setTodayVerseInput] = useState('');
+  const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
   const [copiedCode, setCopiedCode] = useState(null);
 
   // Fetch My Groups
@@ -159,19 +160,40 @@ export default function Groups() {
 
   const updateTodayVerse = async (e) => {
     e.preventDefault();
-    if (!selectedGroup) return;
+    if (!selectedGroup || !todayVerseInput.trim()) return;
     
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     try {
-      await setDoc(doc(db, 'groups', selectedGroup.id), {
-        todayVerse: todayVerseInput
-      }, { merge: true });
-      if (showToast) showToast('오늘의 말씀이 업데이트 되었습니다.');
+      // Save into a 'verses' subcollection keyed by date
+      await setDoc(doc(db, `groups/${selectedGroup.id}/verses/${today}`), {
+        text: todayVerseInput.trim(),
+        date: today,
+        setBy: currentUser.displayName || '방장',
+        createdAt: serverTimestamp()
+      });
+      // Also update group's todayVerse for quick display
+      await updateDoc(doc(db, 'groups', selectedGroup.id), {
+        todayVerse: todayVerseInput.trim(),
+        todayVerseDate: today
+      });
+      if (showToast) showToast('오늘의 말씀이 저장되었습니다.');
       setTodayVerseInput('');
-      setSelectedGroup({...selectedGroup, todayVerse: todayVerseInput});
+      setSelectedGroup({...selectedGroup, todayVerse: todayVerseInput.trim(), todayVerseDate: today});
     } catch (error) {
       console.error(error);
     }
   };
+
+  // Load verse history when a group is selected
+  useEffect(() => {
+    if (!selectedGroup) return;
+    const versesRef = collection(db, `groups/${selectedGroup.id}/verses`);
+    const q = query(versesRef, orderBy('date', 'desc'));
+    const unsub = onSnapshot(q, snap => {
+      setVerseHistory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsub();
+  }, [selectedGroup?.id]);
 
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
@@ -191,9 +213,24 @@ export default function Groups() {
         
         {selectedGroup.todayVerse && (
           <div style={{ background: 'var(--accent-gold)', color: '#fff', padding: '16px', borderRadius: '12px', marginBottom: '20px' }}>
-            <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '8px' }}>오늘의 말씀</div>
-            <div style={{ fontWeight: 'bold' }}>{selectedGroup.todayVerse}</div>
+            <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}>📖 오늘의 말씀 ({selectedGroup.todayVerseDate || '오늘'})</div>
+            <div style={{ fontWeight: 'bold', lineHeight: 1.5 }}>{selectedGroup.todayVerse}</div>
           </div>
+        )}
+
+        {/* 말씀 역사 (과거 날짜별) */}
+        {verseHistory.length > 1 && (
+          <details style={{ marginBottom: '16px' }}>
+            <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({verseHistory.length - 1}건)</summary>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+              {verseHistory.slice(1).map(v => (
+                <div key={v.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', fontSize: '13px' }}>
+                  <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date}</div>
+                  <div>{v.text}</div>
+                </div>
+              ))}
+            </div>
+          </details>
         )}
         
         {selectedGroup.leaderId === currentUser?.uid && (

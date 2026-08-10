@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon, CalendarClock, MonitorPlay } from 'lucide-react';
+import { BookOpen, BookHeart, Sparkles, User, Search as SearchIcon, CalendarClock, MonitorPlay, BarChart2, Newspaper, Users, HandHeart } from 'lucide-react';
 
 const TABS = [
-  { to: '/schedule', icon: CalendarClock, label: '일정' },
-  { to: '/sermon',   icon: MonitorPlay,   label: '말씀' },
-  { to: '/read',     icon: BookOpen,      label: '읽기' },
-  { to: '/search',   icon: SearchIcon,    label: '찾기' },
-  { to: '/devotion', icon: BookHeart,     label: '묵상' },
-  { to: '/ai',       icon: Sparkles,      label: 'AI' },
-  { to: '/profile',  icon: User,          label: '프로필' },
+  { to: '/schedule',    icon: CalendarClock, label: '일정' },
+  { to: '/sermon',      icon: MonitorPlay,   label: '말씀' },
+  { to: '/read',        icon: BookOpen,      label: '읽기' },
+  { to: '/devotion',    icon: BookHeart,     label: '묵상' },
+  { to: '/prayer-wall', icon: HandHeart,     label: '기도' },
+  { to: '/groups',      icon: Users,         label: '소그룹' },
+  { to: '/bulletin',    icon: Newspaper,     label: '주보' },
+  { to: '/stats',       icon: BarChart2,     label: '통계' },
+  { to: '/profile',     icon: User,          label: '프로필' },
 ];
 
 const BottomNav = () => {
