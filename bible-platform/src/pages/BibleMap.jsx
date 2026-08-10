@@ -166,9 +166,18 @@ export default function BibleMap() {
             
             {selectedLoc.verses && selectedLoc.verses.length > 0 ? (
               <div style={{ backgroundColor: 'var(--bg-primary)', padding: '16px', borderRadius: '12px', marginBottom: '16px', border: '1px solid var(--glass-border)' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-primary)' }}>주요 관련 구절</h4>
+                <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-primary)' }}>주요 관련 구절 (터치시 이동)</h4>
                 <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                  {selectedLoc.verses.map((v, i) => <li key={i}>{v}</li>)}
+                  {selectedLoc.verses.map((v, i) => (
+                    <li key={i} style={{ marginBottom: '6px' }}>
+                      <button 
+                        onClick={() => navigate('/read', { state: { verseRef: v } })}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-gold)', textDecoration: 'underline', cursor: 'pointer', fontSize: '15px', padding: 0, textAlign: 'left' }}
+                      >
+                        {v}
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             ) : (

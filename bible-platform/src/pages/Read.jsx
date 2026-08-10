@@ -26,11 +26,21 @@ const Read = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Plan 페이지에서 넘어온 경우 해당 책/장으로 초기화
-  const initBook = location.state?.bookId
-    ? BIBLE_BOOKS.find(b => b.id === location.state.bookId) || BIBLE_BOOKS[0]
-    : BIBLE_BOOKS[0];
-  const initChapter = location.state?.chapter || 1;
+  // Plan 페이지나 Map 페이지에서 넘어온 경우 해당 책/장/절로 초기화
+  let initBook = BIBLE_BOOKS[0];
+  let initChapter = 1;
+
+  if (location.state?.bookId) {
+    initBook = BIBLE_BOOKS.find(b => b.id === location.state.bookId) || BIBLE_BOOKS[0];
+    initChapter = location.state?.chapter || 1;
+  } else if (location.state?.verseRef) {
+    const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);
+    if (match) {
+      const bName = match[1].trim();
+      initChapter = parseInt(match[2], 10);
+      initBook = BIBLE_BOOKS.find(b => b.name === bName || b.shortName === bName) || BIBLE_BOOKS[0];
+    }
+  }
 
   const [selectedBook, setSelectedBook] = useState(initBook);
   const [selectedChapter, setSelectedChapter] = useState(initChapter);
@@ -145,6 +155,29 @@ const Read = () => {
   useEffect(() => {
     loadChapter(selectedBook.id, selectedChapter);
   }, [selectedBook.id, selectedChapter]); // eslint-disable-line
+
+  // Map에서 특정 구절 클릭시 스크롤 및 하이라이트 효과
+  useEffect(() => {
+    if (verses.length > 0 && location.state?.verseRef) {
+      const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);
+      if (match) {
+        const targetVerse = parseInt(match[3], 10);
+        setTimeout(() => {
+          const el = document.getElementById(`verse-${targetVerse}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.backgroundColor = 'rgba(212,175,55,0.4)';
+            el.style.transition = 'background-color 2s';
+            setTimeout(() => {
+              el.style.backgroundColor = 'transparent';
+            }, 2000);
+          }
+        }, 300); // 렌더링 대기
+      }
+      // 처리 후 state 지우기
+      window.history.replaceState({}, document.title);
+    }
+  }, [verses, location.state]);
 
   const handleBookSelect = (book) => {
     setSelectedBook(book);
