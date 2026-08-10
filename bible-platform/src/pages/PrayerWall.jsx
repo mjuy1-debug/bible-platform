@@ -12,18 +12,26 @@ export default function PrayerWall() {
   const [newPrayer, setNewPrayer] = useState({ text: '', verse: '', isAnonymous: false });
 
   useEffect(() => {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    // 인덱스 없이도 동작하도록 where 조건 제거, 클라이언트에서 7일 필터링
     const q = query(
       collection(db, 'prayerWall'),
-      where('createdAt', '>=', sevenDaysAgo),
       orderBy('createdAt', 'desc')
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const p = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const p = snapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(item => {
+          if (!item.createdAt?.toDate) return true;
+          return item.createdAt.toDate() >= sevenDaysAgo;
+        });
       p.sort((a, b) => (b.prayCount || 0) - (a.prayCount || 0));
       setPrayers(p);
+    }, (error) => {
+      console.error('기도벽 로드 오류:', error);
     });
 
     return () => unsubscribe();
@@ -48,10 +56,10 @@ export default function PrayerWall() {
       });
       setIsModalOpen(false);
       setNewPrayer({ text: '', verse: '', isAnonymous: false });
-      if (showToast) showToast('기도가 올라갔습니다.');
+      if (showToast) showToast('기도가 올라갔습니다. 🙏');
     } catch (error) {
-      console.error(error);
-      if (showToast) showToast('오류가 발생했습니다.');
+      console.error('기도 올리기 오류:', error);
+      if (showToast) showToast(`오류: ${error.code || error.message}`);
     }
   };
 

@@ -28,18 +28,23 @@ export default function Groups() {
   // Fetch My Groups
   useEffect(() => {
     if (!currentUser) return;
-    
-    const q = query(collection(db, 'groups'), orderBy('createdAt', 'desc'));
+
+    // 인덱스 없이도 동작하도록 정렬 없이 쿼리
+    const q = collection(db, 'groups');
     const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const groups = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
+      const groups = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
       const myGroupsList = [];
       for (const g of groups) {
-        const memberSnap = await getDoc(doc(db, `groups/${g.id}/members/${currentUser.uid}`));
-        if (memberSnap.exists()) {
-          myGroupsList.push(g);
-        }
+        try {
+          const memberSnap = await getDoc(doc(db, `groups/${g.id}/members/${currentUser.uid}`));
+          if (memberSnap.exists()) {
+            myGroupsList.push(g);
+          }
+        } catch (_) {}
       }
+      // 최신순 정렬 클라이언트에서 처리
+      myGroupsList.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       setMyGroups(myGroupsList);
     });
     return () => unsubscribe();
@@ -47,32 +52,37 @@ export default function Groups() {
 
   const handleCreateGroup = async (e) => {
     e.preventDefault();
-    if (!currentUser || !newGroupName.trim()) return;
-    
+    if (!currentUser) {
+      if (showToast) showToast('로그인이 필요합니다.');
+      return;
+    }
+    if (!newGroupName.trim()) return;
+
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    
+
     try {
       const groupRef = await addDoc(collection(db, 'groups'), {
-        name: newGroupName,
+        name: newGroupName.trim(),
         code,
         leaderId: currentUser.uid,
         leaderName: currentUser.displayName || '이름 없음',
         memberCount: 1,
         createdAt: serverTimestamp()
       });
-      
+
       await setDoc(doc(db, `groups/${groupRef.id}/members/${currentUser.uid}`), {
         uid: currentUser.uid,
         displayName: currentUser.displayName || '이름 없음',
         photoURL: currentUser.photoURL || '',
         joinedAt: serverTimestamp()
       });
-      
+
       setIsCreateModalOpen(false);
       setNewGroupName('');
-      if (showToast) showToast('그룹이 생성되었습니다.');
+      if (showToast) showToast('그룹이 생성되었습니다! 🎉');
     } catch (error) {
-      console.error(error);
+      console.error('그룹 생성 오류:', error);
+      if (showToast) showToast(`오류: ${error.code || error.message}`);
     }
   };
 
