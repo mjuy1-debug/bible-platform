@@ -246,7 +246,7 @@ export default function Groups() {
           )}
         </div>
         
-        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)' }}>
+        <div style={{ position: 'fixed', bottom: 'var(--bottomnav-height, 64px)', left: 0, right: 0, padding: '16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)', zIndex: 10 }}>
           <form onSubmit={handlePost} style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '600px', margin: '0 auto' }}>
             <input 
               type="text"
