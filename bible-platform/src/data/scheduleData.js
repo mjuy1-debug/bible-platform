@@ -112,6 +112,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -120,65 +121,64 @@ export const SAMPLE_EVENTS = [
   { id: 5, title: '어버이 주일', date: '2026-05-10', time: '11:00', category: 'church', description: `어버이 주일 감사예배` },
   { id: 6, title: '맥추감사절 예배', date: '2026-07-05', time: '11:00', category: 'church', description: `맥추감사절 특별 감사예배` },
   { id: 7, title: '추수감사절 예배', date: '2026-11-15', time: '11:00', category: 'church', description: `추수감사절 감사예배 및 바자회` },
-  { id: 8, title: '전교인 체육대회', date: '2026-11-08', time: '10:00', category: 'church', description: `가을 전교인 체육대회` },
-  { id: 9, title: '대림절 시작', date: '2026-11-29', time: '11:00', category: 'church', description: `대림절 첫째 주일` },
-  { id: 10, title: '성탄절 예배', date: '2026-12-25', time: '11:00', category: 'church', description: `성탄 축하 예배 및 성극` },
-  { id: 11, title: '송구헌신예배', date: '2026-12-31', time: '23:00', category: 'church', description: `2026년 송구헌신예배` },
-  { id: 12, title: '송구영신예배', date: '2026-12-31', time: '23:00', category: 'church', description: `송구영신 예배` },
-  { id: 13, title: '제 14차 필리핀선교지 방문', date: '2026-03-16', endDate: '2026-03-20', category: 'church', description: `제 14차 필리핀선교지 방문` },
-  { id: 14, title: '1/4분기 선교헌신예배', date: '2026-03-22', category: 'church', description: `1/4분기 선교헌신예배` },
-  { id: 15, title: '교회본당 대청소', date: '2026-03-28', category: 'church', description: `교회본당 대청소` },
-  { id: 16, title: '수양관 밭갈이', date: '2026-03-29', category: 'joshua', description: `수양관 밭갈이` },
-  { id: 17, title: '부활주일(계란전도대회)', date: '2026-04-05', category: 'church', description: `부활주일(계란전도대회)` },
-  { id: 18, title: '주일학교일일수련회', date: '2026-04-18', category: 'joshua', description: `[장소]강촌벧엘수양관, [식사]요안나, [차량]남전도회` },
-  { id: 19, title: '루디아봄나들이', date: '2026-04-26', category: 'lydia', description: `[장소]호명산, [운전]남전도회` },
-  { id: 20, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'joseph', description: `[대상자]나오미` },
-  { id: 21, title: '4월달 건축헌신예배', date: '2026-04-12', category: 'church' },
-  { id: 22, title: '어린이주일예배 주교탐방', date: '2026-05-03', category: 'joshua', description: `[장소]잠실키자니아, [운전]남전도회` },
-  { id: 23, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'sunday_school', description: `주교 탐방 
+  { id: 8, title: '대림절 시작', date: '2026-11-29', time: '11:00', category: 'church', description: `대림절 첫째 주일` },
+  { id: 9, title: '성탄절 예배', date: '2026-12-25', time: '11:00', category: 'church', description: `성탄 축하 예배 및 성극` },
+  { id: 10, title: '송구헌신예배', date: '2026-12-31', time: '23:00', category: 'church', description: `2026년 송구헌신예배` },
+  { id: 11, title: '송구영신예배', date: '2026-12-31', time: '23:00', category: 'church', description: `송구영신 예배` },
+  { id: 12, title: '제 14차 필리핀선교지 방문', date: '2026-03-16', endDate: '2026-03-20', category: 'church', description: `제 14차 필리핀선교지 방문` },
+  { id: 13, title: '1/4분기 선교헌신예배', date: '2026-03-22', category: 'church', description: `1/4분기 선교헌신예배` },
+  { id: 14, title: '교회본당 대청소', date: '2026-03-28', category: 'church', description: `교회본당 대청소` },
+  { id: 15, title: '수양관 밭갈이', date: '2026-03-29', category: 'joshua,caleb', description: `수양관 밭갈이` },
+  { id: 16, title: '부활주일(계란전도대회)', date: '2026-04-05', category: 'church', description: `부활주일(계란전도대회)` },
+  { id: 17, title: '주일학교일일수련회', date: '2026-04-18', category: 'joshua', description: `[장소]강촌벧엘수양관, [식사]요안나, [차량]남전도회` },
+  { id: 18, title: '루디아봄나들이', date: '2026-04-26', category: 'lydia', description: `[장소]호명산, [운전]남전도회` },
+  { id: 19, title: '[요셉청년부] 섬김의 날', date: '2026-04-19', category: 'joseph', description: `[대상자]나오미` },
+  { id: 20, title: '4월달 건축헌신예배', date: '2026-04-12', category: 'church' },
+  { id: 21, title: '어린이주일예배 주교탐방', date: '2026-05-03', category: 'joshua', description: `[장소]잠실키자니아, [운전]남전도회` },
+  { id: 22, title: '[주일학교] 주교탐방', date: '2026-05-03', category: 'sunday_school', description: `주교 탐방 
 - 장      소 : 잠실키자니아
 - 운      전 : 남전도회` },
-  { id: 24, title: '[어버이주일예배&아외예배]', date: '2026-05-10', category: 'church', description: `어버이주일예배 & 야외예배 
+  { id: 23, title: '[어버이주일예배&아외예배]', date: '2026-05-10', category: 'church', description: `어버이주일예배 & 야외예배 
 - 주      최 : 남전도회
 - 장      소 : 강촌벧엘수양관
 - 식      사 : 요안나,루디아` },
-  { id: 25, title: '[6월]건축헌신예배', date: '2026-06-14', time: '11:00', category: 'church', description: `[6월]건축헌신예배` },
-  { id: 26, title: '[나보타스 방문]목사님,사모님', date: '2026-06-16', time: '03:00', endDate: '2026-06-17', category: 'church', description: `나보타스 성전건축 “관계로 목사님,사모님께서 
+  { id: 24, title: '[6월]건축헌신예배', date: '2026-06-14', time: '11:00', category: 'church', description: `[6월]건축헌신예배` },
+  { id: 25, title: '[나보타스 방문]목사님,사모님', date: '2026-06-16', time: '03:00', endDate: '2026-06-17', category: 'church', description: `나보타스 성전건축 “관계로 목사님,사모님께서 
 필리핀 지교회를 가십니다` },
-  { id: 27, title: '[2/4분기] 선교헌신예배', date: '2026-06-21', time: '11:00', category: 'church', description: `[2/4분기] 선교헌신예배` },
-  { id: 28, title: '[요안나,루디아] 연합헌신예배', date: '2026-06-28', time: '11:00', category: 'joanna', description: `[요안나,루디아] 연합헌신예배` },
-  { id: 29, title: '[2/4분기] 청년부 특별 기도회', date: '2026-06-15', time: '00:00', endDate: '2026-06-17', category: 'joseph', description: `[2/4분기] 청년부 특별 기도회` },
-  { id: 30, title: '[청년부]제2차 섬김의날', date: '2026-07-05', time: '13:00', category: 'joseph', description: `[청년부]제2차 섬김의날` },
-  { id: 31, title: '[6월달] 월삭예배', date: '2026-06-01', time: '05:00', category: 'church', description: `[6월달] 월삭예배` },
-  { id: 32, title: '[요안나]여전도회 1일수련회', date: '2026-06-12', time: '17:00', endDate: '2026-06-13', category: 'joanna', description: `[요안나]여전도회 1일수련회` },
-  { id: 33, title: '[2/4분기]전도대회', date: '2026-06-28', time: '00:30', category: 'church', description: `[2/4분기]전도대회` },
-  { id: 34, title: '주교여름수련회', date: '2026-07-30', endDate: '2026-08-01', category: 'sunday_school', description: `- 날      짜 : 7/30-8/1(목-토)
+  { id: 26, title: '[2/4분기] 선교헌신예배', date: '2026-06-21', time: '11:00', category: 'church', description: `[2/4분기] 선교헌신예배` },
+  { id: 27, title: '[요안나,루디아] 연합헌신예배', date: '2026-06-28', time: '11:00', category: 'joanna,lydia', description: `[요안나,루디아] 연합헌신예배` },
+  { id: 28, title: '[2/4분기] 청년부 특별 기도회', date: '2026-06-15', time: '00:00', endDate: '2026-06-17', category: 'joseph', description: `[2/4분기] 청년부 특별 기도회` },
+  { id: 29, title: '[청년부]제2차 섬김의날', date: '2026-07-05', time: '13:00', category: 'joseph', description: `[청년부]제2차 섬김의날` },
+  { id: 30, title: '[6월달] 월삭예배', date: '2026-06-01', time: '05:00', category: 'church', description: `[6월달] 월삭예배` },
+  { id: 31, title: '[요안나]여전도회 1일수련회', date: '2026-06-12', time: '17:00', endDate: '2026-06-13', category: 'joanna', description: `[요안나]여전도회 1일수련회` },
+  { id: 32, title: '[2/4분기]전도대회', date: '2026-06-28', time: '00:30', category: 'church', description: `[2/4분기]전도대회` },
+  { id: 33, title: '주교여름수련회', date: '2026-07-30', endDate: '2026-08-01', category: 'sunday_school', description: `- 날      짜 : 7/30-8/1(목-토)
 - 주      제 : “ 체인지업 “
 - 회      비 : “ 10,000원 “
 - 식      사 : 요안나
 - 차      량 : 갈렙,여호수아` },
-  { id: 35, title: '요안나 1일수련회', date: '2026-08-21', endDate: '2026-08-22', category: 'joanna', description: `- 날      짜 : 8/21-22(금-토)
+  { id: 34, title: '요안나 1일수련회', date: '2026-08-21', endDate: '2026-08-22', category: 'joanna', description: `- 날      짜 : 8/21-22(금-토)
 - 주      제 : “ ? “
 - 회      비 : “ 20,000원“
 - 장      소 : 강촌벧엘수양관
 - 차      량 : 각자가` },
-  { id: 36, title: '요셉청년부 1일 수련회', date: '2026-07-10', endDate: '2026-07-11', category: 'joseph', description: `- 날      짜 : 7/10-11(금-토)
+  { id: 35, title: '요셉청년부 1일 수련회', date: '2026-07-10', endDate: '2026-07-11', category: 'joseph', description: `- 날      짜 : 7/10-11(금-토)
 - 주      제 : “ 오른손이 하는 일을 왼손이 “
 - 회      비 : 20,000원
 - 장      소 : 강촌벧엘수양관` },
-  { id: 37, title: '2/4분기 전도대회', date: '2026-07-05', category: 'church', description: `- 주      최 : 전도부
+  { id: 36, title: '2/4분기 전도대회', date: '2026-07-05', category: 'church', description: `- 주      최 : 전도부
 - 봉      사 : 전도부&기관전도부원들` },
-  { id: 38, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
-  { id: 39, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua' },
-  { id: 40, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua', description: `[남전도회]수양관 텃밭작업` },
-  { id: 41, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `- 날      짜 : 8/13-15(목-토), 
+  { id: 37, title: '7월 달 건축헌신예배', date: '2026-07-12', category: 'church' },
+  { id: 38, title: '남전도회 수양관봉사', date: '2026-07-19', category: 'joshua,caleb' },
+  { id: 39, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua,caleb', description: `[남전도회]수양관 텃밭작업` },
+  { id: 40, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `- 날      짜 : 8/13-15(목-토), 
       - 주      제 : “ 예수안에 거하는 믿음 “
       - 회      비 : “ ₩20,000 “
       - 장      소 : 강촌벧엘수양관
       - 식      사 : 루디아
       - 차      량 : 갈렙,여호수아
       - 출      발 : 7:30AM` },
-  { id: 42, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua', description: `[남전도회] 연합 수련회
+  { id: 41, title: '[남전도회] 연합 수련회', date: '2026-08-29', category: 'joshua,caleb', description: `[남전도회] 연합 수련회
 
 장       소 : 강촌벧엘수양관
 주       제 : 그리스도의 마음을 품어라
@@ -203,8 +203,8 @@ export const SAMPLE_EVENTS = [
         진행 : 이민우 여호수아회장
       * 개인,교회,가정,남전도회를 위한기도 *
 6부  정리정돈&식사후귀가` },
-  { id: 43, title: '[남전도회]연합특송', date: '2026-08-30', category: 'joshua', description: `[남전도회]연합특송` },
-  { id: 44, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
+  { id: 42, title: '[남전도회]연합특송', date: '2026-08-30', category: 'joshua,caleb', description: `[남전도회]연합특송` },
+  { id: 43, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
 ];
 
 /**
