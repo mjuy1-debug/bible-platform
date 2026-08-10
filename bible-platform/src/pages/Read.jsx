@@ -71,6 +71,12 @@ const Read = () => {
   };
 
   const handleVerseClick = (v) => {
+    // If the user has selected text (e.g., drag or double click), ignore the click
+    // to prevent the menu from toggling off immediately.
+    if (window.getSelection && window.getSelection().toString().trim().length > 0) {
+      return;
+    }
+
     const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
     setSelectedVerses((prev) => {
       const next = { ...prev };
@@ -386,64 +392,68 @@ const Read = () => {
             exit={{ y: 100, opacity: 0 }}
             style={{
               position: 'fixed',
-              bottom: '20px',
+              bottom: '90px',
               left: '50%',
               transform: 'translateX(-50%)',
               zIndex: 50,
               width: 'max-content',
-              maxWidth: '90%',
+              maxWidth: '95%',
             }}
           >
             <div style={{
-              display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.8rem 1.2rem',
-              background: 'var(--bg-secondary)', borderRadius: '30px', flexWrap: 'wrap',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-              border: '1px solid var(--glass-border)'
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+              padding: '0.6rem 1rem', background: 'var(--bg-secondary)', borderRadius: '30px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)',
+              flexWrap: 'wrap'
             }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
                 {Object.keys(selectedVerses).length}구절
               </span>
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
               
-              {HIGHLIGHT_COLORS.map(({ color, name }) => (
-                <button key={name} title={name} onClick={() => {
-                  Object.values(selectedVerses).forEach(v => toggleHighlight(v.ref, color));
-                  setSelectedVerses({});
-                }}
-                  style={{ width: '22px', height: '22px', borderRadius: '50%', background: color, cursor: 'pointer',
-                    border: '2px solid transparent', flexShrink: 0, transition: 'transform 0.15s' }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                />
-              ))}
+              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                {HIGHLIGHT_COLORS.map(({ color, name }) => (
+                  <button key={name} title={name} onClick={() => {
+                    Object.values(selectedVerses).forEach(v => toggleHighlight(v.ref, color));
+                    setSelectedVerses({});
+                  }}
+                    style={{ width: '22px', height: '22px', borderRadius: '50%', background: color, cursor: 'pointer',
+                      border: '2px solid transparent', flexShrink: 0, transition: 'transform 0.15s', padding: 0 }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                  />
+                ))}
+              </div>
               
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
               
-              <button onClick={() => {
-                Object.values(selectedVerses).forEach(v => toggleFavorite({ text: v.text, ref: v.ref }));
-                setSelectedVerses({});
-              }}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                  background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
-                  fontSize: '0.82rem', fontWeight: 600 }}>
-                <Bookmark size={16} /> 저장
-              </button>
-              
-              <button onClick={() => {
-                handleShare();
-                setSelectedVerses({});
-              }}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                  background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
-                  fontSize: '0.82rem', fontWeight: 600 }}>
-                <Share2 size={16} /> 공유
-              </button>
-              
-              <button onClick={() => setSelectedVerses({})}
-                style={{ marginLeft: '0.5rem', color: 'var(--text-secondary)', display: 'flex', cursor: 'pointer',
-                  padding: '0.4rem', background: 'transparent', border: 'none' }}>
-                <X size={18} />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                <button onClick={() => {
+                  Object.values(selectedVerses).forEach(v => toggleFavorite({ text: v.text, ref: v.ref }));
+                  setSelectedVerses({});
+                }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <Bookmark size={16} /> 저장
+                </button>
+                
+                <button onClick={() => {
+                  handleShare();
+                  setSelectedVerses({});
+                }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <Share2 size={16} /> 공유
+                </button>
+                
+                <button onClick={() => setSelectedVerses({})}
+                  style={{ marginLeft: '0.2rem', color: 'var(--text-secondary)', display: 'flex', cursor: 'pointer',
+                    padding: '0.4rem', background: 'transparent', border: 'none' }}>
+                  <X size={18} />
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
