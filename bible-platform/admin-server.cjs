@@ -44,7 +44,10 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
     const currentContent = fs.readFileSync(SCHEDULE_DATA_PATH, 'utf-8');
 
     // 교회 일정/여호수아 일정만 추출 (공휴일/절기 제외)
-    const userEvents = events.filter(e => !['holiday', 'liturgy'].includes(e.category));
+    const userEvents = events.filter(e => {
+      const cats = Array.isArray(e.category) ? e.category : [e.category];
+      return !cats.some(c => ['holiday', 'liturgy'].includes(c));
+    });
 
     const eventLines = userEvents.map((e, idx) => {
       const timeStr = e.time ? `, time: '${e.time}'` : '';
@@ -52,7 +55,13 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
       const safeTitle = e.title ? e.title.replace(/'/g, "\\'") : '';
       const safeDesc = e.description ? e.description.replace(/`/g, "\\`").replace(/\$/g, "\\$") : '';
       const descStr = safeDesc ? `, description: \`${safeDesc}\`` : '';
-      return `  { id: ${idx + 1}, title: '${safeTitle}', date: '${e.date}'${timeStr}${endStr}, category: '${e.category}'${descStr} },`;
+      let catStr;
+      if (Array.isArray(e.category)) {
+        catStr = `[${e.category.map(c => `'${c}'`).join(', ')}]`;
+      } else {
+        catStr = `'${e.category}'`;
+      }
+      return `  { id: ${idx + 1}, title: '${safeTitle}', date: '${e.date}'${timeStr}${endStr}, category: ${catStr}${descStr} },`;
     }).join('\n');
 
     const newEventsBlock = `  // ── 사용자/교회 일정 ──\n${eventLines}`;
@@ -87,15 +96,26 @@ app.post('/api/admin/save-and-deploy', (req, res) => {
     });
     console.log('✅ git push 완료');
 
-    // 5. GitHub Pages 실제 배포 (gh-pages)
+    // 5. GitHub Pages 실제 배포 (gh-pages) - 백그라운드로 실행하여 응답 지연 방지
     console.log('⏳ 실제 앱(GitHub Pages)에 배포 중입니다... (1~2분 소요)');
-    execSync('npm run deploy', {
-      cwd: __dirname,
-      encoding: 'utf-8',
+    const { exec } = require('child_process');
+    // gh-pages 캐시 디렉토리 제거 후 배포 (구버전 캐시 방지)
+    const os = require('os');
+    const tmpDir = os.tmpdir();
+    const clearAndDeploy = `
+      powershell -Command "Get-ChildItem '${tmpDir}' -Filter 'gh-pages*' -Directory -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue"
+    `.trim();
+    exec(clearAndDeploy, { cwd: __dirname }, () => {
+      exec('npx gh-pages -d dist', { cwd: __dirname, encoding: 'utf-8' }, (error, stdout, stderr) => {
+        if (error) {
+          console.error('❌ 배포 중 오류 발생:', error);
+        } else {
+          console.log('✅ GitHub Pages 배포 완료');
+        }
+      });
     });
-    console.log('✅ GitHub Pages 배포 완료');
 
-    res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!' });
+    res.json({ ok: true, message: '✅ 저장 및 GitHub 푸시 완료!\n(실제 웹사이트 반영에는 1~2분 정도 소요될 수 있습니다.)' });
   } catch (err) {
     console.error('❌ 오류:', err.message);
     res.status(500).json({ ok: false, error: err.message });

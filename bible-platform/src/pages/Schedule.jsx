@@ -14,6 +14,15 @@ import CalendarGrid from '../components/CalendarGrid';
 const MONTH_NAMES = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 
+const parseCategory = (cat) => {
+  if (Array.isArray(cat)) return cat;
+  if (typeof cat === 'string') {
+    if (cat.includes(',')) return cat.split(',').map(c => c.trim());
+    return [cat];
+  }
+  return ['normal'];
+};
+
 const Schedule = () => {
   const { events, addEvent, updateEvent, deleteEvent } = useContext(UserContext);
   const now = new Date();
@@ -33,11 +42,14 @@ const Schedule = () => {
 
   // 새 일정 폼
   const [newEvent, setNewEvent] = useState({
-    title: '', date: '', time: '', endDate: '', category: 'normal', description: '',
+    title: '', date: '', time: '', endDate: '', category: ['normal'], description: '',
   });
 
   const filteredEvents = useMemo(() => {
-    return events.filter(e => categoryFilter[e.category]);
+    return events.filter(e => {
+      const cats = parseCategory(e.category);
+      return cats.some(c => categoryFilter[c]);
+    });
   }, [events, categoryFilter]);
 
   const monthEvents = useMemo(() => {
@@ -94,7 +106,7 @@ const Schedule = () => {
       addEvent(payload);
     }
     
-    setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'normal', description: '' });
+    setNewEvent({ title: '', date: '', time: '', endDate: '', category: ['normal'], description: '' });
     setEditId(null);
     setShowAddForm(false);
   };
@@ -106,7 +118,7 @@ const Schedule = () => {
       date: ev.date || '',
       time: ev.time || '',
       endDate: ev.endDate || '',
-      category: ev.category || 'normal',
+      category: parseCategory(ev.category),
       description: ev.description || '',
     });
     setShowAddForm(true);
@@ -148,7 +160,7 @@ const Schedule = () => {
           </button>
         ))}
         {import.meta.env.DEV && (
-          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: '', time: '', endDate: '', category: 'normal', description: '' }); setShowAddForm(true); }}
+          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: '', time: '', endDate: '', category: ['normal'], description: '' }); setShowAddForm(true); }}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.55rem 1.2rem', borderRadius: '30px',
@@ -264,7 +276,7 @@ const Schedule = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.4rem' }}>
                         {Object.keys(CATEGORY_LABELS).map(key => {
-                          const count = mEvents.filter(e => e.category === key).length;
+                          const count = mEvents.filter(e => parseCategory(e.category).includes(key)).length;
                           if (count === 0) return null;
                           return (
                             <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.72rem' }}>
@@ -470,13 +482,23 @@ const Schedule = () => {
                   .filter(([key]) => !['holiday', 'liturgy'].includes(key))
                   .map(([key, label]) => {
                   const colors = CATEGORY_COLORS[key];
+                  const isSelected = parseCategory(newEvent.category).includes(key);
                   return (
-                    <button key={key} onClick={() => setNewEvent(p => ({ ...p, category: key }))}
+                    <button key={key} onClick={() => setNewEvent(p => {
+                      let cats = [...parseCategory(p.category)];
+                      if (cats.includes(key)) {
+                        cats = cats.filter(c => c !== key);
+                        if (cats.length === 0) cats = ['normal']; // Ensure at least one category
+                      } else {
+                        cats.push(key);
+                      }
+                      return { ...p, category: cats };
+                    })}
                       style={{
                         padding: '0.4rem 0.9rem', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
-                        border: `1px solid ${newEvent.category === key ? colors.border : 'var(--glass-border)'}`,
-                        background: newEvent.category === key ? colors.bg : 'transparent',
-                        color: newEvent.category === key ? colors.text : 'var(--text-secondary)',
+                        border: `1px solid ${isSelected ? colors.border : 'var(--glass-border)'}`,
+                        background: isSelected ? colors.bg : 'transparent',
+                        color: isSelected ? colors.text : 'var(--text-secondary)',
                         transition: 'all 0.2s',
                       }}>
                       {label}
@@ -598,7 +620,7 @@ const Schedule = () => {
       {/* ─── Event Detail Modal ─── */}
       <AnimatePresence>
         {selectedEvent && (() => {
-          const colors = CATEGORY_COLORS[selectedEvent.category] || CATEGORY_COLORS.normal;
+          const cats = parseCategory(selectedEvent.category);
           return (
             <motion.div
               key="sel-event-modal"
@@ -623,12 +645,19 @@ const Schedule = () => {
                 onClick={e => e.stopPropagation()}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: colors.text,
-                      background: colors.bg, padding: '0.2rem 0.8rem', borderRadius: '20px', border: `1px solid ${colors.border}` }}>
-                      {CATEGORY_LABELS[selectedEvent.category]}
-                    </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                    {cats.map(cat => {
+                      const colors = CATEGORY_COLORS[cat] || CATEGORY_COLORS.normal;
+                      return (
+                        <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
+                          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: colors.text,
+                            background: colors.bg, padding: '0.2rem 0.8rem', borderRadius: '20px', border: `1px solid ${colors.border}` }}>
+                            {CATEGORY_LABELS[cat]}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                   <button onClick={() => setSelectedEvent(null)}
                     style={{ padding: '0.3rem', background: 'var(--bg-secondary)', borderRadius: '50%',
@@ -668,7 +697,8 @@ const Schedule = () => {
 
 // 이벤트 카드 컴포넌트
 const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
-  const colors = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.normal;
+  const cats = parseCategory(event.category);
+  const firstColor = CATEGORY_COLORS[cats[0]] || CATEGORY_COLORS.normal;
   const [showConfirm, setShowConfirm] = useState(false);
 
   return (
@@ -678,22 +708,26 @@ const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
         display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
         padding: compact ? '0.6rem 0.8rem' : '0.8rem 1rem',
         borderRadius: '12px',
-        background: colors.bg,
-        border: `1px solid ${colors.border}`,
+        background: firstColor.bg,
+        border: `1px solid ${firstColor.border}`,
         transition: 'all 0.15s',
         cursor: onSelect ? 'pointer' : 'default',
       }}>
-      {/* Category dot */}
-      <span style={{
-        width: '8px', height: '8px', borderRadius: '50%',
-        background: colors.dot, flexShrink: 0, marginTop: '0.35rem',
-      }} />
+      {/* Category dots */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', flexShrink: 0, marginTop: '0.35rem' }}>
+        {cats.map(cat => (
+          <span key={cat} style={{
+            width: '8px', height: '8px', borderRadius: '50%',
+            background: (CATEGORY_COLORS[cat] || CATEGORY_COLORS.normal).dot,
+          }} />
+        ))}
+      </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontWeight: 600, fontSize: compact ? '0.85rem' : '0.95rem', color: 'var(--text-primary)', marginBottom: '0.15rem' }}>
           {event.title}
         </p>
-        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', fontSize: '0.75rem', color: colors.text }}>
+        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', fontSize: '0.75rem', color: firstColor.text }}>
           {compact && <span>{event.date.slice(5).replace('-', '/')}</span>}
           {event.time && (
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -701,12 +735,21 @@ const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
             </span>
           )}
           {event.endDate && <span>~ {event.endDate.slice(5).replace('-', '/')}</span>}
-          <span style={{
-            padding: '0.1rem 0.4rem', borderRadius: '8px',
-            background: colors.bg, fontSize: '0.7rem', fontWeight: 600,
-          }}>
-            {CATEGORY_LABELS[event.category]}
-          </span>
+          
+          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+            {cats.map(cat => {
+              const c = CATEGORY_COLORS[cat] || CATEGORY_COLORS.normal;
+              return (
+                <span key={cat} style={{
+                  padding: '0.1rem 0.4rem', borderRadius: '8px',
+                  background: c.bg, color: c.text, fontSize: '0.7rem', fontWeight: 600,
+                  border: `1px solid ${c.border}`
+                }}>
+                  {CATEGORY_LABELS[cat]}
+                </span>
+              );
+            })}
+          </div>
         </div>
         {!compact && event.description && (
           <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.3rem', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
@@ -716,7 +759,7 @@ const EventCard = ({ event, onDelete, onEdit, onSelect, compact = false }) => {
       </div>
 
       {/* Admin Actions */}
-      {import.meta.env.DEV && !['holiday', 'liturgy'].includes(event.category) && (
+      {import.meta.env.DEV && !cats.some(c => ['holiday', 'liturgy'].includes(c)) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', flexShrink: 0, borderLeft: '1px solid var(--glass-border)', paddingLeft: '0.5rem', marginLeft: '0.2rem' }}>
           <button onClick={(e) => { e.stopPropagation(); onEdit(event); }} style={{ display: 'flex', padding: '0.3rem', color: 'var(--text-secondary)', cursor: 'pointer', borderRadius: '6px', transition: 'background 0.2s' }} title="수정">
             <Edit3 size={14} />

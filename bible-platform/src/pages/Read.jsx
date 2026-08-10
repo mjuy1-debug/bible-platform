@@ -33,7 +33,7 @@ const Read = () => {
 
   const [selectedBook, setSelectedBook] = useState(initBook);
   const [selectedChapter, setSelectedChapter] = useState(initChapter);
-  const [selectedVerse, setSelectedVerse] = useState(null);
+  const [selectedVerses, setSelectedVerses] = useState({});
   const [fontSize, setFontSize] = useState(1.15);
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [bookSearch, setBookSearch] = useState('');
@@ -46,7 +46,7 @@ const Read = () => {
   const loadChapter = useCallback(async (bookId, chapter) => {
     setLoading(true);
     setError(null);
-    setSelectedVerse(null);
+    setSelectedVerses({});
     setVerses([]);
     setPlayingVideo(null); // 장 넘기면 플레이어 닫기
     try {
@@ -72,18 +72,38 @@ const Read = () => {
 
   const handleVerseClick = (v) => {
     const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
-    setSelectedVerse((sel) => (sel?.ref === ref ? null : { ...v, ref, book: selectedBook.name }));
+    setSelectedVerses((prev) => {
+      const next = { ...prev };
+      if (next[ref]) {
+        delete next[ref];
+      } else {
+        next[ref] = { ...v, ref, book: selectedBook.name, chapter: selectedChapter };
+      }
+      return next;
+    });
   };
 
-  const handleShare = useCallback((text, ref) => {
-    const shareText = `"${text}"
-— ${ref}`;
+  const handleShare = useCallback(() => {
+    const verses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
+    if (verses.length === 0) return;
+
+    let refText = '';
+    const isSameChapter = new Set(verses.map(v => v.book + v.chapter)).size === 1;
+    if (isSameChapter) {
+      refText = `${verses[0].ref.split(':')[0]}:${verses.map(v => v.verse).join(', ')}`;
+    } else {
+      refText = verses.map(v => v.ref).join(', ');
+    }
+    
+    const textToShare = verses.map(v => v.text).join('\n');
+    const shareText = `"${textToShare}"\n— ${refText}`;
+
     if (navigator.share) {
       navigator.share({ title: '말씀 나눔', text: shareText }).catch(() => {});
     } else {
       navigator.clipboard.writeText(shareText).then(() => alert('클립보드에 복사됐습니다! ✅'));
     }
-  }, []);
+  }, [selectedVerses]);
 
   const goChapter = (dir) => {
     const next = selectedChapter + dir;
@@ -267,7 +287,7 @@ const Read = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
             {verses.map((v) => {
               const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
-              const isSelected = selectedVerse?.ref === ref;
+              const isSelected = !!selectedVerses[ref];
 
               return (
                 <div key={v.verse}>
@@ -321,45 +341,7 @@ const Read = () => {
                     </span>
                   </div>
 
-                  {/* Action Toolbar */}
-                  <AnimatePresence>
-                    {isSelected && (
-                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-                        style={{ overflow: 'hidden', margin: '0 0.5rem 0.3rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1rem',
-                          background: 'var(--bg-secondary)', borderRadius: '10px', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>형광펜</span>
-                          {HIGHLIGHT_COLORS.map(({ color, name }) => (
-                            <button key={name} title={name} onClick={(e) => { e.stopPropagation(); toggleHighlight(ref, color); }}
-                              style={{ width: '22px', height: '22px', borderRadius: '50%', background: color, cursor: 'pointer',
-                                border: `2px solid ${highlights[ref] === color ? 'var(--accent-gold)' : 'transparent'}`,
-                                flexShrink: 0, transition: 'border-color 0.15s' }} />
-                          ))}
-                          <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', flexShrink: 0 }} />
-                          <button onClick={(e) => { e.stopPropagation(); toggleFavorite({ text: v.text, ref }); }}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.9rem',
-                              borderRadius: '20px', border: '1px solid var(--glass-border)', cursor: 'pointer',
-                              background: isFavorite(ref) ? 'var(--accent-gold)' : 'transparent',
-                              color: isFavorite(ref) ? '#fff' : 'var(--text-secondary)',
-                              fontSize: '0.82rem', fontWeight: 600, transition: 'all 0.2s' }}>
-                            {isFavorite(ref) ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
-                            {isFavorite(ref) ? '저장됨' : '즐겨찾기'}
-                          </button>
-                          <button onClick={(e) => { e.stopPropagation(); handleShare(v.text, ref); }}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.9rem',
-                              borderRadius: '20px', border: '1px solid var(--glass-border)', cursor: 'pointer',
-                              background: 'transparent', color: 'var(--text-secondary)',
-                              fontSize: '0.82rem', fontWeight: 600, minHeight: '36px' }}>
-                            <Share2 size={14} /> 공유
-                          </button>
-                          <button onClick={(e) => { e.stopPropagation(); setSelectedVerse(null); }}
-                            style={{ marginLeft: 'auto', color: 'var(--text-secondary)', display: 'flex', cursor: 'pointer' }}>
-                            <X size={15} />
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* Inline Action Toolbar removed for floating toolbar */}
                 </div>
               );
             })}
@@ -394,6 +376,78 @@ const Read = () => {
         title={playingVideo?.label}
         onClose={() => setPlayingVideo(null)}
       />
+
+      {/* ── Floating Action Bar for Multiple Selection ── */}
+      <AnimatePresence>
+        {Object.keys(selectedVerses).length > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 50,
+              width: 'max-content',
+              maxWidth: '90%',
+            }}
+          >
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.8rem 1.2rem',
+              background: 'var(--bg-secondary)', borderRadius: '30px', flexWrap: 'wrap',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              border: '1px solid var(--glass-border)'
+            }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
+                {Object.keys(selectedVerses).length}구절
+              </span>
+              <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
+              
+              {HIGHLIGHT_COLORS.map(({ color, name }) => (
+                <button key={name} title={name} onClick={() => {
+                  Object.values(selectedVerses).forEach(v => toggleHighlight(v.ref, color));
+                  setSelectedVerses({});
+                }}
+                  style={{ width: '22px', height: '22px', borderRadius: '50%', background: color, cursor: 'pointer',
+                    border: '2px solid transparent', flexShrink: 0, transition: 'transform 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                />
+              ))}
+              
+              <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
+              
+              <button onClick={() => {
+                Object.values(selectedVerses).forEach(v => toggleFavorite({ text: v.text, ref: v.ref }));
+                setSelectedVerses({});
+              }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                  background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
+                  fontSize: '0.82rem', fontWeight: 600 }}>
+                <Bookmark size={16} /> 저장
+              </button>
+              
+              <button onClick={() => {
+                handleShare();
+                setSelectedVerses({});
+              }}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                  background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
+                  fontSize: '0.82rem', fontWeight: 600 }}>
+                <Share2 size={16} /> 공유
+              </button>
+              
+              <button onClick={() => setSelectedVerses({})}
+                style={{ marginLeft: '0.5rem', color: 'var(--text-secondary)', display: 'flex', cursor: 'pointer',
+                  padding: '0.4rem', background: 'transparent', border: 'none' }}>
+                <X size={18} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
