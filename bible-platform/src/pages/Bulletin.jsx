@@ -77,7 +77,7 @@ export default function Bulletin() {
   const [isUploadMode, setIsUploadMode] = useState(false);
   const [selectedBulletin, setSelectedBulletin] = useState(null); // Digital view
   const [selectedImage, setSelectedImage] = useState(null); // Legacy image view
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [bulletinZoom, setBulletinZoom] = useState(1); // Zoom control
   
   // New Bulletin Form State
   const [title, setTitle] = useState('');
@@ -208,7 +208,18 @@ export default function Bulletin() {
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
     <div style={{ margin: '0 -20px', padding: '0 20px 20px 20px' }}>
-      <div style={{ minWidth: '768px', maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', alignItems: 'center', gap: '8px', paddingRight: '10px' }}>
+        <ZoomIn size={16} color="var(--text-secondary)" />
+        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>크기 조절</span>
+        <input 
+          type="range" min="0.4" max="1.5" step="0.05" 
+          value={bulletinZoom} 
+          onChange={(e) => setBulletinZoom(Number(e.target.value))} 
+          style={{ width: '100px', accentColor: 'var(--accent-gold)' }} 
+        />
+      </div>
+      <div style={{ zoom: bulletinZoom, transformOrigin: 'top center' }}>
+        <div style={{ minWidth: '768px', maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
         <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
           {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
         </h1>
@@ -322,6 +333,7 @@ export default function Bulletin() {
         </div>
 
         </div>
+      </div>
       </div>
     </div>
   );
