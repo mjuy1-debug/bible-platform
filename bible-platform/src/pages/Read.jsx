@@ -387,22 +387,22 @@ const Read = () => {
       <AnimatePresence>
         {Object.keys(selectedVerses).length > 0 && (
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
+            key="floating-bar"
+            initial={{ y: 100, x: '-50%', opacity: 0 }}
+            animate={{ y: 0, x: '-50%', opacity: 1 }}
+            exit={{ y: 100, x: '-50%', opacity: 0 }}
             style={{
               position: 'fixed',
               bottom: '90px',
               left: '50%',
-              transform: 'translateX(-50%)',
               zIndex: 50,
               width: 'max-content',
               maxWidth: '95%',
             }}
           >
             <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
-              padding: '0.6rem 1rem', background: 'var(--bg-secondary)', borderRadius: '30px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem',
+              padding: '0.5rem 0.8rem', background: 'var(--bg-secondary)', borderRadius: '30px',
               boxShadow: '0 8px 32px rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)',
               flexWrap: 'wrap'
             }}>
