@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image, Brain
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image, Brain, Map as MapIcon
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -108,6 +108,21 @@ const Read = () => {
     const textStr = sortedVerses.map(v => v.text).join(' ');
     
     navigate('/memorize', { state: { verse: textStr, reference: refText } });
+    setSelectedVerses({});
+  };
+
+  const handleSearchMap = () => {
+    const textStr = Object.values(selectedVerses).map(v => v.text).join(' ');
+    // 간단한 주요 지명 매칭 (본문에 지명이 있으면 해당 지명으로 지도 검색)
+    const knownLocations = ["예루살렘", "베들레헴", "가버나움", "나사렛", "갈릴리", "요단", "여리고", "사마리아", "안디옥", "에베소", "고린도", "로마", "애굽", "다메섹", "시내"];
+    let foundLoc = "";
+    for (const loc of knownLocations) {
+      if (textStr.includes(loc)) {
+        foundLoc = loc;
+        break;
+      }
+    }
+    navigate('/bible-map', { state: { searchLoc: foundLoc } });
     setSelectedVerses({});
   };
 
@@ -542,6 +557,13 @@ const Read = () => {
                     background: 'transparent', border: 'none', color: '#64b5f6', cursor: 'pointer',
                     fontSize: '0.82rem', fontWeight: 600 }}>
                   <Brain size={16} /> 암송
+                </button>
+
+                <button onClick={handleSearchMap}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: '#ba68c8', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <MapIcon size={16} /> 지도
                 </button>
 
                 <button onClick={handleWriteDevotion}

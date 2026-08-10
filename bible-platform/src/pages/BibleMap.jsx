@@ -1,196 +1,196 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Map, MapPin, Compass, X } from 'lucide-react';
+import { Map, MapPin, Compass, Search, Filter, X } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import locationsData from '../data/locations.json';
 
-const LOCATIONS = [
-  {
-    id: 1,
-    name: "예루살렘",
-    description: "다윗이 도읍으로 정한 곳이자 예수님이 십자가에 못 박히신 성전의 도시. 이스라엘의 정치적, 종교적 중심지입니다.",
-    verse: "마태복음 21:10 - 예수께서 예루살렘에 들어가시니 온 성이 소동하여 이르되 이는 누구냐 하거늘",
-    image: "https://images.unsplash.com/photo-1549479326-0e10cc0eb85a?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    id: 2,
-    name: "갈릴리",
-    description: "예수님이 대부분의 사역을 하신 지역. 갈릴리 호수를 중심으로 많은 기적이 일어났습니다.",
-    verse: "마태복음 4:23 - 예수께서 온 갈릴리에 두루 다니사 그들의 회당에서 가르치시며 천국 복음을 전파하시며",
-    image: "https://images.unsplash.com/photo-1476900543704-4312b78632f8?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    id: 3,
-    name: "베들레헴",
-    description: "다윗의 고향이자 예수님이 탄생하신 곳. '떡집'이라는 뜻을 가지고 있습니다.",
-    verse: "마태복음 2:1 - 헤롯 왕 때에 예수께서 유대 베들레헴에서 나시매 동방으로부터 박사들이 예루살렘에 이르러 말하되",
-    image: "https://images.unsplash.com/photo-1518709779341-56cf4535e94b?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    id: 4,
-    name: "나사렛",
-    description: "예수님이 어린 시절을 보내며 자라나신 동네. 갈릴리 남부에 위치한 작은 마을이었습니다.",
-    verse: "누가복음 2:51 - 예수께서 함께 내려가사 나사렛에 이르러 순종하여 받드시더라",
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600"
-  },
-  {
-    id: 5,
-    name: "사마리아",
-    description: "유대인들이 기피했던 지역이나, 예수님은 이곳을 지나며 사마리아 여인에게 복음을 전하셨습니다.",
-    verse: "요한복음 4:4 - 사마리아를 통과하여야 하겠는지라",
-    image: "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?auto=format&fit=crop&q=80&w=600"
-  }
-];
+// Leaflet default icon fix
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+// Component to handle auto-zoom when a specific location is selected
+function MapController({ selectedLocation }) {
+  const map = useMap();
+  useEffect(() => {
+    if (selectedLocation) {
+      map.flyTo([selectedLocation.lat, selectedLocation.lng], 12, {
+        duration: 1.5
+      });
+    } else {
+      // Default view to Israel/Palestine region
+      map.flyTo([31.7683, 35.2137], 7, { duration: 1.5 });
+    }
+  }, [selectedLocation, map]);
+  return null;
+}
 
 export default function BibleMap() {
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("전체");
+  const [selectedLoc, setSelectedLoc] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Extract unique types for the filter
+  const allTypes = ["전체", ...new Set(locationsData.map(loc => loc.type))].filter(Boolean);
+
+  // Check if we came from Read.jsx with a requested location
+  useEffect(() => {
+    if (location.state && location.state.searchLoc) {
+      const searchTarget = location.state.searchLoc;
+      setSearchQuery(searchTarget);
+      
+      const found = locationsData.find(l => l.name.includes(searchTarget) || l.englishName.toLowerCase().includes(searchTarget.toLowerCase()));
+      if (found) {
+        setSelectedLoc(found);
+        setDrawerOpen(true);
+      }
+    }
+  }, [location]);
+
+  // Filter locations
+  const filteredLocations = locationsData.filter(loc => {
+    const matchSearch = loc.name.includes(searchQuery) || loc.englishName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchFilter = activeFilter === "전체" || loc.type === activeFilter;
+    return matchSearch && matchFilter;
+  });
+
+  const handleSelectLocation = (loc) => {
+    setSelectedLoc(loc);
+    setDrawerOpen(true);
+  };
 
   return (
-    <div style={{ 
-      padding: '2rem', 
-      minHeight: '100vh', 
-      backgroundColor: 'var(--bg-primary)', 
-      color: 'var(--text-primary)', 
-      fontFamily: 'sans-serif' 
-    }}>
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        style={{ maxWidth: '1200px', margin: '0 auto' }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
-          <Map size={32} color="var(--accent-gold)" />
-          <h1 style={{ margin: 0, color: 'var(--accent-gold)' }}>성경 주요 지명</h1>
+    <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 60px)', backgroundColor: 'var(--bg-primary)', overflow: 'hidden' }}>
+      
+      {/* Search and Filter UI overlay */}
+      <div style={{ position: 'absolute', top: 20, left: 20, right: 20, zIndex: 1000, pointerEvents: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', pointerEvents: 'auto' }}>
+          <div style={{ flex: 1, position: 'relative' }}>
+            <Search size={20} style={{ position: 'absolute', left: 15, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+            <input 
+              type="text" 
+              placeholder="성경 지명 검색 (예: 예루살렘, 갈릴리)" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ width: '100%', padding: '14px 14px 14px 45px', borderRadius: '30px', border: '1px solid var(--glass-border)', backgroundColor: 'var(--glass-bg)', color: 'var(--text-primary)', backdropFilter: 'blur(10px)', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}
+            />
+          </div>
         </div>
 
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-          gap: '2rem' 
-        }}>
-          {LOCATIONS.map((loc) => (
-            <motion.div
-              key={loc.id}
-              whileHover={{ y: -10 }}
-              onClick={() => setSelectedLocation(loc)}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '5px', pointerEvents: 'auto', scrollbarWidth: 'none' }}>
+          {allTypes.slice(0, 8).map(type => (
+            <button 
+              key={type}
+              onClick={() => setActiveFilter(type)}
               style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                backgroundColor: 'var(--bg-secondary)',
-                border: '1px solid var(--glass-border)',
-                cursor: 'pointer',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                padding: '8px 16px', borderRadius: '20px', whiteSpace: 'nowrap', cursor: 'pointer',
+                backgroundColor: activeFilter === type ? 'var(--accent-gold)' : 'var(--glass-bg)',
+                color: activeFilter === type ? '#000' : 'var(--text-primary)',
+                border: '1px solid var(--glass-border)', backdropFilter: 'blur(10px)',
+                fontWeight: activeFilter === type ? 'bold' : 'normal', transition: 'all 0.2s'
               }}
             >
-              <div style={{ 
-                height: '200px', 
-                backgroundImage: `url(${loc.image})`, 
-                backgroundSize: 'cover', 
-                backgroundPosition: 'center',
-                position: 'relative'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  bottom: 0, left: 0, right: 0,
-                  padding: '1rem',
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)'
-                }}>
-                  <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <MapPin size={18} color="var(--accent-gold)" />
-                    {loc.name}
-                  </h3>
-                </div>
-              </div>
-            </motion.div>
+              {type}
+            </button>
           ))}
         </div>
+      </div>
 
-        <AnimatePresence>
-          {selectedLocation && (
-            <div style={{
-              position: 'fixed',
-              top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.7)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1000,
-              padding: '1rem'
-            }} onClick={() => setSelectedLocation(null)}>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  backgroundColor: 'var(--bg-primary)',
-                  borderRadius: '24px',
-                  maxWidth: '600px',
-                  width: '100%',
-                  overflow: 'hidden',
-                  border: '1px solid var(--glass-border)',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
-                }}
-              >
-                <div style={{ 
-                  height: '300px', 
-                  backgroundImage: `url(${selectedLocation.image})`, 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center',
-                  position: 'relative'
-                }}>
-                  <button 
-                    onClick={() => setSelectedLocation(null)}
-                    style={{
-                      position: 'absolute',
-                      top: '1rem', right: '1rem',
-                      background: 'rgba(0,0,0,0.5)',
-                      border: 'none',
-                      color: 'white',
-                      borderRadius: '50%',
-                      width: '40px', height: '40px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <X size={24} />
-                  </button>
+      {/* Map Container */}
+      <div style={{ width: '100%', height: '100%', zIndex: 0 }}>
+        <MapContainer center={[31.7683, 35.2137]} zoom={7} style={{ width: '100%', height: '100%' }} zoomControl={false}>
+          {/* Using a sleek dark mode map tile from CartoDB */}
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a> | Data by <a href="https://openbible.info">OpenBible.info</a>'
+          />
+          <MapController selectedLocation={selectedLoc} />
+          
+          {/* Only render first 300 to avoid freezing the browser if no filter applied */}
+          {filteredLocations.slice(0, 300).map((loc) => (
+            <Marker 
+              key={loc.id} 
+              position={[loc.lat, loc.lng]}
+              eventHandlers={{
+                click: () => handleSelectLocation(loc)
+              }}
+            >
+              <Popup>
+                <div style={{ color: '#333' }}>
+                  <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', fontWeight: 'bold' }}>{loc.name}</h3>
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>{loc.englishName} • {loc.type}</div>
+                  {loc.verses && loc.verses.length > 0 && (
+                    <div style={{ fontSize: '12px' }}>
+                      <strong>관련 구절:</strong> {loc.verses.join(', ')}
+                    </div>
+                  )}
                 </div>
-                
-                <div style={{ padding: '2rem' }}>
-                  <h2 style={{ 
-                    margin: '0 0 1rem 0', 
-                    color: 'var(--accent-gold)',
-                    display: 'flex', alignItems: 'center', gap: '0.5rem'
-                  }}>
-                    <Compass size={24} />
-                    {selectedLocation.name}
-                  </h2>
-                  
-                  <p style={{ 
-                    lineHeight: '1.6', 
-                    color: 'var(--text-primary)',
-                    fontSize: '1.1rem',
-                    marginBottom: '1.5rem'
-                  }}>
-                    {selectedLocation.description}
-                  </p>
-                  
-                  <div style={{
-                    backgroundColor: 'var(--bg-secondary)',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    borderLeft: '4px solid var(--accent-gold)'
-                  }}>
-                    <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-secondary)' }}>관련 말씀</h4>
-                    <p style={{ margin: 0, fontStyle: 'italic', color: 'var(--text-primary)' }}>
-                      "{selectedLocation.verse}"
-                    </p>
-                  </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
+
+      {/* Bottom Information Drawer */}
+      <AnimatePresence>
+        {drawerOpen && selectedLoc && (
+          <motion.div 
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1000, backgroundColor: 'var(--bg-secondary)', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '24px', boxShadow: '0 -4px 20px rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <MapPin color="var(--accent-gold)" size={24} />
+                  <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--accent-gold)' }}>{selectedLoc.name}</h2>
                 </div>
-              </motion.div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>{selectedLoc.englishName} | {selectedLoc.type}</div>
+              </div>
+              <button onClick={() => setDrawerOpen(false)} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '50%', padding: '8px', color: 'var(--text-primary)', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
             </div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+            
+            {selectedLoc.verses && selectedLoc.verses.length > 0 ? (
+              <div style={{ backgroundColor: 'var(--bg-primary)', padding: '16px', borderRadius: '12px', marginBottom: '16px', border: '1px solid var(--glass-border)' }}>
+                <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-primary)' }}>주요 관련 구절</h4>
+                <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                  {selectedLoc.verses.map((v, i) => <li key={i}>{v}</li>)}
+                </ul>
+              </div>
+            ) : (
+              <div style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>관련 성경 구절 정보가 부족합니다.</div>
+            )}
+            
+            <button 
+              onClick={() => {
+                const mapLink = `https://www.google.com/maps/search/?api=1&query=${selectedLoc.lat},${selectedLoc.lng}`;
+                window.open(mapLink, '_blank');
+              }}
+              style={{ width: '100%', padding: '16px', borderRadius: '12px', background: 'var(--accent-gold)', color: '#000', border: 'none', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
+            >
+              <Compass size={20} /> 구글 지도로 열기
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div style={{ position: 'absolute', bottom: 20, right: 20, zIndex: 900, backgroundColor: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', color: '#ccc' }}>
+        {filteredLocations.length}개의 지명 표시중
+      </div>
     </div>
   );
 }
