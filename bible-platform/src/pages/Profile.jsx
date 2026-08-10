@@ -176,6 +176,11 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* Embed Stats Component Here */}
+      <div style={{ marginBottom: '2rem' }}>
+        <Stats />
+      </div>
+
       {/* Push Notifications Settings */}
       <div className="glass-card" style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>

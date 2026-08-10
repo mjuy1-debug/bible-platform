@@ -100,7 +100,7 @@ export default function Memorize() {
   };
 
   return (
-    <div style={{ padding: '2rem', minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'sans-serif' }}>
+    <div style={{ paddingBottom: '2rem', color: 'var(--text-primary)', fontFamily: 'sans-serif' }}>
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
