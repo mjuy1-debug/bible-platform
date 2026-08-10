@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3
 } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { BIBLE_BOOKS } from '../data/bibleData';
 import { fetchChapter } from '../services/bibleService';
@@ -24,6 +24,7 @@ const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 const Read = () => {
   const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite } = useContext(UserContext);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Plan 페이지에서 넘어온 경우 해당 책/장으로 초기화
   const initBook = location.state?.bookId
@@ -42,6 +43,35 @@ const Read = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [playingVideo, setPlayingVideo] = useState(null);
+
+  const handleWriteDevotion = () => {
+    const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
+    if (sortedVerses.length === 0) return;
+
+    const bookName = sortedVerses[0].book;
+    const chapter = sortedVerses[0].chapter;
+    const verseNumbers = sortedVerses.map(v => v.verse);
+
+    let ranges = [];
+    let start = verseNumbers[0];
+    let prev = verseNumbers[0];
+    for (let i = 1; i < verseNumbers.length; i++) {
+      if (verseNumbers[i] === prev + 1) {
+        prev = verseNumbers[i];
+      } else {
+        ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+        start = verseNumbers[i];
+        prev = verseNumbers[i];
+      }
+    }
+    ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+    const verseStr = `${bookName} ${chapter}:${ranges.join(', ')}`;
+    
+    const textStr = sortedVerses.map(v => `${v.verse} ${v.text}`).join('\n');
+    
+    navigate('/devotion', { state: { verse: verseStr, verseText: textStr } });
+    setSelectedVerses({});
+  };
 
   const loadChapter = useCallback(async (bookId, chapter) => {
     setLoading(true);
@@ -442,6 +472,13 @@ const Read = () => {
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                <button onClick={handleWriteDevotion}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <Edit3 size={16} /> 묵상
+                </button>
+
                 <button onClick={() => {
                   Object.values(selectedVerses).forEach(v => toggleFavorite({ text: v.text, ref: v.ref }));
                   setSelectedVerses({});
