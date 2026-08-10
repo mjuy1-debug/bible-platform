@@ -19,7 +19,7 @@ export default function Bulletin() {
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const isAdmin = currentUser?.email?.includes('admin') || currentUser?.uid === 'ADMIN_HARDCODED_UID';
+  const isAdmin = !!currentUser; // 변경: 테스트를 위해 로그인한 누구나 주보를 올릴 수 있게 허용
 
   useEffect(() => {
     const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));

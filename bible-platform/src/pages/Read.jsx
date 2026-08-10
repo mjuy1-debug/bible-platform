@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image, Brain
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -88,6 +88,26 @@ const Read = () => {
     ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
     const refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
     navigate('/verse-card', { state: { verses: sortedVerses, refText } });
+    setSelectedVerses({});
+  };
+
+  const handleMemorize = () => {
+    const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
+    if (sortedVerses.length === 0) return;
+    const bookName = sortedVerses[0].book;
+    const chapter = sortedVerses[0].chapter;
+    const verseNumbers = sortedVerses.map(v => v.verse);
+    let ranges = [];
+    let start = verseNumbers[0], prev = verseNumbers[0];
+    for (let i = 1; i < verseNumbers.length; i++) {
+      if (verseNumbers[i] === prev + 1) { prev = verseNumbers[i]; }
+      else { ranges.push(start === prev ? `${start}` : `${start}-${prev}`); start = verseNumbers[i]; prev = verseNumbers[i]; }
+    }
+    ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+    const refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
+    const textStr = sortedVerses.map(v => v.text).join(' ');
+    
+    navigate('/memorize', { state: { verse: textStr, reference: refText } });
     setSelectedVerses({});
   };
 
@@ -515,6 +535,13 @@ const Read = () => {
                     background: 'transparent', border: 'none', color: '#81c784', cursor: 'pointer',
                     fontSize: '0.82rem', fontWeight: 600 }}>
                   <Image size={16} /> 카드
+                </button>
+
+                <button onClick={handleMemorize}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
+                    background: 'transparent', border: 'none', color: '#64b5f6', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 600 }}>
+                  <Brain size={16} /> 암송
                 </button>
 
                 <button onClick={handleWriteDevotion}

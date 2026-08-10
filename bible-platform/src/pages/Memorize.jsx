@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, RefreshCw, Star } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const VERSES = [
   "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라",
@@ -11,7 +12,19 @@ const VERSES = [
 ];
 
 export default function Memorize() {
+  const location = useLocation();
   const [verse, setVerse] = useState("");
+  const [reference, setReference] = useState("");
+  
+  useEffect(() => {
+    if (location.state && location.state.verse) {
+      setVerse(location.state.verse);
+      if (location.state.reference) {
+        setReference(location.state.reference);
+      }
+    }
+  }, [location]);
+
   const [difficulty, setDifficulty] = useState(0.25);
   const [trainingMode, setTrainingMode] = useState(false);
   const [words, setWords] = useState([]);
@@ -25,6 +38,7 @@ export default function Memorize() {
   const loadRandomVerse = () => {
     const random = VERSES[Math.floor(Math.random() * VERSES.length)];
     setVerse(random);
+    setReference("추천 암송 구절");
   };
 
   const startTraining = () => {
@@ -104,6 +118,22 @@ export default function Memorize() {
             borderRadius: '16px',
             border: '1px solid var(--glass-border)'
           }}>
+            <input
+              type="text"
+              value={reference}
+              onChange={(e) => setReference(e.target.value)}
+              placeholder="말씀 구절 (예: 요한복음 3:16) - 선택사항"
+              style={{
+                width: '100%',
+                padding: '1rem',
+                borderRadius: '8px',
+                backgroundColor: 'var(--bg-primary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--glass-border)',
+                marginBottom: '1rem',
+                boxSizing: 'border-box'
+              }}
+            />
             <textarea
               value={verse}
               onChange={(e) => setVerse(e.target.value)}
@@ -218,9 +248,15 @@ export default function Memorize() {
                 border: shake ? '2px solid #ef4444' : '1px solid var(--glass-border)',
                 lineHeight: '2.5',
                 fontSize: '1.2rem',
-                textAlign: 'center'
+                textAlign: 'center',
+                position: 'relative'
               }}
             >
+              {reference && (
+                <div style={{ position: 'absolute', top: '1rem', right: '1.5rem', fontSize: '0.9rem', color: 'var(--accent-gold)', fontWeight: 'bold' }}>
+                  {reference}
+                </div>
+              )}
               {words.map((word, i) => {
                 const isBlank = blanks.includes(i);
                 const isFilled = filledBlanks[i] !== undefined;
