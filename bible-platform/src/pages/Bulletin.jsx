@@ -69,6 +69,20 @@ const DEFAULT_NEWS = [
   "이번주 \"나보타스밴드\" 정기기도회가 있습니다. (월:9일,10일)"
 ];
 
+const DEFAULT_AFTERNOON_ORDER = [
+  { type: "속도믵기도", content: "", leader: "다같이" },
+  { type: "사례", content: "", leader: "사회자" },
+  { type: "창송", content: "", leader: "다같이" },
+  { type: "기도", content: "", leader: "" },
+  { type: "성경 봉독", content: "", leader: "사회자" },
+  { type: "창송", content: "", leader: "다같이" },
+  { type: "말씀 선포", content: "", leader: "김석주 목사" },
+  { type: "헌금", content: "", leader: "헌금 위원" },
+  { type: "광고", content: "", leader: "사회자" },
+  { type: "※ 송영", content: "\"1\"", leader: "다같이" },
+  { type: "※ 축도", content: "", leader: "김석주 목사" }
+];
+
 export default function Bulletin() {
   const { currentUser, showToast } = useContext(UserContext);
   const [bulletins, setBulletins] = useState([]);
@@ -86,6 +100,8 @@ export default function Bulletin() {
   const [news, setNews] = useState([...DEFAULT_NEWS]);
   const [newsSubtitle, setNewsSubtitle] = useState(''); // 교회 소식 부제목/공지 문구
   const [newsImageFile, setNewsImageFile] = useState(null); // 교회 소식 이미지
+  const [includeAfternoon, setIncludeAfternoon] = useState(false); // 오후 예배 포함 여부
+  const [afternoonOrder, setAfternoonOrder] = useState([...DEFAULT_AFTERNOON_ORDER]); // 주일 오후 예배 순서
   const [isUploading, setIsUploading] = useState(false);
   const [editingBulletin, setEditingBulletin] = useState(null); // 수정 중인 주보 ID
 
@@ -124,6 +140,8 @@ export default function Bulletin() {
         news: news.filter(n => n.trim() !== ''),
         newsSubtitle: newsSubtitle.trim(),
         newsImageUrl,
+        includeAfternoon,
+        afternoonOrder: includeAfternoon ? afternoonOrder.filter(w => w.type || w.content || w.leader) : [],
         isDigital: true,
         uploadedBy: currentUser.uid,
         createdAt: serverTimestamp()
@@ -133,6 +151,8 @@ export default function Bulletin() {
       setWorshipOrder([...DEFAULT_WORSHIP_ORDER]);
       setNews([...DEFAULT_NEWS]);
       setNewsSubtitle('');
+      setIncludeAfternoon(false);
+      setAfternoonOrder([...DEFAULT_AFTERNOON_ORDER]);
       setNewsImageFile(null);
       setIsUploadMode(false);
       if (showToast) showToast('스마트 주보가 발행되었습니다.');
@@ -162,6 +182,8 @@ export default function Bulletin() {
         news: news.filter(n => n.trim() !== ''),
         newsSubtitle: newsSubtitle.trim(),
         newsImageUrl,
+        includeAfternoon,
+        afternoonOrder: includeAfternoon ? afternoonOrder.filter(w => w.type || w.content || w.leader) : [],
       });
       setEditingBulletin(null);
       setIsUploadMode(false);
@@ -197,6 +219,9 @@ export default function Bulletin() {
     if (lastDigital) {
       setWorshipOrder(lastDigital.worshipOrder || []);
       setNews(lastDigital.news || []);
+      setNewsSubtitle(lastDigital.newsSubtitle || '');
+      setIncludeAfternoon(lastDigital.includeAfternoon || false);
+      setAfternoonOrder(lastDigital.afternoonOrder?.length ? lastDigital.afternoonOrder : [...DEFAULT_AFTERNOON_ORDER]);
       if (showToast) showToast('가장 최근 주보 내용을 불러왔습니다.');
     } else {
       if (showToast) showToast('불러올 스마트 주보가 없습니다.');
@@ -210,6 +235,8 @@ export default function Bulletin() {
     setWorshipOrder(bulletin.worshipOrder?.length ? bulletin.worshipOrder : [...DEFAULT_WORSHIP_ORDER]);
     setNews(bulletin.news?.length ? bulletin.news : [...DEFAULT_NEWS]);
     setNewsSubtitle(bulletin.newsSubtitle || '');
+    setIncludeAfternoon(bulletin.includeAfternoon || false);
+    setAfternoonOrder(bulletin.afternoonOrder?.length ? bulletin.afternoonOrder : [...DEFAULT_AFTERNOON_ORDER]);
     setNewsImageFile(null);
     setIsUploadMode(true);
   };
@@ -254,7 +281,31 @@ export default function Bulletin() {
               </tbody>
             </table>
           </div>
-          <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
+          <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '20px' }}>※ 표는 일어나 주세요</div>
+
+          {/* 주일 오후 예배 (선택적) */}
+          {bulletin.includeAfternoon && bulletin.afternoonOrder?.length > 0 && (
+            <>
+              <h2 style={{ fontSize: '20px', color: '#6b21a8', borderBottom: '2px solid #6b21a8', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+                주일 오후 예배
+              </h2>
+              <div style={{ overflowX: 'auto', marginBottom: '20px' }} className="hide-scrollbar">
+                <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
+                  <tbody>
+                    {bulletin.afternoonOrder.map((item, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
+                        <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
+                        <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
+                        <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
+            </>
+          )}
         </div>
 
         {/* Row 1, Right: 교회 소식, 지교회 */}
@@ -450,6 +501,45 @@ export default function Bulletin() {
               <button type="button" onClick={addWorship} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
                 <Plus size={16} /> 순서 추가
               </button>
+            </div>
+
+            {/* 주일 오후 예배 순서 (선택) */}
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
+                  <input
+                    type="checkbox"
+                    checked={includeAfternoon}
+                    onChange={(e) => setIncludeAfternoon(e.target.checked)}
+                    style={{ width: '18px', height: '18px', accentColor: '#6b21a8', cursor: 'pointer' }}
+                  />
+                  <h3 style={{ fontSize: '18px', color: includeAfternoon ? '#6b21a8' : 'var(--text-secondary)', margin: 0, transition: 'color 0.2s' }}>
+                    주일 오후 예배 순서 <span style={{ fontSize: '13px', fontWeight: 'normal' }}>(이번 주 오후 예배가 있을 경우 체크)</span>
+                  </h3>
+                </label>
+              </div>
+
+              {includeAfternoon && (
+                <>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                    <div>구분 (※기립)</div>
+                    <div>내용 (찬송가, 성경 등)</div>
+                    <div>담당자</div>
+                    <div></div>
+                  </div>
+                  {afternoonOrder.map((item, idx) => (
+                    <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px' }}>
+                      <input type="text" value={item.type} onChange={(e) => { const n = [...afternoonOrder]; n[idx].type = e.target.value; setAfternoonOrder(n); }} placeholder="찬송, 기도..." style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <input type="text" value={item.content} onChange={(e) => { const n = [...afternoonOrder]; n[idx].content = e.target.value; setAfternoonOrder(n); }} placeholder="내용" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <input type="text" value={item.leader} onChange={(e) => { const n = [...afternoonOrder]; n[idx].leader = e.target.value; setAfternoonOrder(n); }} placeholder="담당" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <button type="button" onClick={() => setAfternoonOrder(afternoonOrder.filter((_, i) => i !== idx))} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => setAfternoonOrder([...afternoonOrder, { type: '', content: '', leader: '' }])} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed #6b21a8', color: '#6b21a8', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
+                    <Plus size={16} /> 순서 추가
+                  </button>
+                </>
+              )}
             </div>
 
             <button type="submit" disabled={isUploading} style={{ padding: '16px', background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', cursor: isUploading ? 'not-allowed' : 'pointer', marginTop: '16px', opacity: isUploading ? 0.7 : 1 }}>
