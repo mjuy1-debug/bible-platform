@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft, Edit, Plus, Trash2, Save, FileText } from 'lucide-react';
+import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft, Edit, Plus, Trash2, Save, FileText, Image as ImageIcon } from 'lucide-react';
 import { db, storage } from '../services/firebase';
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -32,9 +32,9 @@ const STATIC_INFO = {
     { type: "예배", time: "주일오전 9, 1시", name: "유,초등부예배", place: "주일학교 기관실" },
     { type: "예배", time: "주일오전 11시", name: "주일 낮 예배", place: "본당 예배실" },
     { type: "예배", time: "주일오후 1시", name: "주일 오후 예배", place: "본당 예배실" },
-    { type: "예배", time: "화요일오후 2시", name: "여호와시기기도회", place: "김남숙권사님가정" },
+    { type: "예배", time: "화요일오후 2시", name: "여호와닛시기도회", place: "김남숙권사님가정" },
     { type: "모임", time: "수요일오전11시", name: "수요 기도회", place: "본당 예배실" },
-    { type: "모임", time: "셋째주오전예배후", name: "권사부림기도회", place: "4층 친교실" },
+    { type: "모임", time: "셋째주오전예배후", name: "권사특별기도회", place: "4층 친교실" },
     { type: "모임", time: "금요일오후 9시", name: "철야 기도회", place: "본당 예배실" },
     { type: "모임", time: "주일오전예배후", name: "요셉청년부 예배", place: "요셉 기관실" },
     { type: "모임", time: "주일오전에 예배후", name: "에스겔학생부 예배", place: "에스겔 기관실" }
@@ -84,6 +84,7 @@ export default function Bulletin() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [worshipOrder, setWorshipOrder] = useState([...DEFAULT_WORSHIP_ORDER]);
   const [news, setNews] = useState([...DEFAULT_NEWS]);
+  const [newsImageFile, setNewsImageFile] = useState(null); // 교회 소식 이미지
   const [isUploading, setIsUploading] = useState(false);
 
   const isAdmin = !!currentUser; // 테스트를 위해 로그인한 누구나 주보를 올릴 수 있게 허용
@@ -102,11 +103,20 @@ export default function Bulletin() {
     
     setIsUploading(true);
     try {
+      let newsImageUrl = null;
+      
+      if (newsImageFile) {
+        const storageRef = ref(storage, `bulletins/news_${Date.now()}_${newsImageFile.name}`);
+        await uploadBytes(storageRef, newsImageFile);
+        newsImageUrl = await getDownloadURL(storageRef);
+      }
+      
       await addDoc(collection(db, 'bulletins'), {
         title,
         date,
         worshipOrder: worshipOrder.filter(w => w.type || w.content || w.leader),
         news: news.filter(n => n.trim() !== ''),
+        newsImageUrl,
         isDigital: true,
         uploadedBy: currentUser.uid,
         createdAt: serverTimestamp()
@@ -115,6 +125,7 @@ export default function Bulletin() {
       setTitle('');
       setWorshipOrder([...DEFAULT_WORSHIP_ORDER]);
       setNews([...DEFAULT_NEWS]);
+      setNewsImageFile(null);
       setIsUploadMode(false);
       if (showToast) showToast('스마트 주보가 발행되었습니다.');
     } catch (error) {
@@ -161,14 +172,15 @@ export default function Bulletin() {
         {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
       </h1>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
-        {/* Left Column: 주일 오전 예배, 기도제목, 성도의 기본생활 */}
-        <div style={{ flex: '1 1 400px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', alignItems: 'start' }}>
+        
+        {/* Row 1, Left: 주일 오전 예배 */}
+        <div>
           <h2 style={{ fontSize: '20px', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
             주일 오전 예배
           </h2>
-          <table style={{ width: '100%', fontSize: '15px', borderCollapse: 'collapse', marginBottom: '30px' }}>
+          <table style={{ width: '100%', fontSize: '15px', borderCollapse: 'collapse', marginBottom: '20px' }}>
             <tbody>
               {bulletin.worshipOrder?.map((item, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
@@ -180,10 +192,46 @@ export default function Bulletin() {
             </tbody>
           </table>
           <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
+        </div>
 
+        {/* Row 1, Right: 교회 소식, 지교회 */}
+        <div>
+          <h2 style={{ fontSize: '20px', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
+            교회 소식
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px', fontSize: '15px' }}>
+            {bulletin.news?.map((newsItem, idx) => (
+              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '20px', height: '20px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px' }}>{idx + 1}</span>
+                <span>{newsItem}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 교회 소식 첨부 이미지 */}
+          {bulletin.newsImageUrl && (
+            <div style={{ marginBottom: '30px', textAlign: 'center' }}>
+              <img src={bulletin.newsImageUrl} alt="교회 소식 첨부 이미지" style={{ maxWidth: '100%', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+            </div>
+          )}
+
+          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px', marginTop: bulletin.newsImageUrl ? '10px' : '30px' }}>♥ 화도벧엘교회 필리핀지교회들 ♥</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px', marginBottom: '30px' }}>
+            {STATIC_INFO.branches.map((branch, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>👤</span> {branch.name} : {branch.pastor}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Row 2, Left: 성도의 기본생활, 기도제목 */}
+        <div>
           <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
               {STATIC_INFO.basicLife.map((life, i) => (
                 <div key={i}>• {life}</div>
               ))}
@@ -200,30 +248,8 @@ export default function Bulletin() {
           </div>
         </div>
 
-        {/* Right Column: 교회 소식, 지교회, 예배안내 */}
-        <div style={{ flex: '1 1 400px' }}>
-          <h2 style={{ fontSize: '20px', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
-            교회 소식
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '40px', fontSize: '15px' }}>
-            {bulletin.news?.map((newsItem, idx) => (
-              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '20px', height: '20px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px' }}>{idx + 1}</span>
-                <span>{newsItem}</span>
-              </div>
-            ))}
-          </div>
-
-          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>♥ 화도벧엘교회 릴리전지교회들 ♥</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px', marginBottom: '30px' }}>
-            {STATIC_INFO.branches.map((branch, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>👤</span> {branch.name} : {branch.pastor}
-              </div>
-            ))}
-          </div>
-
+        {/* Row 2, Right: 예배 시간 안내 */}
+        <div>
           <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
           <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', border: '1px solid #bee3f8', textAlign: 'center' }}>
             <thead>
@@ -247,6 +273,7 @@ export default function Bulletin() {
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
           </div>
         </div>
+
       </div>
     </div>
   );
@@ -296,9 +323,21 @@ export default function Bulletin() {
                   <button type="button" onClick={() => removeNews(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer' }}><Trash2 size={16} /></button>
                 </div>
               ))}
-              <button type="button" onClick={addNews} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
-                <Plus size={16} /> 소식 추가
-              </button>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                <button type="button" onClick={addNews} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer' }}>
+                  <Plus size={16} /> 텍스트 소식 추가
+                </button>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer' }}>
+                  <ImageIcon size={16} /> {newsImageFile ? '이미지 변경' : '소식 이미지 첨부'}
+                  <input type="file" accept="image/*" onChange={(e) => setNewsImageFile(e.target.files[0])} style={{ display: 'none' }} />
+                </label>
+              </div>
+              {newsImageFile && (
+                <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  첨부된 이미지: {newsImageFile.name} 
+                  <button type="button" onClick={() => setNewsImageFile(null)} style={{ marginLeft: '8px', background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', textDecoration: 'underline' }}>삭제</button>
+                </div>
+              )}
             </div>
 
             <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
