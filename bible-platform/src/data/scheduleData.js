@@ -109,6 +109,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -170,7 +171,7 @@ export const SAMPLE_EVENTS = [
   { id: 40, title: '[남전도회]수양관 텃밭작업', date: '2026-08-09', category: 'joshua', description: `[남전도회]수양관 텃밭작업` },
   { id: 41, title: '[학생부]수련회', date: '2026-08-14', endDate: '2026-08-15', category: 'students', description: `- 날      짜 : 8/13-15(목-토), 
       - 주      제 : “ 예수안에 거하는 믿음 “
-      - 회      비 : “ \20,000 “
+      - 회      비 : “ ₩20,000 “
       - 장      소 : 강촌벧엘수양관
       - 식      사 : 루디아
       - 차      량 : 갈렙,여호수아
