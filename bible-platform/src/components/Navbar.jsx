@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { to: '/devotion',  icon: BookHeart,     label: '묵상' },
   { to: '/favorites', icon: Heart,         label: '즐겨찾기' },
   { to: '/prayer',    icon: HandHeart,     label: '기도 노트' },
-  { to: '/prayer-wall', icon: MessageSquare, label: '공동 기도' },
+  { to: '/prayer-wall', icon: MessageSquare, label: '중보 기도' },
   { to: '/groups',    icon: Users,         label: '소그룹' },
   { to: '/bulletin',  icon: Newspaper,     label: '주보' },
   { to: '/memorize',  icon: Brain,         label: '암송 훈련' },

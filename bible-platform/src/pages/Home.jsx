@@ -21,7 +21,7 @@ const MAIN_LINKS = [
 const COMMUNITY_LINKS = [
   { to: '/schedule',   icon: CalendarClock, title: '일정 & 계획',  color: '#e8a73d' },
   { to: '/bulletin',   icon: FileText,      title: '교회 주보',   color: '#ff8a65' },
-  { to: '/prayer-wall',icon: Handshake,     title: '공동 기도',   color: '#81c784' },
+  { to: '/prayer-wall',icon: Handshake,     title: '중보 기도',   color: '#81c784' },
   { to: '/groups',     icon: Users,         title: '소그룹',        color: '#4db6ac' },
   { to: '/bible-map',  icon: Map,           title: '성경 지도',   color: '#ba68c8' },
   { to: '/search',     icon: Search,        title: '말씀 검색',   color: '#f5a623' },

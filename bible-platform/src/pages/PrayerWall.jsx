@@ -88,7 +88,7 @@ export default function PrayerWall() {
     <div style={{ padding: '20px', paddingBottom: '80px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <HandHeart color="var(--accent-gold)" /> 공동 기도
+          <HandHeart color="var(--accent-gold)" /> 중보 기도
         </h1>
         <button 
           onClick={() => setIsModalOpen(true)}

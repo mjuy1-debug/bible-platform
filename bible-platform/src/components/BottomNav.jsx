@@ -7,7 +7,7 @@ const TABS = [
   { to: '/sermon',      icon: MonitorPlay,   label: '말씀' },
   { to: '/read',        icon: BookOpen,      label: '읽기' },
   { to: '/devotion',    icon: BookHeart,     label: '묵상' },
-  { to: '/prayer-wall', icon: HandHeart,     label: '기도' },
+  { to: '/prayer-wall', icon: HandHeart,     label: '중보' },
   { to: '/groups',      icon: Users,         label: '소그룹' },
   { to: '/bulletin',    icon: Newspaper,     label: '주보' },
   { to: '/stats',       icon: BarChart2,     label: '통계' },
