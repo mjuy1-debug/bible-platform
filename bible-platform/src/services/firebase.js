@@ -30,4 +30,4 @@ export const messaging = getMessaging(app);
 export { getToken, onMessage };
 
 // FCM VAPID 공개 키 (Firebase Console > 프로젝트 설정 > 클라우드 메시징 > 웹 푸시 인증서에서 확인)
-export const VAPID_KEY = 'BJ7mh7YRVv-hCEd3xT9Z_3OFGepWqj3d5HjNqSjXJC8JHV9C45gAVoAh3U7KJVdQWoO5bxS3Tj4UPrNZ5VKFsI';
+export const VAPID_KEY = 'BLdrDp3_7SmxdzFA3XmH_OsHaQ20a0qY-NrEVNUhZfxX_Ok9IQFb8fwdStZUP92K6miv3co8-hnuBcBayJC6hFc';
