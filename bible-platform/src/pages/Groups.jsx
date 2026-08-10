@@ -9,6 +9,7 @@ export default function Groups() {
   const { currentUser, showToast } = useContext(UserContext);
   const [activeTab, setActiveTab] = useState('my_groups');
   const [myGroups, setMyGroups] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   
   // Modals
@@ -29,22 +30,19 @@ export default function Groups() {
   useEffect(() => {
     if (!currentUser) return;
 
-    // 인덱스 없이도 동작하도록 정렬 없이 쿼리
     const q = collection(db, 'groups');
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       const groups = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      groups.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      setAllGroups(groups);
 
       const myGroupsList = [];
       for (const g of groups) {
         try {
           const memberSnap = await getDoc(doc(db, `groups/${g.id}/members/${currentUser.uid}`));
-          if (memberSnap.exists()) {
-            myGroupsList.push(g);
-          }
+          if (memberSnap.exists()) myGroupsList.push(g);
         } catch (_) {}
       }
-      // 최신순 정렬 클라이언트에서 처리
-      myGroupsList.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       setMyGroups(myGroupsList);
     });
     return () => unsubscribe();
@@ -330,24 +328,67 @@ export default function Groups() {
             onClick={() => setIsCreateModalOpen(true)}
             style={{ width: '100%', padding: '16px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', borderRadius: '16px', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
           >
-            <Plus size={20} /> 그룹 만들기
+            <Plus size={20} /> 새 그룹 만들기
           </button>
-          
+
+          {/* 전체 공개 그룹 목록 */}
+          <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--text-secondary)', margin: '8px 0 0 0' }}>전체 그룹 ({allGroups.length})</h3>
+          {allGroups.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-secondary)' }}>아직 생성된 그룹이 없습니다.</div>
+          ) : (
+            allGroups.map(group => {
+              const isJoined = myGroups.some(g => g.id === group.id);
+              return (
+                <div
+                  key={group.id}
+                  style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
+                  <div>
+                    <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' }}>{group.name}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Users size={13} /> 멤버 {group.memberCount || 1}명 · 리더: {group.leaderName}
+                    </div>
+                  </div>
+                  {isJoined ? (
+                    <button
+                      onClick={() => { setSelectedGroup(group); setActiveTab('my_groups'); }}
+                      style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 14px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}
+                    >
+                      입장
+                    </button>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        if (!currentUser) { showToast('로그인이 필요합니다.'); return; }
+                        try {
+                          const memberRef = doc(db, `groups/${group.id}/members/${currentUser.uid}`);
+                          await setDoc(memberRef, { uid: currentUser.uid, displayName: currentUser.displayName || '이름 없음', photoURL: currentUser.photoURL || '', joinedAt: serverTimestamp() });
+                          await setDoc(doc(db, 'groups', group.id), { memberCount: (group.memberCount || 1) + 1 }, { merge: true });
+                          showToast(`'${group.name}' 그룹에 참여했습니다! 🎉`);
+                        } catch(err) { showToast(`오류: ${err.code || err.message}`); }
+                      }}
+                      style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '8px', padding: '8px 14px', cursor: 'pointer', fontSize: '13px' }}
+                    >
+                      참여
+                    </button>
+                  )}
+                </div>
+              );
+            })
+          )}
+
+          {/* 초대 코드 참여 */}
           <div style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '20px', borderRadius: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '16px' }}>초대 코드로 참여</h3>
             <form onSubmit={handleJoinGroup} style={{ display: 'flex', gap: '8px' }}>
               <input 
-                required
-                type="text"
-                placeholder="6자리 초대 코드"
+                required type="text" placeholder="6자리 초대 코드"
                 value={inviteCodeInput}
                 onChange={(e) => setInviteCodeInput(e.target.value.toUpperCase())}
                 maxLength={6}
                 style={{ flex: 1, padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', textTransform: 'uppercase' }}
               />
-              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0 20px', fontWeight: 'bold', cursor: 'pointer' }}>
-                참여
-              </button>
+              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0 20px', fontWeight: 'bold', cursor: 'pointer' }}>참여</button>
             </form>
           </div>
         </div>
