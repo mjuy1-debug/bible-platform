@@ -23,10 +23,23 @@ import Memorize from './pages/Memorize';
 import BibleMap from './pages/BibleMap';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { messaging, onMessage } from './services/firebase';
 
 const AppInner = () => {
-  const { toast } = useContext(UserContext);
+  const { toast, showToast } = useContext(UserContext);
+
+  useEffect(() => {
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        if (payload.notification) {
+          showToast(`${payload.notification.title} - ${payload.notification.body}`);
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [showToast]);
+
   return (
     <>
       <Navbar />

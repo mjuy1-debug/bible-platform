@@ -13,9 +13,12 @@ exports.sendDailyDevotionNotifications = functions.scheduler.onSchedule(
   { schedule: 'every 1 minutes', timeZone: 'Asia/Seoul' },
   async () => {
     const db = admin.firestore();
+    
+    // 서버는 기본적으로 UTC(영국) 시간이므로 한국 시간(KST)으로 변환합니다.
     const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
+    const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const currentHour = kstTime.getUTCHours();
+    const currentMinute = kstTime.getUTCMinutes();
 
     // 현재 시간에 알림을 보내야 하는 사용자 조회
     const snapshot = await db.collection('fcmTokens')
