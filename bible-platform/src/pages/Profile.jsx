@@ -4,7 +4,7 @@ import { Bookmark, History, Trash2, User } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -21,14 +21,30 @@ const Profile = () => {
           {photoUrl ? <img src={photoUrl} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={40} color="#fff" />}
         </div>
         <div style={{ flex: 1 }}>
-          <h2 className="serif-font" style={{ fontSize: '1.8rem', marginBottom: '0.4rem' }}>{displayName}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+            <h2 className="serif-font" style={{ fontSize: '1.8rem' }}>{displayName}</h2>
+            {currentUser && (
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.7rem', borderRadius: '20px',
+                background: cloudSynced ? 'rgba(76,175,80,0.15)' : 'rgba(255,152,0,0.15)',
+                color: cloudSynced ? '#81c784' : '#ffb74d',
+                border: `1px solid ${cloudSynced ? '#81c784' : '#ffb74d'}` }}>
+                {cloudSynced ? '☁️ 클라우드 연동됨' : '⏳ 동기화 중...'}
+              </span>
+            )}
+          </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
             즐겨찾기 {favorites.length}개 · 묵상 {devotions.length}편 · 통독 진행률 {pct}%
           </p>
           {!currentUser ? (
-            <button onClick={loginWithGoogle} style={{ padding: '0.4rem 1rem', background: '#4285F4', color: '#fff', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}>
-              Google 계정으로 로그인 (클라우드 연동)
-            </button>
+            <div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '0.6rem' }}>
+                🔒 로그인하면 즐겨찾기·묵상·통독 진행률이 클라우드에 자동 저장됩니다.<br/>
+                캐시를 지우거나 폰을 바꿔도 데이터가 유지됩니다.
+              </p>
+              <button onClick={loginWithGoogle} style={{ padding: '0.5rem 1.2rem', background: '#4285F4', color: '#fff', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                Google 계정으로 로그인 (클라우드 연동)
+              </button>
+            </div>
           ) : (
             <button onClick={logout} style={{ padding: '0.4rem 1rem', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-secondary)', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem' }}>
               로그아웃
