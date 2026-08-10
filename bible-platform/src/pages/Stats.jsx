@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart2, BookOpen, Heart, Star, TrendingUp, Award } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
-import { BOOKS } from '../data/bibleData';
+import { BIBLE_BOOKS } from '../data/bibleData';
 
 // shortName → 전체 이름 매핑 (창 → 창세기)
 const shortToFull = {};
-(BOOKS || []).forEach(b => { if (b.shortName && b.name) shortToFull[b.shortName] = b.name; });
+(BIBLE_BOOKS || []).forEach(b => { if (b.shortName && b.name) shortToFull[b.shortName] = b.name; });
 
 const Stats = () => {
   const { favorites = [], devotions = [], highlights = {}, planProgress = { completedDays: [] } } = useContext(UserContext);
