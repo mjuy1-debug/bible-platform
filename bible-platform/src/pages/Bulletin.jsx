@@ -224,7 +224,7 @@ export default function Bulletin() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', fontSize: '13px', wordBreak: 'keep-all' }}>
               {STATIC_INFO.basicLife.map((life, i) => (
                 <div key={i}>• {life}</div>
               ))}
