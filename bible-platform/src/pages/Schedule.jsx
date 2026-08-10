@@ -136,7 +136,7 @@ const Schedule = () => {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h2 className="serif-font" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', color: 'var(--accent-gold)' }}>
-          BethelChurch 일정 & 계획
+          BethelChurch<br />일정 & 계획
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
           남전도회 · 교회 전체 일정을 한눈에 확인하세요

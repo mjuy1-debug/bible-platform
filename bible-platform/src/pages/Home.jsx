@@ -72,7 +72,7 @@ const Home = () => {
             background: 'linear-gradient(135deg, var(--text-primary) 40%, var(--accent-gold))',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          BethelChurch 말씀묵상
+          BethelChurch<br />말씀묵상
         </motion.h1>
         <motion.p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>
