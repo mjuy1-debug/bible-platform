@@ -6,6 +6,30 @@ import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, delete
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserContext } from '../context/UserContext';
 
+// 우측 스크롤 힌트 컴포넌트
+const ScrollHint = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: '4px',
+    marginTop: '4px',
+    color: '#94a3b8',
+    fontSize: '11px',
+    animation: 'scrollHintBlink 1.5s ease-in-out infinite',
+    userSelect: 'none',
+    pointerEvents: 'none',
+  }}>
+    오른쪽으로 스크롤 ❯❯
+    <style>{`
+      @keyframes scrollHintBlink {
+        0%, 100% { opacity: 0.3; transform: translateX(0); }
+        50% { opacity: 1; transform: translateX(4px); }
+      }
+    `}</style>
+  </div>
+);
+
 const STATIC_INFO = {
   basicLife: [
     "온전한 주일 성수 (출 20:8 ~ 11)",
@@ -220,7 +244,7 @@ export default function Bulletin() {
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
             주일 오전 예배
           </h2>
-          <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+          <div style={{ overflowX: 'auto', marginBottom: '20px', position: 'relative' }}>
             <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
               <tbody>
                 {bulletin.worshipOrder?.map((item, idx) => (
@@ -232,6 +256,7 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
+            <ScrollHint />
           </div>
           <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
         </div>
@@ -264,10 +289,11 @@ export default function Bulletin() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', fontSize: '13px', wordBreak: 'keep-all' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', whiteSpace: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
               {STATIC_INFO.basicLife.map((life, i) => (
                 <div key={i}>• {life}</div>
               ))}
+              <ScrollHint />
             </div>
           </div>
 
@@ -314,6 +340,7 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
+            <ScrollHint />
           </div>
           <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
