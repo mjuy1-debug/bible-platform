@@ -83,7 +83,7 @@ const AiAssistant = () => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: '안녕하세요! 저는 Joshua 말씀묵상의 신앙 AI 도우미입니다. ✨\n\n성경 구절의 의미가 궁금하거나, 지금 마음에 위로가 필요하거나, 말씀을 삶에 어떻게 적용할지 고민되신다면 편하게 질문해 주세요.\n\n예) "요한복음 3:16의 의미를 쉽게 설명해줘" 또는 "지금 많이 지쳐있어, 위로의 말씀 추천해줘"',
+      content: '안녕하세요! 저는 BethelChurch 말씀묵상의 신앙 AI 도우미입니다. ✨\n\n성경 구절의 의미가 궁금하거나, 지금 마음에 위로가 필요하거나, 말씀을 삶에 어떻게 적용할지 고민되신다면 편하게 질문해 주세요.\n\n예) "요한복음 3:16의 의미를 쉽게 설명해줘" 또는 "지금 많이 지쳐있어, 위로의 말씀 추천해줘"',
     },
   ]);
   const [loading, setLoading] = useState(false);

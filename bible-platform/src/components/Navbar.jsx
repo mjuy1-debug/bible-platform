@@ -42,7 +42,7 @@ const Navbar = () => {
         padding: '0 1.5rem', height: 'var(--navbar-height)',
       }}>
         <Link to="/" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--accent-gold)', flexShrink: 0 }}>
-          Joshua 말씀묵상
+          BethelChurch 말씀묵상
         </Link>
 
         {/* Desktop links */}

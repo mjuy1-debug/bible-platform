@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Plus, X, HandHeart } from 'lucide-react';
+import { Heart, Plus, X, HandHeart, Trash2 } from 'lucide-react';
 import { db } from '../services/firebase';
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, where } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, deleteDoc } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
 export default function PrayerWall() {
@@ -73,6 +73,17 @@ export default function PrayerWall() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("이 기도 제목을 삭제하시겠습니까?")) return;
+    try {
+      await deleteDoc(doc(db, 'prayerWall', id));
+      if (showToast) showToast('삭제되었습니다.');
+    } catch (error) {
+      console.error(error);
+      if (showToast) showToast('삭제 실패: 권한이 없습니다.');
+    }
+  };
+
   return (
     <div style={{ padding: '20px', paddingBottom: '80px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -110,7 +121,15 @@ export default function PrayerWall() {
                 </div>
               )}
               
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                {(currentUser?.email?.includes('admin') || currentUser?.uid === prayer.authorId) && (
+                  <button 
+                    onClick={() => handleDelete(prayer.id)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: '1px solid var(--text-secondary)', color: 'var(--text-secondary)', padding: '6px 12px', borderRadius: '20px', cursor: 'pointer' }}
+                  >
+                    <Trash2 size={16} /> 삭제
+                  </button>
+                )}
                 <button 
                   onClick={() => handlePray(prayer.id)}
                   style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: '1px solid var(--accent-gold)', color: 'var(--accent-gold)', padding: '6px 12px', borderRadius: '20px', cursor: 'pointer' }}

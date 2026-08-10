@@ -238,7 +238,7 @@ const Read = () => {
     const textToShare = verses.map(v => `[${v.verse}] ${v.text}`).join('\n\n');
     
     // 은혜롭고 깔끔한 공유 템플릿
-    const shareText = `✨ 오늘의 말씀 ✨\n\n${textToShare}\n\n📖 ${refText}\n🕊 Joshua 말씀묵상`;
+    const shareText = `✨ 오늘의 말씀 ✨\n\n${textToShare}\n\n📖 ${refText}\n🕊 BethelChurch 말씀묵상`;
 
     if (navigator.share) {
       navigator.share({ title: '말씀 나눔', text: shareText }).catch(() => {});
