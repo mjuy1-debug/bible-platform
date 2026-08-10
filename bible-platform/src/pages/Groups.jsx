@@ -212,27 +212,38 @@ export default function Groups() {
         )}
         
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
-          {posts.map(post => (
-            <div key={post.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                {post.userPhoto ? (
-                  <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
-                ) : (
-                  <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
-                )}
-                <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                  {post.createdAt?.toDate ? post.createdAt.toDate().toLocaleDateString() : ''}
-                </span>
-              </div>
-              <p style={{ lineHeight: '1.5', marginBottom: post.verse ? '8px' : 0 }}>{post.text}</p>
-              {post.verse && (
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px' }}>
-                  📖 {post.verse}
-                </div>
-              )}
+          <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            💬 나눔 피드
+          </div>
+          
+          {posts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)', background: 'var(--glass-bg)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              아직 작성된 나눔이 없습니다.<br/>
+              하단 입력창을 통해 첫 번째 묵상을 나눠보세요! 👇
             </div>
-          ))}
+          ) : (
+            posts.map(post => (
+              <div key={post.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  {post.userPhoto ? (
+                    <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                  ) : (
+                    <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
+                  )}
+                  <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    {post.createdAt?.toDate ? post.createdAt.toDate().toLocaleDateString() : ''}
+                  </span>
+                </div>
+                <p style={{ lineHeight: '1.5', marginBottom: post.verse ? '8px' : 0 }}>{post.text}</p>
+                {post.verse && (
+                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px' }}>
+                    📖 {post.verse}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
         
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)' }}>
