@@ -126,13 +126,33 @@ const Read = () => {
     let refText = '';
     const isSameChapter = new Set(verses.map(v => v.book + v.chapter)).size === 1;
     if (isSameChapter) {
-      refText = `${verses[0].ref.split(':')[0]}:${verses.map(v => v.verse).join(', ')}`;
+      const bookName = verses[0].book;
+      const chapter = verses[0].chapter;
+      const verseNumbers = verses.map(v => v.verse);
+      
+      let ranges = [];
+      let start = verseNumbers[0];
+      let prev = verseNumbers[0];
+      for (let i = 1; i < verseNumbers.length; i++) {
+        if (verseNumbers[i] === prev + 1) {
+          prev = verseNumbers[i];
+        } else {
+          ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+          start = verseNumbers[i];
+          prev = verseNumbers[i];
+        }
+      }
+      ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+      refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
     } else {
       refText = verses.map(v => v.ref).join(', ');
     }
     
-    const textToShare = verses.map(v => v.text).join('\n');
-    const shareText = `"${textToShare}"\n— ${refText}`;
+    // 포맷팅: 각 구절 앞에 [숫자] 추가
+    const textToShare = verses.map(v => `[${v.verse}] ${v.text}`).join('\n\n');
+    
+    // 은혜롭고 깔끔한 공유 템플릿
+    const shareText = `✨ 오늘의 말씀 ✨\n\n${textToShare}\n\n📖 ${refText}\n🕊 Joshua 말씀묵상`;
 
     if (navigator.share) {
       navigator.share({ title: '말씀 나눔', text: shareText }).catch(() => {});
