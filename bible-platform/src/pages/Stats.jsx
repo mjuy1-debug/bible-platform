@@ -2,6 +2,11 @@ import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart2, BookOpen, Heart, Star, TrendingUp, Award } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
+import { BOOKS } from '../data/bibleData';
+
+// shortName → 전체 이름 매핑 (창 → 창세기)
+const shortToFull = {};
+(BOOKS || []).forEach(b => { if (b.shortName && b.name) shortToFull[b.shortName] = b.name; });
 
 const Stats = () => {
   const { favorites = [], devotions = [], highlights = {}, planProgress = { completedDays: [] } } = useContext(UserContext);
@@ -10,12 +15,12 @@ const Stats = () => {
   const thisMonthCompleted = planProgress.completedDays.length > 0
     ? Math.min(planProgress.completedDays.length, 31) : 0;
 
-  // 2. Top 5 Books – parse book name from ref like "창세기 1:1"
+  // 2. Top 5 Books
   const bookCounts = favorites.reduce((acc, fav) => {
     if (!fav.ref) return acc;
-    const parts = fav.ref.split(' ');
-    const book = parts.length >= 2 ? parts.slice(0, -1).join(' ') : parts[0];
-    if (book) acc[book] = (acc[book] || 0) + 1;
+    const shortName = fav.ref.split(' ')[0];
+    const fullName = shortToFull[shortName] || shortName;
+    acc[fullName] = (acc[fullName] || 0) + 1;
     return acc;
   }, {});
   let topBooks = Object.entries(bookCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -148,7 +153,7 @@ const Stats = () => {
                       style={{ height: '100%', background: 'linear-gradient(90deg, rgba(212,175,55,0.5), var(--accent-gold))', borderRadius: '5px' }}
                     />
                   </div>
-                  <div style={{ width: '24px', textAlign: 'right', fontSize: '0.85rem', color: 'var(--accent-gold)' }}>{count}</div>
+                  <div style={{ width: '40px', textAlign: 'right', fontSize: '0.85rem', color: 'var(--accent-gold)' }}>{count}구절</div>
                 </div>
               ))}
             </div>
@@ -188,8 +193,18 @@ const Stats = () => {
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
         style={{ textAlign: 'center', padding: '1.5rem', background: 'linear-gradient(45deg, rgba(212,175,55,0.1), transparent)', borderRadius: '14px', border: '1px solid rgba(212,175,55,0.2)' }}
       >
-        <h3 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '0.4rem' }}>놀라운 은혜의 여정입니다!</h3>
-        <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>말씀과 함께하는 하루하루가 모여 큰 믿음의 발자취가 되고 있습니다.</p>
+        <h3 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '0.4rem' }}>
+          {devWrittenCount >= 20 ? '놀라운 은혜의 여정입니다!' :
+           devWrittenCount >= 10 ? '말씀과 함께 성장하고 계시네요!' :
+           devWrittenCount >= 1 ? '아름다운 묵상의 시작을 응원합니다!' :
+           '첫 묵상을 작성해보세요!'}
+        </h3>
+        <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.9rem' }}>
+          {devWrittenCount >= 20 ? '말씀과 함께하는 하루하루가 모여 큰 믿음의 발자취가 되고 있습니다.' :
+           devWrittenCount >= 10 ? '꾸준한 묵상이 삶의 빛이 되어줄 것입니다.' :
+           devWrittenCount >= 1 ? '작은 씨앗이 자라나 큰 나무가 되듯, 귀한 은혜의 시간이 될 것입니다.' :
+           '오늘 내게 주시는 하나님의 말씀을 기록하며 하루를 열어보세요.'}
+        </p>
       </motion.div>
     </div>
   );

@@ -9,22 +9,33 @@ import { UserContext } from '../context/UserContext';
 // 우측 스크롤 힌트 컴포넌트
 const ScrollHint = () => (
   <div style={{
-    display: 'flex',
-    justifyContent: 'flex-end',
+    display: 'inline-flex',
     alignItems: 'center',
     gap: '4px',
-    marginTop: '4px',
-    color: '#94a3b8',
-    fontSize: '11px',
-    animation: 'scrollHintBlink 1.5s ease-in-out infinite',
+    marginTop: '8px',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    background: 'linear-gradient(90deg, #d4af37, #fde68a)',
+    color: '#713f12',
+    fontSize: '13px',
+    fontWeight: '900',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    animation: 'scrollHintMove 1.5s ease-in-out infinite',
     userSelect: 'none',
     pointerEvents: 'none',
   }}>
-    오른쪽으로 스크롤 ❯❯
+    옆으로 밀어보기 <span style={{ letterSpacing: '-2px', fontSize: '14px' }}>❯❯</span>
     <style>{`
-      @keyframes scrollHintBlink {
-        0%, 100% { opacity: 0.3; transform: translateX(0); }
-        50% { opacity: 1; transform: translateX(4px); }
+      @keyframes scrollHintMove {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(6px); }
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
       }
     `}</style>
   </div>
@@ -244,7 +255,7 @@ export default function Bulletin() {
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
             주일 오전 예배
           </h2>
-          <div style={{ overflowX: 'auto', marginBottom: '20px', position: 'relative' }}>
+          <div style={{ overflowX: 'auto', marginBottom: '20px', position: 'relative' }} className="hide-scrollbar">
             <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
               <tbody>
                 {bulletin.worshipOrder?.map((item, idx) => (
@@ -256,7 +267,9 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
-            <ScrollHint />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <ScrollHint />
+            </div>
           </div>
           <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
         </div>
@@ -289,11 +302,13 @@ export default function Bulletin() {
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
             <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', whiteSpace: 'nowrap', overflowX: 'auto', paddingBottom: '4px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', whiteSpace: 'nowrap', overflowX: 'auto', paddingBottom: '2px' }} className="hide-scrollbar">
               {STATIC_INFO.basicLife.map((life, i) => (
                 <div key={i}>• {life}</div>
               ))}
-              <ScrollHint />
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <ScrollHint />
+              </div>
             </div>
           </div>
 
@@ -321,7 +336,7 @@ export default function Bulletin() {
         {/* Row 2, Right: 예배 시간 안내 */}
         <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0', height: '100%', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
-          <div style={{ overflowX: 'auto', flex: 1, paddingBottom: '4px' }}>
+          <div style={{ overflowX: 'auto', flex: 1, paddingBottom: '4px' }} className="hide-scrollbar">
             <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', whiteSpace: 'nowrap', minWidth: '300px' }}>
               <thead>
                 <tr style={{ background: '#f0fdf4' }}>
@@ -340,7 +355,9 @@ export default function Bulletin() {
                 ))}
               </tbody>
             </table>
-            <ScrollHint />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <ScrollHint />
+            </div>
           </div>
           <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
             날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
