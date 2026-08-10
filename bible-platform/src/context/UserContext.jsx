@@ -365,11 +365,51 @@ export const UserProvider = ({ children }) => {
     showToast('일정이 수정되었습니다.');
   }, [showToast]);
 
+  // ── 수동 재동기화 ──
+  const forceSync = useCallback(async () => {
+    if (!currentUser) { showToast('로그인이 필요합니다.'); return; }
+    showToast('⏳ 클라우드에서 데이터를 불러오는 중...');
+    try {
+      const snap = await getDoc(userDocRef(currentUser.uid));
+      if (snap.exists()) {
+        const cloudData = snap.data();
+        setState(prev => ({
+          ...prev,
+          favorites: cloudData.favorites?.length ? cloudData.favorites : prev.favorites,
+          devotions: cloudData.devotions?.length ? cloudData.devotions : prev.devotions,
+          highlights: Object.keys(cloudData.highlights || {}).length ? cloudData.highlights : prev.highlights,
+          planProgress: cloudData.planProgress?.completedDays?.length
+            ? { ...INITIAL_STATE.planProgress, ...cloudData.planProgress }
+            : prev.planProgress,
+        }));
+        setCloudSynced(true);
+        showToast('✅ 클라우드 데이터 복구 완료!');
+      } else {
+        // 처음 사용자: 로컬 데이터 업로드
+        const local = loadLocalState();
+        const payload = sanitize({
+          favorites: local.favorites,
+          devotions: local.devotions,
+          highlights: local.highlights,
+          planProgress: { type: local.planProgress.type, totalDays: local.planProgress.totalDays, completedDays: local.planProgress.completedDays, selectedBooks: local.planProgress.selectedBooks },
+          updatedAt: new Date().toISOString(),
+        });
+        await setDoc(userDocRef(currentUser.uid), payload);
+        setCloudSynced(true);
+        showToast('✅ 로컬 데이터를 클라우드에 저장했습니다!');
+      }
+    } catch (err) {
+      console.error('수동 동기화 실패:', err);
+      showToast(`❌ 동기화 실패: ${err.code || err.message}`);
+    }
+  }, [currentUser, showToast]);
+
   return (
     <UserContext.Provider value={{
       ...state,
       toast,
       cloudSynced,
+      forceSync,
       toggleFavorite,
       isFavorite,
       addDevotion,

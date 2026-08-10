@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bookmark, History, Trash2, User, Bell } from 'lucide-react';
+import { Bookmark, History, Trash2, User, Bell, RefreshCw } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -38,12 +38,30 @@ const Profile = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
             <h2 className="serif-font" style={{ fontSize: '1.8rem' }}>{displayName}</h2>
             {currentUser && (
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.7rem', borderRadius: '20px',
-                background: cloudSynced ? 'rgba(76,175,80,0.15)' : 'rgba(255,152,0,0.15)',
-                color: cloudSynced ? '#81c784' : '#ffb74d',
-                border: `1px solid ${cloudSynced ? '#81c784' : '#ffb74d'}` }}>
-                {cloudSynced ? '☁️ 클라우드 연동됨' : '⏳ 동기화 중...'}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.7rem', borderRadius: '20px',
+                  background: cloudSynced ? 'rgba(76,175,80,0.15)' : 'rgba(255,152,0,0.15)',
+                  color: cloudSynced ? '#81c784' : '#ffb74d',
+                  border: `1px solid ${cloudSynced ? '#81c784' : '#ffb74d'}` }}>
+                  {cloudSynced ? '☁️ 클라우드 연동됨' : '⚠️ 동기화 안됨 (Firebase 규칙 확인 필요)'}
+                </span>
+                {!cloudSynced && (
+                  <button
+                    onClick={async () => {
+                      if (forceSync) {
+                        await forceSync();
+                      } else if (showToast) {
+                        showToast('Firebase 보안 규칙을 먼저 업데이트해주세요.');
+                      }
+                    }}
+                    style={{ fontSize: '0.72rem', padding: '0.2rem 0.7rem', borderRadius: '20px',
+                      background: 'transparent', border: '1px solid #ffb74d', color: '#ffb74d',
+                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <RefreshCw size={12} /> 재시도
+                  </button>
+                )}
+              </div>
             )}
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
