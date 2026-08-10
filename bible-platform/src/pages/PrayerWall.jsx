@@ -85,7 +85,7 @@ export default function PrayerWall() {
   };
 
   return (
-    <div style={{ padding: '20px', paddingBottom: '80px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', maxWidth: '820px', margin: '0 auto' }}>
+    <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <HandHeart color="var(--accent-gold)" /> 중보 기도

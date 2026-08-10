@@ -406,7 +406,7 @@ export default function Bulletin() {
   );
 
   return (
-    <div style={{ padding: '20px', paddingBottom: 'calc(var(--bottomnav-height, 64px) + 20px)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', maxWidth: '820px', margin: '0 auto' }}>
+    <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <FileText color="var(--accent-gold)" /> 교회 주보
