@@ -39,14 +39,15 @@ const BottomNav = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '0.6rem 0.3rem',
+              padding: '0.6rem 0',
               color: active ? 'var(--accent-gold)' : 'var(--text-secondary)',
               transition: 'color 0.2s',
               minHeight: '60px',
               gap: '0.2rem',
+              position: 'relative',
             }}>
-              <Icon size={22} strokeWidth={active ? 2.2 : 1.8} />
-              <span style={{ fontSize: '0.68rem', fontWeight: active ? 700 : 400, letterSpacing: '0.01em' }}>
+              <Icon size={20} strokeWidth={active ? 2.2 : 1.8} />
+              <span style={{ fontSize: 'clamp(9px, 2.2vw, 11px)', fontWeight: active ? 700 : 400, letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>
                 {label}
               </span>
               {active && (
