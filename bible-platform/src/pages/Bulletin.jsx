@@ -167,12 +167,12 @@ export default function Bulletin() {
 
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: 'clamp(15px, 4vw, 30px)', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
       <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
         {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
       </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '40px', alignItems: 'stretch' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(20px, 4vw, 40px)', alignItems: 'stretch' }}>
         
         {/* Row 1, Left: 주일 오전 예배 */}
         <div>
@@ -180,7 +180,7 @@ export default function Bulletin() {
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
             주일 오전 예배
           </h2>
-          <table style={{ width: '100%', fontSize: '15px', borderCollapse: 'collapse', marginBottom: '20px' }}>
+          <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', marginBottom: '20px', wordBreak: 'break-word' }}>
             <tbody>
               {bulletin.worshipOrder?.map((item, idx) => (
                 <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
@@ -253,7 +253,7 @@ export default function Bulletin() {
         {/* Row 2, Right: 예배 시간 안내 */}
         <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0', height: '100%', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
-          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', flex: 1 }}>
+          <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', flex: 1, wordBreak: 'break-word' }}>
             <thead>
               <tr style={{ background: '#f0fdf4' }}>
                 <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>일시</th>
@@ -369,7 +369,7 @@ export default function Bulletin() {
           </form>
         </motion.div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '20px' }}>
           {bulletins.map(bulletin => (
             <motion.div 
               key={bulletin.id} 
