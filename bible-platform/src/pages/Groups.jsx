@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Plus, Copy, Check, X, ChevronRight } from 'lucide-react';
 import { db } from '../services/firebase';
-import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc, deleteDoc, increment } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
 export default function Groups() {
@@ -184,6 +184,23 @@ export default function Groups() {
     }
   };
 
+  const handleLeaveGroup = async () => {
+    if (!currentUser || !selectedGroup) return;
+    if (window.confirm('정말 이 그룹에서 나가시겠습니까?')) {
+      try {
+        await deleteDoc(doc(db, `groups/${selectedGroup.id}/members/${currentUser.uid}`));
+        await updateDoc(doc(db, 'groups', selectedGroup.id), {
+          memberCount: increment(-1)
+        });
+        setSelectedGroup(null);
+        if (showToast) showToast('그룹에서 나갔습니다.');
+      } catch (error) {
+        console.error(error);
+        if (showToast) showToast('오류가 발생했습니다.');
+      }
+    }
+  };
+
   // Load verse history when a group is selected
   useEffect(() => {
     if (!selectedGroup) return;
@@ -204,11 +221,16 @@ export default function Groups() {
   if (selectedGroup) {
     return (
       <div style={{ padding: '20px', paddingBottom: '100px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
-          <button onClick={() => setSelectedGroup(null)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}>
-            <ChevronRight style={{ transform: 'rotate(180deg)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button onClick={() => setSelectedGroup(null)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}>
+              <ChevronRight style={{ transform: 'rotate(180deg)' }} />
+            </button>
+            <h1 style={{ fontSize: '20px', fontWeight: 'bold' }}>{selectedGroup.name}</h1>
+          </div>
+          <button onClick={handleLeaveGroup} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', cursor: 'pointer', fontWeight: 'bold' }}>
+            나가기
           </button>
-          <h1 style={{ fontSize: '20px', fontWeight: 'bold' }}>{selectedGroup.name}</h1>
         </div>
         
         {selectedGroup.todayVerse && (
@@ -408,10 +430,16 @@ export default function Groups() {
                     <button
                       onClick={async () => {
                         if (!currentUser) { showToast('로그인이 필요합니다.'); return; }
+                        const code = window.prompt(`'${group.name}' 그룹의 6자리 초대 코드를 입력하세요:`);
+                        if (!code) return;
+                        if (code.trim().toUpperCase() !== group.code) {
+                          showToast('초대 코드가 일치하지 않습니다.');
+                          return;
+                        }
                         try {
                           const memberRef = doc(db, `groups/${group.id}/members/${currentUser.uid}`);
                           await setDoc(memberRef, { uid: currentUser.uid, displayName: currentUser.displayName || '이름 없음', photoURL: currentUser.photoURL || '', joinedAt: serverTimestamp() });
-                          await setDoc(doc(db, 'groups', group.id), { memberCount: (group.memberCount || 1) + 1 }, { merge: true });
+                          await updateDoc(doc(db, 'groups', group.id), { memberCount: increment(1) });
                           showToast(`'${group.name}' 그룹에 참여했습니다! 🎉`);
                         } catch(err) { showToast(`오류: ${err.code || err.message}`); }
                       }}
