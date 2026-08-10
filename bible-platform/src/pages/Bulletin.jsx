@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft, Edit, Plus, Trash2, Save, FileText, Image as ImageIcon } from 'lucide-react';
 import { db, storage } from '../services/firebase';
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserContext } from '../context/UserContext';
 
@@ -205,7 +205,7 @@ export default function Bulletin() {
             {bulletin.news?.map((newsItem, idx) => (
               <div key={idx} style={{ display: 'flex', gap: '8px' }}>
                 <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '20px', height: '20px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px' }}>{idx + 1}</span>
-                <span>{newsItem}</span>
+                <span style={{ whiteSpace: 'pre-wrap' }}>{newsItem}</span>
               </div>
             ))}
           </div>
@@ -321,7 +321,7 @@ export default function Bulletin() {
               <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--accent-gold)' }}>교회 소식</h3>
               {news.map((n, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                  <input type="text" value={n} onChange={(e) => handleNewsChange(idx, e.target.value)} placeholder="소식을 입력하세요" style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                  <textarea value={n} onChange={(e) => handleNewsChange(idx, e.target.value)} placeholder="소식을 입력하세요 (줄바꿈 가능)" rows={3} style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'vertical' }} />
                   <button type="button" onClick={() => removeNews(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer' }}><Trash2 size={16} /></button>
                 </div>
               ))}
@@ -390,11 +390,27 @@ export default function Bulletin() {
                   <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '11px', padding: '4px 8px', borderRadius: '12px' }}>이미지 주보</span>
                 </div>
               )}
-              <div style={{ padding: '16px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>{bulletin.title}</h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-                  <Calendar size={14} /> {bulletin.date}
+              <div style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>{bulletin.title}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                    <Calendar size={14} /> {bulletin.date}
+                  </div>
                 </div>
+                {isAdmin && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm('주보를 정말 삭제하시겠습니까?')) {
+                        deleteDoc(doc(db, 'bulletins', bulletin.id));
+                        if (showToast) showToast('주보가 삭제되었습니다.');
+                      }
+                    }}
+                    style={{ background: 'rgba(255,0,0,0.1)', border: 'none', color: '#ff4d4f', padding: '6px', borderRadius: '6px', cursor: 'pointer' }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}

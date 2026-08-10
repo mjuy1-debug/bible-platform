@@ -1,20 +1,7 @@
 import React, { useContext } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart2, BookOpen, Heart, Star, TrendingUp, Award } from 'lucide-react';
-// Assuming UserContext is defined elsewhere in the app.
-// import { UserContext } from '../context/UserContext';
-
-// Dummy UserContext for standalone rendering if needed
-const UserContext = React.createContext({
-  favorites: [
-    { book: '요한복음' }, { book: '요한복음' }, { book: '시편' }, { book: '시편' }, { book: '시편' }, { book: '창세기' }, { book: '로마서' }
-  ],
-  devotions: new Array(12).fill({}),
-  highlights: { '1': true, '2': true, '3': true },
-  planProgress: {
-    completedDays: Array.from({length: 45}, () => Math.floor(Math.random() * 365)) // Random day indices
-  }
-});
+import { UserContext } from '../context/UserContext';
 
 const Stats = () => {
   // Use context safely
