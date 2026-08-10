@@ -111,6 +111,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -184,7 +185,8 @@ export const SAMPLE_EVENTS = [
 성경말씀 : 빌립보서 2장5절 말씀
               " 너희 안에 이 마음을 품어라 
                 곧 그리스도의 마음이니 "
-목       표 : 겸손으로 섬기고 순종으로 하나 되는 남전도회
+목       표 : 겸손으로 섬기고 순종으로 
+                 하나 되는 남전도회
 
 [일   정]
 
