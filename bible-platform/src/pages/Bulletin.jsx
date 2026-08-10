@@ -91,7 +91,7 @@ export default function Bulletin() {
   const [isUploadMode, setIsUploadMode] = useState(false);
   const [selectedBulletin, setSelectedBulletin] = useState(null); // Digital view
   const [selectedImage, setSelectedImage] = useState(null); // Legacy image view
-  const [bulletinZoom, setBulletinZoom] = useState(1); // Zoom control
+  const [bulletinZoom, setBulletinZoom] = useState(0.4); // Zoom control (default: smallest = 0.4)
   
   // New Bulletin Form State
   const [title, setTitle] = useState('');
