@@ -1,25 +1,92 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft } from 'lucide-react';
+import { FileImage, Upload, Calendar, ZoomIn, X, ChevronLeft, Edit, Plus, Trash2, Save, FileText } from 'lucide-react';
 import { db, storage } from '../services/firebase';
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { UserContext } from '../context/UserContext';
 
+const STATIC_INFO = {
+  basicLife: [
+    "온전한 주일 성수 (출 20:8 ~ 11)",
+    "온전한 십일조 (말 3:7 ~ 10)",
+    "매일 성경읽기 (행 17:11)",
+    "매일 기도하기 (살전 5:17)",
+    "매일 전도하기 (행 5:42)"
+  ],
+  prayers: [
+    "① 목사님을 위해 기도하자",
+    "② 전교인 주일 성수하기 위해 기도하자",
+    "③ 전교인 십일조 생활하기 위해 기도하자",
+    "④ 교회부흥과 영,혼의 성장을 위해 기도하자",
+    "⑤ 세계선교 및 나라와 민족을 위해 기도하자"
+  ],
+  branches: [
+    { name: "비난고난벧엘교회", pastor: "June Pastor" },
+    { name: "팔라완벧엘교회", pastor: "Kenniel Pastor" },
+    { name: "나보타스벧엘교회", pastor: "Predley Pastor" }
+  ],
+  schedule: [
+    { type: "예배", time: "매일오전 5시", name: "새벽 기도회", place: "본당 예배실" },
+    { type: "예배", time: "주일오전 9/30", name: "유치부 예배", place: "주일학교 기관실" },
+    { type: "예배", time: "주일오전 9, 1시", name: "유,초등부예배", place: "주일학교 기관실" },
+    { type: "예배", time: "주일오전 11시", name: "주일 낮 예배", place: "본당 예배실" },
+    { type: "예배", time: "주일오후 1시", name: "주일 오후 예배", place: "본당 예배실" },
+    { type: "예배", time: "화요일오후 2시", name: "여호와시기기도회", place: "김남숙권사님가정" },
+    { type: "모임", time: "수요일오전11시", name: "수요 기도회", place: "본당 예배실" },
+    { type: "모임", time: "셋째주오전예배후", name: "권사부림기도회", place: "4층 친교실" },
+    { type: "모임", time: "금요일오후 9시", name: "철야 기도회", place: "본당 예배실" },
+    { type: "모임", time: "주일오전예배후", name: "요셉청년부 예배", place: "요셉 기관실" },
+    { type: "모임", time: "주일오전에 예배후", name: "에스겔학생부 예배", place: "에스겔 기관실" }
+  ]
+};
+
+const DEFAULT_WORSHIP_ORDER = [
+  { type: "※ 목도", content: "", leader: "다같이" },
+  { type: "경시 묵상", content: "", leader: "사회자" },
+  { type: "기원", content: "", leader: "사회자" },
+  { type: "※ 찬송", content: "27(27)", leader: "다같이" },
+  { type: "※ 교독문", content: "24. 시편 100편", leader: "사회와 회중" },
+  { type: "※ 신앙 고백", content: "사도신경", leader: "다같이" },
+  { type: "찬송", content: "319(129)", leader: "다같이" },
+  { type: "기도", content: "", leader: "다같이" },
+  { type: "성경 봉독", content: "요 3:1-2-4", leader: "사회자" },
+  { type: "찬송", content: "458(405)", leader: "다같이" },
+  { type: "말씀 선포", content: "\"하나님의 관심\"", leader: "김석주 목사" },
+  { type: "찬송", content: "427(191)", leader: "다같이" },
+  { type: "헌금", content: "376(595)", leader: "헌금 위원" },
+  { type: "헌금 기도", content: "", leader: "김석주 목사" },
+  { type: "광고", content: "", leader: "사회자" },
+  { type: "환영식", content: "", leader: "사회자" },
+  { type: "※ 송영", content: "\"1\"", leader: "다같이" },
+  { type: "※ 축도", content: "", leader: "김석주 목사" }
+];
+
+const DEFAULT_NEWS = [
+  "환영 | 우리 교회에 처음 나오신 분들을 진심으로 환영합니다.",
+  "\"전도하고, 전도하는 전도하는 전도하는 기쁨이 됩시다.\"",
+  "8월은 \"영적수련의 달\"입니다. 기도와말씀으로 뜨겁게 지키바랍니다.",
+  "이번주 \"나보타스밴드\" 정기기도회가 있습니다. (월:9일,10일)"
+];
+
 export default function Bulletin() {
   const { currentUser, showToast } = useContext(UserContext);
   const [bulletins, setBulletins] = useState([]);
+  
+  // UI State
   const [isUploadMode, setIsUploadMode] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedBulletin, setSelectedBulletin] = useState(null); // Digital view
+  const [selectedImage, setSelectedImage] = useState(null); // Legacy image view
   const [isZoomed, setIsZoomed] = useState(false);
   
-  // Upload Form
+  // New Bulletin Form State
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [file, setFile] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [worshipOrder, setWorshipOrder] = useState([...DEFAULT_WORSHIP_ORDER]);
+  const [news, setNews] = useState([...DEFAULT_NEWS]);
   const [isUploading, setIsUploading] = useState(false);
 
-  const isAdmin = !!currentUser; // 변경: 테스트를 위해 로그인한 누구나 주보를 올릴 수 있게 허용
+  const isAdmin = !!currentUser; // 테스트를 위해 로그인한 누구나 주보를 올릴 수 있게 허용
 
   useEffect(() => {
     const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
@@ -29,71 +96,234 @@ export default function Bulletin() {
     return () => unsubscribe();
   }, []);
 
-  const handleUpload = async (e) => {
+  const handleCreateDigital = async (e) => {
     e.preventDefault();
-    if (!title || !date || !file) return;
+    if (!title || !date) return;
     
     setIsUploading(true);
     try {
-      const storageRef = ref(storage, `bulletins/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const imageUrl = await getDownloadURL(storageRef);
-      
       await addDoc(collection(db, 'bulletins'), {
         title,
         date,
-        imageUrl,
+        worshipOrder: worshipOrder.filter(w => w.type || w.content || w.leader),
+        news: news.filter(n => n.trim() !== ''),
+        isDigital: true,
         uploadedBy: currentUser.uid,
         createdAt: serverTimestamp()
       });
       
       setTitle('');
-      setDate('');
-      setFile(null);
+      setWorshipOrder([...DEFAULT_WORSHIP_ORDER]);
+      setNews([...DEFAULT_NEWS]);
       setIsUploadMode(false);
-      if (showToast) showToast('주보가 업로드되었습니다.');
+      if (showToast) showToast('스마트 주보가 발행되었습니다.');
     } catch (error) {
       console.error(error);
-      if (showToast) showToast('업로드 실패');
+      if (showToast) showToast('발행 실패');
     } finally {
       setIsUploading(false);
     }
   };
 
+  const handleNewsChange = (index, value) => {
+    const newNews = [...news];
+    newNews[index] = value;
+    setNews(newNews);
+  };
+  
+  const addNews = () => setNews([...news, ""]);
+  const removeNews = (index) => setNews(news.filter((_, i) => i !== index));
+
+  const handleWorshipChange = (index, field, value) => {
+    const newOrder = [...worshipOrder];
+    newOrder[index][field] = value;
+    setWorshipOrder(newOrder);
+  };
+
+  const addWorship = () => setWorshipOrder([...worshipOrder, { type: "", content: "", leader: "" }]);
+  const removeWorship = (index) => setWorshipOrder(worshipOrder.filter((_, i) => i !== index));
+
+  const loadLastBulletin = () => {
+    const lastDigital = bulletins.find(b => b.isDigital);
+    if (lastDigital) {
+      setWorshipOrder(lastDigital.worshipOrder || []);
+      setNews(lastDigital.news || []);
+      if (showToast) showToast('가장 최근 주보 내용을 불러왔습니다.');
+    } else {
+      if (showToast) showToast('불러올 스마트 주보가 없습니다.');
+    }
+  };
+
+  // --- Rendering Helpers ---
+  const renderDigitalBulletin = (bulletin) => (
+    <div style={{ maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
+      <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
+        {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
+      </h1>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '40px' }}>
+        {/* Left Column: 주일 오전 예배, 기도제목, 성도의 기본생활 */}
+        <div style={{ flex: '1 1 400px' }}>
+          <h2 style={{ fontSize: '20px', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+            주일 오전 예배
+          </h2>
+          <table style={{ width: '100%', fontSize: '15px', borderCollapse: 'collapse', marginBottom: '30px' }}>
+            <tbody>
+              {bulletin.worshipOrder?.map((item, idx) => (
+                <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
+                  <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
+                  <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
+                  <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
+
+          <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
+            <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
+              {STATIC_INFO.basicLife.map((life, i) => (
+                <div key={i}>• {life}</div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '12px', border: '1px solid #bee3f8' }}>
+            <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>벧엘교회 성도들의 기도 제목과 목표</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
+              {STATIC_INFO.prayers.map((prayer, i) => (
+                <div key={i}>{prayer}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: 교회 소식, 지교회, 예배안내 */}
+        <div style={{ flex: '1 1 400px' }}>
+          <h2 style={{ fontSize: '20px', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
+            교회 소식
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '40px', fontSize: '15px' }}>
+            {bulletin.news?.map((newsItem, idx) => (
+              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
+                <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '20px', height: '20px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px' }}>{idx + 1}</span>
+                <span>{newsItem}</span>
+              </div>
+            ))}
+          </div>
+
+          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>♥ 화도벧엘교회 릴리전지교회들 ♥</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px', marginBottom: '30px' }}>
+            {STATIC_INFO.branches.map((branch, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>👤</span> {branch.name} : {branch.pastor}
+              </div>
+            ))}
+          </div>
+
+          <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
+          <table style={{ width: '100%', fontSize: '13px', borderCollapse: 'collapse', border: '1px solid #bee3f8', textAlign: 'center' }}>
+            <thead>
+              <tr style={{ background: '#ebf8ff' }}>
+                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>일시</th>
+                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>예배종류</th>
+                <th style={{ padding: '8px', border: '1px solid #bee3f8' }}>장소</th>
+              </tr>
+            </thead>
+            <tbody>
+              {STATIC_INFO.schedule.map((item, i) => (
+                <tr key={i}>
+                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.time}</td>
+                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.name}</td>
+                  <td style={{ padding: '6px', border: '1px solid #bee3f8' }}>{item.place}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ textAlign: 'center', background: '#ebf8ff', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#2b6cb0', fontWeight: 'bold' }}>
+            날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div style={{ padding: '20px', paddingBottom: '80px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
+    <div style={{ padding: '20px', paddingBottom: 'calc(var(--bottomnav-height, 64px) + 20px)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FileImage color="var(--accent-gold)" /> 교회 주보
+          <FileText color="var(--accent-gold)" /> 교회 주보
         </h1>
         {isAdmin && (
           <button 
             onClick={() => setIsUploadMode(!isUploadMode)}
             style={{ background: isUploadMode ? 'transparent' : 'var(--accent-gold)', color: isUploadMode ? 'var(--text-primary)' : '#fff', border: isUploadMode ? '1px solid var(--glass-border)' : 'none', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontWeight: 'bold' }}
           >
-            {isUploadMode ? '목록으로' : <><Upload size={18} /> 업로드</>}
+            {isUploadMode ? '목록으로' : <><Edit size={18} /> 새 주보 작성</>}
           </button>
         )}
       </div>
 
       {isUploadMode && isAdmin ? (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'var(--glass-bg)', padding: '24px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>새 주보 등록</h2>
-          <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>주보 제목</label>
-              <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="예: 2026년 8월 2주차 주보" style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>새 스마트 주보 작성</h2>
+            <button type="button" onClick={loadLastBulletin} style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>
+              지난주 주보 복사하기
+            </button>
+          </div>
+
+          <form onSubmit={handleCreateDigital} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ flex: '1 1 300px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>주보 제목</label>
+                <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="예: 2026년 8월 2주차 주보" style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+              </div>
+              <div style={{ flex: '1 1 200px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>날짜</label>
+                <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+              </div>
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>날짜</label>
-              <input required type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
+              <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--accent-gold)' }}>교회 소식</h3>
+              {news.map((n, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                  <input type="text" value={n} onChange={(e) => handleNewsChange(idx, e.target.value)} placeholder="소식을 입력하세요" style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                  <button type="button" onClick={() => removeNews(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                </div>
+              ))}
+              <button type="button" onClick={addNews} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
+                <Plus size={16} /> 소식 추가
+              </button>
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>이미지 파일</label>
-              <input required type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+
+            <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
+              <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--accent-gold)' }}>주일 오전 예배 순서</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                <div>구분 (※기립)</div>
+                <div>내용 (찬송가, 성경 등)</div>
+                <div>담당자</div>
+                <div></div>
+              </div>
+              {worshipOrder.map((item, idx) => (
+                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px' }}>
+                  <input type="text" value={item.type} onChange={(e) => handleWorshipChange(idx, 'type', e.target.value)} placeholder="찬송, 기도..." style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                  <input type="text" value={item.content} onChange={(e) => handleWorshipChange(idx, 'content', e.target.value)} placeholder="내용" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                  <input type="text" value={item.leader} onChange={(e) => handleWorshipChange(idx, 'leader', e.target.value)} placeholder="담당" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                  <button type="button" onClick={() => removeWorship(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
+                </div>
+              ))}
+              <button type="button" onClick={addWorship} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
+                <Plus size={16} /> 순서 추가
+              </button>
             </div>
-            <button type="submit" disabled={isUploading} style={{ padding: '14px', background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: isUploading ? 'not-allowed' : 'pointer', marginTop: '8px', opacity: isUploading ? 0.7 : 1 }}>
-              {isUploading ? '업로드 중...' : '등록하기'}
+
+            <button type="submit" disabled={isUploading} style={{ padding: '16px', background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', cursor: isUploading ? 'not-allowed' : 'pointer', marginTop: '16px', opacity: isUploading ? 0.7 : 1 }}>
+              {isUploading ? '발행 중...' : '스마트 주보 발행하기'}
             </button>
           </form>
         </motion.div>
@@ -105,15 +335,20 @@ export default function Bulletin() {
               initial={{ opacity: 0, scale: 0.95 }} 
               animate={{ opacity: 1, scale: 1 }}
               whileHover={{ y: -5 }}
-              style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer' }}
-              onClick={() => setSelectedImage(bulletin.imageUrl)}
+              style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '16px', overflow: 'hidden', cursor: 'pointer', display: 'flex', flexDirection: 'column' }}
+              onClick={() => bulletin.isDigital ? setSelectedBulletin(bulletin) : setSelectedImage(bulletin.imageUrl)}
             >
-              <div style={{ height: '350px', width: '100%', backgroundColor: 'rgba(0,0,0,0.2)', position: 'relative' }}>
-                <img src={bulletin.imageUrl} alt={bulletin.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
-                <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.6)', padding: '6px', borderRadius: '50%' }}>
-                  <ZoomIn size={18} color="#fff" />
+              {bulletin.isDigital ? (
+                <div style={{ height: '180px', width: '100%', background: 'linear-gradient(135deg, var(--bg-secondary), var(--bg-primary))', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--glass-border)', position: 'relative' }}>
+                  <FileText size={48} color="var(--accent-gold)" opacity={0.5} />
+                  <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'var(--accent-gold)', color: '#fff', fontSize: '11px', padding: '4px 8px', borderRadius: '12px', fontWeight: 'bold' }}>스마트 주보</span>
                 </div>
-              </div>
+              ) : (
+                <div style={{ height: '180px', width: '100%', backgroundColor: 'rgba(0,0,0,0.2)', position: 'relative' }}>
+                  <img src={bulletin.imageUrl} alt={bulletin.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                  <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '11px', padding: '4px 8px', borderRadius: '12px' }}>이미지 주보</span>
+                </div>
+              )}
               <div style={{ padding: '16px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>{bulletin.title}</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px' }}>
@@ -130,6 +365,7 @@ export default function Bulletin() {
         </div>
       )}
 
+      {/* Legacy Image Viewer Modal */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div 
@@ -140,13 +376,9 @@ export default function Bulletin() {
           >
             <div style={{ position: 'absolute', top: '20px', left: '20px', right: '20px', display: 'flex', justifyContent: 'space-between', zIndex: 2001 }}>
               <button onClick={() => setSelectedImage(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '12px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}>
-                <ChevronLeft />
-              </button>
-              <button onClick={() => setSelectedImage(null)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '12px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}>
-                <X />
+                <ChevronLeft /> 뒤로 가기
               </button>
             </div>
-            
             <motion.img 
               src={selectedImage} 
               alt="주보 상세"
@@ -155,6 +387,27 @@ export default function Bulletin() {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={() => setIsZoomed(!isZoomed)}
             />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* New Digital Bulletin Modal */}
+      <AnimatePresence>
+        {selectedBulletin && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--bg-primary)', zIndex: 2000, overflowY: 'auto' }}
+          >
+            <div style={{ position: 'sticky', top: 0, background: 'var(--glass-bg)', backdropFilter: 'blur(10px)', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)', zIndex: 10 }}>
+              <button onClick={() => setSelectedBulletin(null)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+                <ChevronLeft /> 뒤로 가기
+              </button>
+            </div>
+            <div style={{ padding: '20px' }}>
+              {renderDigitalBulletin(selectedBulletin)}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
