@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -22,7 +22,7 @@ const OLD_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'old');
 const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 
 const Read = () => {
-  const { highlights, toggleHighlight, toggleFavorite, isFavorite } = useContext(UserContext);
+  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite } = useContext(UserContext);
   const location = useLocation();
 
   // Plan 페이지에서 넘어온 경우 해당 책/장으로 초기화
@@ -411,7 +411,7 @@ const Read = () => {
               </span>
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
               
-              <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                 {HIGHLIGHT_COLORS.map(({ color, name }) => (
                   <button key={name} title={name} onClick={() => {
                     Object.values(selectedVerses).forEach(v => toggleHighlight(v.ref, color));
@@ -423,6 +423,20 @@ const Read = () => {
                     onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                   />
                 ))}
+                
+                {/* 지우개 (하이라이트 해제) 버튼 */}
+                <button title="하이라이트 지우기" onClick={() => {
+                  Object.values(selectedVerses).forEach(v => removeHighlight(v.ref));
+                  setSelectedVerses({});
+                }}
+                  style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--glass-bg)', cursor: 'pointer',
+                    border: '1px solid var(--glass-border)', flexShrink: 0, transition: 'transform 0.15s', padding: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <Eraser size={12} />
+                </button>
               </div>
               
               <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />

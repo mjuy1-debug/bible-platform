@@ -218,6 +218,14 @@ export const UserProvider = ({ children }) => {
     });
   }, []);
 
+  const removeHighlight = useCallback((verseRef) => {
+    setState(prev => {
+      const newHighlights = { ...prev.highlights };
+      delete newHighlights[verseRef];
+      return { ...prev, highlights: newHighlights };
+    });
+  }, []);
+
   // ── 일정 관리 ──
   const addEvent = useCallback((event) => {
     setState(prev => ({
@@ -255,6 +263,7 @@ export const UserProvider = ({ children }) => {
       togglePlanDay,
       resetPlan,
       toggleHighlight,
+      removeHighlight,
       showToast,
       addEvent,
       deleteEvent,
