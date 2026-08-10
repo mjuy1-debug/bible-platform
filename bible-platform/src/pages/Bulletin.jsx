@@ -242,14 +242,15 @@ export default function Bulletin() {
 
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: 'clamp(15px, 4vw, 30px)', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
-      <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
-        {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
-      </h1>
+    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', margin: '0 -20px', padding: '0 20px 20px 20px' }} className="hide-scrollbar">
+      <div style={{ minWidth: '768px', maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
+        <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
+          {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
+        </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(20px, 4vw, 40px)', alignItems: 'stretch' }}>
-        
-        {/* Row 1, Left: 주일 오전 예배 */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', alignItems: 'stretch' }}>
+          
+          {/* Row 1, Left: 주일 오전 예배 */}
         <div>
           <h2 style={{ fontSize: '20px', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
@@ -364,6 +365,7 @@ export default function Bulletin() {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   );
