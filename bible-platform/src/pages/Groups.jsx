@@ -23,6 +23,9 @@ export default function Groups() {
   const [posts, setPosts] = useState([]);
   const [newPostText, setNewPostText] = useState('');
   const [newPostVerse, setNewPostVerse] = useState('');
+  const [editingPostId, setEditingPostId] = useState(null);
+  const [editPostText, setEditPostText] = useState('');
+  const [editPostVerse, setEditPostVerse] = useState('');
   const [todayVerseInput, setTodayVerseInput] = useState('');
   const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
   const [copiedCode, setCopiedCode] = useState(null);
@@ -165,6 +168,43 @@ export default function Groups() {
       setNewPostVerse('');
     } catch (error) {
       console.error(error);
+      if (showToast) showToast('오류가 발생했습니다.', 'error');
+    }
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPostId(post.id);
+    setEditPostText(post.text);
+    setEditPostVerse(post.verse || '');
+  };
+
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+    if (!editingPostId || !editPostText.trim()) return;
+
+    try {
+      await updateDoc(doc(db, `groups/${selectedGroup.id}/posts`, editingPostId), {
+        text: editPostText,
+        verse: editPostVerse,
+      });
+      setEditingPostId(null);
+      setEditPostText('');
+      setEditPostVerse('');
+      if (showToast) showToast('수정되었습니다.');
+    } catch (error) {
+      console.error(error);
+      if (showToast) showToast('오류가 발생했습니다.', 'error');
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm('이 글을 삭제하시겠습니까?')) return;
+    try {
+      await deleteDoc(doc(db, `groups/${selectedGroup.id}/posts`, postId));
+      if (showToast) showToast('삭제되었습니다.');
+    } catch (error) {
+      console.error(error);
+      if (showToast) showToast('오류가 발생했습니다.', 'error');
     }
   };
 
@@ -236,14 +276,9 @@ export default function Groups() {
           </button>
         </div>
         
-        {selectedGroup.todayVerse && (
-          <div style={{ background: 'var(--accent-gold)', color: '#fff', padding: '16px', borderRadius: '12px', marginBottom: '20px' }}>
-            <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '4px' }}>📖 오늘의 말씀 ({selectedGroup.todayVerseDate || '오늘'})</div>
-            <div style={{ fontWeight: 'bold', lineHeight: 1.5 }}>{selectedGroup.todayVerse}</div>
-          </div>
-        )}
-
-        {/* 말씀 역사 (과거 날짜별) */}
+        {/* 오늘의 말씀 (상단 고정은 삭제, 피드 내 날짜별로 표시) */}
+        
+        {/* 말씀 역사 (과거 날짜별) - 피드에 통합되었으므로 이전 기록 요약 뷰 */}
         {(selectedGroup.verseHistory || []).length > 1 && (
           <details style={{ marginBottom: '16px' }}>
             <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({(selectedGroup.verseHistory || []).length - 1}건)</summary>
@@ -287,27 +322,74 @@ export default function Groups() {
               하단 입력창을 통해 첫 번째 묵상을 나눠보세요! 👇
             </div>
           ) : (
-            posts.map(post => (
-              <div key={post.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  {post.userPhoto ? (
-                    <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
-                  ) : (
-                    <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
-                  )}
-                  <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    {post.createdAt?.toDate ? post.createdAt.toDate().toLocaleDateString() : ''}
-                  </span>
-                </div>
-                <p style={{ lineHeight: '1.5', marginBottom: post.verse ? '8px' : 0 }}>{post.text}</p>
-                {post.verse && (
-                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px' }}>
-                    📖 {post.verse}
+            sortedDates.map(dateStr => {
+              const dayVerse = getTodayVerseForDate(dateStr);
+              return (
+                <div key={dateStr} style={{ marginBottom: '24px' }}>
+                  {/* Date Header */}
+                  <div style={{ textAlign: 'center', margin: '10px 0 20px', position: 'relative' }}>
+                    <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, borderTop: '1px solid var(--glass-border)', zIndex: 1 }}></div>
+                    <span style={{ background: 'var(--bg-primary)', padding: '0 12px', position: 'relative', zIndex: 2, fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      {dateStr}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))
+                  
+                  {/* Today's Verse Header for this date */}
+                  {dayVerse && (
+                    <div style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', padding: '16px', borderRadius: '12px', marginBottom: '16px', color: 'var(--accent-gold)' }}>
+                      <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '4px' }}>📖 이 날의 말씀</div>
+                      <div style={{ fontWeight: 'bold', lineHeight: 1.5 }}>{dayVerse}</div>
+                    </div>
+                  )}
+
+                  {/* Posts for this date */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {groupedPosts[dateStr].map(post => (
+                      <div key={post.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '12px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {post.userPhoto ? (
+                              <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                            ) : (
+                              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
+                            )}
+                            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
+                          </div>
+                          
+                          {/* Edit / Delete Buttons */}
+                          {currentUser?.uid === post.userId && (
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button onClick={() => handleEditPost(post)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px' }}>수정</button>
+                              <button onClick={() => handleDeletePost(post.id)} style={{ background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', fontSize: '12px' }}>삭제</button>
+                            </div>
+                          )}
+                        </div>
+
+                        {editingPostId === post.id ? (
+                          <form onSubmit={handleUpdatePost} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                            <input type="text" placeholder="관련 말씀 구절 (선택)" value={editPostVerse} onChange={(e) => setEditPostVerse(e.target.value)} style={{ padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                            <textarea required value={editPostText} onChange={(e) => setEditPostText(e.target.value)} style={{ padding: '10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                              <button type="button" onClick={() => setEditingPostId(null)} style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}>취소</button>
+                              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>저장</button>
+                            </div>
+                          </form>
+                        ) : (
+                          <>
+                            <p style={{ lineHeight: '1.5', marginBottom: post.verse ? '8px' : 0, whiteSpace: 'pre-wrap' }}>{post.text}</p>
+                            {post.verse && (
+                              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
+                                <span>📖</span> <span style={{ color: 'var(--accent-gold)' }}>{post.verse}</span>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
         

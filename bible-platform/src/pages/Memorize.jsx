@@ -39,7 +39,7 @@ function saveRecords(records) {
 export default function Memorize() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { memorized, toggleMemorized } = useContext(UserContext);
+  const { memorized, toggleMemorized, showToast } = useContext(UserContext);
   const [verse, setVerse] = useState("");
   const [reference, setReference] = useState("");
   const [difficulty, setDifficulty] = useState(0.25);
@@ -102,18 +102,6 @@ export default function Memorize() {
       setWordBank(newBank);
       if (currentBlankIndex + 1 === blanks.length) {
         setSuccess(true);
-        // Save record
-        const newRecord = {
-          id: Date.now(),
-          text: verse,
-          ref: reference,
-          difficulty: difficulty === 0.25 ? '초급' : difficulty === 0.5 ? '중급' : '고급',
-          date: new Date().toLocaleDateString('ko-KR'),
-          time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
-        };
-        const updated = [newRecord, ...records].slice(0, 30);
-        setRecords(updated);
-        saveRecords(updated);
       } else {
         setCurrentBlankIndex(prev => prev + 1);
       }
@@ -132,6 +120,23 @@ export default function Memorize() {
     const updated = records.filter(r => r.id !== id);
     setRecords(updated);
     saveRecords(updated);
+  };
+
+  const handleCompleteSave = () => {
+    const newRecord = {
+      id: Date.now(),
+      text: verse,
+      ref: reference,
+      difficulty: difficulty === 0.25 ? '초급' : difficulty === 0.5 ? '중급' : '고급',
+      date: new Date().toLocaleDateString('ko-KR'),
+      time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+    };
+    const updated = [newRecord, ...records].slice(0, 30);
+    setRecords(updated);
+    saveRecords(updated);
+    reset();
+    setActiveTab('records');
+    if (showToast) showToast('암송 완료 기록이 저장되었습니다! 🎉');
   };
 
   const diffLabel = difficulty === 0.25 ? '초급' : difficulty === 0.5 ? '중급' : '고급';
@@ -354,13 +359,16 @@ export default function Memorize() {
                     </motion.div>
                     <h2 style={{ color: 'var(--accent-gold)', fontSize: '1.8rem', margin: '0 0 0.5rem 0' }}>암송 완료!</h2>
                     {reference && <p style={{ color: 'var(--text-secondary)', marginBottom: '0.3rem', fontSize: '0.95rem' }}>{reference}</p>}
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>말씀을 완벽하게 암송하셨습니다! 기록에 저장되었습니다. ✨</p>
-                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                      <button onClick={reset} style={{ padding: '0.8rem 1.8rem', borderRadius: '8px', backgroundColor: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
-                        새 말씀 훈련하기
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>말씀을 완벽하게 암송하셨습니다! 완료 버튼을 눌러 기록에 저장하세요. ✨</p>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                      <button onClick={startTraining} style={{ padding: '0.8rem 1.2rem', borderRadius: '8px', backgroundColor: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                        다시하기 🔄
                       </button>
-                      <button onClick={() => { reset(); setActiveTab('records'); }} style={{ padding: '0.8rem 1.8rem', borderRadius: '8px', backgroundColor: 'transparent', color: 'var(--accent-gold)', border: '1px solid var(--accent-gold)', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
-                        기록 보기 📜
+                      <button onClick={reset} style={{ padding: '0.8rem 1.2rem', borderRadius: '8px', backgroundColor: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                        새 말씀 훈련하기 📝
+                      </button>
+                      <button onClick={handleCompleteSave} style={{ padding: '0.8rem 1.2rem', borderRadius: '8px', backgroundColor: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                        완료 (기록 저장) ✅
                       </button>
                     </div>
                   </motion.div>
