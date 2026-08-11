@@ -318,9 +318,17 @@ export default function Groups() {
     if (window.confirm('정말 이 그룹에서 나가시겠습니까?')) {
       try {
         await deleteDoc(doc(db, `groups/${selectedGroup.id}/members/${currentUser.uid}`));
-        await updateDoc(doc(db, 'groups', selectedGroup.id), {
-          memberCount: increment(-1)
-        });
+        
+        if (selectedGroup.memberCount <= 1) {
+          // 마지막 남은 멤버가 나갈 경우 그룹 폭파 (삭제)
+          await deleteDoc(doc(db, 'groups', selectedGroup.id));
+        } else {
+          // 다른 멤버가 남아있을 경우 카운트만 감소
+          await updateDoc(doc(db, 'groups', selectedGroup.id), {
+            memberCount: increment(-1)
+          });
+        }
+        
         setSelectedGroup(null);
         if (showToast) showToast('그룹에서 나갔습니다.');
       } catch (error) {
