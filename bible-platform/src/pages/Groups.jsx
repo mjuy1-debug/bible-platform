@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Plus, Copy, Check, X, ChevronRight } from 'lucide-react';
 import { db } from '../services/firebase';
-import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc, deleteDoc, increment } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc, deleteDoc, increment, arrayUnion } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
 export default function Groups() {
@@ -149,10 +149,13 @@ export default function Groups() {
     e.preventDefault();
     if (!currentUser || !newPostText.trim() || !selectedGroup) return;
     
+    // Auto-fill the post verse with the group's todayVerse if the user didn't provide one
+    const postVerse = newPostVerse.trim() || selectedGroup.todayVerse || '';
+    
     try {
       await addDoc(collection(db, `groups/${selectedGroup.id}/posts`), {
         text: newPostText,
-        verse: newPostVerse,
+        verse: postVerse,
         userId: currentUser.uid,
         userName: currentUser.displayName || '이름 없음',
         userPhoto: currentUser.photoURL || '',
@@ -176,11 +179,12 @@ export default function Groups() {
 
     const verseText = todayVerseInput.trim();
     try {
-      // Save directly on group document (no subcollection — avoids Firestore rules issues)
+      // Save directly on group document and add to history array
       await setDoc(doc(db, 'groups', selectedGroup.id), {
         todayVerse: verseText,
         todayVerseDate: today,
         todayVerseSetBy: currentUser.displayName || '멤버',
+        verseHistory: arrayUnion({ id: Date.now().toString(), text: verseText, date: today, setBy: currentUser.displayName || '멤버' })
       }, { merge: true });
 
       if (showToast) showToast('오늘의 말씀이 저장되었습니다. 📖');
@@ -209,16 +213,7 @@ export default function Groups() {
     }
   };
 
-  // Load verse history when a group is selected
-  useEffect(() => {
-    if (!selectedGroup) return;
-    const versesRef = collection(db, `groups/${selectedGroup.id}/verses`);
-    const q = query(versesRef, orderBy('date', 'desc'));
-    const unsub = onSnapshot(q, snap => {
-      setVerseHistory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    });
-    return () => unsub();
-  }, [selectedGroup?.id]);
+  // Removed verse history subcollection listener as it is now in selectedGroup.verseHistory
 
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
@@ -249,13 +244,13 @@ export default function Groups() {
         )}
 
         {/* 말씀 역사 (과거 날짜별) */}
-        {verseHistory.length > 1 && (
+        {(selectedGroup.verseHistory || []).length > 1 && (
           <details style={{ marginBottom: '16px' }}>
-            <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({verseHistory.length - 1}건)</summary>
+            <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({(selectedGroup.verseHistory || []).length - 1}건)</summary>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-              {verseHistory.slice(1).map(v => (
+              {[...(selectedGroup.verseHistory || [])].reverse().slice(1).map(v => (
                 <div key={v.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', fontSize: '13px' }}>
-                  <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date}</div>
+                  <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date} {v.setBy && `(by ${v.setBy})`}</div>
                   <div>{v.text}</div>
                 </div>
               ))}
