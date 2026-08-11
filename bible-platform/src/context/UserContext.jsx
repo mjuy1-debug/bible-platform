@@ -333,11 +333,17 @@ export const UserProvider = ({ children }) => {
   }, [showToast]);
 
   // ── 암송 완료 표시 ──
-  const toggleMemorized = useCallback((verseRef) => {
+  const toggleMemorized = useCallback((verseRef, forceValue) => {
     setState(prev => {
       const newMemorized = { ...prev.memorized };
-      if (newMemorized[verseRef]) { delete newMemorized[verseRef]; }
-      else { newMemorized[verseRef] = true; }
+      if (forceValue === true) {
+        newMemorized[verseRef] = true;
+      } else if (forceValue === false) {
+        delete newMemorized[verseRef];
+      } else {
+        if (newMemorized[verseRef]) { delete newMemorized[verseRef]; }
+        else { newMemorized[verseRef] = true; }
+      }
       return { ...prev, memorized: newMemorized };
     });
   }, []);

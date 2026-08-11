@@ -134,6 +134,16 @@ export default function Memorize() {
     const updated = [newRecord, ...records].slice(0, 30);
     setRecords(updated);
     saveRecords(updated);
+    
+    // UserContext의 memorized 에도 추가하여 성경 읽기 화면에서 배지가 보이도록 함
+    if (location.state?.verses) {
+      location.state.verses.forEach(v => {
+        if (toggleMemorized) toggleMemorized(v.ref, true);
+      });
+    } else if (reference && toggleMemorized) {
+      toggleMemorized(reference, true);
+    }
+
     reset();
     setActiveTab('records');
     if (showToast) showToast('암송 완료 기록이 저장되었습니다! 🎉');
