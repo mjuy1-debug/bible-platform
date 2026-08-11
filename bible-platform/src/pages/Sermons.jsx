@@ -41,12 +41,9 @@ export default function Sermons() {
   // Copy shareable deep-link to clipboard
   const handleShare = async (sermon, e) => {
     e.stopPropagation();
-    // Build URL: works with both HashRouter and BrowserRouter
+    // Build URL pointing to the static OG generated page
     const base = window.location.origin + window.location.pathname;
-    const hash = window.location.hash.split('?')[0]; // e.g. #/sermons
-    const shareUrl = hash
-      ? `${base}${hash}?id=${sermon.id}`          // HashRouter
-      : `${base}sermons?id=${sermon.id}`;          // BrowserRouter fallback
+    const shareUrl = `${base}share/${sermon.id}/`;
     try {
       await navigator.clipboard.writeText(shareUrl);
     } catch {
