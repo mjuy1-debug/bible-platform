@@ -174,29 +174,100 @@ const Schedule = () => {
         )}
       </div>
 
-      {/* Category Filter */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-        <Filter size={14} style={{ color: 'var(--text-secondary)', alignSelf: 'center' }} />
-        {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
-          const active = categoryFilter[key];
-          const colors = CATEGORY_COLORS[key];
-          return (
-            <button key={key} onClick={() => toggleCategory(key)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.4rem',
-                padding: '0.35rem 0.9rem', borderRadius: '20px',
-                border: `1px solid ${active ? colors.border : 'var(--glass-border)'}`,
-                background: active ? colors.bg : 'transparent',
-                color: active ? colors.text : 'var(--text-secondary)',
-                fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
-              }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: active ? colors.dot : 'var(--text-secondary)' }} />
-              {label}
-              {active ? <Eye size={12} /> : <EyeOff size={12} />}
-            </button>
-          );
-        })}
-      </div>
+      {/* Category Filter - Grouped Panel */}
+      {(() => {
+        const FILTER_GROUPS = [
+          {
+            label: '전도회',
+            keys: ['joshua', 'caleb', 'joanna', 'lydia', 'naomi'],
+          },
+          {
+            label: '청년·학생·성가대',
+            keys: ['joseph', 'students', 'sunday_school', 'zion'],
+          },
+          {
+            label: '교회 전체 / 기타',
+            keys: ['church', 'holiday', 'liturgy', 'normal'],
+          },
+        ];
+
+        const allActive = Object.values(categoryFilter).every(Boolean);
+        const toggleAll = () => {
+          const next = !allActive;
+          setCategoryFilter(prev => {
+            const copy = { ...prev };
+            Object.keys(copy).forEach(k => { copy[k] = next; });
+            return copy;
+          });
+        };
+
+        return (
+          <div style={{
+            background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+            borderRadius: '16px', padding: '14px 16px', marginBottom: '1.5rem',
+          }}>
+            {/* Header row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                <Filter size={14} /> 기관별 필터
+              </div>
+              <button
+                onClick={toggleAll}
+                style={{
+                  fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px',
+                  borderRadius: '20px', cursor: 'pointer', transition: 'all 0.2s',
+                  border: `1px solid ${allActive ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
+                  background: allActive ? 'rgba(212,175,55,0.15)' : 'transparent',
+                  color: allActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                }}
+              >
+                {allActive ? '전체 해제' : '전체 선택'}
+              </button>
+            </div>
+
+            {/* Groups */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {FILTER_GROUPS.map(group => (
+                <div key={group.label}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '6px', opacity: 0.7 }}>
+                    {group.label}
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {group.keys.map(key => {
+                      const label = CATEGORY_LABELS[key];
+                      const colors = CATEGORY_COLORS[key];
+                      const active = categoryFilter[key];
+                      if (!label) return null;
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => toggleCategory(key)}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '5px',
+                            padding: '5px 11px', borderRadius: '20px',
+                            border: `1px solid ${active ? colors.border : 'var(--glass-border)'}`,
+                            background: active ? colors.bg : 'transparent',
+                            color: active ? colors.text : 'var(--text-secondary)',
+                            fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+                            transition: 'all 0.18s', opacity: active ? 1 : 0.5,
+                          }}
+                        >
+                          <span style={{
+                            width: '7px', height: '7px', borderRadius: '50%',
+                            background: active ? colors.dot : 'var(--text-secondary)',
+                            flexShrink: 0,
+                          }} />
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ═══ Annual View ═══ */}
       {activeTab === 'annual' && (
