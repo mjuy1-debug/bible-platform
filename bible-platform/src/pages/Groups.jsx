@@ -27,7 +27,7 @@ export default function Groups() {
   const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
   const [copiedCode, setCopiedCode] = useState(null);
 
-  // Fetch My Groups
+  // Fetch My Groups — also sync selectedGroup when Firestore updates
   useEffect(() => {
     if (!currentUser) return;
 
@@ -45,6 +45,13 @@ export default function Groups() {
         } catch (_) {}
       }
       setMyGroups(myGroupsList);
+
+      // ✅ 현재 열려 있는 그룹도 최신 데이터로 자동 갱신
+      setSelectedGroup(prev => {
+        if (!prev) return prev;
+        const updated = groups.find(g => g.id === prev.id);
+        return updated ? updated : prev;
+      });
     });
     return () => unsubscribe();
   }, [currentUser]);
