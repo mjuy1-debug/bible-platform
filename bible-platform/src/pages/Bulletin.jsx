@@ -554,9 +554,33 @@ export default function Bulletin() {
               onClick={() => bulletin.isDigital ? setSelectedBulletin(bulletin) : setSelectedImage(bulletin.imageUrl)}
             >
               {bulletin.isDigital ? (
-                <div style={{ height: '180px', width: '100%', background: 'linear-gradient(135deg, var(--bg-secondary), var(--bg-primary))', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--glass-border)', position: 'relative' }}>
-                  <FileText size={48} color="var(--accent-gold)" opacity={0.5} />
-                  <span style={{ position: 'absolute', top: '12px', right: '12px', background: 'var(--accent-gold)', color: '#fff', fontSize: '11px', padding: '4px 8px', borderRadius: '12px', fontWeight: 'bold' }}>스마트 주보</span>
+                <div style={{
+                  height: '180px', width: '100%', position: 'relative', overflow: 'hidden',
+                  background: 'linear-gradient(135deg, #0f1c3f 0%, #1a3a6e 50%, #0f2a5a 100%)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  borderBottom: '1px solid var(--glass-border)',
+                }}>
+                  {/* 배경 장식 원 */}
+                  <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(212,175,55,0.08)' }} />
+                  <div style={{ position: 'absolute', bottom: '-20px', left: '-20px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(212,175,55,0.06)' }} />
+                  {/* 십자가 */}
+                  <div style={{ position: 'relative', marginBottom: '8px' }}>
+                    <div style={{ width: '4px', height: '36px', background: 'var(--accent-gold)', borderRadius: '2px', margin: '0 auto' }} />
+                    <div style={{ width: '24px', height: '4px', background: 'var(--accent-gold)', borderRadius: '2px', position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)' }} />
+                  </div>
+                  {/* 교회명 */}
+                  <div style={{ color: 'var(--accent-gold)', fontSize: '1rem', fontWeight: 800, letterSpacing: '0.08em', fontFamily: 'var(--font-serif)' }}>
+                    BethelChurch
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.72rem', letterSpacing: '0.15em', marginTop: '4px' }}>
+                    WEEKLY BULLETIN
+                  </div>
+                  {/* 날짜 */}
+                  <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)', color: 'rgba(212,175,55,0.7)', fontSize: '0.7rem', whiteSpace: 'nowrap' }}>
+                    {bulletin.date}
+                  </div>
+                  {/* 스마트 주보 뱃지 */}
+                  <span style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--accent-gold)', color: '#0f1c3f', fontSize: '10px', padding: '3px 8px', borderRadius: '10px', fontWeight: 800, letterSpacing: '0.03em' }}>스마트 주보</span>
                 </div>
               ) : (
                 <div style={{ height: '180px', width: '100%', backgroundColor: 'rgba(0,0,0,0.2)', position: 'relative' }}>
