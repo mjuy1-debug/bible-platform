@@ -135,8 +135,7 @@ export default function Groups() {
   
   // Group Feed
   useEffect(() => {
-    if (!selectedGroup) return;
-    
+    if (!selectedGroup?.id) return;
     const q = query(
       collection(db, `groups/${selectedGroup.id}/posts`),
       orderBy('createdAt', 'desc')
@@ -146,7 +145,7 @@ export default function Groups() {
       setPosts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     });
     return () => unsubscribe();
-  }, [selectedGroup]);
+  }, [selectedGroup?.id]);
 
   const handlePost = async (e) => {
     e.preventDefault();
@@ -206,6 +205,35 @@ export default function Groups() {
       console.error(error);
       if (showToast) showToast('오류가 발생했습니다.', 'error');
     }
+  };
+
+  const groupedPosts = {};
+  (posts || []).forEach(post => {
+    let dateStr;
+    try {
+      if (post.createdAt?.toDate) {
+        dateStr = post.createdAt.toDate().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace('.', '').trim();
+      } else if (typeof post.createdAt === 'string') {
+        dateStr = new Date(post.createdAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace('.', '').trim();
+      } else {
+        dateStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace('.', '').trim();
+      }
+    } catch (e) {
+      dateStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '-').replace('.', '').trim();
+    }
+    
+    if (!groupedPosts[dateStr]) groupedPosts[dateStr] = [];
+    groupedPosts[dateStr].push(post);
+  });
+  const sortedDates = Object.keys(groupedPosts).sort((a, b) => b.localeCompare(a));
+
+  const getTodayVerseForDate = (dateStr) => {
+    if (selectedGroup?.todayVerseDate === dateStr) return selectedGroup.todayVerse;
+    if (Array.isArray(selectedGroup?.verseHistory)) {
+      const found = selectedGroup.verseHistory.find(v => v.date === dateStr);
+      if (found) return found.text;
+    }
+    return null;
   };
 
   const updateTodayVerse = async (e) => {
@@ -279,11 +307,11 @@ export default function Groups() {
         {/* 오늘의 말씀 (상단 고정은 삭제, 피드 내 날짜별로 표시) */}
         
         {/* 말씀 역사 (과거 날짜별) - 피드에 통합되었으므로 이전 기록 요약 뷰 */}
-        {(selectedGroup.verseHistory || []).length > 1 && (
+        {(Array.isArray(selectedGroup?.verseHistory) ? selectedGroup.verseHistory : []).length > 1 && (
           <details style={{ marginBottom: '16px' }}>
-            <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({(selectedGroup.verseHistory || []).length - 1}건)</summary>
+            <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({(Array.isArray(selectedGroup.verseHistory) ? selectedGroup.verseHistory : []).length - 1}건)</summary>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-              {[...(selectedGroup.verseHistory || [])].reverse().slice(1).map(v => (
+              {[...(Array.isArray(selectedGroup.verseHistory) ? selectedGroup.verseHistory : [])].reverse().slice(1).map(v => (
                 <div key={v.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', fontSize: '13px' }}>
                   <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date} {v.setBy && `(by ${v.setBy})`}</div>
                   <div>{v.text}</div>
