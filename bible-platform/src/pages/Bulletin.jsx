@@ -243,164 +243,153 @@ export default function Bulletin() {
 
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
-    <div style={{ margin: '0 -20px', padding: '0 20px 20px 20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', alignItems: 'center', gap: '8px', paddingRight: '10px' }}>
-        <ZoomIn size={16} color="var(--text-secondary)" />
-        <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>크기 조절</span>
-        <input 
-          type="range" min="0.4" max="1.5" step="0.05" 
-          value={bulletinZoom} 
-          onChange={(e) => setBulletinZoom(Number(e.target.value))} 
-          style={{ width: '100px', accentColor: 'var(--accent-gold)' }} 
-        />
-      </div>
-      <div style={{ zoom: bulletinZoom, transformOrigin: 'top center' }}>
-        <div style={{ minWidth: '768px', maxWidth: '1000px', margin: '0 auto', background: '#fff', color: '#333', padding: '30px', borderRadius: '12px', boxShadow: 'var(--shadow-md)' }}>
-        <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '28px', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
-          {bulletin.title} <span style={{ fontSize: '16px', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '8px' }}>{bulletin.date}</span>
+    <div style={{ margin: '0 auto', maxWidth: '800px', padding: '10px 0 30px' }}>
+      <div style={{ background: '#fff', color: '#333', padding: '24px 20px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)' }}>
+        <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '1.5rem', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '24px', fontFamily: 'var(--font-serif)', lineHeight: '1.4' }}>
+          {bulletin.title} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '6px' }}>{bulletin.date}</span>
         </h1>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           
-          {/* Row 1, Left: 주일 오전 예배 */}
-        <div>
-          <h2 style={{ fontSize: '20px', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
-            주일 오전 예배
-          </h2>
-          <div style={{ overflowX: 'auto', marginBottom: '20px', position: 'relative' }} className="hide-scrollbar">
-            <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
-              <tbody>
-                {bulletin.worshipOrder?.map((item, idx) => (
-                  <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                    <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
-                    <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
-                    <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '20px' }}>※ 표는 일어나 주세요</div>
-
-          {/* 주일 오후 예배 (선택적) */}
-          {bulletin.includeAfternoon && bulletin.afternoonOrder?.length > 0 && (
-            <>
-              <h2 style={{ fontSize: '20px', color: '#6b21a8', borderBottom: '2px solid #6b21a8', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
-                <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
-                주일 오후 예배
+          {/* Section 1: 주일 예배 */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
+            {/* 오전 예배 */}
+            <div style={{ flex: '1 1 300px' }}>
+              <h2 style={{ fontSize: '1.2rem', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+                주일 오전 예배
               </h2>
-              <div style={{ overflowX: 'auto', marginBottom: '20px' }} className="hide-scrollbar">
-                <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse', whiteSpace: 'nowrap', minWidth: '320px' }}>
+              <div style={{ overflowX: 'auto', marginBottom: '16px' }} className="hide-scrollbar">
+                <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', minWidth: '280px' }}>
                   <tbody>
-                    {bulletin.afternoonOrder.map((item, idx) => (
+                    {bulletin.worshipOrder?.map((item, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                        <td style={{ padding: '8px 0', width: '30%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
-                        <td style={{ padding: '8px 0', width: '45%', textAlign: 'center' }}>{item.content}</td>
-                        <td style={{ padding: '8px 0', width: '25%', textAlign: 'right' }}>{item.leader}</td>
+                        <td style={{ padding: '10px 4px', width: '35%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
+                        <td style={{ padding: '10px 4px', width: '40%', textAlign: 'center' }}>{item.content}</td>
+                        <td style={{ padding: '10px 4px', width: '25%', textAlign: 'right', color: '#555' }}>{item.leader}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <div style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '30px' }}>※ 표는 일어나 주세요</div>
-            </>
-          )}
-        </div>
-
-        {/* Row 1, Right: 교회 소식, 지교회 */}
-        <div>
-          <h2 style={{ fontSize: '20px', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
-            교회 소식
-          </h2>
-
-          {/* 교회 소식 부제목/공지 문구 */}
-          {bulletin.newsSubtitle && (
-            <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '8px', padding: '12px 16px', marginBottom: '16px', whiteSpace: 'pre-wrap', fontSize: '14px', color: '#2b4a70', lineHeight: 1.7 }}>
-              {bulletin.newsSubtitle}
+              <div style={{ textAlign: 'center', fontSize: '0.85rem', color: '#666' }}>※ 표는 일어나 주세요</div>
             </div>
-          )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px', fontSize: '15px' }}>
-            {bulletin.news?.map((newsItem, idx) => (
-              <div key={idx} style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '20px', height: '20px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px' }}>{idx + 1}</span>
-                <span style={{ whiteSpace: 'pre-wrap' }}>{newsItem}</span>
+            {/* 오후 예배 (선택적) */}
+            {bulletin.includeAfternoon && bulletin.afternoonOrder?.length > 0 && (
+              <div style={{ flex: '1 1 300px' }}>
+                <h2 style={{ fontSize: '1.2rem', color: '#6b21a8', borderBottom: '2px solid #6b21a8', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+                  주일 오후 예배
+                </h2>
+                <div style={{ overflowX: 'auto', marginBottom: '16px' }} className="hide-scrollbar">
+                  <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', minWidth: '280px' }}>
+                    <tbody>
+                      {bulletin.afternoonOrder.map((item, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
+                          <td style={{ padding: '10px 4px', width: '35%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
+                          <td style={{ padding: '10px 4px', width: '40%', textAlign: 'center' }}>{item.content}</td>
+                          <td style={{ padding: '10px 4px', width: '25%', textAlign: 'right', color: '#555' }}>{item.leader}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{ textAlign: 'center', fontSize: '0.85rem', color: '#666' }}>※ 표는 일어나 주세요</div>
               </div>
-            ))}
+            )}
           </div>
 
-          {/* 교회 소식 첨부 이미지 */}
-          {bulletin.newsImageUrl && (
-            <div style={{ marginBottom: '30px', textAlign: 'center' }}>
-              <img src={bulletin.newsImageUrl} alt="교회 소식 첨부 이미지" style={{ maxWidth: '100%', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
-            </div>
-          )}
-        </div>
-        
-        {/* Row 2, Left: 성도의 기본생활, 기도제목, 지교회 */}
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '12px', border: '1px solid #e9d8fd', marginBottom: '20px' }}>
-            <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '16px' }}>✿ 성도의 기본생활 ✿</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', whiteSpace: 'nowrap', overflowX: 'auto', paddingBottom: '2px' }} className="hide-scrollbar">
-              {STATIC_INFO.basicLife.map((life, i) => (
-                <div key={i}>• {life}</div>
-              ))}
-            </div>
-          </div>
+          {/* Section 2: 교회 소식 */}
+          <div>
+            <h2 style={{ fontSize: '1.2rem', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
+              교회 소식
+            </h2>
 
-          <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '12px', border: '1px solid #bee3f8', marginBottom: '20px' }}>
-            <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '16px' }}>벧엘교회 성도들의 기도 제목과 목표</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
-              {STATIC_INFO.prayers.map((prayer, i) => (
-                <div key={i}>{prayer}</div>
-              ))}
-            </div>
-          </div>
+            {bulletin.newsSubtitle && (
+              <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '12px', padding: '16px', marginBottom: '20px', whiteSpace: 'pre-wrap', fontSize: '0.95rem', color: '#2b4a70', lineHeight: 1.6 }}>
+                {bulletin.newsSubtitle}
+              </div>
+            )}
 
-          <div style={{ background: '#fffbeb', padding: '20px', borderRadius: '12px', border: '1px solid #fde68a', flex: 1 }}>
-            <h3 style={{ textAlign: 'center', color: '#92400e', marginBottom: '16px', fontSize: '16px' }}>♥ 화도벧엘교회 필리핀지교회들 ♥</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '15px' }}>
-              {STATIC_INFO.branches.map((branch, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e' }}>
-                  <span>👤</span> {branch.name} : {branch.pastor}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', fontSize: '1rem', lineHeight: 1.6 }}>
+              {bulletin.news?.map((newsItem, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '12px' }}>
+                  <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '24px', height: '24px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', marginTop: '2px', fontWeight: 'bold' }}>{idx + 1}</span>
+                  <span style={{ whiteSpace: 'pre-wrap' }}>{newsItem}</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Row 2, Right: 예배 시간 안내 */}
-        <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '16px' }}>🕒 예배 시간 안내</h3>
-          <div style={{ overflowX: 'auto', flex: 1, paddingBottom: '4px' }} className="hide-scrollbar">
-            <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', border: '1px solid #bbf7d0', textAlign: 'center', background: '#fff', whiteSpace: 'nowrap', minWidth: '300px' }}>
-              <thead>
-                <tr style={{ background: '#f0fdf4' }}>
-                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>일시</th>
-                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>예배종류</th>
-                  <th style={{ padding: '8px', border: '1px solid #bbf7d0' }}>장소</th>
-                </tr>
-              </thead>
-              <tbody>
-                {STATIC_INFO.schedule.map((item, i) => (
-                  <tr key={i}>
-                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.time}</td>
-                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.name}</td>
-                    <td style={{ padding: '6px', border: '1px solid #bbf7d0' }}>{item.place}</td>
-                  </tr>
+            {bulletin.newsImageUrl && (
+              <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                <img src={bulletin.newsImageUrl} alt="교회 소식 첨부 이미지" style={{ maxWidth: '100%', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }} />
+              </div>
+            )}
+          </div>
+
+          {/* Section 3: 기타 정보 (3열 그리드) */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+            <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '16px', border: '1px solid #e9d8fd' }}>
+              <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>✿ 성도의 기본생활 ✿</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem', color: '#444' }}>
+                {STATIC_INFO.basicLife.map((life, i) => (
+                  <div key={i}>• {life}</div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
+
+            <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '16px', border: '1px solid #bee3f8' }}>
+              <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>벧엘교회 기도 제목</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem', color: '#444' }}>
+                {STATIC_INFO.prayers.map((prayer, i) => (
+                  <div key={i}>{prayer}</div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: '#fffbeb', padding: '20px', borderRadius: '16px', border: '1px solid #fde68a' }}>
+              <h3 style={{ textAlign: 'center', color: '#92400e', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>♥ 필리핀 지교회 ♥</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem' }}>
+                {STATIC_INFO.branches.map((branch, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e' }}>
+                    <span>👤</span> {branch.name} : {branch.pastor}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div style={{ textAlign: 'center', background: '#dcfce7', padding: '10px', borderRadius: '20px', marginTop: '16px', color: '#14532d', fontWeight: 'bold' }}>
-            날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
+
+          {/* 예배 시간 안내 */}
+          <div style={{ background: '#f0fdf4', padding: '24px', borderRadius: '16px', border: '1px solid #bbf7d0' }}>
+            <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '20px', fontSize: '1.1rem', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
+            <div style={{ overflowX: 'auto' }} className="hide-scrollbar">
+              <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', minWidth: '400px', borderRadius: '8px', overflow: 'hidden' }}>
+                <thead>
+                  <tr style={{ background: '#dcfce7', color: '#14532d' }}>
+                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>일시</th>
+                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>예배종류</th>
+                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>장소</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {STATIC_INFO.schedule.map((item, i) => (
+                    <tr key={i}>
+                      <td style={{ padding: '10px', border: '1px solid #bbf7d0' }}>{item.time}</td>
+                      <td style={{ padding: '10px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534' }}>{item.name}</td>
+                      <td style={{ padding: '10px', border: '1px solid #bbf7d0' }}>{item.place}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ textAlign: 'center', background: '#166534', color: '#fff', padding: '12px', borderRadius: '12px', marginTop: '20px', fontSize: '0.95rem' }}>
+              날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
+            </div>
           </div>
-        </div>
 
         </div>
-      </div>
       </div>
     </div>
   );
