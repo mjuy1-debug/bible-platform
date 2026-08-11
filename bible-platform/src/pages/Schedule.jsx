@@ -463,7 +463,7 @@ const Schedule = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="glass-card"
-              style={{ width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}
+              style={{ width: '94%', maxWidth: '900px', maxHeight: '90vh', overflowY: 'auto' }}
               onClick={e => e.stopPropagation()}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
@@ -641,7 +641,7 @@ const Schedule = () => {
                 exit={{ scale: 0.92, opacity: 0 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 className="glass-card"
-                style={{ width: '90%', maxWidth: '480px', padding: 'clamp(1.2rem, 5vw, 1.8rem)' }}
+                style={{ width: '94%', maxWidth: '900px', padding: 'clamp(1.2rem, 5vw, 1.8rem)' }}
                 onClick={e => e.stopPropagation()}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
