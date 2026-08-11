@@ -308,8 +308,8 @@ export default function Bulletin() {
             </h2>
 
             {bulletin.newsSubtitle && (
-              <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '12px', padding: '16px', marginBottom: '20px', fontSize: '0.95rem', color: '#2b4a70', lineHeight: 1.7, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-                {bulletin.newsSubtitle.replace(/\n/g, ' ').replace(/  +/g, ' ').trim()}
+              <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '12px', padding: '16px', marginBottom: '20px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', fontSize: '0.95rem', color: '#2b4a70', lineHeight: 1.7 }}>
+                {bulletin.newsSubtitle}
               </div>
             )}
 
@@ -317,8 +317,8 @@ export default function Bulletin() {
               {bulletin.news?.map((newsItem, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '24px', height: '24px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', marginTop: '3px', fontWeight: 'bold' }}>{idx + 1}</span>
-                  <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word', flex: 1 }}>
-                    {newsItem.replace(/\n/g, ' ').replace(/  +/g, ' ').trim()}
+                  <span style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', flex: 1 }}>
+                    {newsItem}
                   </span>
                 </div>
               ))}
