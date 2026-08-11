@@ -27,6 +27,10 @@ export default function Groups() {
   const [editPostText, setEditPostText] = useState('');
   const [editPostVerse, setEditPostVerse] = useState('');
   const [todayVerseInput, setTodayVerseInput] = useState('');
+  const [todayVerseRefInput, setTodayVerseRefInput] = useState('');
+  const [editingDayVerseDate, setEditingDayVerseDate] = useState(null);
+  const [editDayVerseText, setEditDayVerseText] = useState('');
+  const [editDayVerseRef, setEditDayVerseRef] = useState('');
   const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
   const [copiedCode, setCopiedCode] = useState(null);
 
@@ -228,10 +232,10 @@ export default function Groups() {
   const sortedDates = Object.keys(groupedPosts).sort((a, b) => b.localeCompare(a));
 
   const getTodayVerseForDate = (dateStr) => {
-    if (selectedGroup?.todayVerseDate === dateStr) return selectedGroup.todayVerse;
+    if (selectedGroup?.todayVerseDate === dateStr) return { text: selectedGroup.todayVerse, ref: selectedGroup.todayVerseRef };
     if (Array.isArray(selectedGroup?.verseHistory)) {
       const found = selectedGroup.verseHistory.find(v => v.date === dateStr);
-      if (found) return found.text;
+      if (found) return { text: found.text, ref: found.ref };
     }
     return null;
   };
@@ -246,21 +250,66 @@ export default function Groups() {
     }).replace(/\. /g, '-').replace('.', '').trim();
 
     const verseText = todayVerseInput.trim();
+    const verseRef = todayVerseRefInput.trim();
     try {
-      // Save directly on group document and add to history array
+      let history = Array.isArray(selectedGroup.verseHistory) ? [...selectedGroup.verseHistory] : [];
+      let foundIndex = history.findIndex(v => v.date === today);
+      
+      const newObj = { id: Date.now().toString(), text: verseText, ref: verseRef, date: today, setBy: currentUser.displayName || '멤버' };
+      
+      if (foundIndex >= 0) {
+        history[foundIndex] = newObj;
+      } else {
+        history.push(newObj);
+      }
+
       await setDoc(doc(db, 'groups', selectedGroup.id), {
         todayVerse: verseText,
+        todayVerseRef: verseRef,
         todayVerseDate: today,
         todayVerseSetBy: currentUser.displayName || '멤버',
-        verseHistory: arrayUnion({ id: Date.now().toString(), text: verseText, date: today, setBy: currentUser.displayName || '멤버' })
+        verseHistory: history
       }, { merge: true });
 
       if (showToast) showToast('오늘의 말씀이 저장되었습니다. 📖');
       setTodayVerseInput('');
-      setSelectedGroup(prev => ({ ...prev, todayVerse: verseText, todayVerseDate: today }));
+      setTodayVerseRefInput('');
+      setSelectedGroup(prev => ({ ...prev, todayVerse: verseText, todayVerseRef: verseRef, todayVerseDate: today, verseHistory: history }));
     } catch (error) {
       console.error('오늘의 말씀 저장 오류:', error);
       if (showToast) showToast(`저장 실패: ${error.code || error.message}`, 'error');
+    }
+  };
+
+  const handleUpdateDayVerse = async (e, dateStr) => {
+    e.preventDefault();
+    if (!editDayVerseText.trim()) return;
+    
+    try {
+      let history = Array.isArray(selectedGroup.verseHistory) ? [...selectedGroup.verseHistory] : [];
+      let foundIndex = history.findIndex(v => v.date === dateStr);
+      
+      const newRef = editDayVerseRef.trim();
+      const newText = editDayVerseText.trim();
+      
+      if (foundIndex >= 0) {
+        history[foundIndex] = { ...history[foundIndex], text: newText, ref: newRef };
+      } else {
+        history.push({ id: Date.now().toString(), date: dateStr, text: newText, ref: newRef, setBy: currentUser.displayName || '멤버' });
+      }
+      
+      const updates = { verseHistory: history };
+      if (selectedGroup.todayVerseDate === dateStr) {
+        updates.todayVerse = newText;
+        updates.todayVerseRef = newRef;
+      }
+      
+      await setDoc(doc(db, 'groups', selectedGroup.id), updates, { merge: true });
+      if (showToast) showToast('말씀이 수정되었습니다.');
+      setEditingDayVerseDate(null);
+    } catch (err) {
+      console.error(err);
+      if (showToast) showToast('오류가 발생했습니다.', 'error');
     }
   };
 
@@ -314,7 +363,10 @@ export default function Groups() {
               {[...(Array.isArray(selectedGroup.verseHistory) ? selectedGroup.verseHistory : [])].reverse().slice(1).map(v => (
                 <div key={v.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', fontSize: '13px' }}>
                   <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date} {v.setBy && `(by ${v.setBy})`}</div>
-                  <div>{v.text}</div>
+                  <div>
+                    {v.text}
+                    {v.ref && <div style={{ opacity: 0.8, marginTop: '2px' }}>- {v.ref}</div>}
+                  </div>
                 </div>
               ))}
             </div>
@@ -324,17 +376,26 @@ export default function Groups() {
         {currentUser && (
           <form onSubmit={updateTodayVerse} style={{ marginBottom: '20px' }}>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>📖 오늘의 말씀 설정 (모든 멤버 가능)</div>
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <input 
                 type="text"
-                placeholder="오늘의 말씀을 입력하세요..."
-                value={todayVerseInput}
-                onChange={(e) => setTodayVerseInput(e.target.value)}
-                style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+                placeholder="관련 말씀 구절 (선택) ex) 창세기 1:1"
+                value={todayVerseRefInput}
+                onChange={(e) => setTodayVerseRefInput(e.target.value)}
+                style={{ padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
               />
-              <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
-                저장
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input 
+                  type="text"
+                  placeholder="오늘의 말씀을 입력하세요..."
+                  value={todayVerseInput}
+                  onChange={(e) => setTodayVerseInput(e.target.value)}
+                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+                />
+                <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                  저장
+                </button>
+              </div>
             </div>
           </form>
         )}
@@ -365,8 +426,27 @@ export default function Groups() {
                   {/* Today's Verse Header for this date */}
                   {dayVerse && (
                     <div style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', padding: '16px', borderRadius: '12px', marginBottom: '16px', color: 'var(--accent-gold)' }}>
-                      <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '4px' }}>📖 이 날의 말씀</div>
-                      <div style={{ fontWeight: 'bold', lineHeight: 1.5 }}>{dayVerse}</div>
+                      {editingDayVerseDate === dateStr ? (
+                        <form onSubmit={(e) => handleUpdateDayVerse(e, dateStr)} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <input type="text" placeholder="관련 말씀 구절 (선택)" value={editDayVerseRef} onChange={(e) => setEditDayVerseRef(e.target.value)} style={{ padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                          <textarea required value={editDayVerseText} onChange={(e) => setEditDayVerseText(e.target.value)} style={{ padding: '10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                            <button type="button" onClick={() => setEditingDayVerseDate(null)} style={{ background: 'none', color: 'var(--text-primary)', border: 'none', cursor: 'pointer', fontSize: '12px' }}>취소</button>
+                            <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>저장</button>
+                          </div>
+                        </form>
+                      ) : (
+                        <>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                            <div style={{ fontSize: '12px', opacity: 0.8 }}>📖 이 날의 말씀</div>
+                            <button onClick={() => { setEditingDayVerseDate(dateStr); setEditDayVerseText(dayVerse.text); setEditDayVerseRef(dayVerse.ref || ''); }} style={{ background: 'none', border: 'none', color: 'var(--accent-gold)', opacity: 0.7, cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>수정</button>
+                          </div>
+                          <div style={{ fontWeight: 'bold', lineHeight: 1.5 }}>
+                            {dayVerse.text}
+                            {dayVerse.ref && <div style={{ fontSize: '13px', marginTop: '6px', opacity: 0.9 }}>- {dayVerse.ref}</div>}
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
 
