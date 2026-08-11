@@ -42,7 +42,15 @@ export default function Groups() {
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       const groups = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       groups.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      setAllGroups(groups);
+      
+      // ✅ 기존 버그로 인해 삭제되지 않고 남아있는 비어있는 방(유령방) 자동 청소
+      for (const g of groups) {
+        if (g.memberCount <= 0) {
+          deleteDoc(doc(db, 'groups', g.id)).catch(console.error);
+        }
+      }
+
+      setAllGroups(groups.filter(g => g.memberCount > 0)); // 화면에서도 즉시 제외
 
       const myGroupsList = [];
       for (const g of groups) {
