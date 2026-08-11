@@ -48,7 +48,7 @@ for (const sermon of SERMONS) {
     <!-- Redirect to App -->
     <script>
       // Replace location so the back button doesn't trap the user
-      window.location.replace('/bible-platform/#/sermons?id=${sermon.id}');
+      window.location.replace('/bible-platform/#/sermon?id=${sermon.id}');
     </script>
 </head>
 <body>
