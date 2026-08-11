@@ -80,7 +80,7 @@ const Prayer = () => {
       </header>
 
       {/* Stats */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
         <div style={{ background: 'var(--bg-secondary, #1a1a1a)', padding: '1rem', borderRadius: '12px', flex: 1, textAlign: 'center', border: '1px solid var(--glass-border, rgba(255,255,255,0.1))' }}>
           <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary, #aaa)' }}>총 기도 제목</div>
           <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{total}</div>
@@ -105,13 +105,13 @@ const Prayer = () => {
             onChange={(e) => setNewPrayerText(e.target.value)}
             style={{ padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--glass-border, rgba(255,255,255,0.2))', background: 'rgba(0,0,0,0.2)', color: '#fff' }}
           />
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <input 
               type="text" 
               placeholder="관련 말씀 (예: 시편 23:1) - 선택사항" 
               value={newPrayerVerse}
               onChange={(e) => setNewPrayerVerse(e.target.value)}
-              style={{ flex: 1, padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--glass-border, rgba(255,255,255,0.2))', background: 'rgba(0,0,0,0.2)', color: '#fff' }}
+              style={{ flex: '1 1 200px', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--glass-border, rgba(255,255,255,0.2))', background: 'rgba(0,0,0,0.2)', color: '#fff' }}
             />
             <button type="submit" style={{ padding: '0 1.5rem', borderRadius: '8px', background: 'var(--accent-gold, #d4af37)', color: '#000', border: 'none', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Plus size={18} /> 추가
@@ -121,7 +121,7 @@ const Prayer = () => {
       </form>
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
         <Filter size={18} color="var(--text-secondary, #aaa)" />
         <button onClick={() => setFilter('all')} style={{ background: filter === 'all' ? 'var(--accent-gold, #d4af37)' : 'transparent', color: filter === 'all' ? '#000' : 'var(--text-secondary, #aaa)', border: '1px solid ' + (filter === 'all' ? 'transparent' : 'var(--glass-border, rgba(255,255,255,0.2))'), padding: '0.4rem 1rem', borderRadius: '20px', cursor: 'pointer', transition: 'all 0.2s' }}>전체</button>
         <button onClick={() => setFilter('pending')} style={{ background: filter === 'pending' ? 'var(--accent-gold, #d4af37)' : 'transparent', color: filter === 'pending' ? '#000' : 'var(--text-secondary, #aaa)', border: '1px solid ' + (filter === 'pending' ? 'transparent' : 'var(--glass-border, rgba(255,255,255,0.2))'), padding: '0.4rem 1rem', borderRadius: '20px', cursor: 'pointer', transition: 'all 0.2s' }}>응답 대기</button>
@@ -150,12 +150,13 @@ const Prayer = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '1rem'
+                  gap: '1rem',
+                  flexWrap: 'wrap'
                 }}
               >
-                <div style={{ flex: 1, textDecoration: prayer.answered ? 'line-through' : 'none', opacity: prayer.answered ? 0.7 : 1 }}>
+                <div style={{ flex: '1 1 200px', textDecoration: prayer.answered ? 'line-through' : 'none', opacity: prayer.answered ? 0.7 : 1, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                   <div style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{prayer.text}</div>
-                  <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary, #aaa)' }}>
+                  <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem', color: 'var(--text-secondary, #aaa)', flexWrap: 'wrap' }}>
                     <span>{prayer.dateAdded}</span>
                     {prayer.verse && <span style={{ color: 'var(--accent-gold, #d4af37)' }}>{prayer.verse}</span>}
                     {prayer.answered && <span style={{ color: '#4ade80' }}>응답일: {prayer.dateAnswered}</span>}

@@ -484,20 +484,24 @@ export default function Bulletin() {
 
             <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
               <h3 style={{ fontSize: '18px', marginBottom: '16px', color: 'var(--accent-gold)' }}>주일 오전 예배 순서</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-                <div>구분 (※기립)</div>
-                <div>내용 (찬송가, 성경 등)</div>
-                <div>담당자</div>
-                <div></div>
-              </div>
-              {worshipOrder.map((item, idx) => (
-                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px' }}>
-                  <input type="text" value={item.type} onChange={(e) => handleWorshipChange(idx, 'type', e.target.value)} placeholder="찬송, 기도..." style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
-                  <input type="text" value={item.content} onChange={(e) => handleWorshipChange(idx, 'content', e.target.value)} placeholder="내용" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
-                  <input type="text" value={item.leader} onChange={(e) => handleWorshipChange(idx, 'leader', e.target.value)} placeholder="담당" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
-                  <button type="button" onClick={() => removeWorship(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
+              <div style={{ overflowX: 'auto' }}>
+                <div style={{ minWidth: '420px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                    <div>구분 (※기립)</div>
+                    <div>내용 (찬송가, 성경 등)</div>
+                    <div>담당자</div>
+                    <div></div>
+                  </div>
+                  {worshipOrder.map((item, idx) => (
+                    <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr 1fr 40px', gap: '8px', marginBottom: '8px' }}>
+                      <input type="text" value={item.type} onChange={(e) => handleWorshipChange(idx, 'type', e.target.value)} placeholder="찬송, 기도..." style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <input type="text" value={item.content} onChange={(e) => handleWorshipChange(idx, 'content', e.target.value)} placeholder="내용" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <input type="text" value={item.leader} onChange={(e) => handleWorshipChange(idx, 'leader', e.target.value)} placeholder="담당" style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }} />
+                      <button type="button" onClick={() => removeWorship(idx)} style={{ background: 'rgba(255,0,0,0.1)', color: '#ff4d4f', border: 'none', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><X size={16} /></button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
               <button type="button" onClick={addWorship} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--glass-bg)', border: '1px dashed var(--accent-gold)', color: 'var(--accent-gold)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginTop: '8px' }}>
                 <Plus size={16} /> 순서 추가
               </button>

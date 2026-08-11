@@ -168,7 +168,7 @@ export default function Memorize() {
         <div style={{ display: 'flex', gap: '0', marginBottom: '1.5rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--glass-border)' }}>
           {[
             { key: 'train', icon: <Brain size={16} />, label: '훈련' },
-            { key: 'records', icon: <Trophy size={16} />, label: `완료 기록 (${records.length})` },
+            { key: 'records', icon: <Trophy size={16} />, label: `기록 (${records.length})` },
             { key: 'tips', icon: <Lightbulb size={16} />, label: '암송 팁' },
           ].map(tab => (
             <button
@@ -218,7 +218,7 @@ export default function Memorize() {
                 </button>
 
                 <h3 style={{ margin: '0 0 1rem 0' }}>난이도 선택</h3>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
                   {[
                     { label: '🌱 초급', desc: '25% 빈칸', val: 0.25 },
                     { label: '🔥 중급', desc: '50% 빈칸', val: 0.50 },
@@ -317,6 +317,7 @@ export default function Memorize() {
                         <span key={i} style={{
                           display: 'inline-block',
                           minWidth: `${word.length * 0.7 + 1}rem`,
+                          maxWidth: '100%',
                           marginRight: '0.4rem',
                           borderBottom: `2px solid ${isCurrent ? 'var(--accent-gold)' : 'rgba(255,255,255,0.3)'}`,
                           backgroundColor: isCurrent ? 'rgba(212,175,55,0.12)' : 'transparent',
@@ -419,7 +420,7 @@ export default function Memorize() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
                           transition={{ delay: idx * 0.04 }}
-                          style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', padding: '1rem 1.2rem', border: `1px solid ${rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.5)' : 'var(--glass-border)'}`, display: 'flex', gap: '1rem', alignItems: 'flex-start', background: rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.05)' : 'var(--bg-secondary)' }}
+                          style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: '12px', padding: '1rem 1.2rem', border: `1px solid ${rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.5)' : 'var(--glass-border)'}`, display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'flex-start', background: rec.ref && memorized[rec.ref] ? 'rgba(212,175,55,0.05)' : 'var(--bg-secondary)' }}
                         >
                           <div style={{ fontSize: '1.5rem', flexShrink: 0 }}>
                             {rec.difficulty === '초급' ? '🌱' : rec.difficulty === '중급' ? '🔥' : '⚡'}

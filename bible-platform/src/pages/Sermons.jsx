@@ -1,21 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Play, Plus, X, Edit2, Trash2, Save, Download } from 'lucide-react';
+import { Play, Plus, X, Edit2, Trash2, Save, Download, ExternalLink, Share2, Check } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
+import { UserContext } from '../context/UserContext';
 
 export default function Sermons() {
+  const { currentUser } = useContext(UserContext);
+  const isAdmin = import.meta.env.DEV || (currentUser && (
+    currentUser.email?.includes('admin') ||
+    currentUser.displayName?.includes('관리자') ||
+    currentUser.displayName?.includes('유정파파')
+  ));
+
   const [sermons, setSermons] = useState([...SERMONS].sort((a, b) => new Date(b.date) - new Date(a.date)));
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [linkViewerUrl, setLinkViewerUrl] = useState(null);
+  const [copiedId, setCopiedId] = useState(null); // share badge feedback
+  const [searchParams] = useSearchParams();
   
   // Admin states
   const [showAddForm, setShowAddForm] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '' });
+  const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
+
+  // Auto-open sermon when arriving via a shared link (?id=xxxxx)
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (id) {
+      const found = sermons.find(s => String(s.id) === String(id));
+      if (found) setSelectedVideo(found);
+    }
+  }, [sermons]); // eslint-disable-line
+
+  // Copy shareable deep-link to clipboard
+  const handleShare = async (sermon, e) => {
+    e.stopPropagation();
+    // Build URL: works with both HashRouter and BrowserRouter
+    const base = window.location.origin + window.location.pathname;
+    const hash = window.location.hash.split('?')[0]; // e.g. #/sermons
+    const shareUrl = hash
+      ? `${base}${hash}?id=${sermon.id}`          // HashRouter
+      : `${base}sermons?id=${sermon.id}`;          // BrowserRouter fallback
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      // iOS/older browser fallback
+      const el = document.createElement('textarea');
+      el.value = shareUrl;
+      el.style.position = 'fixed'; el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.focus(); el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+    setCopiedId(sermon.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   // Extract YouTube ID
   const extractId = (url) => {
@@ -67,7 +113,7 @@ export default function Sermons() {
     updatedSermons.sort((a, b) => new Date(b.date) - new Date(a.date));
     setSermons(updatedSermons);
     
-    setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '' });
+    setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
     setEditId(null);
     setShowAddForm(false);
   };
@@ -164,8 +210,8 @@ export default function Sermons() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 className="serif-font" style={{ fontSize: '1.8rem', color: 'var(--accent-gold)' }}>말씀과 설교</h2>
         
-        {import.meta.env.DEV && (
-          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: new Date().toISOString().slice(0,10), preacher: '담임목사', scripture: '', videoUrl: '', summary: '', file: '' }); setShowAddForm(true); }}
+        {isAdmin && (
+          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: new Date().toISOString().slice(0,10), preacher: '담임목사', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' }); setShowAddForm(true); }}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               padding: '0.55rem 1.2rem', borderRadius: '30px',
@@ -180,18 +226,19 @@ export default function Sermons() {
 
       {/* Admin Add/Edit Form */}
       <AnimatePresence>
-        {showAddForm && import.meta.env.DEV && (
+        {showAddForm && isAdmin && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden', marginBottom: '2rem' }}>
             <div className="glass-card" style={{ padding: '1.5rem' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--accent-gold)' }}>
                 {editId ? '설교 수정' : '새 설교 등록'}
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                 <input type="text" placeholder="제목" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
                 <input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="input-field" />
                 <input type="text" placeholder="설교자 (예: 담임목사)" value={newEvent.preacher} onChange={e => setNewEvent({...newEvent, preacher: e.target.value})} className="input-field" />
                 <input type="text" placeholder="본문 (예: 요한복음 3:16)" value={newEvent.scripture} onChange={e => setNewEvent({...newEvent, scripture: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
                 <input type="text" placeholder="유튜브 링크 (https://youtube.com/...)" value={newEvent.videoUrl} onChange={e => setNewEvent({...newEvent, videoUrl: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
+                <input type="text" placeholder="외부 관련 링크 (선택 사항, https://...)" value={newEvent.externalLink || ''} onChange={e => setNewEvent({...newEvent, externalLink: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
                 
                 <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>설교 PDF 파일 업로드 (선택)</label>
@@ -226,11 +273,39 @@ export default function Sermons() {
             {/* Info */}
             <div style={{ padding: '1.2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--accent-gold)', fontWeight: 600, marginBottom: '0.3rem' }}>{sermon.date}</span>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', lineHeight: 1.4 }}>{sermon.title}</h3>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.4, flex: 1 }}>{sermon.title}</h3>
+
+                {/* ── Share Badge ─────────────────────────── */}
+                <button
+                  onClick={(e) => handleShare(sermon, e)}
+                  title="공유 링크 복사"
+                  style={{
+                    flexShrink: 0,
+                    background: copiedId === sermon.id ? 'rgba(16,185,129,0.15)' : 'rgba(212,175,55,0.12)',
+                    border: `1px solid ${copiedId === sermon.id ? 'rgba(16,185,129,0.5)' : 'rgba(212,175,55,0.35)'}`,
+                    borderRadius: '6px',
+                    color: copiedId === sermon.id ? '#10b981' : 'var(--accent-gold)',
+                    cursor: 'pointer',
+                    padding: '4px 7px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    transition: 'all 0.25s',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {copiedId === sermon.id
+                    ? <><Check size={12} /> 복사됨!</>
+                    : <><Share2 size={12} /> 공유</>}
+                </button>
+              </div>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{sermon.scripture} | {sermon.preacher}</p>
               
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                {import.meta.env.DEV && (
+                {isAdmin && (
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button onClick={(e) => handleEdit(sermon, e)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><Edit2 size={16} /></button>
                     <button onClick={(e) => handleDelete(sermon.id, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={16} /></button>
@@ -249,7 +324,7 @@ export default function Sermons() {
       </div>
 
       {/* Admin Deploy Section */}
-      {import.meta.env.DEV && (
+      {isAdmin && (
         <div style={{ marginTop: '3rem', padding: '1.5rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--accent-gold)', textAlign: 'center' }}>
           <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>👨‍💻 관리자 전용: 말씀 저장 및 배포</h4>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.2rem', lineHeight: 1.6 }}>
@@ -288,6 +363,13 @@ export default function Sermons() {
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--accent-gold)' }}>{selectedVideo.title}</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
                 
+                {selectedVideo.externalLink && (
+                  <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
+                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.5rem', fontWeight: 600 }}>
+                    <ExternalLink size={16} /> 관련 링크 열기
+                  </a>
+                )}
+                
                 {selectedVideo.summary && (
                   <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
                     {selectedVideo.summary}
@@ -307,6 +389,73 @@ export default function Sermons() {
                 )}
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── In-App Link Viewer Modal ─────────────────────────── */}
+      <AnimatePresence>
+        {linkViewerUrl && (
+          <motion.div
+            key="link-viewer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 10000,
+              background: 'rgba(0,0,0,0.9)',
+              display: 'flex', flexDirection: 'column',
+            }}
+          >
+            {/* Toolbar */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '0.75rem',
+              padding: '0.7rem 1rem',
+              background: 'var(--bg-secondary)',
+              borderBottom: '1px solid var(--glass-border)',
+              flexShrink: 0,
+            }}>
+              <button
+                onClick={() => setLinkViewerUrl(null)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.35rem',
+                  background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)',
+                  borderRadius: '8px', color: 'var(--text-primary)',
+                  padding: '0.4rem 0.8rem', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
+                }}
+              >
+                <X size={16} /> 닫기
+              </button>
+              <span style={{
+                flex: 1, fontSize: '0.9rem', fontWeight: 700,
+                color: 'var(--accent-gold)', overflow: 'hidden',
+                textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {linkViewerUrl.title}
+              </span>
+              {/* Open in new tab fallback */}
+              <a
+                href={linkViewerUrl.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.3rem',
+                  background: 'transparent', border: 'none',
+                  color: 'var(--text-secondary)', textDecoration: 'none',
+                  fontSize: '0.8rem', cursor: 'pointer', padding: '0.4rem',
+                }}
+              >
+                <ExternalLink size={14} /> 새 탭
+              </a>
+            </div>
+
+            {/* iframe Viewer */}
+            <iframe
+              src={linkViewerUrl.url}
+              title={linkViewerUrl.title}
+              style={{ flex: 1, border: 'none', width: '100%', background: '#fff' }}
+              allow="fullscreen"
+            />
           </motion.div>
         )}
       </AnimatePresence>

@@ -84,8 +84,11 @@ export default function VerseCard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         style={{
-          width: '375px',
-          height: '500px',
+          width: '100%',
+          maxWidth: '375px',
+          aspectRatio: '3 / 4',
+          height: 'auto',
+          minHeight: '400px',
           ...theme.style,
           display: 'flex',
           flexDirection: 'column',
@@ -192,7 +195,7 @@ export default function VerseCard() {
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap', width: '100%', maxWidth: '375px' }}>
           <button onClick={handleDownload} style={actionBtnStyle}>이미지로 저장</button>
           <button onClick={handleShare} style={actionBtnStyle}>공유하기</button>
           <button onClick={() => navigate(-1)} style={{...actionBtnStyle, background: '#444', color: '#fff'}}>닫기</button>

@@ -454,7 +454,7 @@ export default function Groups() {
 
   if (selectedGroup) {
     return (
-      <div style={{ padding: '20px', paddingBottom: '100px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '20px', paddingBottom: '180px', color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button onClick={() => setSelectedGroup(null)} style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}>
@@ -585,7 +585,7 @@ export default function Groups() {
           </form>
         )}
         
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div style={{ fontWeight: 'bold', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>💬 나눔 피드</div>
             <div style={{ display: 'flex', gap: '6px' }}>
@@ -719,7 +719,7 @@ export default function Groups() {
                             </form>
                           ) : (
                             <>
-                              <p style={{ lineHeight: '1.5', marginBottom: '10px', whiteSpace: 'pre-wrap' }}>{post.text}</p>
+                              <p style={{ lineHeight: '1.5', marginBottom: '10px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{post.text}</p>
                               {post.verse && (
                                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '6px', marginBottom: '10px' }}>
                                   <span>📖</span> <span style={{ color: 'var(--accent-gold)' }}>{post.verse}</span>
@@ -778,7 +778,7 @@ export default function Groups() {
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h1 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.5rem)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Users color="var(--accent-gold)" /> 소그룹
         </h1>
       </div>
@@ -924,7 +924,7 @@ export default function Groups() {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '400px', border: '1px solid var(--glass-border)' }}
+              style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '400px', border: '1px solid var(--glass-border)', maxHeight: '90vh', overflowY: 'auto' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>새 그룹 만들기</h2>

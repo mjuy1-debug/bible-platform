@@ -102,7 +102,7 @@ const Home = () => {
       </motion.div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.75rem, 2vw, 1.5rem)', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: 'clamp(0.75rem, 2vw, 1.5rem)', maxWidth: '600px', margin: '0 auto 2.5rem' }}>
         {[
           { label: '통독 진행률', value: `${pct}%`, to: '/plan' },
           { label: '저장한 묵상', value: `${devotions.length}편`, to: '/devotion' },
@@ -174,7 +174,7 @@ const Home = () => {
       {/* Quick Links - Main Features */}
       <div style={{ maxWidth: '960px', margin: '0 auto 2rem' }}>
         <h2 className="serif-font" style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', marginBottom: '1rem', color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.82rem', fontWeight: 700 }}>✦ 주요 기능</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
           {MAIN_LINKS.map(({ to, icon: Icon, title, color }, i) => (
             <motion.div key={to} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 + i * 0.06 }}>
               <Link to={to} style={{ textDecoration: 'none' }}>
@@ -197,7 +197,7 @@ const Home = () => {
       {/* Quick Links - Community */}
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
         <h2 style={{ fontSize: '0.82rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-secondary)', letterSpacing: '1px', textTransform: 'uppercase' }}>✦ 커뮤니티 & 탐색</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 'clamp(0.6rem, 1.5vw, 1rem)' }}>
           {COMMUNITY_LINKS.map(({ to, icon: Icon, title, color }, i) => (
             <motion.div key={to} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 + i * 0.06 }}>
               <Link to={to} style={{ textDecoration: 'none' }}>
@@ -242,7 +242,7 @@ const Home = () => {
                 exit={{ scale: 0.92, opacity: 0 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 className="glass-card"
-                style={{ width: '100%', maxWidth: '480px', padding: '1.8rem' }}
+                style={{ width: '100%', maxWidth: '480px', padding: '1.8rem', maxHeight: '85vh', overflowY: 'auto' }}
                 onClick={e => e.stopPropagation()}
               >
                 {/* Header */}

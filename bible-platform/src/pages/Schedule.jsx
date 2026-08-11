@@ -641,7 +641,7 @@ const Schedule = () => {
                 exit={{ scale: 0.92, opacity: 0 }}
                 transition={{ type: 'spring', damping: 20, stiffness: 300 }}
                 className="glass-card"
-                style={{ width: '94%', maxWidth: '900px', padding: 'clamp(1.2rem, 5vw, 1.8rem)' }}
+                style={{ width: '94%', maxWidth: '900px', padding: 'clamp(1.2rem, 5vw, 1.8rem)', maxHeight: '90vh', overflowY: 'auto' }}
                 onClick={e => e.stopPropagation()}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.2rem' }}>
@@ -666,7 +666,7 @@ const Schedule = () => {
                   </button>
                 </div>
 
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4, wordBreak: 'keep-all' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                   {selectedEvent.title}
                 </h3>
 

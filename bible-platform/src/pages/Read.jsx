@@ -268,7 +268,7 @@ const Read = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '820px', margin: '0 auto' }}>
 
       {/* ── Top Nav ── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <button onClick={() => setShowBookSelector(!showBookSelector)}
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.3rem',
             borderRadius: '30px', border: '1px solid var(--accent-gold)', background: 'var(--glass-bg)',
@@ -293,7 +293,7 @@ const Read = () => {
         </div>
 
         {/* Font size */}
-        <div style={{ display: 'flex', gap: '0.4rem', marginLeft: 'auto' }}>
+        <div style={{ display: 'flex', gap: '0.4rem' }}>
           {['A-', 'A+'].map((lbl, i) => (
             <button key={lbl} onClick={() => setFontSize((f) => Math.max(0.85, Math.min(2.0, +(f + (i === 0 ? -0.1 : 0.1)).toFixed(2))))}
               style={{ padding: '0.45rem 0.9rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
@@ -526,19 +526,19 @@ const Read = () => {
       {!loading && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem' }}>
           <button onClick={() => goChapter(-1)} disabled={selectedChapter === 1}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem',
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: 'clamp(0.6rem, 2vw, 0.8rem) clamp(0.8rem, 3vw, 1.5rem)',
               borderRadius: '30px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)',
               color: 'var(--text-secondary)', cursor: 'pointer', opacity: selectedChapter === 1 ? 0.3 : 1 }}>
-            <ChevronLeft size={18} /> 이전 장
+            <ChevronLeft size={18} /> <span className="hide-on-mobile">이전 장</span>
           </button>
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
             {selectedBook.name} {selectedChapter} / {selectedBook.chapters}장
           </span>
           <button onClick={() => goChapter(1)} disabled={selectedChapter === selectedBook.chapters}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem',
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: 'clamp(0.6rem, 2vw, 0.8rem) clamp(0.8rem, 3vw, 1.5rem)',
               borderRadius: '30px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)',
               color: 'var(--text-secondary)', cursor: 'pointer', opacity: selectedChapter === selectedBook.chapters ? 0.3 : 1 }}>
-            다음 장 <ChevronRight size={18} />
+            <span className="hide-on-mobile">다음 장</span> <ChevronRight size={18} />
           </button>
         </div>
       )}
@@ -560,11 +560,11 @@ const Read = () => {
             exit={{ y: 100, x: '-50%', opacity: 0 }}
             style={{
               position: 'fixed',
-              bottom: '90px',
+              bottom: 'calc(var(--bottomnav-height, 60px) + env(safe-area-inset-bottom, 16px) + 16px)',
               left: '50%',
               zIndex: 50,
-              width: 'max-content',
-              maxWidth: '95%',
+              width: '90%',
+              maxWidth: 'max-content',
             }}
           >
             <div style={{

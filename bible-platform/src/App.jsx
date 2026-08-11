@@ -45,7 +45,7 @@ const AppInner = () => {
       <main style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: 'calc(var(--navbar-height) + 1.5rem) 1.5rem calc(var(--bottomnav-height) + 2rem)',
+        padding: 'calc(var(--navbar-height) + 1.5rem) clamp(1rem, 3vw, 1.5rem) calc(var(--bottomnav-height) + env(safe-area-inset-bottom, 1rem))',
       }}>
         <Routes>
           <Route path="/" element={<Home />} />

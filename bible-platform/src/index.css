@@ -192,6 +192,14 @@ input, textarea, select {
   }
   .bible-player-float iframe {
     width: 100% !important;
-    height: 200px !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    max-height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hide-on-mobile {
+    display: none !important;
   }
 }

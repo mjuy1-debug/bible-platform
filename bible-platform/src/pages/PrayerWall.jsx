@@ -114,14 +114,14 @@ export default function PrayerWall() {
                   {prayer.createdAt?.toDate ? prayer.createdAt.toDate().toLocaleDateString() : ''}
                 </span>
               </div>
-              <p style={{ lineHeight: '1.5', marginBottom: '12px' }}>{prayer.text}</p>
+              <p style={{ lineHeight: '1.5', marginBottom: '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{prayer.text}</p>
               {prayer.verse && (
                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 12px', borderRadius: '8px', fontSize: '14px', marginBottom: '12px', display: 'inline-block' }}>
                   📖 {prayer.verse}
                 </div>
               )}
               
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', flexWrap: 'wrap' }}>
                 {(currentUser?.email?.includes('admin') || currentUser?.uid === prayer.authorId) && (
                   <button 
                     onClick={() => handleDelete(prayer.id)}
@@ -154,7 +154,7 @@ export default function PrayerWall() {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '400px', border: '1px solid var(--glass-border)' }}
+              style={{ background: 'var(--bg-secondary)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '400px', border: '1px solid var(--glass-border)', maxHeight: '90vh', overflowY: 'auto' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>기도 제목 올리기</h2>
@@ -169,14 +169,14 @@ export default function PrayerWall() {
                   placeholder="기도 제목을 나누어주세요..."
                   value={newPrayer.text}
                   onChange={(e) => setNewPrayer({...newPrayer, text: e.target.value})}
-                  style={{ width: '100%', height: '100px', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'none' }}
+                  style={{ width: '100%', height: '100px', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'none', boxSizing: 'border-box' }}
                 />
                 <input 
                   type="text"
                   placeholder="관련 말씀 구절 (선택)"
                   value={newPrayer.verse}
                   onChange={(e) => setNewPrayer({...newPrayer, verse: e.target.value})}
-                  style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', boxSizing: 'border-box' }}
                 />
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--text-secondary)' }}>
                   <input 

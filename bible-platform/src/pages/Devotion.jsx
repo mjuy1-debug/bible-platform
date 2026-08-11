@@ -328,14 +328,14 @@ const Devotion = () => {
               <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontSize: '1.3rem' }}>💭</span> 묵상 (느낀 점)
               </h4>
-              <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.feeling}</p>
+              <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', color: 'var(--text-primary)' }}>{selectedDevotion.feeling}</p>
             </div>
             {selectedDevotion.apply && (
               <div>
                 <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ fontSize: '1.3rem' }}>✨</span> 적용
                 </h4>
-                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.apply}</p>
+                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', color: 'var(--text-primary)' }}>{selectedDevotion.apply}</p>
               </div>
             )}
             {selectedDevotion.prayer && (
@@ -343,7 +343,7 @@ const Devotion = () => {
                 <h4 style={{ color: 'var(--accent-gold)', fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ fontSize: '1.3rem' }}>🙏</span> 기도
                 </h4>
-                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', color: 'var(--text-primary)' }}>{selectedDevotion.prayer}</p>
+                <p style={{ fontSize: '1.05rem', lineHeight: 1.8, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', color: 'var(--text-primary)' }}>{selectedDevotion.prayer}</p>
               </div>
             )}
           </div>
@@ -392,7 +392,7 @@ const Devotion = () => {
                           )}
                         </div>
                       </div>
-                      <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--text-primary)', margin: 0, whiteSpace: 'pre-wrap' }}>{c.text}</p>
+                      <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: 'var(--text-primary)', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{c.text}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -439,7 +439,7 @@ const Devotion = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 className="serif-font" style={{ fontSize: '2rem', color: 'var(--accent-gold)' }}>묵상 노트</h2>
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)', overflowX: 'auto', maxWidth: '100%' }}>
           {['write', 'list', 'shared'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               style={{ padding: '0.5rem 1.5rem', borderRadius: '30px', border: 'none', cursor: 'pointer',
@@ -525,7 +525,7 @@ const Devotion = () => {
               </button>
             </div>
           ) : (
-            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' }}>
               {devotions.map((d) => (
                 <motion.div key={d.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                   className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer' }}
@@ -554,7 +554,7 @@ const Devotion = () => {
               <p style={{ fontSize: '0.9rem' }}>첫 번째로 묵상을 나누어보세요!</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+            <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' }}>
               {sharedDevotions.map((d) => (
                 <motion.div key={d.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                   className="glass-card" style={{ position: 'relative', padding: '1.5rem', cursor: 'pointer', borderTop: '3px solid var(--accent-gold)' }}

@@ -144,6 +144,11 @@
     li {
       flex: 1 1 calc(50% - 8px);
     }
+    @media (max-width: 480px) {
+      li {
+        flex: 1 1 100%;
+      }
+    }
 
     a {
       width: 100%;

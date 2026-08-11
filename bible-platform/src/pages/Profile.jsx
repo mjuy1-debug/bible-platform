@@ -121,7 +121,7 @@ const Profile = () => {
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
           {photoUrl ? <img src={photoUrl} alt="profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={40} color="#fff" />}
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
             <h2 className="serif-font" style={{ fontSize: '1.8rem' }}>{displayName}</h2>
             {currentUser && (
@@ -245,7 +245,7 @@ const Profile = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '2rem' }}>
         {/* Favorites */}
         <div className="glass-card">
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', fontSize: '1.2rem' }}>
@@ -258,7 +258,7 @@ const Profile = () => {
               {favorites.map((f, i) => (
                 <div key={f.ref} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
                   padding: '1rem', borderRadius: '10px', background: 'var(--bg-secondary)', gap: '1rem' }}>
-                  <div style={{ flex: 1 }}>
+                  <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                     <p className="serif-font" style={{ fontSize: '0.95rem', marginBottom: '0.3rem' }}>"{f.text}"</p>
                     <span style={{ fontSize: '0.8rem', color: 'var(--accent-gold)' }}>{f.ref}</span>
                   </div>
