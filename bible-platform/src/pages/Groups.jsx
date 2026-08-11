@@ -60,8 +60,20 @@ export default function Groups() {
   const [editingDayVerseDate, setEditingDayVerseDate] = useState(null);
   const [editDayVerseText, setEditDayVerseText] = useState('');
   const [editDayVerseRef, setEditDayVerseRef] = useState('');
-  const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
+  const [verseHistory, setVerseHistory] = useState([]);
   const [copiedCode, setCopiedCode] = useState(null);
+
+  // ① 공지사항
+  const [noticeText, setNoticeText] = useState('');
+  const [isEditingNotice, setIsEditingNotice] = useState(false);
+
+  // ③ 주간 말씀 계획
+  const [isWeeklyPlanOpen, setIsWeeklyPlanOpen] = useState(false);
+  const [weeklyPlanDraft, setWeeklyPlanDraft] = useState([]);
+
+  // ④ 기도 제목 태그 & 필터
+  const [newPostIsPrayer, setNewPostIsPrayer] = useState(false);
+  const [postFilter, setPostFilter] = useState('all'); // 'all' | 'prayer'
 
   // 말씀 구절 참조 입력 후 자동 조회
   const handleFetchVerseFromRef = useCallback(async (refStr) => {
@@ -215,21 +227,22 @@ export default function Groups() {
   const handlePost = async (e) => {
     e.preventDefault();
     if (!currentUser || !newPostText.trim() || !selectedGroup) return;
-    
-    // Auto-fill the post verse with the group's todayVerse if the user didn't provide one
     const postVerse = newPostVerse.trim() || selectedGroup.todayVerse || '';
-    
     try {
       await addDoc(collection(db, `groups/${selectedGroup.id}/posts`), {
         text: newPostText,
         verse: postVerse,
+        isPrayer: newPostIsPrayer,
         userId: currentUser.uid,
         userName: currentUser.displayName || '이름 없음',
         userPhoto: currentUser.photoURL || '',
+        amenCount: 0,
+        amenedBy: [],
         createdAt: serverTimestamp()
       });
       setNewPostText('');
       setNewPostVerse('');
+      setNewPostIsPrayer(false);
     } catch (error) {
       console.error(error);
       if (showToast) showToast('오류가 발생했습니다.', 'error');
@@ -399,7 +412,39 @@ export default function Groups() {
     }
   };
 
-  // Removed verse history subcollection listener as it is now in selectedGroup.verseHistory
+  // ① 공지사항 저장
+  const handleSaveNotice = async () => {
+    if (!selectedGroup || currentUser?.uid !== selectedGroup.leaderId) return;
+    try {
+      await setDoc(doc(db, 'groups', selectedGroup.id), {
+        notice: noticeText.trim() ? { text: noticeText.trim(), setBy: currentUser.displayName || '리더' } : null
+      }, { merge: true });
+      setIsEditingNotice(false);
+      if (showToast) showToast(noticeText.trim() ? '공지가 저장되었습니다. 📢' : '공지가 삭제되었습니다.');
+    } catch(err) { if (showToast) showToast('오류가 발생했습니다.', 'error'); }
+  };
+
+  // ② 아멘 반응 토글
+  const handleAmen = async (post) => {
+    if (!currentUser) { if (showToast) showToast('로그인이 필요합니다.'); return; }
+    const postRef = doc(db, `groups/${selectedGroup.id}/posts`, post.id);
+    const amenedBy = Array.isArray(post.amenedBy) ? post.amenedBy : [];
+    if (amenedBy.includes(currentUser.uid)) {
+      await updateDoc(postRef, { amenCount: Math.max((post.amenCount || 1) - 1, 0), amenedBy: amenedBy.filter(id => id !== currentUser.uid) });
+    } else {
+      await updateDoc(postRef, { amenCount: (post.amenCount || 0) + 1, amenedBy: [...amenedBy, currentUser.uid] });
+    }
+  };
+
+  // ③ 주간 말씀 계획 저장
+  const handleSaveWeeklyPlan = async () => {
+    if (!selectedGroup) return;
+    try {
+      await setDoc(doc(db, 'groups', selectedGroup.id), { weeklyPlan: weeklyPlanDraft }, { merge: true });
+      setIsWeeklyPlanOpen(false);
+      if (showToast) showToast('주간 말씀 계획이 저장되었습니다. 📅');
+    } catch(err) { if (showToast) showToast('오류가 발생했습니다.', 'error'); }
+  };
 
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
@@ -422,9 +467,68 @@ export default function Groups() {
           </button>
         </div>
         
-        {/* 오늘의 말씀 (상단 고정은 삭제, 피드 내 날짜별로 표시) */}
-        
-        {/* 말씀 역사 (과거 날짜별) - 피드에 통합되었으므로 이전 기록 요약 뷰 */}
+        {/* ① 공지사항 카드 */}
+        {(selectedGroup.notice?.text || currentUser?.uid === selectedGroup.leaderId) && (
+          <div style={{ background: 'rgba(255,200,0,0.08)', border: '1px solid rgba(255,200,0,0.3)', padding: '14px 16px', borderRadius: '12px', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#ffd700' }}>📢 공지사항</span>
+              {currentUser?.uid === selectedGroup.leaderId && (
+                <button onClick={() => { setNoticeText(selectedGroup.notice?.text || ''); setIsEditingNotice(!isEditingNotice); }}
+                  style={{ fontSize: '11px', background: 'none', border: 'none', color: '#ffd700', cursor: 'pointer', fontWeight: 'bold' }}>
+                  {isEditingNotice ? '취소' : (selectedGroup.notice?.text ? '수정' : '+ 공지 작성')}
+                </button>
+              )}
+            </div>
+            {isEditingNotice ? (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input value={noticeText} onChange={e => setNoticeText(e.target.value)} placeholder="공지 내용을 입력하세요"
+                  style={{ flex: 1, padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                <button onClick={handleSaveNotice} style={{ background: '#ffd700', color: '#000', border: 'none', borderRadius: '6px', padding: '0 12px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>저장</button>
+              </div>
+            ) : (
+              <div style={{ fontSize: '14px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                {selectedGroup.notice?.text || <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>공지사항이 없습니다. 리더만 작성할 수 있습니다.</span>}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ③ 주간 말씀 계획 */}
+        {currentUser?.uid === selectedGroup.leaderId && (
+          <div style={{ marginBottom: '14px' }}>
+            <button onClick={() => { setIsWeeklyPlanOpen(!isWeeklyPlanOpen); if (!isWeeklyPlanOpen) { const plan = Array.isArray(selectedGroup.weeklyPlan) && selectedGroup.weeklyPlan.length > 0 ? selectedGroup.weeklyPlan : Array.from({length:7},(_,i)=>{ const d=new Date(); d.setDate(d.getDate()+i); return { date: d.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'}).replace('. ','월 ').replace('.','일'), verseRef:'' }; }); setWeeklyPlanDraft(plan); } }}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: '1px solid var(--glass-border)', color: 'var(--text-secondary)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', marginBottom: '8px' }}>
+              📅 주간 말씀 계획 {isWeeklyPlanOpen ? '▲' : '▼'}
+            </button>
+            {isWeeklyPlanOpen && (
+              <div style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {weeklyPlanDraft.map((day, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', minWidth: '48px' }}>{day.date}</span>
+                    <input value={day.verseRef} onChange={e => { const d=[...weeklyPlanDraft]; d[i]={...d[i],verseRef:e.target.value}; setWeeklyPlanDraft(d); }}
+                      placeholder="예) 창세기 1:1" style={{ flex:1, padding:'6px 10px', borderRadius:'6px', background:'var(--bg-primary)', border:'1px solid var(--glass-border)', color:'var(--text-primary)', fontSize:'13px' }} />
+                  </div>
+                ))}
+                <button onClick={handleSaveWeeklyPlan} style={{ marginTop:'4px', background:'var(--accent-gold)', color:'#000', border:'none', borderRadius:'8px', padding:'8px', fontWeight:'bold', cursor:'pointer' }}>저장</button>
+              </div>
+            )}
+          </div>
+        )}
+        {!isWeeklyPlanOpen && Array.isArray(selectedGroup.weeklyPlan) && selectedGroup.weeklyPlan.some(d=>d.verseRef) && (
+          <div style={{ marginBottom: '14px', overflowX: 'auto' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>📅 이번 주 말씀 계획</div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {selectedGroup.weeklyPlan.filter(d=>d.verseRef).map((day,i) => (
+                <div key={i} style={{ minWidth:'90px', background:'var(--glass-bg)', border:'1px solid var(--glass-border)', borderRadius:'8px', padding:'8px', textAlign:'center' }}>
+                  <div style={{ fontSize:'11px', color:'var(--text-secondary)', marginBottom:'4px' }}>{day.date}</div>
+                  <div style={{ fontSize:'12px', fontWeight:'bold', color:'var(--accent-gold)' }}>{day.verseRef}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 지난 말씀 기록 */}
         {(Array.isArray(selectedGroup?.verseHistory) ? selectedGroup.verseHistory : []).length > 1 && (
           <details style={{ marginBottom: '16px' }}>
             <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '8px' }}>📅 지난 말씀 기록 ({(Array.isArray(selectedGroup.verseHistory) ? selectedGroup.verseHistory : []).length - 1}건)</summary>
@@ -432,10 +536,7 @@ export default function Groups() {
               {[...(Array.isArray(selectedGroup.verseHistory) ? selectedGroup.verseHistory : [])].reverse().slice(1).map(v => (
                 <div key={v.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', fontSize: '13px' }}>
                   <div style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>{v.date} {v.setBy && `(by ${v.setBy})`}</div>
-                  <div>
-                    {v.text}
-                    {v.ref && <div style={{ opacity: 0.8, marginTop: '2px' }}>- {v.ref}</div>}
-                  </div>
+                  <div>{v.text}{v.ref && <div style={{ opacity:0.8, marginTop:'2px' }}>- {v.ref}</div>}</div>
                 </div>
               ))}
             </div>
@@ -485,8 +586,12 @@ export default function Groups() {
         )}
         
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
-          <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            💬 나눔 피드
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div style={{ fontWeight: 'bold', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '6px' }}>💬 나눔 피드</div>
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button onClick={() => setPostFilter('all')} style={{ fontSize:'12px', padding:'4px 10px', borderRadius:'16px', border:'none', background: postFilter==='all' ? 'var(--accent-gold)' : 'var(--glass-bg)', color: postFilter==='all' ? '#000' : 'var(--text-secondary)', cursor:'pointer', fontWeight:'bold' }}>전체</button>
+              <button onClick={() => setPostFilter('prayer')} style={{ fontSize:'12px', padding:'4px 10px', borderRadius:'16px', border:'none', background: postFilter==='prayer' ? '#7c3aed' : 'var(--glass-bg)', color: postFilter==='prayer' ? '#fff' : 'var(--text-secondary)', cursor:'pointer', fontWeight:'bold' }}>🙏 기도</button>
+            </div>
           </div>
           
           {posts.length === 0 ? (
@@ -536,48 +641,55 @@ export default function Groups() {
 
                   {/* Posts for this date */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {groupedPosts[dateStr].map(post => (
-                      <div key={post.id} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', padding: '16px', borderRadius: '12px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            {post.userPhoto ? (
-                              <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
-                            ) : (
-                              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
-                            )}
-                            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
-                          </div>
-                          
-                          {/* Edit / Delete Buttons */}
-                          {currentUser?.uid === post.userId && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <button onClick={() => handleEditPost(post)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px' }}>수정</button>
-                              <button onClick={() => handleDeletePost(post.id)} style={{ background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', fontSize: '12px' }}>삭제</button>
+                    {groupedPosts[dateStr].filter(p => postFilter === 'all' || p.isPrayer).map(post => {
+                      const iAmen = Array.isArray(post.amenedBy) && post.amenedBy.includes(currentUser?.uid);
+                      return (
+                        <div key={post.id} style={{ background: post.isPrayer ? 'rgba(124,58,237,0.08)' : 'var(--glass-bg)', border: `1px solid ${post.isPrayer ? 'rgba(124,58,237,0.4)' : 'var(--glass-border)'}`, padding: '16px', borderRadius: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              {post.userPhoto ? (
+                                <img src={post.userPhoto} alt="profile" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                              ) : (
+                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'var(--accent-gold)' }} />
+                              )}
+                              <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{post.userName}</span>
+                              {post.isPrayer && <span style={{ fontSize: '11px', background: 'rgba(124,58,237,0.3)', color: '#c4b5fd', borderRadius: '10px', padding: '2px 8px' }}>🙏 기도 제목</span>}
                             </div>
-                          )}
-                        </div>
-
-                        {editingPostId === post.id ? (
-                          <form onSubmit={handleUpdatePost} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-                            <input type="text" placeholder="관련 말씀 구절 (선택)" value={editPostVerse} onChange={(e) => setEditPostVerse(e.target.value)} style={{ padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
-                            <textarea required value={editPostText} onChange={(e) => setEditPostText(e.target.value)} style={{ padding: '10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
-                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                              <button type="button" onClick={() => setEditingPostId(null)} style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}>취소</button>
-                              <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>저장</button>
-                            </div>
-                          </form>
-                        ) : (
-                          <>
-                            <p style={{ lineHeight: '1.5', marginBottom: post.verse ? '8px' : 0, whiteSpace: 'pre-wrap' }}>{post.text}</p>
-                            {post.verse && (
-                              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '6px' }}>
-                                <span>📖</span> <span style={{ color: 'var(--accent-gold)' }}>{post.verse}</span>
+                            {currentUser?.uid === post.userId && (
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button onClick={() => handleEditPost(post)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '12px' }}>수정</button>
+                                <button onClick={() => handleDeletePost(post.id)} style={{ background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', fontSize: '12px' }}>삭제</button>
                               </div>
                             )}
-                          </>
-                        )}
-                      </div>
-                    ))}
+                          </div>
+
+                          {editingPostId === post.id ? (
+                            <form onSubmit={handleUpdatePost} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                              <input type="text" placeholder="관련 말씀 구절 (선택)" value={editPostVerse} onChange={(e) => setEditPostVerse(e.target.value)} style={{ padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                              <textarea required value={editPostText} onChange={(e) => setEditPostText(e.target.value)} style={{ padding: '10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
+                              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                                <button type="button" onClick={() => setEditingPostId(null)} style={{ background: 'var(--glass-bg)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer' }}>취소</button>
+                                <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>저장</button>
+                              </div>
+                            </form>
+                          ) : (
+                            <>
+                              <p style={{ lineHeight: '1.5', marginBottom: '10px', whiteSpace: 'pre-wrap' }}>{post.text}</p>
+                              {post.verse && (
+                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '8px', fontSize: '13px', display: 'flex', alignItems: 'flex-start', gap: '6px', marginBottom: '10px' }}>
+                                  <span>📖</span> <span style={{ color: 'var(--accent-gold)' }}>{post.verse}</span>
+                                </div>
+                              )}
+                              {/* ② 아멘 반응 버튼 */}
+                              <button onClick={() => handleAmen(post)}
+                                style={{ display:'flex', alignItems:'center', gap:'5px', background: iAmen ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${iAmen ? 'var(--accent-gold)' : 'var(--glass-border)'}`, borderRadius:'20px', padding:'5px 12px', cursor:'pointer', fontSize:'13px', color: iAmen ? 'var(--accent-gold)' : 'var(--text-secondary)', fontWeight: iAmen ? 'bold' : 'normal', transition:'all 0.2s' }}>
+                                🙏 아멘 {post.amenCount > 0 && <span style={{ fontWeight:'bold' }}>{post.amenCount}</span>}
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -585,14 +697,14 @@ export default function Groups() {
           )}
         </div>
         
-        <div style={{ position: 'fixed', bottom: 'var(--bottomnav-height, 64px)', left: 0, right: 0, padding: '16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)', zIndex: 10 }}>
-          <form onSubmit={handlePost} style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ position: 'fixed', bottom: 'var(--bottomnav-height, 64px)', left: 0, right: 0, padding: '12px 16px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--glass-border)', zIndex: 10 }}>
+          <form onSubmit={handlePost} style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '600px', margin: '0 auto' }}>
             <input 
               type="text"
               placeholder="관련 말씀 구절 (선택)"
               value={newPostVerse}
               onChange={(e) => setNewPostVerse(e.target.value)}
-              style={{ padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+              style={{ padding: '8px 10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
             />
             <div style={{ display: 'flex', gap: '8px' }}>
               <input 
@@ -607,6 +719,11 @@ export default function Groups() {
                 게시
               </button>
             </div>
+            {/* ④ 기도 제목 토글 */}
+            <button type="button" onClick={() => setNewPostIsPrayer(p => !p)}
+              style={{ alignSelf: 'flex-start', display:'flex', alignItems:'center', gap:'5px', background: newPostIsPrayer ? 'rgba(124,58,237,0.2)' : 'transparent', border: `1px solid ${newPostIsPrayer ? '#7c3aed' : 'var(--glass-border)'}`, borderRadius:'16px', padding:'4px 12px', cursor:'pointer', fontSize:'12px', color: newPostIsPrayer ? '#c4b5fd' : 'var(--text-secondary)', transition:'all 0.2s' }}>
+              🙏 {newPostIsPrayer ? '기도 제목으로 등록됨 (취소하려면 클릭)' : '기도 제목으로 등록하기'}
+            </button>
           </form>
         </div>
       </div>
