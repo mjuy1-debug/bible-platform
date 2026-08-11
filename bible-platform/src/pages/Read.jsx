@@ -22,7 +22,7 @@ const OLD_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'old');
 const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 
 const Read = () => {
-  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite, memorized } = useContext(UserContext);
+  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite, memorized, toggleMemorized } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -481,25 +481,33 @@ const Read = () => {
                       }}>
                       {v.text}
                     </span>
-                    {/* 암송 완료 배지 */}
+                    {/* 암송 완료 배지 — 클릭하면 표시 해제 */}
                     {memorized && memorized[ref] && (
-                      <span
-                        title="암송 완료한 구절"
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleMemorized(ref); }}
+                        title="클릭하면 암송 표시 해제"
                         style={{
                           fontSize: '0.7rem',
                           background: 'rgba(212,175,55,0.15)',
                           color: 'var(--accent-gold)',
                           borderRadius: '8px',
-                          padding: '0.1rem 0.4rem',
+                          padding: '0.15rem 0.5rem',
                           fontWeight: 'bold',
                           alignSelf: 'center',
                           marginLeft: '0.3rem',
                           whiteSpace: 'nowrap',
                           userSelect: 'none',
+                          border: '1px solid rgba(212,175,55,0.3)',
+                          cursor: 'pointer',
+                          lineHeight: 1.4,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.2rem',
+                          transition: 'background 0.2s',
                         }}
                       >
-                        🧠
-                      </span>
+                        🧠 <span style={{ fontSize: '0.6rem', opacity: 0.8 }}>✕</span>
+                      </button>
                     )}
                   </div>
 
