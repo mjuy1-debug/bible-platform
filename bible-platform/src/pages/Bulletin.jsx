@@ -259,14 +259,14 @@ export default function Bulletin() {
                 <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
                 주일 오전 예배
               </h2>
-              <div style={{ overflowX: 'auto', marginBottom: '16px' }} className="hide-scrollbar">
-                <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', minWidth: '280px' }}>
+              <div style={{ marginBottom: '16px', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+                <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                   <tbody>
                     {bulletin.worshipOrder?.map((item, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                        <td style={{ padding: '10px 4px', width: '35%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
-                        <td style={{ padding: '10px 4px', width: '40%', textAlign: 'center' }}>{item.content}</td>
-                        <td style={{ padding: '10px 4px', width: '25%', textAlign: 'right', color: '#555' }}>{item.leader}</td>
+                        <td style={{ padding: '10px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top' }}>{item.type}</td>
+                        <td style={{ padding: '10px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top' }}>{item.content}</td>
+                        <td style={{ padding: '10px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top' }}>{item.leader}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -282,14 +282,14 @@ export default function Bulletin() {
                   <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
                   주일 오후 예배
                 </h2>
-                <div style={{ overflowX: 'auto', marginBottom: '16px' }} className="hide-scrollbar">
-                  <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', minWidth: '280px' }}>
+                <div style={{ marginBottom: '16px', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+                  <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                     <tbody>
                       {bulletin.afternoonOrder.map((item, idx) => (
                         <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                          <td style={{ padding: '10px 4px', width: '35%', fontWeight: item.type.includes('※') ? 'bold' : 'normal' }}>{item.type}</td>
-                          <td style={{ padding: '10px 4px', width: '40%', textAlign: 'center' }}>{item.content}</td>
-                          <td style={{ padding: '10px 4px', width: '25%', textAlign: 'right', color: '#555' }}>{item.leader}</td>
+                          <td style={{ padding: '10px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top' }}>{item.type}</td>
+                          <td style={{ padding: '10px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top' }}>{item.content}</td>
+                          <td style={{ padding: '10px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top' }}>{item.leader}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -364,21 +364,21 @@ export default function Bulletin() {
           {/* 예배 시간 안내 */}
           <div style={{ background: '#f0fdf4', padding: '24px', borderRadius: '16px', border: '1px solid #bbf7d0' }}>
             <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '20px', fontSize: '1.1rem', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
-            <div style={{ overflowX: 'auto' }} className="hide-scrollbar">
-              <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', minWidth: '400px', borderRadius: '8px', overflow: 'hidden' }}>
+            <div style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+              <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', borderRadius: '8px', overflow: 'hidden' }}>
                 <thead>
                   <tr style={{ background: '#dcfce7', color: '#14532d' }}>
-                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>일시</th>
-                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>예배종류</th>
-                    <th style={{ padding: '12px', border: '1px solid #bbf7d0' }}>장소</th>
+                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>일시</th>
+                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>예배종류</th>
+                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>장소</th>
                   </tr>
                 </thead>
                 <tbody>
                   {STATIC_INFO.schedule.map((item, i) => (
                     <tr key={i}>
-                      <td style={{ padding: '10px', border: '1px solid #bbf7d0' }}>{item.time}</td>
-                      <td style={{ padding: '10px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534' }}>{item.name}</td>
-                      <td style={{ padding: '10px', border: '1px solid #bbf7d0' }}>{item.place}</td>
+                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0' }}>{item.time}</td>
+                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534' }}>{item.name}</td>
+                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0' }}>{item.place}</td>
                     </tr>
                   ))}
                 </tbody>
