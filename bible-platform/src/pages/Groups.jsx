@@ -160,27 +160,28 @@ export default function Groups() {
 
   const updateTodayVerse = async (e) => {
     e.preventDefault();
-    if (!selectedGroup || !todayVerseInput.trim()) return;
+    if (!selectedGroup || !todayVerseInput.trim() || !currentUser) return;
     
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // Korean local date YYYY-MM-DD
+    const today = new Date().toLocaleDateString('ko-KR', {
+      year: 'numeric', month: '2-digit', day: '2-digit'
+    }).replace(/\. /g, '-').replace('.', '').trim();
+
+    const verseText = todayVerseInput.trim();
     try {
-      // Save into a 'verses' subcollection keyed by date
-      await setDoc(doc(db, `groups/${selectedGroup.id}/verses/${today}`), {
-        text: todayVerseInput.trim(),
-        date: today,
-        setBy: currentUser.displayName || '방장',
-        createdAt: serverTimestamp()
-      });
-      // Also update group's todayVerse for quick display
-      await updateDoc(doc(db, 'groups', selectedGroup.id), {
-        todayVerse: todayVerseInput.trim(),
-        todayVerseDate: today
-      });
-      if (showToast) showToast('오늘의 말씀이 저장되었습니다.');
+      // Save directly on group document (no subcollection — avoids Firestore rules issues)
+      await setDoc(doc(db, 'groups', selectedGroup.id), {
+        todayVerse: verseText,
+        todayVerseDate: today,
+        todayVerseSetBy: currentUser.displayName || '멤버',
+      }, { merge: true });
+
+      if (showToast) showToast('오늘의 말씀이 저장되었습니다. 📖');
       setTodayVerseInput('');
-      setSelectedGroup({...selectedGroup, todayVerse: todayVerseInput.trim(), todayVerseDate: today});
+      setSelectedGroup(prev => ({ ...prev, todayVerse: verseText, todayVerseDate: today }));
     } catch (error) {
-      console.error(error);
+      console.error('오늘의 말씀 저장 오류:', error);
+      if (showToast) showToast(`저장 실패: ${error.code || error.message}`, 'error');
     }
   };
 
@@ -255,18 +256,21 @@ export default function Groups() {
           </details>
         )}
         
-        {selectedGroup.leaderId === currentUser?.uid && (
-          <form onSubmit={updateTodayVerse} style={{ marginBottom: '20px', display: 'flex', gap: '8px' }}>
-            <input 
-              type="text"
-              placeholder="오늘의 말씀 설정..."
-              value={todayVerseInput}
-              onChange={(e) => setTodayVerseInput(e.target.value)}
-              style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
-            />
-            <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: 'pointer' }}>
-              저장
-            </button>
+        {currentUser && (
+          <form onSubmit={updateTodayVerse} style={{ marginBottom: '20px' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>📖 오늘의 말씀 설정 (모든 멤버 가능)</div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input 
+                type="text"
+                placeholder="오늘의 말씀을 입력하세요..."
+                value={todayVerseInput}
+                onChange={(e) => setTodayVerseInput(e.target.value)}
+                style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+              />
+              <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                저장
+              </button>
+            </div>
           </form>
         )}
         
