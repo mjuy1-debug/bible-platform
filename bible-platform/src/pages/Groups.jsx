@@ -594,6 +594,51 @@ export default function Groups() {
             </div>
           </div>
           
+          {/* ✅ 오늘의 말씀 - 포스트 여부와 관계없이 항상 표시 */}
+          {selectedGroup.todayVerse && (() => {
+            const today = new Date().toLocaleDateString('ko-KR', {
+              year: 'numeric', month: '2-digit', day: '2-digit'
+            }).replace(/\. /g, '-').replace('.', '').trim();
+            const isToday = selectedGroup.todayVerseDate === today;
+            return (
+              <div style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.35)', padding: '18px', borderRadius: '14px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--accent-gold)' }}>
+                      📖 {isToday ? '오늘의 말씀' : `${selectedGroup.todayVerseDate} 말씀`}
+                    </span>
+                    {selectedGroup.todayVerseSetBy && (
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>by {selectedGroup.todayVerseSetBy}</span>
+                    )}
+                  </div>
+                  <button onClick={() => { setEditingDayVerseDate(today); setEditDayVerseText(selectedGroup.todayVerse); setEditDayVerseRef(selectedGroup.todayVerseRef || ''); }}
+                    style={{ fontSize: '11px', background: 'none', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', opacity: 0.8 }}>수정</button>
+                </div>
+                {editingDayVerseDate === today ? (
+                  <form onSubmit={(e) => handleUpdateDayVerse(e, today)} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <input type="text" placeholder="관련 말씀 구절 (선택)" value={editDayVerseRef} onChange={(e) => setEditDayVerseRef(e.target.value)} style={{ padding: '8px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                    <textarea required value={editDayVerseText} onChange={(e) => setEditDayVerseText(e.target.value)} style={{ padding: '10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '14px', minHeight: '60px', resize: 'vertical' }} />
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                      <button type="button" onClick={() => setEditingDayVerseDate(null)} style={{ background: 'none', color: 'var(--text-primary)', border: 'none', cursor: 'pointer', fontSize: '12px' }}>취소</button>
+                      <button type="submit" style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 'bold' }}>저장</button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <div style={{ color: 'var(--text-primary)', lineHeight: '1.7', fontSize: '15px', fontWeight: 500 }}>
+                      {selectedGroup.todayVerse}
+                    </div>
+                    {selectedGroup.todayVerseRef && (
+                      <div style={{ marginTop: '10px', fontSize: '13px', color: 'var(--accent-gold)', opacity: 0.9, fontStyle: 'italic' }}>
+                        — {selectedGroup.todayVerseRef}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })()}
+
           {posts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)', background: 'var(--glass-bg)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
               아직 작성된 나눔이 없습니다.<br/>
