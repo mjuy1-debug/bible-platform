@@ -429,7 +429,10 @@ const Read = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
             {verses.map((v) => {
               const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
+              const fullRef = `${selectedBook.name} ${selectedChapter}:${v.verse}`;
               const isSelected = !!selectedVerses[ref];
+              // Check both shortName and fullName formats for memorized match
+              const memorizedKey = memorized && (memorized[ref] ? ref : memorized[fullRef] ? fullRef : null);
 
               return (
                 <div key={v.verse}>
@@ -482,9 +485,9 @@ const Read = () => {
                       {v.text}
                     </span>
                     {/* 암송 완료 배지 — 클릭하면 표시 해제 */}
-                    {memorized && memorized[ref] && (
+                    {memorizedKey && (
                       <button
-                        onClick={(e) => { e.stopPropagation(); toggleMemorized(ref); }}
+                        onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
                         title="클릭하면 암송 표시 해제"
                         style={{
                           fontSize: '0.7rem',
