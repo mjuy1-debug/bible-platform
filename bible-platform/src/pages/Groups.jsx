@@ -1,9 +1,37 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Plus, Copy, Check, X, ChevronRight } from 'lucide-react';
+import { Users, Plus, Copy, Check, X, ChevronRight, Search, Loader } from 'lucide-react';
 import { db } from '../services/firebase';
 import { collection, doc, setDoc, getDoc, getDocs, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, updateDoc, deleteDoc, increment, arrayUnion } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
+import { fetchChapter } from '../services/bibleService';
+import { BIBLE_BOOKS } from '../data/bibleData';
+
+// 한국어 책 이름 → bookId 매핑 테이블
+const BOOK_NAME_TO_ID = {};
+BIBLE_BOOKS.forEach(b => {
+  BOOK_NAME_TO_ID[b.name] = b.id;
+  BOOK_NAME_TO_ID[b.shortName] = b.id;
+});
+
+/**
+ * "창세기 1:1-5" 또는 "창 1:1" 같은 문자열을 파싱해서
+ * { bookId, chapter, startVerse, endVerse } 를 반환
+ */
+function parseVerseRef(refStr) {
+  if (!refStr) return null;
+  const s = refStr.trim();
+  // 패턴: (책이름)(공백?)(장):(절[-절])
+  const match = s.match(/^(.+?)(\d+)[:\s:](\d+)(?:[\-–](\d+))?$/);
+  if (!match) return null;
+  const bookName = match[1].trim();
+  const chapter = parseInt(match[2], 10);
+  const startVerse = parseInt(match[3], 10);
+  const endVerse = match[4] ? parseInt(match[4], 10) : startVerse;
+  const bookId = BOOK_NAME_TO_ID[bookName];
+  if (!bookId || !chapter || !startVerse) return null;
+  return { bookId, chapter, startVerse, endVerse };
+}
 
 export default function Groups() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -28,11 +56,36 @@ export default function Groups() {
   const [editPostVerse, setEditPostVerse] = useState('');
   const [todayVerseInput, setTodayVerseInput] = useState('');
   const [todayVerseRefInput, setTodayVerseRefInput] = useState('');
+  const [isFetchingVerse, setIsFetchingVerse] = useState(false);
   const [editingDayVerseDate, setEditingDayVerseDate] = useState(null);
   const [editDayVerseText, setEditDayVerseText] = useState('');
   const [editDayVerseRef, setEditDayVerseRef] = useState('');
   const [verseHistory, setVerseHistory] = useState([]); // 날짜별 말씀 기록
   const [copiedCode, setCopiedCode] = useState(null);
+
+  // 말씀 구절 참조 입력 후 자동 조회
+  const handleFetchVerseFromRef = useCallback(async (refStr) => {
+    const parsed = parseVerseRef(refStr);
+    if (!parsed) return;
+    setIsFetchingVerse(true);
+    try {
+      const allVerses = await fetchChapter(parsed.bookId, parsed.chapter);
+      const selected = allVerses.filter(
+        v => v.verse >= parsed.startVerse && v.verse <= parsed.endVerse
+      );
+      if (selected.length > 0) {
+        const text = selected.map(v => `${v.verse}. ${v.text}`).join(' ');
+        setTodayVerseInput(text);
+      } else {
+        if (showToast) showToast('해당 구절을 찾을 수 없습니다.', 'error');
+      }
+    } catch (err) {
+      console.error('말씀 조회 오류:', err);
+      if (showToast) showToast('말씀 조회 중 오류가 발생했습니다.', 'error');
+    } finally {
+      setIsFetchingVerse(false);
+    }
+  }, [showToast]);
 
   // Fetch My Groups — also sync selectedGroup when Firestore updates
   useEffect(() => {
@@ -393,22 +446,37 @@ export default function Groups() {
           <form onSubmit={updateTodayVerse} style={{ marginBottom: '20px' }}>
             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>📖 오늘의 말씀 설정 (모든 멤버 가능)</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <input 
-                type="text"
-                placeholder="관련 말씀 구절 (선택) ex) 창세기 1:1"
-                value={todayVerseRefInput}
-                onChange={(e) => setTodayVerseRefInput(e.target.value)}
-                style={{ padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
-              />
-              <div style={{ display: 'flex', gap: '8px' }}>
+              {/* 구절 참조 입력 + 자동 조회 버튼 */}
+              <div style={{ display: 'flex', gap: '6px' }}>
                 <input 
                   type="text"
-                  placeholder="오늘의 말씀을 입력하세요..."
+                  placeholder="말씀 구절 입력 ex) 창세기 1:1-5 → 자동 조회"
+                  value={todayVerseRefInput}
+                  onChange={(e) => setTodayVerseRefInput(e.target.value)}
+                  onBlur={(e) => handleFetchVerseFromRef(e.target.value)}
+                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleFetchVerseFromRef(todayVerseRefInput)}
+                  disabled={isFetchingVerse || !todayVerseRefInput.trim()}
+                  title="말씀 자동 조회"
+                  style={{ background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold', fontSize: '12px', whiteSpace: 'nowrap', opacity: (!todayVerseRefInput.trim() || isFetchingVerse) ? 0.5 : 1 }}
+                >
+                  {isFetchingVerse ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={14} />}
+                  조회
+                </button>
+              </div>
+              {/* 말씀 본문 텍스트 (자동 조회 또는 직접 입력) */}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <textarea 
+                  placeholder="말씀 본문이 여기에 자동으로 채워집니다. 직접 입력도 가능합니다."
                   value={todayVerseInput}
                   onChange={(e) => setTodayVerseInput(e.target.value)}
-                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)' }}
+                  rows={3}
+                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'vertical', fontSize: '13px', lineHeight: '1.6' }}
                 />
-                <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap' }}>
+                <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap', alignSelf: 'flex-end', height: '42px' }}>
                   저장
                 </button>
               </div>
