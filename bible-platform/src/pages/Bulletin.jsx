@@ -364,29 +364,34 @@ export default function Bulletin() {
           </div>
 
           {/* 예배 시간 안내 */}
-          <div style={{ background: '#f0fdf4', padding: '24px', borderRadius: '16px', border: '1px solid #bbf7d0' }}>
-            <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '20px', fontSize: '1.1rem', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
-            <div style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-              <table style={{ width: '100%', fontSize: '0.9rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', borderRadius: '8px', overflow: 'hidden' }}>
+          <div style={{ background: '#f0fdf4', padding: '20px 16px', borderRadius: '16px', border: '1px solid #bbf7d0' }}>
+            <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '1.1rem', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '320px', fontSize: '0.82rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', tableLayout: 'fixed' }}>
+                <colgroup>
+                  <col style={{ width: '36%' }} />
+                  <col style={{ width: '36%' }} />
+                  <col style={{ width: '28%' }} />
+                </colgroup>
                 <thead>
                   <tr style={{ background: '#dcfce7', color: '#14532d' }}>
-                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>일시</th>
-                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>예배종류</th>
-                    <th style={{ padding: '12px 4px', border: '1px solid #bbf7d0' }}>장소</th>
+                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>일시</th>
+                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>예배종류</th>
+                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>장소</th>
                   </tr>
                 </thead>
                 <tbody>
                   {STATIC_INFO.schedule.map((item, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0' }}>{item.time}</td>
-                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534' }}>{item.name}</td>
-                      <td style={{ padding: '10px 4px', border: '1px solid #bbf7d0' }}>{item.place}</td>
+                    <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fefb' }}>
+                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.time}</td>
+                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.name}</td>
+                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.place}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div style={{ textAlign: 'center', background: '#166534', color: '#fff', padding: '12px', borderRadius: '12px', marginTop: '20px', fontSize: '0.95rem' }}>
+            <div style={{ textAlign: 'center', background: '#166534', color: '#fff', padding: '12px', borderRadius: '12px', marginTop: '16px', fontSize: '0.9rem', lineHeight: 1.5, wordBreak: 'keep-all' }}>
               날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
             </div>
           </div>
