@@ -56,6 +56,7 @@ export default function Groups() {
   const [editPostVerse, setEditPostVerse] = useState('');
   const [todayVerseInput, setTodayVerseInput] = useState('');
   const [todayVerseRefInput, setTodayVerseRefInput] = useState('');
+  const [showVerseForm, setShowVerseForm] = useState(false);
   const [isFetchingVerse, setIsFetchingVerse] = useState(false);
   const [editingDayVerseDate, setEditingDayVerseDate] = useState(null);
   const [editDayVerseText, setEditDayVerseText] = useState('');
@@ -544,45 +545,61 @@ export default function Groups() {
         )}
         
         {currentUser && (
-          <form onSubmit={updateTodayVerse} style={{ marginBottom: '20px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px' }}>📖 오늘의 말씀 설정 (모든 멤버 가능)</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {/* 구절 참조 입력 + 자동 조회 버튼 */}
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <input 
-                  type="text"
-                  placeholder="말씀 구절 입력 ex) 창세기 1:1-5 → 자동 조회"
-                  value={todayVerseRefInput}
-                  onChange={(e) => setTodayVerseRefInput(e.target.value)}
-                  onBlur={(e) => handleFetchVerseFromRef(e.target.value)}
-                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleFetchVerseFromRef(todayVerseRefInput)}
-                  disabled={isFetchingVerse || !todayVerseRefInput.trim()}
-                  title="말씀 자동 조회"
-                  style={{ background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold', fontSize: '12px', whiteSpace: 'nowrap', opacity: (!todayVerseRefInput.trim() || isFetchingVerse) ? 0.5 : 1 }}
-                >
-                  {isFetchingVerse ? <Loader size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={14} />}
-                  조회
-                </button>
-              </div>
-              {/* 말씀 본문 텍스트 (자동 조회 또는 직접 입력) */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <textarea 
-                  placeholder="말씀 본문이 여기에 자동으로 채워집니다. 직접 입력도 가능합니다."
-                  value={todayVerseInput}
-                  onChange={(e) => setTodayVerseInput(e.target.value)}
-                  rows={3}
-                  style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'vertical', fontSize: '13px', lineHeight: '1.6' }}
-                />
-                <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap', alignSelf: 'flex-end', height: '42px' }}>
-                  저장
-                </button>
-              </div>
-            </div>
-          </form>
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              type="button"
+              onClick={() => setShowVerseForm(v => !v)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                background: showVerseForm ? 'var(--glass-bg)' : 'rgba(212,175,55,0.12)',
+                border: `1px solid ${showVerseForm ? 'var(--glass-border)' : 'var(--accent-gold)'}`,
+                color: showVerseForm ? 'var(--text-secondary)' : 'var(--accent-gold)',
+                borderRadius: '20px', padding: '6px 14px', cursor: 'pointer',
+                fontSize: '13px', fontWeight: 600, transition: 'all 0.2s',
+              }}
+            >
+              📖 {showVerseForm ? '닫기' : '오늘의 말씀 설정'}
+            </button>
+
+            {showVerseForm && (
+              <form onSubmit={async (e) => { await updateTodayVerse(e); setShowVerseForm(false); }} style={{ marginTop: '12px', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '14px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '8px' }}>📖 오늘의 말씀 설정 (모든 멤버 가능)</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <input
+                      type="text"
+                      placeholder="말씀 구절 입력 ex) 창세기 1:1-5 → 자동 조회"
+                      value={todayVerseRefInput}
+                      onChange={(e) => setTodayVerseRefInput(e.target.value)}
+                      onBlur={(e) => handleFetchVerseFromRef(e.target.value)}
+                      style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontSize: '13px' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleFetchVerseFromRef(todayVerseRefInput)}
+                      disabled={isFetchingVerse || !todayVerseRefInput.trim()}
+                      title="말씀 자동 조회"
+                      style={{ background: 'var(--accent-gold)', color: '#000', border: 'none', borderRadius: '8px', padding: '0 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold', fontSize: '12px', whiteSpace: 'nowrap', opacity: (!todayVerseRefInput.trim() || isFetchingVerse) ? 0.5 : 1 }}
+                    >
+                      조회
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <textarea
+                      placeholder="말씀 본문이 여기에 자동으로 채워집니다. 직접 입력도 가능합니다."
+                      value={todayVerseInput}
+                      onChange={(e) => setTodayVerseInput(e.target.value)}
+                      rows={3}
+                      style={{ flex: 1, padding: '10px', borderRadius: '8px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', resize: 'vertical', fontSize: '13px', lineHeight: '1.6' }}
+                    />
+                    <button type="submit" disabled={!todayVerseInput.trim()} style={{ background: todayVerseInput.trim() ? 'var(--accent-gold)' : 'var(--glass-bg)', color: todayVerseInput.trim() ? '#000' : 'var(--text-secondary)', border: 'none', borderRadius: '8px', padding: '0 16px', cursor: todayVerseInput.trim() ? 'pointer' : 'not-allowed', fontWeight: 'bold', whiteSpace: 'nowrap', alignSelf: 'flex-end', height: '42px' }}>
+                      저장
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
         )}
         
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>

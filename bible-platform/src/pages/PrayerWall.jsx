@@ -28,7 +28,12 @@ export default function PrayerWall() {
           if (!item.createdAt?.toDate) return true;
           return item.createdAt.toDate() >= sevenDaysAgo;
         });
-      p.sort((a, b) => (b.prayCount || 0) - (a.prayCount || 0));
+      // 최신순 정렬 (createdAt 내림차순)
+      p.sort((a, b) => {
+        const aTime = a.createdAt?.toDate?.()?.getTime() ?? 0;
+        const bTime = b.createdAt?.toDate?.()?.getTime() ?? 0;
+        return bTime - aTime;
+      });
       setPrayers(p);
     }, (error) => {
       console.error('기도벽 로드 오류:', error);

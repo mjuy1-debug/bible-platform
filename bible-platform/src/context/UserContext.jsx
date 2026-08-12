@@ -33,7 +33,13 @@ const loadLocalState = () => {
     const saved = localStorage.getItem('luxverbi_user');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed.planProgress && parsed.planProgress.dailySchedule && parsed.planProgress.dailySchedule.length <= 7) {
+      // 구버전 dailySchedule(7일 이하) 마이그레이션: type/selectedBooks는 유지, dailySchedule 재생성
+      if (
+        parsed.planProgress &&
+        parsed.planProgress.dailySchedule &&
+        parsed.planProgress.dailySchedule.length <= 7 &&
+        !parsed.planProgress.type  // type이 없을 때만 리셋 (구버전 기본값 제거)
+      ) {
         parsed.planProgress = { ...INITIAL_STATE.planProgress, completedDays: parsed.planProgress.completedDays || [] };
       }
       parsed.events = SAMPLE_EVENTS;
@@ -85,6 +91,7 @@ export const UserProvider = ({ children }) => {
             totalDays: newState.planProgress.totalDays,
             completedDays: newState.planProgress.completedDays,
             selectedBooks: newState.planProgress.selectedBooks,
+            dailySchedule: newState.planProgress.dailySchedule,
           },
           updatedAt: new Date().toISOString(),
         });
@@ -266,14 +273,25 @@ export const UserProvider = ({ children }) => {
     if (!currentUser) return;
     try {
       await deleteDoc(doc(db, 'sharedDevotions', docId));
+      // 로컬 상태 업데이트 - docId 또는 sharedDocId 모두 대응
       setState(prev => ({
         ...prev,
-        devotions: prev.devotions.map(d => (d.id === docId || d.sharedDocId === docId) ? { ...d, isShared: false } : d)
+        devotions: prev.devotions.map(d =>
+          (d.id === docId || d.sharedDocId === docId || d.sharedId === docId)
+            ? { ...d, isShared: false, sharedDocId: null }
+            : d
+        )
       }));
       showToast('나눔터에서 묵상이 삭제되었습니다.');
     } catch (err) {
       console.error('커뮤니티 삭제 실패:', err);
-      showToast('삭제 중 오류가 발생했습니다.', 'error');
+      // Firestore 권한 오류여도 로컬 UI는 제거
+      if (err.code === 'permission-denied') {
+        showToast('삭제 권한이 없습니다. (본인 글만 삭제 가능)', 'error');
+      } else {
+        // 네트워크 등 기타 오류 시 재시도 안내
+        showToast(`삭제 중 오류: ${err.message}`, 'error');
+      }
     }
   }, [showToast, currentUser]);
 
