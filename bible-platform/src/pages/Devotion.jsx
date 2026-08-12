@@ -81,7 +81,14 @@ const Devotion = () => {
   useEffect(() => {
     const q = query(collection(db, 'sharedDevotions'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
+      const docs = snapshot.docs
+        .map(d => ({ ...d.data(), id: d.id }))
+        // 잘못된 날짜(createdAt이 없거나 유효하지 않은 경우) 또는 특정 게시물 필터링
+        .filter(d => {
+          if (!d.createdAt) return false;
+          if (typeof d.verse === 'string' && d.verse.replace(/\s+/g, '') === '시편36:9') return false;
+          return true;
+        });
       setSharedDevotions(docs);
     });
     return () => unsubscribe();
