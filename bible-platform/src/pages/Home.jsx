@@ -140,7 +140,11 @@ const Home = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {upcoming.map(ev => {
-              const colors = CATEGORY_COLORS[ev.category];
+              // category가 배열이거나 콤마로 구분된 문자열일 경우 첫 번째 요소 사용
+              const firstCat = Array.isArray(ev.category) ? ev.category[0] : (typeof ev.category === 'string' ? ev.category.split(',')[0].trim() : ev.category);
+              const colors = CATEGORY_COLORS[firstCat] || CATEGORY_COLORS.normal;
+              const label = CATEGORY_LABELS[firstCat] || CATEGORY_LABELS.normal;
+
               return (
                 <div key={ev.id} onClick={() => setSelectedEvent(ev)} style={{ textDecoration: 'none', cursor: 'pointer' }}>
                   <div style={{
@@ -158,7 +162,7 @@ const Home = () => {
                         <span>{ev.date.slice(5).replace('-', '/')}</span>
                         {ev.time && <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Clock size={10} /> {ev.time}</span>}
                         <span style={{ padding: '0 0.4rem', borderRadius: '6px', background: colors.bg, fontWeight: 600, fontSize: '0.68rem' }}>
-                          {CATEGORY_LABELS[ev.category]}
+                          {label}
                         </span>
                       </div>
                     </div>
@@ -221,7 +225,10 @@ const Home = () => {
       {/* ─── Event Detail Modal ─── */}
       <AnimatePresence>
         {selectedEvent && (() => {
-          const colors = CATEGORY_COLORS[selectedEvent.category];
+          const firstCat = Array.isArray(selectedEvent.category) ? selectedEvent.category[0] : (typeof selectedEvent.category === 'string' ? selectedEvent.category.split(',')[0].trim() : selectedEvent.category);
+          const colors = CATEGORY_COLORS[firstCat] || CATEGORY_COLORS.normal;
+          const label = CATEGORY_LABELS[firstCat] || CATEGORY_LABELS.normal;
+
           return (
             <motion.div
               key="event-modal"
@@ -251,7 +258,7 @@ const Home = () => {
                     <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
                     <span style={{ fontSize: '0.75rem', fontWeight: 700, color: colors.text,
                       background: colors.bg, padding: '0.2rem 0.8rem', borderRadius: '20px', border: `1px solid ${colors.border}` }}>
-                      {CATEGORY_LABELS[selectedEvent.category]}
+                      {label}
                     </span>
                   </div>
                   <button onClick={() => setSelectedEvent(null)}
