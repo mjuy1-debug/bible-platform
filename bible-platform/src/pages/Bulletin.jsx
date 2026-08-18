@@ -114,7 +114,11 @@ export default function Bulletin() {
   useEffect(() => {
     const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setBulletins(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setBulletins(
+        snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .filter(b => !b.isSermon && (b.isDigital || b.imageUrl || b.worshipOrder))
+      );
     });
     return () => unsubscribe();
   }, []);

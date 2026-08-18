@@ -54,6 +54,12 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // ✅ 말씀과 설교
+    match /sermons/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
     // ✅ 푸시 알림 토큰
     match /fcmTokens/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;

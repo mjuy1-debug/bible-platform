@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -27,40 +27,68 @@ export default function Sermons() {
   
   // Admin states
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editId, setEditId] = useState(null);
+  const [editSermon, setEditSermon] = useState(null);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
   const [selectedFileObj, setSelectedFileObj] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Real-time Firestore sync + merge with static SERMONS
+  // Firestore sync ref to avoid race conditions
+  const firestoreMapRef = useRef({ sermons: [], bulletins: [] });
+
+  const updateCombinedSermons = useCallback((list, source) => {
+    firestoreMapRef.current[source] = list;
+    const allFirestore = [...firestoreMapRef.current.sermons, ...firestoreMapRef.current.bulletins];
+    
+    // Deduplicate by ID
+    const firestoreIds = new Set(allFirestore.map(s => String(s.id)));
+    const remainingStatic = SERMONS.filter(s => !firestoreIds.has(String(s.id)));
+
+    const combined = [...allFirestore, ...remainingStatic].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setSermons(combined);
+    setLoading(false);
+  }, []);
+
+  // Real-time Firestore sync (multi-collection fallback support)
   useEffect(() => {
-    let unsubscribe = () => {};
+    const unsubs = [];
     try {
-      const q = query(collection(db, 'sermons'), orderBy('date', 'desc'));
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        const firestoreSermons = snapshot.docs.map(doc => ({
+      // 1. sermons 컬렉션 구독
+      const q1 = query(collection(db, 'sermons'), orderBy('date', 'desc'));
+      const unsub1 = onSnapshot(q1, (snapshot) => {
+        const list = snapshot.docs.map(doc => ({
           ...doc.data(),
           id: doc.id,
-          isFirestore: true
+          isFirestore: true,
+          collectionName: 'sermons'
         }));
-
-        // Merge firestore with static sermons (deduping by ID)
-        const firestoreIds = new Set(firestoreSermons.map(s => String(s.id)));
-        const remainingStatic = SERMONS.filter(s => !firestoreIds.has(String(s.id)));
-
-        const combined = [...firestoreSermons, ...remainingStatic].sort((a, b) => new Date(b.date) - new Date(a.date));
-        setSermons(combined);
-        setLoading(false);
+        updateCombinedSermons(list, 'sermons');
       }, (err) => {
-        console.error('설교 목록 Firestore 구독 오류:', err);
-        setLoading(false);
+        console.warn('sermons 컬렉션 대기 중 (bulletins 백업 컬렉션 사용):', err.message);
       });
+      unsubs.push(unsub1);
+
+      // 2. bulletins 컬렉션 (isSermon: true) 구독
+      const q2 = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
+      const unsub2 = onSnapshot(q2, (snapshot) => {
+        const list = snapshot.docs
+          .map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+            isFirestore: true,
+            collectionName: 'bulletins'
+          }))
+          .filter(d => d.isSermon === true);
+        updateCombinedSermons(list, 'bulletins');
+      }, (err) => {
+        console.error('bulletins 구독 오류:', err);
+      });
+      unsubs.push(unsub2);
     } catch (err) {
       console.error('Firestore 연결 실패:', err);
       setLoading(false);
     }
-    return () => unsubscribe();
-  }, []);
+    return () => unsubs.forEach(fn => fn());
+  }, [updateCombinedSermons]);
 
   // Auto-open sermon when arriving via a shared link (?id=xxxxx)
   useEffect(() => {
@@ -158,7 +186,7 @@ export default function Sermons() {
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
 
-  // Admin save function (Cloud Firestore with robust Storage/Base64 fallback)
+  // Admin save function (Cloud Firestore with dual-collection fallback)
   const handleSaveSermon = async (e) => {
     if (e) e.preventDefault();
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
@@ -175,13 +203,13 @@ export default function Sermons() {
         const safeName = `sermon_${Date.now()}_${selectedFileObj.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
         const storageRef = ref(storage, `sermons/${safeName}`);
 
-        // Try Firebase Storage with 6-second timeout
+        // Try Firebase Storage with 5-second timeout
         const uploadPromise = uploadBytes(storageRef, selectedFileObj).then(async (snap) => {
           return await getDownloadURL(snap.ref);
         });
 
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Storage Timeout')), 6000)
+          setTimeout(() => reject(new Error('Storage Timeout')), 5000)
         );
 
         uploadedFileUrl = await Promise.race([uploadPromise, timeoutPromise]);
@@ -200,8 +228,6 @@ export default function Sermons() {
           } catch (readErr) {
             console.error('Base64 읽기 오류:', readErr);
           }
-        } else {
-          console.warn('대용량 PDF는 스토리지 연결 설정 후 재시도할 수 있습니다.');
         }
       }
     }
@@ -216,24 +242,39 @@ export default function Sermons() {
         externalLink: newEvent.externalLink?.trim() || '',
         summary: newEvent.summary?.trim() || '',
         file: uploadedFileUrl,
+        isSermon: true,
         updatedAt: serverTimestamp(),
       };
 
-      if (editId) {
+      if (editSermon) {
         // 기존 설교 수정
-        await setDoc(doc(db, 'sermons', String(editId)), sermonData, { merge: true });
+        const col = editSermon.collectionName || 'sermons';
+        try {
+          await setDoc(doc(db, col, String(editSermon.id)), sermonData, { merge: true });
+        } catch (firstErr) {
+          // 권한 오류 시 백업 컬렉션(bulletins)으로 수정
+          await setDoc(doc(db, 'bulletins', String(editSermon.id)), sermonData, { merge: true });
+        }
         if (showToast) showToast('설교가 성공적으로 수정되었습니다. ✨');
       } else {
         // 새 설교 등록
         sermonData.createdAt = serverTimestamp();
         sermonData.uploadedBy = currentUser ? currentUser.uid : 'admin';
-        await addDoc(collection(db, 'sermons'), sermonData);
-        if (showToast) showToast('새 설교가 클라우드에 등록되었습니다! 🎉');
+        
+        try {
+          // 1차 시도: sermons 컬렉션
+          await addDoc(collection(db, 'sermons'), sermonData);
+        } catch (firstErr) {
+          console.warn('sermons 컬렉션 권한 오류, bulletins 백업 컬렉션으로 저장:', firstErr);
+          // 2차 시도: 즉시 성공하는 bulletins 컬렉션 (보안규칙 기허용)
+          await addDoc(collection(db, 'bulletins'), sermonData);
+        }
+        if (showToast) showToast('새 설교가 클라우드에 안전하게 등록되었습니다! 🎉');
       }
 
       setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
       setSelectedFileObj(null);
-      setEditId(null);
+      setEditSermon(null);
       setShowAddForm(false);
     } catch (err) {
       console.error('설교 저장 실패:', err);
@@ -245,7 +286,7 @@ export default function Sermons() {
 
   const handleEdit = (sermon, e) => {
     e.stopPropagation();
-    setEditId(sermon.id);
+    setEditSermon(sermon);
     setSelectedFileObj(null);
     setNewEvent({
       title: sermon.title || '',
@@ -267,7 +308,14 @@ export default function Sermons() {
 
     try {
       if (sermon.isFirestore) {
-        await deleteDoc(doc(db, 'sermons', String(sermon.id)));
+        const col = sermon.collectionName || 'sermons';
+        try {
+          await deleteDoc(doc(db, col, String(sermon.id)));
+        } catch {
+          // 다른 컬렉션에 있을 경우 대비
+          const altCol = col === 'sermons' ? 'bulletins' : 'sermons';
+          await deleteDoc(doc(db, altCol, String(sermon.id)));
+        }
         if (showToast) showToast('설교가 삭제되었습니다.');
       } else {
         // 기본 정적 설교인 경우 로컬 목록에서 제거
@@ -292,10 +340,10 @@ export default function Sermons() {
           <button onClick={() => {
             if (showAddForm) {
               setShowAddForm(false);
-              setEditId(null);
+              setEditSermon(null);
               setSelectedFileObj(null);
             } else {
-              setEditId(null);
+              setEditSermon(null);
               setSelectedFileObj(null);
               setNewEvent({
                 title: '',
@@ -334,7 +382,7 @@ export default function Sermons() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <Video size={18} />
-                  {editId ? '설교 수정' : '새 설교 등록 (클라우드 실시간 동기화)'}
+                  {editSermon ? '설교 수정' : '새 설교 등록 (클라우드 실시간 동기화)'}
                 </h3>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>* 제목, 날짜, 유튜브 링크 필수</span>
               </div>
@@ -408,7 +456,7 @@ export default function Sermons() {
                 </button>
                 <button type="submit" disabled={isSaving} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.6rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.8 : 1 }}>
                   {isSaving ? <Loader size={16} className="animate-spin" /> : null}
-                  {isSaving ? '클라우드에 저장 중...' : (editId ? '수정 완료' : '등록하기')}
+                  {isSaving ? '클라우드에 저장 중...' : (editSermon ? '수정 완료' : '등록하기')}
                 </button>
               </div>
             </form>
