@@ -575,122 +575,92 @@ export default function Sermons() {
         </div>
       )}
 
-      {/* Combined Video & Summary Modal — full-screen on mobile */}
+      {/* Combined Video & Summary Modal */}
       <AnimatePresence>
         {selectedVideo && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             style={{
               position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999,
-              background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(8px)',
-              display: 'flex', alignItems: 'flex-end',
-              /* On desktop we centre the card; on mobile it slides up edge-to-edge */
+              background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              /* 모바일: 여백 없이 꽉 차게 / 데스크톱: 살짝 여백 */
+              padding: 'clamp(0px, 2vw, 1rem)',
             }}
             onClick={() => setSelectedVideo(null)}>
-
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+            
+            <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
               style={{
-                width: '100%',
-                /* Fill nearly all vertical space on mobile; cap to 90 vh on large screens */
-                maxHeight: '95dvh',
-                background: 'var(--bg-primary)',
-                borderRadius: '20px 20px 0 0',
-                border: '1px solid var(--glass-border)',
-                borderBottom: 'none',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                position: 'relative',
+                width: '100%', maxWidth: '860px', maxHeight: '95dvh',
+                background: 'var(--bg-primary)', borderRadius: 'clamp(0px, 2vw, 16px)',
+                border: '1px solid var(--glass-border)', overflow: 'hidden',
+                display: 'flex', flexDirection: 'column', position: 'relative',
               }}
               onClick={e => e.stopPropagation()}>
+              
+              {/* Header / Close button */}
+              <button onClick={() => setSelectedVideo(null)} style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 10, background: 'rgba(0,0,0,0.6)', border: '1px solid var(--glass-border)', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}>
+                <X size={20} />
+              </button>
 
-              {/* ── Drag handle + close ────────────────────── */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem 0.5rem' }}>
-                {/* drag pill */}
-                <div style={{ width: '40px', height: '4px', borderRadius: '99px', background: 'rgba(255,255,255,0.25)', margin: '0 auto', position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: '10px' }} />
-                <div style={{ flex: 1 }} />
-                <button
-                  onClick={() => setSelectedVideo(null)}
-                  style={{
-                    background: 'rgba(255,255,255,0.1)', border: '1px solid var(--glass-border)',
-                    color: '#fff', borderRadius: '50%', width: '34px', height: '34px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', flexShrink: 0,
-                  }}>
-                  <X size={18} />
-                </button>
-              </div>
-
-              {/* ── Video Player ───────────────────────────── */}
+              {/* Video Player */}
               <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', flexShrink: 0 }}>
-                <iframe
-                  width="100%" height="100%"
-                  src={getEmbedUrl(selectedVideo.videoUrl)}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={selectedVideo.title}
-                />
+                <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={selectedVideo.title}></iframe>
               </div>
-
-              {/* ── Sermon Details (scrollable) ────────────── */}
-              <div style={{ padding: '1.2rem 1rem', overflowY: 'auto', flex: 1, color: 'var(--text-primary)', WebkitOverflowScrolling: 'touch' }}>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--accent-gold)', lineHeight: 1.35 }}>
-                  {selectedVideo.title}
-                </h3>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                  {selectedVideo.date}{selectedVideo.scripture ? ` | ${selectedVideo.scripture}` : ''}{selectedVideo.preacher ? ` | ${selectedVideo.preacher}` : ''}
-                </p>
-
+              
+              {/* Sermon Details — 모바일에서 패딩 최소화 */}
+              <div style={{ padding: 'clamp(0.75rem, 4vw, 1.5rem)', overflowY: 'auto', flex: 1, color: 'var(--text-primary)', WebkitOverflowScrolling: 'touch' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--accent-gold)' }}>{selectedVideo.title}</h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
+                
                 {selectedVideo.externalLink && (
-                  <a
-                    href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`}
-                    target="_blank" rel="noopener noreferrer"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem', background: 'rgba(212,175,55,0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.88rem', marginBottom: '1rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
-                    <ExternalLink size={15} /> 관련 링크 열기
+                  <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
+                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.5rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
+                    <ExternalLink size={16} /> 관련 링크 열기
                   </a>
                 )}
-
+                
                 {selectedVideo.summary && (
-                  <div style={{ marginBottom: '1.5rem', lineHeight: 1.75, whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '10px', border: '1px solid var(--glass-border)', fontSize: '0.92rem' }}>
+                  <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,0.02)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
                     {selectedVideo.summary}
                   </div>
                 )}
 
-                {/* ── PDF Viewer ─────────────────────────── */}
+                {/* PDF Viewer Section */}
                 {selectedVideo.file && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.35)', marginBottom: '1.5rem' }}>
+                  <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', background: 'rgba(255,255,255,0.03)', padding: 'clamp(0.75rem, 3vw, 1.2rem)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.35)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                        <FileText size={17} /> 설교 요약 PDF
+                      <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <FileText size={18} /> 설교 요약 및 나눔 자료 (PDF)
                       </span>
+                      
                       <button
                         type="button"
                         onClick={() => handleOpenPdfNewTab(selectedVideo)}
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem 0.85rem', borderRadius: '6px', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', fontSize: '0.78rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer' }}>
-                        <ExternalLink size={12} /> 새 탭에서 열기
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                          padding: '0.4rem 0.9rem', borderRadius: '6px',
+                          background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)',
+                          fontSize: '0.8rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer'
+                        }}
+                      >
+                        <ExternalLink size={13} /> 새 탭에서 열기
                       </button>
                     </div>
 
-                    {/* PDF iframe — fills full width, tall enough to read comfortably */}
-                    <div style={{ width: '100%', height: '60vh', minHeight: '340px', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
-                      <iframe
-                        src={getActivePdfUrl(selectedVideo)}
-                        width="100%"
-                        height="100%"
-                        style={{ border: 'none', display: 'block' }}
-                        title="PDF Viewer"
-                      />
+                    <div style={{ height: '55vh', minHeight: '300px', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+                      <iframe src={getActivePdfUrl(selectedVideo)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleDownloadPdf(selectedVideo)}
-                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.85rem', borderRadius: '10px', background: 'var(--accent-gold)', color: '#1a1a2e', border: 'none', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(212,175,55,0.25)' }}>
-                      <Download size={17} /> 설교 요약 PDF 다운로드
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                        padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e',
+                        border: 'none', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(212,175,55,0.25)'
+                      }}
+                    >
+                      <Download size={18} /> 설교 요약 PDF 다운로드 / 바로 열기
                     </button>
                   </div>
                 )}
@@ -699,6 +669,7 @@ export default function Sermons() {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       {/* ── In-App Link Viewer Modal ─────────────────────────── */}
       <AnimatePresence>
