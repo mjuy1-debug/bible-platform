@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video } from 'lucide-react';
+import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
@@ -28,9 +28,9 @@ export default function Sermons() {
   // Admin states
   const [showAddForm, setShowAddForm] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
+  const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
+  const [selectedFileObj, setSelectedFileObj] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
 
   // Real-time Firestore sync + merge with static SERMONS
   useEffect(() => {
@@ -117,6 +117,9 @@ export default function Sermons() {
 
   const getPdfViewerUrl = (pdfPath) => {
     if (!pdfPath) return "";
+    if (pdfPath.startsWith('data:application/pdf') || pdfPath.startsWith('blob:')) {
+      return pdfPath;
+    }
     if (pdfPath.startsWith('http://') || pdfPath.startsWith('https://')) {
       return `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true`;
     }
@@ -128,7 +131,34 @@ export default function Sermons() {
     return `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
   };
 
-  // Admin save function (Cloud Firestore)
+  // File select handler (instant, non-blocking)
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      alert('PDF 파일만 첨부할 수 있습니다.');
+      return;
+    }
+
+    if (file.size > 25 * 1024 * 1024) {
+      alert('파일 크기는 최대 25MB 이하만 가능합니다.');
+      return;
+    }
+
+    setSelectedFileObj(file);
+    setNewEvent(prev => ({
+      ...prev,
+      fileName: `${file.name} (${(file.size / 1024).toFixed(0)} KB)`
+    }));
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFileObj(null);
+    setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
+  };
+
+  // Admin save function (Cloud Firestore with robust Storage/Base64 fallback)
   const handleSaveSermon = async (e) => {
     if (e) e.preventDefault();
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
@@ -137,6 +167,45 @@ export default function Sermons() {
     }
 
     setIsSaving(true);
+    let uploadedFileUrl = newEvent.file || '';
+
+    // Handle PDF upload if user selected a new file
+    if (selectedFileObj) {
+      try {
+        const safeName = `sermon_${Date.now()}_${selectedFileObj.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+        const storageRef = ref(storage, `sermons/${safeName}`);
+
+        // Try Firebase Storage with 6-second timeout
+        const uploadPromise = uploadBytes(storageRef, selectedFileObj).then(async (snap) => {
+          return await getDownloadURL(snap.ref);
+        });
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Storage Timeout')), 6000)
+        );
+
+        uploadedFileUrl = await Promise.race([uploadPromise, timeoutPromise]);
+      } catch (uploadErr) {
+        console.warn('Firebase Storage 업로드 지연/실패, Base64 fallback 시도:', uploadErr);
+
+        // Fallback: If file <= 800KB, store as Base64 Data URL
+        if (selectedFileObj.size <= 800 * 1024) {
+          try {
+            uploadedFileUrl = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(selectedFileObj);
+            });
+          } catch (readErr) {
+            console.error('Base64 읽기 오류:', readErr);
+          }
+        } else {
+          console.warn('대용량 PDF는 스토리지 연결 설정 후 재시도할 수 있습니다.');
+        }
+      }
+    }
+
     try {
       const sermonData = {
         title: newEvent.title.trim(),
@@ -146,7 +215,7 @@ export default function Sermons() {
         videoUrl: newEvent.videoUrl.trim(),
         externalLink: newEvent.externalLink?.trim() || '',
         summary: newEvent.summary?.trim() || '',
-        file: newEvent.file || '',
+        file: uploadedFileUrl,
         updatedAt: serverTimestamp(),
       };
 
@@ -162,7 +231,8 @@ export default function Sermons() {
         if (showToast) showToast('새 설교가 클라우드에 등록되었습니다! 🎉');
       }
 
-      setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
+      setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
+      setSelectedFileObj(null);
       setEditId(null);
       setShowAddForm(false);
     } catch (err) {
@@ -173,36 +243,10 @@ export default function Sermons() {
     }
   };
 
-  // Upload PDF to Firebase Storage
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file.type !== 'application/pdf') {
-      alert('PDF 파일만 업로드 가능합니다.');
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const safeName = `sermon_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-      const storageRef = ref(storage, `sermons/${safeName}`);
-      await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(storageRef);
-      
-      setNewEvent(prev => ({ ...prev, file: downloadUrl }));
-      if (showToast) showToast('PDF 파일이 클라우드에 업로드되었습니다. 📄');
-    } catch (err) {
-      console.error('PDF 업로드 오류:', err);
-      alert(`PDF 업로드 실패: ${err.message}`);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const handleEdit = (sermon, e) => {
     e.stopPropagation();
     setEditId(sermon.id);
+    setSelectedFileObj(null);
     setNewEvent({
       title: sermon.title || '',
       date: sermon.date || new Date().toISOString().slice(0, 10),
@@ -211,6 +255,7 @@ export default function Sermons() {
       videoUrl: sermon.videoUrl || '',
       summary: sermon.summary || '',
       file: sermon.file || '',
+      fileName: sermon.file ? '첨부된 PDF 파일 있음' : '',
       externalLink: sermon.externalLink || ''
     });
     setShowAddForm(true);
@@ -248,8 +293,10 @@ export default function Sermons() {
             if (showAddForm) {
               setShowAddForm(false);
               setEditId(null);
+              setSelectedFileObj(null);
             } else {
               setEditId(null);
+              setSelectedFileObj(null);
               setNewEvent({
                 title: '',
                 date: new Date().toISOString().slice(0, 10),
@@ -258,6 +305,7 @@ export default function Sermons() {
                 videoUrl: '',
                 summary: '',
                 file: '',
+                fileName: '',
                 externalLink: ''
               });
               setShowAddForm(true);
@@ -322,17 +370,30 @@ export default function Sermons() {
                   <input type="text" placeholder="https://..." value={newEvent.externalLink || ''} onChange={e => setNewEvent({...newEvent, externalLink: e.target.value})} className="input-field" style={{ width: '100%' }} />
                 </div>
                 
-                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
-                  <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600 }}>설교 요약 PDF 파일 업로드 (선택)</label>
-                  <input type="file" accept="application/pdf" onChange={handleFileUpload} className="input-field" disabled={isUploading} />
-                  {isUploading && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--accent-gold)', fontSize: '0.8rem' }}>
-                      <Loader size={14} className="animate-spin" /> 클라우드에 업로드 중...
+                {/* PDF Upload Section */}
+                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <FileText size={15} /> 설교 요약 PDF 파일 첨부 (선택)
+                    </label>
+                    {(selectedFileObj || newEvent.file) && (
+                      <button type="button" onClick={handleRemoveFile} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                        <X size={13} /> 파일 첨부 취소
+                      </button>
+                    )}
+                  </div>
+                  
+                  <input type="file" accept="application/pdf,.pdf" onChange={handleFileSelect} className="input-field" />
+                  
+                  {(newEvent.fileName || selectedFileObj) && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontSize: '0.82rem', marginTop: '0.2rem' }}>
+                      <Check size={14} /> {newEvent.fileName || selectedFileObj?.name}
                     </div>
                   )}
-                  {newEvent.file && !isUploading && (
-                    <span style={{ fontSize: '0.8rem', color: '#10b981' }}>✓ PDF 파일이 첨부되었습니다</span>
-                  )}
+                  
+                  <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', margin: 0 }}>
+                    * PDF 파일을 선택한 후 아래 [등록하기] 버튼을 누르면 설교와 함께 안전하게 저장됩니다.
+                  </p>
                 </div>
 
                 <div style={{ gridColumn: '1 / -1' }}>
@@ -345,9 +406,9 @@ export default function Sermons() {
                 <button type="button" onClick={() => setShowAddForm(false)} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   취소
                 </button>
-                <button type="submit" disabled={isSaving || isUploading} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.5rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}>
+                <button type="submit" disabled={isSaving} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.6rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.8 : 1 }}>
                   {isSaving ? <Loader size={16} className="animate-spin" /> : null}
-                  {isSaving ? '저장 중...' : (editId ? '수정 완료' : '등록하기')}
+                  {isSaving ? '클라우드에 저장 중...' : (editId ? '수정 완료' : '등록하기')}
                 </button>
               </div>
             </form>
@@ -466,7 +527,7 @@ export default function Sermons() {
                     <div style={{ height: '55vh', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
                       <iframe src={getPdfViewerUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
-                    <a href={selectedVideo.file.startsWith('http') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download target="_blank" rel="noopener noreferrer"
+                    <a href={selectedVideo.file.startsWith('http') || selectedVideo.file.startsWith('data:') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download="sermon.pdf" target="_blank" rel="noopener noreferrer"
                       style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e', textDecoration: 'none', fontWeight: 700 }}>
                       <Download size={18} /> 설교 요약 PDF 다운로드
                     </a>
