@@ -15,10 +15,14 @@ const extractId = (url) => {
 
 const getThumbnail = (url) => {
   const id = extractId(url);
-  return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://mjuy1-debug.github.io/bible-platform/default-thumbnail.jpg';
+  // hqdefault: 480×360 (카카오톡 미리보기에 충분한 고화질)
+  return id
+    ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+    : 'https://mjuy1-debug.github.io/bible-platform/og_image_v2.png';
 };
 
 const SHARE_DIR = path.join(__dirname, '../public/share');
+const BASE_URL = 'https://mjuy1-debug.github.io/bible-platform';
 
 // Ensure public/share exists
 if (!fs.existsSync(SHARE_DIR)) {
@@ -32,27 +36,46 @@ for (const sermon of SERMONS) {
     fs.mkdirSync(sermonDir, { recursive: true });
   }
 
+  const thumbnail = getThumbnail(sermon.videoUrl);
+  const shareUrl  = `${BASE_URL}/share/${sermon.id}/`;
+  const appUrl    = `${BASE_URL}/#/sermon?id=${sermon.id}`;
+  const description = [sermon.scripture, sermon.preacher, '벧엘교회 주일 설교']
+    .filter(Boolean).join(' | ');
+
   const html = `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${sermon.title} - 화도벧엘교회</title>
-    
-    <!-- Open Graph for KakaoTalk / Social Media -->
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="${sermon.title}" />
-    <meta property="og:description" content="${sermon.scripture} | ${sermon.preacher}" />
-    <meta property="og:image" content="${getThumbnail(sermon.videoUrl)}" />
-    
+    <title>${sermon.title} - 벧엘교회</title>
+    <meta name="description" content="${description}">
+
+    <!-- Open Graph (KakaoTalk / Facebook / Instagram) -->
+    <meta property="og:type"        content="article" />
+    <meta property="og:site_name"   content="벧엘교회" />
+    <meta property="og:title"       content="${sermon.title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:url"         content="${shareUrl}" />
+    <meta property="og:image"       content="${thumbnail}" />
+    <meta property="og:image:width"  content="480" />
+    <meta property="og:image:height" content="360" />
+    <meta property="og:locale"      content="ko_KR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="${sermon.title}" />
+    <meta name="twitter:description" content="${description}" />
+    <meta name="twitter:image"       content="${thumbnail}" />
+
     <!-- Redirect to App -->
     <script>
-      // Replace location so the back button doesn't trap the user
-      window.location.replace('/bible-platform/#/sermon?id=${sermon.id}');
+      window.location.replace('${appUrl}');
     </script>
 </head>
 <body>
-    <p style="text-align:center; padding-top: 50px; font-family: sans-serif;">앱으로 이동 중입니다...</p>
+    <p style="text-align:center; padding-top: 50px; font-family: sans-serif; color:#888;">
+      앱으로 이동 중입니다...
+    </p>
 </body>
 </html>`;
 
@@ -61,3 +84,4 @@ for (const sermon of SERMONS) {
 }
 
 console.log(`✅ Generated ${count} share pages in public/share/`);
+

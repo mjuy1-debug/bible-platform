@@ -47,7 +47,9 @@ export default function Sermons() {
   // Copy shareable deep-link to clipboard
   const handleShare = async (sermon, e) => {
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}${window.location.pathname}#/sermon?id=${sermon.id}`;
+    // 정적 share 페이지 URL → KakaoTalk이 OG 이미지(유튜브 썸네일)를 올바르게 표시
+    // public/share/{id}/index.html 에 각 설교별 OG 태그가 이미 생성되어 있음
+    const shareUrl = `https://mjuy1-debug.github.io/bible-platform/share/${sermon.id}/`;
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareUrl);
