@@ -6,7 +6,7 @@ import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
 import { db, storage } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 export default function Sermons() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -31,6 +31,7 @@ export default function Sermons() {
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
   const [selectedFileObj, setSelectedFileObj] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   // Firestore sync ref to avoid race conditions
   const firestoreMapRef = useRef({ sermons: [], bulletins: [] });
@@ -186,7 +187,7 @@ export default function Sermons() {
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
 
-  // Admin save function (Cloud Firestore with dual-collection fallback)
+  // Admin save function (Cloud Firestore with dual-collection fallback and Storage upload)
   const handleSaveSermon = async (e) => {
     if (e) e.preventDefault();
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
@@ -201,18 +202,35 @@ export default function Sermons() {
     if (selectedFileObj) {
       try {
         const safeName = `sermon_${Date.now()}_${selectedFileObj.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        const storageRef = ref(storage, `sermons/${safeName}`);
+        // Store in bulletins/ path which is authorized in Storage rules
+        const storageRef = ref(storage, `bulletins/${safeName}`);
+        const metadata = { contentType: 'application/pdf' };
 
-        // Try Firebase Storage with 5-second timeout
-        const uploadPromise = uploadBytes(storageRef, selectedFileObj).then(async (snap) => {
-          return await getDownloadURL(snap.ref);
+        const uploadTask = uploadBytesResumable(storageRef, selectedFileObj, metadata);
+
+        uploadedFileUrl = await new Promise((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              if (snapshot.totalBytes > 0) {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setUploadProgress(progress);
+              }
+            },
+            (error) => {
+              console.warn('Firebase Storage 업로드 에러:', error);
+              reject(error);
+            },
+            async () => {
+              try {
+                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(downloadUrl);
+              } catch (err) {
+                reject(err);
+              }
+            }
+          );
         });
-
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Storage Timeout')), 5000)
-        );
-
-        uploadedFileUrl = await Promise.race([uploadPromise, timeoutPromise]);
       } catch (uploadErr) {
         console.warn('Firebase Storage 업로드 지연/실패, Base64 fallback 시도:', uploadErr);
 
@@ -248,7 +266,7 @@ export default function Sermons() {
 
       if (editSermon) {
         // 기존 설교 수정
-        const col = editSermon.collectionName || 'sermons';
+        const col = editSermon.collectionName || 'bulletins';
         try {
           await setDoc(doc(db, col, String(editSermon.id)), sermonData, { merge: true });
         } catch (firstErr) {
@@ -262,12 +280,11 @@ export default function Sermons() {
         sermonData.uploadedBy = currentUser ? currentUser.uid : 'admin';
         
         try {
-          // 1차 시도: sermons 컬렉션
-          await addDoc(collection(db, 'sermons'), sermonData);
-        } catch (firstErr) {
-          console.warn('sermons 컬렉션 권한 오류, bulletins 백업 컬렉션으로 저장:', firstErr);
-          // 2차 시도: 즉시 성공하는 bulletins 컬렉션 (보안규칙 기허용)
+          // bulletins 컬렉션에 바로 저장 (보안규칙 허용 보장)
           await addDoc(collection(db, 'bulletins'), sermonData);
+        } catch (firstErr) {
+          console.warn('bulletins 저장 오류, sermons 시도:', firstErr);
+          await addDoc(collection(db, 'sermons'), sermonData);
         }
         if (showToast) showToast('새 설교가 클라우드에 안전하게 등록되었습니다! 🎉');
       }
@@ -276,11 +293,13 @@ export default function Sermons() {
       setSelectedFileObj(null);
       setEditSermon(null);
       setShowAddForm(false);
+      setUploadProgress(null);
     } catch (err) {
       console.error('설교 저장 실패:', err);
       alert(`저장 중 오류가 발생했습니다: ${err.message}`);
     } finally {
       setIsSaving(false);
+      setUploadProgress(null);
     }
   };
 
@@ -308,11 +327,10 @@ export default function Sermons() {
 
     try {
       if (sermon.isFirestore) {
-        const col = sermon.collectionName || 'sermons';
+        const col = sermon.collectionName || (sermon.isSermon ? 'bulletins' : 'sermons');
         try {
           await deleteDoc(doc(db, col, String(sermon.id)));
         } catch {
-          // 다른 컬렉션에 있을 경우 대비
           const altCol = col === 'sermons' ? 'bulletins' : 'sermons';
           await deleteDoc(doc(db, altCol, String(sermon.id)));
         }
@@ -456,7 +474,7 @@ export default function Sermons() {
                 </button>
                 <button type="submit" disabled={isSaving} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.6rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.8 : 1 }}>
                   {isSaving ? <Loader size={16} className="animate-spin" /> : null}
-                  {isSaving ? '클라우드에 저장 중...' : (editSermon ? '수정 완료' : '등록하기')}
+                  {isSaving ? (uploadProgress !== null ? `PDF 업로드 중 (${uploadProgress}%)...` : '클라우드에 저장 중...') : (editSermon ? '수정 완료' : '등록하기')}
                 </button>
               </div>
             </form>
@@ -508,9 +526,22 @@ export default function Sermons() {
                     : <><Share2 size={12} /> 공유</>}
                 </button>
               </div>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+              
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
                 {sermon.scripture ? `${sermon.scripture} | ` : ''}{sermon.preacher}
               </p>
+
+              {/* PDF attached badge */}
+              {sermon.file && (
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  fontSize: '0.72rem', color: 'var(--accent-gold)',
+                  background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)',
+                  borderRadius: '6px', padding: '2px 8px', marginBottom: '0.8rem', width: 'fit-content', fontWeight: 600
+                }}>
+                  <FileText size={12} /> PDF 요약 첨부됨
+                </span>
+              )}
               
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {isAdmin && (
@@ -570,11 +601,32 @@ export default function Sermons() {
                   </div>
                 )}
 
+                {/* PDF Viewer Section */}
                 {selectedVideo.file && (
-                  <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ height: '55vh', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+                  <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', background: 'rgba(255,255,255,0.03)', padding: '1.2rem', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.35)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <FileText size={18} /> 설교 요약 및 나눔 자료 (PDF)
+                      </span>
+                      <a
+                        href={selectedVideo.file.startsWith('http') || selectedVideo.file.startsWith('data:') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                          padding: '0.35rem 0.8rem', borderRadius: '6px',
+                          background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)',
+                          fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(212,175,55,0.3)'
+                        }}
+                      >
+                        <ExternalLink size={13} /> 새 탭에서 열기
+                      </a>
+                    </div>
+
+                    <div style={{ height: '48vh', minHeight: '320px', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
                       <iframe src={getPdfViewerUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
+
                     <a href={selectedVideo.file.startsWith('http') || selectedVideo.file.startsWith('data:') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download="sermon.pdf" target="_blank" rel="noopener noreferrer"
                       style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e', textDecoration: 'none', fontWeight: 700 }}>
                       <Download size={18} /> 설교 요약 PDF 다운로드
