@@ -4,9 +4,8 @@ import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Lo
 import { useSearchParams } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
-import { db, storage } from '../services/firebase';
+import { db } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 export default function Sermons() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -29,9 +28,7 @@ export default function Sermons() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editSermon, setEditSermon] = useState(null);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
-  const [selectedFileObj, setSelectedFileObj] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(null);
 
   // Firestore sync ref to avoid race conditions
   const firestoreMapRef = useRef({ sermons: [], bulletins: [] });
@@ -53,24 +50,9 @@ export default function Sermons() {
   useEffect(() => {
     const unsubs = [];
     try {
-      // 1. sermons 컬렉션 구독
-      const q1 = query(collection(db, 'sermons'), orderBy('date', 'desc'));
+      // 1. bulletins 컬렉션 (isSermon: true) 구독
+      const q1 = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
       const unsub1 = onSnapshot(q1, (snapshot) => {
-        const list = snapshot.docs.map(doc => ({
-          ...doc.data(),
-          id: doc.id,
-          isFirestore: true,
-          collectionName: 'sermons'
-        }));
-        updateCombinedSermons(list, 'sermons');
-      }, (err) => {
-        console.warn('sermons 컬렉션 대기 중 (bulletins 백업 컬렉션 사용):', err.message);
-      });
-      unsubs.push(unsub1);
-
-      // 2. bulletins 컬렉션 (isSermon: true) 구독
-      const q2 = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
-      const unsub2 = onSnapshot(q2, (snapshot) => {
         const list = snapshot.docs
           .map(doc => ({
             ...doc.data(),
@@ -82,6 +64,21 @@ export default function Sermons() {
         updateCombinedSermons(list, 'bulletins');
       }, (err) => {
         console.error('bulletins 구독 오류:', err);
+      });
+      unsubs.push(unsub1);
+
+      // 2. sermons 컬렉션 구독
+      const q2 = query(collection(db, 'sermons'), orderBy('date', 'desc'));
+      const unsub2 = onSnapshot(q2, (snapshot) => {
+        const list = snapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+          isFirestore: true,
+          collectionName: 'sermons'
+        }));
+        updateCombinedSermons(list, 'sermons');
+      }, (err) => {
+        console.warn('sermons 컬렉션 대기 중:', err.message);
       });
       unsubs.push(unsub2);
     } catch (err) {
@@ -144,15 +141,29 @@ export default function Sermons() {
     return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=600&auto=format&fit=crop&q=80';
   };
 
-  const getPdfViewerUrl = (pdfPath) => {
-    if (!pdfPath) return "";
-    if (pdfPath.startsWith('data:application/pdf') || pdfPath.startsWith('blob:')) {
-      return pdfPath;
+  // Convert Base64 or URL to a safe Blob URL for iframe and new tab preview
+  const getPdfBlobUrl = (fileData) => {
+    if (!fileData) return "";
+    if (fileData.startsWith('data:application/pdf;base64,')) {
+      try {
+        const base64Data = fileData.split(',')[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        return URL.createObjectURL(blob);
+      } catch (e) {
+        console.error('Blob 변환 오류:', e);
+        return fileData;
+      }
     }
-    if (pdfPath.startsWith('http://') || pdfPath.startsWith('https://')) {
-      return `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true`;
+    if (fileData.startsWith('http://') || fileData.startsWith('https://')) {
+      return `https://docs.google.com/viewer?url=${encodeURIComponent(fileData)}&embedded=true`;
     }
-    const relativePath = pdfPath.replace(/^\//, '');
+    const relativePath = fileData.replace(/^\//, '');
     if (import.meta.env.DEV) {
       return `${import.meta.env.BASE_URL}${relativePath}`;
     }
@@ -160,7 +171,47 @@ export default function Sermons() {
     return `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
   };
 
-  // File select handler (instant, non-blocking)
+  // Open PDF in new tab
+  const handleOpenPdfNewTab = (fileData) => {
+    if (!fileData) return;
+    if (fileData.startsWith('data:application/pdf;base64,')) {
+      const blobUrl = getPdfBlobUrl(fileData);
+      window.open(blobUrl, '_blank');
+    } else if (fileData.startsWith('http')) {
+      window.open(fileData, '_blank');
+    } else {
+      const relativePath = fileData.replace(/^\//, '');
+      window.open(`https://mjuy1-debug.github.io/bible-platform/${relativePath}`, '_blank');
+    }
+  };
+
+  // Download PDF directly
+  const handleDownloadPdf = (fileData, title) => {
+    if (!fileData) return;
+    const cleanTitle = (title || '설교요약').replace(/[/\\?%*:|"<>]/g, '_');
+    
+    if (fileData.startsWith('data:application/pdf;base64,')) {
+      const blobUrl = getPdfBlobUrl(fileData);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${cleanTitle}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (fileData.startsWith('http')) {
+      window.open(fileData, '_blank');
+    } else {
+      const link = document.createElement('a');
+      link.href = `${import.meta.env.BASE_URL}${fileData.replace(/^\//, '')}`;
+      link.download = `${cleanTitle}.pdf`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  // Instant In-Browser File Handler (100% Reliable, 0s delay)
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -170,24 +221,30 @@ export default function Sermons() {
       return;
     }
 
-    if (file.size > 25 * 1024 * 1024) {
-      alert('파일 크기는 최대 25MB 이하만 가능합니다.');
-      return;
+    if (file.size > 900 * 1024) {
+      alert(`선택하신 파일 크기는 ${(file.size / 1024).toFixed(0)}KB 입니다. 클라우드 최적화를 위해 900KB 이하의 PDF 요약 문서를 권장합니다.`);
     }
 
-    setSelectedFileObj(file);
-    setNewEvent(prev => ({
-      ...prev,
-      fileName: `${file.name} (${(file.size / 1024).toFixed(0)} KB)`
-    }));
+    const reader = new FileReader();
+    reader.onload = () => {
+      setNewEvent(prev => ({
+        ...prev,
+        file: reader.result, // Base64 data URL
+        fileName: `${file.name} (${(file.size / 1024).toFixed(0)} KB)`
+      }));
+      if (showToast) showToast('PDF 파일이 첨부되었습니다! 📄');
+    };
+    reader.onerror = () => {
+      alert('파일을 읽는 중 오류가 발생했습니다.');
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemoveFile = () => {
-    setSelectedFileObj(null);
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
 
-  // Admin save function (Cloud Firestore with dual-collection fallback and Storage upload)
+  // Admin save function (Instant Cloud Firestore storage)
   const handleSaveSermon = async (e) => {
     if (e) e.preventDefault();
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
@@ -196,70 +253,17 @@ export default function Sermons() {
     }
 
     setIsSaving(true);
-    let uploadedFileUrl = newEvent.file || '';
-
-    // Handle PDF upload if user selected a new file
-    if (selectedFileObj) {
-      try {
-        const safeName = `sermon_${Date.now()}_${selectedFileObj.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        // Store in bulletins/ path which is authorized in Storage rules
-        const storageRef = ref(storage, `bulletins/${safeName}`);
-        const metadata = { contentType: 'application/pdf' };
-
-        const uploadTask = uploadBytesResumable(storageRef, selectedFileObj, metadata);
-
-        uploadedFileUrl = await new Promise((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-              if (snapshot.totalBytes > 0) {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setUploadProgress(progress);
-              }
-            },
-            (error) => {
-              console.warn('Firebase Storage 업로드 에러:', error);
-              reject(error);
-            },
-            async () => {
-              try {
-                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                resolve(downloadUrl);
-              } catch (err) {
-                reject(err);
-              }
-            }
-          );
-        });
-      } catch (uploadErr) {
-        console.warn('Firebase Storage 업로드 지연/실패, Base64 fallback 시도:', uploadErr);
-
-        // Fallback: If file <= 800KB, store as Base64 Data URL
-        if (selectedFileObj.size <= 800 * 1024) {
-          try {
-            uploadedFileUrl = await new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(selectedFileObj);
-            });
-          } catch (readErr) {
-            console.error('Base64 읽기 오류:', readErr);
-          }
-        }
-      }
-    }
-
     try {
       const sermonData = {
         title: newEvent.title.trim(),
         date: newEvent.date,
-        preacher: newEvent.preacher?.trim() || '담임목사',
+        preacher: newEvent.preacher?.trim() || '김석주 목사님',
         scripture: newEvent.scripture?.trim() || '',
         videoUrl: newEvent.videoUrl.trim(),
         externalLink: newEvent.externalLink?.trim() || '',
         summary: newEvent.summary?.trim() || '',
-        file: uploadedFileUrl,
+        file: newEvent.file || '',
+        fileName: newEvent.fileName || '',
         isSermon: true,
         updatedAt: serverTimestamp(),
       };
@@ -269,8 +273,7 @@ export default function Sermons() {
         const col = editSermon.collectionName || 'bulletins';
         try {
           await setDoc(doc(db, col, String(editSermon.id)), sermonData, { merge: true });
-        } catch (firstErr) {
-          // 권한 오류 시 백업 컬렉션(bulletins)으로 수정
+        } catch {
           await setDoc(doc(db, 'bulletins', String(editSermon.id)), sermonData, { merge: true });
         }
         if (showToast) showToast('설교가 성공적으로 수정되었습니다. ✨');
@@ -280,42 +283,37 @@ export default function Sermons() {
         sermonData.uploadedBy = currentUser ? currentUser.uid : 'admin';
         
         try {
-          // bulletins 컬렉션에 바로 저장 (보안규칙 허용 보장)
           await addDoc(collection(db, 'bulletins'), sermonData);
         } catch (firstErr) {
           console.warn('bulletins 저장 오류, sermons 시도:', firstErr);
           await addDoc(collection(db, 'sermons'), sermonData);
         }
-        if (showToast) showToast('새 설교가 클라우드에 안전하게 등록되었습니다! 🎉');
+        if (showToast) showToast('새 설교가 클라우드에 성공적으로 등록되었습니다! 🎉');
       }
 
       setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
-      setSelectedFileObj(null);
       setEditSermon(null);
       setShowAddForm(false);
-      setUploadProgress(null);
     } catch (err) {
       console.error('설교 저장 실패:', err);
       alert(`저장 중 오류가 발생했습니다: ${err.message}`);
     } finally {
       setIsSaving(false);
-      setUploadProgress(null);
     }
   };
 
   const handleEdit = (sermon, e) => {
     e.stopPropagation();
     setEditSermon(sermon);
-    setSelectedFileObj(null);
     setNewEvent({
       title: sermon.title || '',
       date: sermon.date || new Date().toISOString().slice(0, 10),
-      preacher: sermon.preacher || '',
+      preacher: sermon.preacher || '김석주 목사님',
       scripture: sermon.scripture || '',
       videoUrl: sermon.videoUrl || '',
       summary: sermon.summary || '',
       file: sermon.file || '',
-      fileName: sermon.file ? '첨부된 PDF 파일 있음' : '',
+      fileName: sermon.fileName || (sermon.file ? '첨부된 PDF 파일 있음' : ''),
       externalLink: sermon.externalLink || ''
     });
     setShowAddForm(true);
@@ -359,10 +357,8 @@ export default function Sermons() {
             if (showAddForm) {
               setShowAddForm(false);
               setEditSermon(null);
-              setSelectedFileObj(null);
             } else {
               setEditSermon(null);
-              setSelectedFileObj(null);
               setNewEvent({
                 title: '',
                 date: new Date().toISOString().slice(0, 10),
@@ -442,7 +438,7 @@ export default function Sermons() {
                     <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <FileText size={15} /> 설교 요약 PDF 파일 첨부 (선택)
                     </label>
-                    {(selectedFileObj || newEvent.file) && (
+                    {newEvent.file && (
                       <button type="button" onClick={handleRemoveFile} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}>
                         <X size={13} /> 파일 첨부 취소
                       </button>
@@ -451,14 +447,14 @@ export default function Sermons() {
                   
                   <input type="file" accept="application/pdf,.pdf" onChange={handleFileSelect} className="input-field" />
                   
-                  {(newEvent.fileName || selectedFileObj) && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontSize: '0.82rem', marginTop: '0.2rem' }}>
-                      <Check size={14} /> {newEvent.fileName || selectedFileObj?.name}
+                  {newEvent.fileName && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontSize: '0.85rem', marginTop: '0.3rem', fontWeight: 600 }}>
+                      <Check size={15} /> {newEvent.fileName} (첨부 준비 완료)
                     </div>
                   )}
                   
                   <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', margin: 0 }}>
-                    * PDF 파일을 선택한 후 아래 [등록하기] 버튼을 누르면 설교와 함께 안전하게 저장됩니다.
+                    * PDF 파일을 선택하시면 즉시 인코딩되어 설교 등록과 동시에 안전하게 저장됩니다.
                   </p>
                 </div>
 
@@ -474,7 +470,7 @@ export default function Sermons() {
                 </button>
                 <button type="submit" disabled={isSaving} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.6rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.8 : 1 }}>
                   {isSaving ? <Loader size={16} className="animate-spin" /> : null}
-                  {isSaving ? (uploadProgress !== null ? `PDF 업로드 중 (${uploadProgress}%)...` : '클라우드에 저장 중...') : (editSermon ? '수정 완료' : '등록하기')}
+                  {isSaving ? '클라우드에 저장 중...' : (editSermon ? '수정 완료' : '등록하기')}
                 </button>
               </div>
             </form>
@@ -608,29 +604,35 @@ export default function Sermons() {
                       <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <FileText size={18} /> 설교 요약 및 나눔 자료 (PDF)
                       </span>
-                      <a
-                        href={selectedVideo.file.startsWith('http') || selectedVideo.file.startsWith('data:') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => handleOpenPdfNewTab(selectedVideo.file)}
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-                          padding: '0.35rem 0.8rem', borderRadius: '6px',
+                          padding: '0.4rem 0.9rem', borderRadius: '6px',
                           background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)',
-                          fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(212,175,55,0.3)'
+                          fontSize: '0.8rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer'
                         }}
                       >
                         <ExternalLink size={13} /> 새 탭에서 열기
-                      </a>
+                      </button>
                     </div>
 
                     <div style={{ height: '48vh', minHeight: '320px', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
-                      <iframe src={getPdfViewerUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
+                      <iframe src={getPdfBlobUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
 
-                    <a href={selectedVideo.file.startsWith('http') || selectedVideo.file.startsWith('data:') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download="sermon.pdf" target="_blank" rel="noopener noreferrer"
-                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e', textDecoration: 'none', fontWeight: 700 }}>
-                      <Download size={18} /> 설교 요약 PDF 다운로드
-                    </a>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadPdf(selectedVideo.file, selectedVideo.title)}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                        padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e',
+                        border: 'none', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(212,175,55,0.25)'
+                      }}
+                    >
+                      <Download size={18} /> 설교 요약 PDF 다운로드 / 바로 열기
+                    </button>
                   </div>
                 )}
               </div>
