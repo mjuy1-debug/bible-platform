@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Plus, X, Edit2, Trash2, Save, Download, ExternalLink, Share2, Check } from 'lucide-react';
+import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
+import { db, storage } from '../services/firebase';
+import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function Sermons() {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, showToast } = useContext(UserContext);
   const isAdmin = import.meta.env.DEV || (currentUser && (
     currentUser.email?.includes('admin') ||
     currentUser.displayName?.includes('관리자') ||
@@ -14,6 +17,7 @@ export default function Sermons() {
   ));
 
   const [sermons, setSermons] = useState([...SERMONS].sort((a, b) => new Date(b.date) - new Date(a.date)));
+  const [loading, setLoading] = useState(true);
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -27,36 +31,69 @@ export default function Sermons() {
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [saveStatus, setSaveStatus] = useState('');
+
+  // Real-time Firestore sync + merge with static SERMONS
+  useEffect(() => {
+    let unsubscribe = () => {};
+    try {
+      const q = query(collection(db, 'sermons'), orderBy('date', 'desc'));
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const firestoreSermons = snapshot.docs.map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+          isFirestore: true
+        }));
+
+        // Merge firestore with static sermons (deduping by ID)
+        const firestoreIds = new Set(firestoreSermons.map(s => String(s.id)));
+        const remainingStatic = SERMONS.filter(s => !firestoreIds.has(String(s.id)));
+
+        const combined = [...firestoreSermons, ...remainingStatic].sort((a, b) => new Date(b.date) - new Date(a.date));
+        setSermons(combined);
+        setLoading(false);
+      }, (err) => {
+        console.error('설교 목록 Firestore 구독 오류:', err);
+        setLoading(false);
+      });
+    } catch (err) {
+      console.error('Firestore 연결 실패:', err);
+      setLoading(false);
+    }
+    return () => unsubscribe();
+  }, []);
 
   // Auto-open sermon when arriving via a shared link (?id=xxxxx)
   useEffect(() => {
     const id = searchParams.get('id');
-    if (id) {
+    if (id && sermons.length > 0) {
       const found = sermons.find(s => String(s.id) === String(id));
       if (found) setSelectedVideo(found);
     }
-  }, [sermons]); // eslint-disable-line
+  }, [searchParams, sermons]);
 
   // Copy shareable deep-link to clipboard
   const handleShare = async (sermon, e) => {
     e.stopPropagation();
-    // Build URL pointing to the static OG generated page
-    const base = window.location.origin + window.location.pathname;
-    const shareUrl = `${base}share/${sermon.id}/`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}#/sermon?id=${sermon.id}`;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        throw new Error('Clipboard API fallback');
+      }
     } catch {
-      // iOS/older browser fallback
       const el = document.createElement('textarea');
       el.value = shareUrl;
-      el.style.position = 'fixed'; el.style.opacity = '0';
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
       document.body.appendChild(el);
-      el.focus(); el.select();
+      el.focus();
+      el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
     }
     setCopiedId(sermon.id);
+    if (showToast) showToast('설교 링크가 복사되었습니다! 🔗');
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -75,46 +112,68 @@ export default function Sermons() {
 
   const getThumbnail = (url) => {
     const id = extractId(url);
-    return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://via.placeholder.com/320x180?text=No+Video';
+    return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=600&auto=format&fit=crop&q=80';
   };
 
   const getPdfViewerUrl = (pdfPath) => {
     if (!pdfPath) return "";
+    if (pdfPath.startsWith('http://') || pdfPath.startsWith('https://')) {
+      return `https://docs.google.com/viewer?url=${encodeURIComponent(pdfPath)}&embedded=true`;
+    }
     const relativePath = pdfPath.replace(/^\//, '');
-    
     if (import.meta.env.DEV) {
-      // 로컬 환경에서는 기본 브라우저 뷰어 사용
       return `${import.meta.env.BASE_URL}${relativePath}`;
     }
-    
-    // 배포 환경(GitHub Pages)에서는 모바일 호환을 위해 구글 Docs 뷰어 사용
     const fullUrl = `https://mjuy1-debug.github.io/bible-platform/${relativePath}`;
     return `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
   };
 
-  // Admin functions
-  const handleSaveSermon = () => {
-    if (!newEvent.title || !newEvent.date || !newEvent.videoUrl) {
-      alert("제목, 날짜, 유튜브 링크는 필수입니다.");
+  // Admin save function (Cloud Firestore)
+  const handleSaveSermon = async (e) => {
+    if (e) e.preventDefault();
+    if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
+      alert("제목, 날짜, 유튜브 링크는 필수 입력 항목입니다.");
       return;
     }
-    
-    let updatedSermons;
-    if (editId) {
-      updatedSermons = sermons.map(s => s.id === editId ? { ...newEvent, id: editId } : s);
-    } else {
-      updatedSermons = [{ ...newEvent, id: Date.now() }, ...sermons];
+
+    setIsSaving(true);
+    try {
+      const sermonData = {
+        title: newEvent.title.trim(),
+        date: newEvent.date,
+        preacher: newEvent.preacher?.trim() || '담임목사',
+        scripture: newEvent.scripture?.trim() || '',
+        videoUrl: newEvent.videoUrl.trim(),
+        externalLink: newEvent.externalLink?.trim() || '',
+        summary: newEvent.summary?.trim() || '',
+        file: newEvent.file || '',
+        updatedAt: serverTimestamp(),
+      };
+
+      if (editId) {
+        // 기존 설교 수정
+        await setDoc(doc(db, 'sermons', String(editId)), sermonData, { merge: true });
+        if (showToast) showToast('설교가 성공적으로 수정되었습니다. ✨');
+      } else {
+        // 새 설교 등록
+        sermonData.createdAt = serverTimestamp();
+        sermonData.uploadedBy = currentUser ? currentUser.uid : 'admin';
+        await addDoc(collection(db, 'sermons'), sermonData);
+        if (showToast) showToast('새 설교가 클라우드에 등록되었습니다! 🎉');
+      }
+
+      setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
+      setEditId(null);
+      setShowAddForm(false);
+    } catch (err) {
+      console.error('설교 저장 실패:', err);
+      alert(`저장 중 오류가 발생했습니다: ${err.message}`);
+    } finally {
+      setIsSaving(false);
     }
-    
-    // Sort descending by date
-    updatedSermons.sort((a, b) => new Date(b.date) - new Date(a.date));
-    setSermons(updatedSermons);
-    
-    setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' });
-    setEditId(null);
-    setShowAddForm(false);
   };
 
+  // Upload PDF to Firebase Storage
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -126,41 +185,17 @@ export default function Sermons() {
 
     setIsUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        try {
-          const base64Data = event.target.result;
-          // encode filename to avoid issues with korean characters in URL
-          const safeName = `sermon_${Date.now()}.pdf`;
-          
-          const response = await fetch('http://localhost:3001/api/admin/upload-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fileName: safeName, fileData: base64Data }),
-          });
-
-          // Check if response is ok before parsing json
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const result = await response.json();
-          
-          if (result.ok) {
-            setNewEvent({ ...newEvent, file: result.fileUrl });
-          } else {
-            alert(`업로드 실패: ${result.error}`);
-          }
-        } catch (err) {
-          alert('서버와 통신 중 오류가 발생했습니다. 관리자 서버가 켜져있는지 확인해주세요.');
-          console.error(err);
-        } finally {
-          setIsUploading(false);
-        }
-      };
-      reader.readAsDataURL(file);
+      const safeName = `sermon_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      const storageRef = ref(storage, `sermons/${safeName}`);
+      await uploadBytes(storageRef, file);
+      const downloadUrl = await getDownloadURL(storageRef);
+      
+      setNewEvent(prev => ({ ...prev, file: downloadUrl }));
+      if (showToast) showToast('PDF 파일이 클라우드에 업로드되었습니다. 📄');
     } catch (err) {
-      alert('파일 읽기 오류');
+      console.error('PDF 업로드 오류:', err);
+      alert(`PDF 업로드 실패: ${err.message}`);
+    } finally {
       setIsUploading(false);
     }
   };
@@ -168,55 +203,77 @@ export default function Sermons() {
   const handleEdit = (sermon, e) => {
     e.stopPropagation();
     setEditId(sermon.id);
-    setNewEvent({ ...sermon });
+    setNewEvent({
+      title: sermon.title || '',
+      date: sermon.date || new Date().toISOString().slice(0, 10),
+      preacher: sermon.preacher || '',
+      scripture: sermon.scripture || '',
+      videoUrl: sermon.videoUrl || '',
+      summary: sermon.summary || '',
+      file: sermon.file || '',
+      externalLink: sermon.externalLink || ''
+    });
     setShowAddForm(true);
   };
 
-  const handleDelete = (id, e) => {
+  const handleDelete = async (sermon, e) => {
     e.stopPropagation();
-    if (window.confirm("정말 이 말씀을 삭제하시겠습니까?")) {
-      setSermons(sermons.filter(s => s.id !== id));
-    }
-  };
+    if (!window.confirm(`'${sermon.title}' 설교를 삭제하시겠습니까?`)) return;
 
-  const deployToGitHub = async () => {
-    if (!window.confirm("현재 화면의 말씀 목록을 서버에 저장하고 반영하시겠습니까? (1~2분 소요)")) return;
-    setIsSaving(true);
-    setSaveStatus('저장 및 배포 중...');
     try {
-      const response = await fetch('http://localhost:3001/api/admin/save-sermons', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sermons, commitMessage: '관리자: 말씀 업데이트' }),
-      });
-      const result = await response.json();
-      if (result.ok) {
-        setSaveStatus('성공적으로 배포되었습니다! 1~2분 후 새로고침 해보세요.');
+      if (sermon.isFirestore) {
+        await deleteDoc(doc(db, 'sermons', String(sermon.id)));
+        if (showToast) showToast('설교가 삭제되었습니다.');
       } else {
-        setSaveStatus(`오류 발생: ${result.error}`);
+        // 기본 정적 설교인 경우 로컬 목록에서 제거
+        setSermons(prev => prev.filter(s => s.id !== sermon.id));
+        if (showToast) showToast('설교가 목록에서 제거되었습니다.');
       }
     } catch (err) {
-      setSaveStatus('서버 연결 실패. 관리자 서버가 실행 중인지 확인하세요.');
-    } finally {
-      setIsSaving(false);
+      console.error('설교 삭제 실패:', err);
+      alert(`삭제 중 오류가 발생했습니다: ${err.message}`);
     }
   };
 
   return (
     <div className="fade-in pb-20">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2 className="serif-font" style={{ fontSize: '1.8rem', color: 'var(--accent-gold)' }}>말씀과 설교</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.8rem' }}>
+        <div>
+          <h2 className="serif-font" style={{ fontSize: '1.8rem', color: 'var(--accent-gold)' }}>말씀과 설교</h2>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>벧엘교회 주일 설교와 특별 집회 말씀</p>
+        </div>
         
         {isAdmin && (
-          <button onClick={() => { setEditId(null); setNewEvent({ title: '', date: new Date().toISOString().slice(0,10), preacher: '담임목사', scripture: '', videoUrl: '', summary: '', file: '', externalLink: '' }); setShowAddForm(true); }}
+          <button onClick={() => {
+            if (showAddForm) {
+              setShowAddForm(false);
+              setEditId(null);
+            } else {
+              setEditId(null);
+              setNewEvent({
+                title: '',
+                date: new Date().toISOString().slice(0, 10),
+                preacher: '김석주 목사님',
+                scripture: '',
+                videoUrl: '',
+                summary: '',
+                file: '',
+                externalLink: ''
+              });
+              setShowAddForm(true);
+            }
+          }}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.55rem 1.2rem', borderRadius: '30px',
-              background: 'var(--accent-gold)', color: '#fff',
-              fontSize: '0.9rem', fontWeight: 600, border: 'none', cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(212,175,55,0.3)'
+              padding: '0.6rem 1.2rem', borderRadius: '30px',
+              background: showAddForm ? 'var(--glass-bg)' : 'var(--accent-gold)',
+              color: showAddForm ? 'var(--text-secondary)' : '#1a1a2e',
+              fontSize: '0.9rem', fontWeight: 700, border: showAddForm ? '1px solid var(--glass-border)' : 'none', cursor: 'pointer',
+              boxShadow: showAddForm ? 'none' : '0 4px 14px rgba(212,175,55,0.3)',
+              transition: 'all 0.2s'
             }}>
-            <Plus size={16} /> 새 설교 등록
+            {showAddForm ? <X size={16} /> : <Plus size={16} />}
+            {showAddForm ? '닫기' : '새 설교 등록'}
           </button>
         )}
       </div>
@@ -225,32 +282,75 @@ export default function Sermons() {
       <AnimatePresence>
         {showAddForm && isAdmin && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} style={{ overflow: 'hidden', marginBottom: '2rem' }}>
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--accent-gold)' }}>
-                {editId ? '설교 수정' : '새 설교 등록'}
-              </h3>
+            <form onSubmit={handleSaveSermon} className="glass-card" style={{ padding: '1.5rem', border: '1px solid var(--accent-gold)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Video size={18} />
+                  {editId ? '설교 수정' : '새 설교 등록 (클라우드 실시간 동기화)'}
+                </h3>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>* 제목, 날짜, 유튜브 링크 필수</span>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-                <input type="text" placeholder="제목" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
-                <input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="input-field" />
-                <input type="text" placeholder="설교자 (예: 담임목사)" value={newEvent.preacher} onChange={e => setNewEvent({...newEvent, preacher: e.target.value})} className="input-field" />
-                <input type="text" placeholder="본문 (예: 요한복음 3:16)" value={newEvent.scripture} onChange={e => setNewEvent({...newEvent, scripture: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
-                <input type="text" placeholder="유튜브 링크 (https://youtube.com/...)" value={newEvent.videoUrl} onChange={e => setNewEvent({...newEvent, videoUrl: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
-                <input type="text" placeholder="외부 관련 링크 (선택 사항, https://...)" value={newEvent.externalLink || ''} onChange={e => setNewEvent({...newEvent, externalLink: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1' }} />
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>설교 제목 *</label>
+                  <input type="text" placeholder="설교 제목을 입력하세요 (예: 하나님의 관심)" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="input-field" style={{ width: '100%' }} required />
+                </div>
                 
-                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>설교 PDF 파일 업로드 (선택)</label>
-                  <input type="file" accept="application/pdf" onChange={handleFileUpload} className="input-field" disabled={isUploading} />
-                  {isUploading && <span style={{ fontSize: '0.8rem', color: 'var(--accent-gold)' }}>업로드 중...</span>}
-                  {newEvent.file && !isUploading && <span style={{ fontSize: '0.8rem', color: '#10b981' }}>✓ 파일이 첨부되었습니다 ({newEvent.file})</span>}
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>설교 일자 *</label>
+                  <input type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} className="input-field" style={{ width: '100%' }} required />
+                </div>
+                
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>설교자</label>
+                  <input type="text" placeholder="예: 김석주 목사님" value={newEvent.preacher} onChange={e => setNewEvent({...newEvent, preacher: e.target.value})} className="input-field" style={{ width: '100%' }} />
                 </div>
 
-                <textarea placeholder="설교 요약 (선택 사항)" value={newEvent.summary} onChange={e => setNewEvent({...newEvent, summary: e.target.value})} className="input-field" style={{ gridColumn: '1 / -1', minHeight: '100px', resize: 'vertical' }} />
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>본문 구절</label>
+                  <input type="text" placeholder="예: 요한삼서 1:2-4" value={newEvent.scripture} onChange={e => setNewEvent({...newEvent, scripture: e.target.value})} className="input-field" style={{ width: '100%' }} />
+                </div>
+
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>유튜브 영상 링크 *</label>
+                  <input type="text" placeholder="https://www.youtube.com/watch?v=... 또는 https://youtu.be/..." value={newEvent.videoUrl} onChange={e => setNewEvent({...newEvent, videoUrl: e.target.value})} className="input-field" style={{ width: '100%' }} required />
+                </div>
+
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>외부 관련 링크 (선택)</label>
+                  <input type="text" placeholder="https://..." value={newEvent.externalLink || ''} onChange={e => setNewEvent({...newEvent, externalLink: e.target.value})} className="input-field" style={{ width: '100%' }} />
+                </div>
+                
+                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600 }}>설교 요약 PDF 파일 업로드 (선택)</label>
+                  <input type="file" accept="application/pdf" onChange={handleFileUpload} className="input-field" disabled={isUploading} />
+                  {isUploading && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--accent-gold)', fontSize: '0.8rem' }}>
+                      <Loader size={14} className="animate-spin" /> 클라우드에 업로드 중...
+                    </div>
+                  )}
+                  {newEvent.file && !isUploading && (
+                    <span style={{ fontSize: '0.8rem', color: '#10b981' }}>✓ PDF 파일이 첨부되었습니다</span>
+                  )}
+                </div>
+
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>설교 요약 및 나눔 질문</label>
+                  <textarea placeholder="설교 핵심 요약이나 묵상 질문을 자유롭게 입력하세요." value={newEvent.summary} onChange={e => setNewEvent({...newEvent, summary: e.target.value})} className="input-field" style={{ width: '100%', minHeight: '120px', resize: 'vertical' }} />
+                </div>
               </div>
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem' }}>
-                <button onClick={() => setShowAddForm(false)} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-secondary)' }}>취소</button>
-                <button onClick={handleSaveSermon} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#fff', fontWeight: 600 }}>저장</button>
+                <button type="button" onClick={() => setShowAddForm(false)} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                  취소
+                </button>
+                <button type="submit" disabled={isSaving || isUploading} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.5rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}>
+                  {isSaving ? <Loader size={16} className="animate-spin" /> : null}
+                  {isSaving ? '저장 중...' : (editId ? '수정 완료' : '등록하기')}
+                </button>
               </div>
-            </div>
+            </form>
           </motion.div>
         )}
       </AnimatePresence>
@@ -261,8 +361,8 @@ export default function Sermons() {
           <div key={sermon.id} className="glass-card" style={{ overflow: 'hidden', cursor: 'pointer', display: 'flex', flexDirection: 'column' }} onClick={() => setSelectedVideo(sermon)}>
             {/* Thumbnail */}
             <div style={{ position: 'relative', paddingTop: '56.25%', background: '#000' }}>
-              <img src={getThumbnail(sermon.videoUrl)} alt={sermon.title} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '48px', height: '48px', background: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+              <img src={getThumbnail(sermon.videoUrl)} alt={sermon.title} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.88 }} />
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '48px', height: '48px', background: 'rgba(0,0,0,0.65)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-gold)', backdropFilter: 'blur(2px)' }}>
                 <Play fill="currentColor" size={20} style={{ marginLeft: '4px' }} />
               </div>
             </div>
@@ -299,13 +399,15 @@ export default function Sermons() {
                     : <><Share2 size={12} /> 공유</>}
                 </button>
               </div>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{sermon.scripture} | {sermon.preacher}</p>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                {sermon.scripture ? `${sermon.scripture} | ` : ''}{sermon.preacher}
+              </p>
               
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                 {isAdmin && (
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={(e) => handleEdit(sermon, e)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><Edit2 size={16} /></button>
-                    <button onClick={(e) => handleDelete(sermon.id, e)} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                    <button onClick={(e) => handleEdit(sermon, e)} title="수정" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}><Edit2 size={16} /></button>
+                    <button onClick={(e) => handleDelete(sermon, e)} title="삭제" style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}><Trash2 size={16} /></button>
                   </div>
                 )}
               </div>
@@ -313,26 +415,12 @@ export default function Sermons() {
           </div>
         ))}
         
-        {sermons.length === 0 && (
+        {sermons.length === 0 && !loading && (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 0', color: 'var(--text-secondary)' }}>
             등록된 설교가 없습니다.
           </div>
         )}
       </div>
-
-      {/* Admin Deploy Section */}
-      {isAdmin && (
-        <div style={{ marginTop: '3rem', padding: '1.5rem', borderRadius: '12px', background: 'var(--glass-bg)', border: '1px solid var(--accent-gold)', textAlign: 'center' }}>
-          <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>👨‍💻 관리자 전용: 말씀 저장 및 배포</h4>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.2rem', lineHeight: 1.6 }}>
-            화면에서 수정한 말씀 목록을 아래 버튼을 누르는 것만으로 자동 저장하고 GitHub에 배포합니다.<br/>
-          </p>
-          <button onClick={deployToGitHub} disabled={isSaving} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.5rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#fff', fontSize: '1rem', fontWeight: 600, border: 'none', cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}>
-            <Save size={18} /> {isSaving ? '배포 중...' : '모두 저장하고 배포하기'}
-          </button>
-          {saveStatus && <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: saveStatus.includes('오류') || saveStatus.includes('실패') ? '#ef4444' : '#10b981' }}>{saveStatus}</p>}
-        </div>
-      )}
 
       {/* Combined Video & Summary Modal */}
       <AnimatePresence>
@@ -342,17 +430,17 @@ export default function Sermons() {
             onClick={() => setSelectedVideo(null)}>
             
             <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }}
-              style={{ width: '100%', maxWidth: '800px', maxHeight: '90vh', background: 'var(--bg-primary)', borderRadius: '12px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}
+              style={{ width: '100%', maxWidth: '800px', maxHeight: '90vh', background: 'var(--bg-primary)', borderRadius: '16px', border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}
               onClick={e => e.stopPropagation()}>
               
               {/* Header / Close button */}
-              <button onClick={() => setSelectedVideo(null)} style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: 'rgba(0,0,0,0.5)', border: 'none', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}>
+              <button onClick={() => setSelectedVideo(null)} style={{ position: 'absolute', top: '12px', right: '12px', zIndex: 10, background: 'rgba(0,0,0,0.6)', border: '1px solid var(--glass-border)', color: '#fff', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background 0.2s' }}>
                 <X size={20} />
               </button>
 
               {/* Video Player */}
               <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', flexShrink: 0 }}>
-                <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={selectedVideo.title}></iframe>
               </div>
               
               {/* Sermon Details */}
@@ -362,13 +450,13 @@ export default function Sermons() {
                 
                 {selectedVideo.externalLink && (
                   <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
-                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.5rem', fontWeight: 600 }}>
+                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.5rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
                     <ExternalLink size={16} /> 관련 링크 열기
                   </a>
                 )}
                 
                 {selectedVideo.summary && (
-                  <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                  <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,0.02)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
                     {selectedVideo.summary}
                   </div>
                 )}
@@ -378,8 +466,8 @@ export default function Sermons() {
                     <div style={{ height: '55vh', border: '1px solid var(--glass-border)', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
                       <iframe src={getPdfViewerUrl(selectedVideo.file)} width="100%" height="100%" style={{ border: 'none' }} title="PDF Viewer" />
                     </div>
-                    <a href={`${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download 
-                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#fff', textDecoration: 'none', fontWeight: 600 }}>
+                    <a href={selectedVideo.file.startsWith('http') ? selectedVideo.file : `${import.meta.env.BASE_URL}${selectedVideo.file.replace(/^\//, '')}`} download target="_blank" rel="noopener noreferrer"
+                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.8rem', borderRadius: '8px', background: 'var(--accent-gold)', color: '#1a1a2e', textDecoration: 'none', fontWeight: 700 }}>
                       <Download size={18} /> 설교 요약 PDF 다운로드
                     </a>
                   </div>
