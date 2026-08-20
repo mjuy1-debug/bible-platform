@@ -22,12 +22,13 @@ import Memorize from './pages/Memorize';
 import BibleMap from './pages/BibleMap';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
-import { useContext, useEffect } from 'react';
-import { messaging, onMessage } from './services/firebase';
+import { messaging, onMessage, db } from './services/firebase';
+import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
 const AppInner = () => {
   const { toast, showToast } = useContext(UserContext);
 
+  // 1. FCM 포그라운드 푸시 수신
   useEffect(() => {
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
@@ -37,6 +38,50 @@ const AppInner = () => {
       });
       return () => unsubscribe();
     }
+  }, [showToast]);
+
+  // 2. 실시간 긴급 기도 감시 (앱이 열려있거나 백그라운드 탭에 있을 때 즉시 감지 및 알림)
+  useEffect(() => {
+    const mountTime = new Date();
+    const q = query(
+      collection(db, 'prayerWall'),
+      where('isUrgent', '==', true),
+      orderBy('createdAt', 'desc'),
+      limit(1)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          const prayer = change.doc.data();
+          const pDate = prayer.createdAt?.toDate ? prayer.createdAt.toDate() : new Date();
+          // 앱 실행 시점 이후에 새로 올라온 긴급 기도인 경우 알림 발송
+          if (pDate.getTime() >= mountTime.getTime() - 3000) {
+            const title = `🚨 [긴급 기도] ${prayer.author || '익명'} 성도님의 기도 요청`;
+            const body = prayer.text ? (prayer.text.length > 50 ? prayer.text.slice(0, 50) + '…' : prayer.text) : '기도제목을 확인하고 함께 기도해주세요.';
+            
+            showToast(`${title} - ${body}`);
+
+            // 브라우저 알림 권한이 있으면 시스템 알림 팝업도 직접 띄움
+            if ('Notification' in window && Notification.permission === 'granted') {
+              try {
+                new Notification(title, {
+                  body,
+                  icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                  tag: `urgent-${change.doc.id}`,
+                });
+              } catch (e) {
+                console.log('Direct notification fallback:', e);
+              }
+            }
+          }
+        }
+      });
+    }, (err) => {
+      console.warn('긴급 기도 실시간 감시 알림:', err);
+    });
+
+    return () => unsubscribe();
   }, [showToast]);
 
   return (
