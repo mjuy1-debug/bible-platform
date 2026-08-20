@@ -45,8 +45,8 @@ exports.sendDailyDevotionNotifications = functions.scheduler.onSchedule(
         },
         webpush: {
           notification: {
-            icon: 'https://mjuy1-debug.github.io/bible-platform/favicon.svg',
-            badge: 'https://mjuy1-debug.github.io/bible-platform/favicon.svg',
+            icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+            badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
             requireInteraction: false,
           },
           fcmOptions: {

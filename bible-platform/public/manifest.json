@@ -1,0 +1,24 @@
+{
+  "name": "벧엘교회 말씀 묵상",
+  "short_name": "벧엘교회",
+  "description": "벧엘교회 말씀묵상 및 성도 소통 앱",
+  "start_url": "/bible-platform/",
+  "scope": "/bible-platform/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/bible-platform/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/bible-platform/og_image_v2.png",
+      "sizes": "1200x630",
+      "type": "image/png"
+    }
+  ]
+}
