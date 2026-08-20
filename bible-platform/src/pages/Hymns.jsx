@@ -37,7 +37,7 @@ export default function Hymns() {
     localStorage.setItem('favorite_hymns', JSON.stringify(updated));
   };
 
-  // 찬송가 가사 스마트 파싱: 마지막 절에 붙어있는 후렴을 분리 → 각 절 뒤에 삽입
+  // 찬송가 가사 스마트 파싱: 마지막 절에 붙어있는 후렴을 운율/절끝 어미 기반으로 정밀 분리 → 각 절 뒤에 삽입
   const parseHymnLyrics = (lyrics) => {
     if (!lyrics || lyrics.length < 2) return lyrics;
     const last = lyrics[lyrics.length - 1];
@@ -47,32 +47,82 @@ export default function Hymns() {
     // 이미 [후렴]이 별도 항목으로 존재하면 그대로 반환
     if (lyrics.some(l => l.startsWith('[후렴]') || l.trim().startsWith('[후렴]'))) return lyrics;
 
-    // 마지막 절이 다른 절 평균보다 1.45배 이상 길어야 후렴이 붙어있다고 판단
-    if (last.length <= avgLen * 1.45) return lyrics;
+    // 마지막 절이 다른 절 평균보다 1.35배 이상 길어야 후렴이 붙어있다고 판단
+    if (last.length <= avgLen * 1.35) return lyrics;
 
-    // 후렴 분리: 다른 절 평균 길이만큼을 절로, 나머지를 후렴으로 분리
-    const words = last.split(' ');
-    let cutPoint = 0;
-    let len = 0;
-    for (let i = 0; i < words.length; i++) {
-      len += words[i].length + 1;
-      if (len >= avgLen * 0.92) { cutPoint = i + 1; break; }
+    let cutIndex = -1;
+
+    // 1. 앞선 절들의 공통 종결 어구(2~5단어)가 마지막 절에 존재하는지 확인 (예: 458장 '영원하신 팔에 안기세')
+    for (let windowSize = 5; windowSize >= 2; windowSize--) {
+      for (const v of verses) {
+        const vWords = v.split(/\s+/).filter(Boolean);
+        if (vWords.length >= windowSize) {
+          const endingPhrase = vWords.slice(-windowSize).join(' ');
+          const foundIdx = last.indexOf(endingPhrase);
+          if (foundIdx !== -1 && foundIdx > avgLen * 0.45 && foundIdx + endingPhrase.length < last.length) {
+            cutIndex = foundIdx + endingPhrase.length;
+            break;
+          }
+        }
+      }
+      if (cutIndex !== -1) break;
     }
 
-    if (cutPoint <= 0 || cutPoint >= words.length) return lyrics;
+    // 2. 종결 어구가 없는 경우: 앞선 절들의 종결 어미(글자) 및 한국어 서술어 종결 어미 매칭 (예: 102장 '변치 못해', 96장 '밝아지네')
+    if (cutIndex === -1) {
+      const verseEndings = verses.map(v => {
+        const words = v.trim().split(/\s+/).filter(Boolean);
+        return words[words.length - 1] || '';
+      });
+      const endingChars = verseEndings.map(w => w.slice(-1)).filter(Boolean);
+      const lastWords = last.split(/\s+/).filter(Boolean);
+      const avgWords = Math.round(verses.reduce((s, l) => s + l.split(/\s+/).filter(Boolean).length, 0) / verses.length);
 
-    const lastVerse = words.slice(0, cutPoint).join(' ').trim();
-    const chorus = '[후렴] ' + words.slice(cutPoint).join(' ').trim();
+      let bestWordIdx = avgWords;
+      let found = false;
 
-    // 각 절 뒤에 후렴 삽입
-    const result = [];
-    for (const v of verses) {
-      result.push(v);
+      for (const offset of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]) {
+        const testIdx = avgWords + offset;
+        if (testIdx > 0 && testIdx < lastWords.length) {
+          const w = lastWords[testIdx - 1];
+          const lastChar = w.slice(-1);
+          if (endingChars.includes(lastChar)) {
+            bestWordIdx = testIdx;
+            found = true;
+            break;
+          }
+        }
+      }
+
+      if (!found) {
+        for (const offset of [0, 1, -1, 2, -2, 3, -3, 4, -4]) {
+          const testIdx = avgWords + offset;
+          if (testIdx > 0 && testIdx < lastWords.length) {
+            const w = lastWords[testIdx - 1];
+            if (/[네세리라도다며해어아였네겠네소서오옵소서]$/.test(w)) {
+              bestWordIdx = testIdx;
+              break;
+            }
+          }
+        }
+      }
+
+      const lastVerse = lastWords.slice(0, bestWordIdx).join(' ').trim();
+      const chorus = '[후렴] ' + lastWords.slice(bestWordIdx).join(' ').trim();
+      const result = [];
+      for (const v of verses) { result.push(v); result.push(chorus); }
+      result.push(lastVerse);
       result.push(chorus);
+      return result;
+    } else {
+      const lastVerse = last.slice(0, cutIndex).trim();
+      const chorus = '[후렴] ' + last.slice(cutIndex).trim();
+      const result = [];
+      for (const v of verses) { result.push(v); result.push(chorus); }
+      result.push(lastVerse);
+      result.push(chorus);
+      return result;
     }
-    result.push(lastVerse);
-    result.push(chorus);
-    return result;
   };
 
   // 찬송가 목록 필터링 (검색 & 카테고리)
