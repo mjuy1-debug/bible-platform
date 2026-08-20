@@ -140,19 +140,37 @@ const AppInner = () => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (isInitialLoad) {
         isInitialLoad = false;
-        return; // 처음 앱 켤 때 기존에 있던 과거 글은 알림 울리지 않음
+        // 앱을 처음 열었을 때도, 최근 12시간 이내에 올라온 긴급 기도가 있으면 확인 여부 체크 후 1회 알림
+        const recentUrgent = snapshot.docs.map(d => ({ id: d.id, ...d.data() })).find(p => p.isUrgent);
+        if (recentUrgent) {
+          const pTime = recentUrgent.createdAt?.toDate ? recentUrgent.createdAt.toDate().getTime() : 0;
+          const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
+          const lastSeenId = localStorage.getItem('last_seen_urgent_id');
+
+          if (pTime > twelveHoursAgo && lastSeenId !== recentUrgent.id) {
+            localStorage.setItem('last_seen_urgent_id', recentUrgent.id);
+            const title = `🚨 [긴급 기도] ${recentUrgent.author || '익명'} 성도님의 기도 요청`;
+            const body = recentUrgent.text ? (recentUrgent.text.length > 50 ? recentUrgent.text.slice(0, 50) + '…' : recentUrgent.text) : '기도제목을 확인하고 함께 기도해주세요.';
+            
+            showToast(`${title} - ${body}`, 'error');
+            playChime();
+            triggerSystemNotification(title, body, recentUrgent.id);
+          }
+        }
+        return;
       }
 
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const prayer = change.doc.data();
-          // 긴급 기도만 알림 발송
+          // 실시간으로 새로 등록된 긴급 기도 알림 발송
           if (prayer.isUrgent) {
+            localStorage.setItem('last_seen_urgent_id', change.doc.id);
             const title = `🚨 [긴급 기도] ${prayer.author || '익명'} 성도님의 기도 요청`;
             const body = prayer.text ? (prayer.text.length > 50 ? prayer.text.slice(0, 50) + '…' : prayer.text) : '기도제목을 확인하고 함께 기도해주세요.';
 
-            // 1. 화면 내 토스트
-            showToast(`${title} - ${body}`);
+            // 1. 화면 내 강조 토스트
+            showToast(`${title} - ${body}`, 'error');
 
             // 2. 맑은 차임벨 소리 & 진동
             playChime();
