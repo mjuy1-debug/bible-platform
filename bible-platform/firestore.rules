@@ -62,5 +62,10 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if true; // 익명 기기도 토큰을 저장할 수 있도록 허용
     }
+
+    // ✅ 앱 전역 설정 (유튜브 라이브 스트리밍 링크 등)
+    match /settings/{docId} {
+      allow read, write: if true;
+    }
   }
 }
