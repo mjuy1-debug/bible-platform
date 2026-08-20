@@ -88,8 +88,8 @@ export default function LiveBanner() {
       // 관리자 강제 라이브 활성화 여부
       if (forceLive) {
         live = true;
-        title = title || '🔴 특별 예배 생방송 중';
-        subtitle = subtitle || '지금 벧엘교회 실시간 예배가 방송되고 있습니다.';
+        title = title || '🔴 주일 예배 생방송 중';
+        subtitle = subtitle || '지금 벧엘교회 주일 대예배가 실시간으로 방송되고 있습니다.';
       }
 
       setIsLiveTime(live);
