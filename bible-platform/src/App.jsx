@@ -40,45 +40,104 @@ const AppInner = () => {
     }
   }, [showToast]);
 
-  // 2. 실시간 긴급 기도 감시 (앱이 열려있거나 백그라운드 탭에 있을 때 즉시 감지 및 알림)
+  // 2. 실시간 긴급 기도 감시 (인덱스 에러 없이 동작 + 모바일 서비스워커 알림 + 소리/진동)
   useEffect(() => {
-    const mountTime = new Date();
+    let isInitialLoad = true;
+    // 인덱스 에러 방지를 위해 orderBy 단일 쿼리만 사용 (isUrgent는 JS에서 필터)
     const q = query(
       collection(db, 'prayerWall'),
-      where('isUrgent', '==', true),
       orderBy('createdAt', 'desc'),
-      limit(1)
+      limit(5)
     );
 
+    // 알림 소리 재생 함수 (Web Audio API)
+    const playChime = () => {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.setValueAtTime(880, now + 0.15); // A5
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(587.33, now);
+        osc2.frequency.setValueAtTime(880, now + 0.15);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.8);
+        osc2.stop(now + 0.8);
+      } catch (e) {
+        console.log('Audio chime error:', e);
+      }
+    };
+
+    const triggerSystemNotification = (title, body, docId) => {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notifOptions = {
+          body,
+          icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+          badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+          tag: `urgent-${docId}`,
+          vibrate: [200, 100, 200],
+          requireInteraction: true,
+          data: { url: '/#/prayer-wall' }
+        };
+
+        // 모바일 크롬 지원: ServiceWorkerRegistration.showNotification 우선 사용
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.ready.then((reg) => {
+            reg.showNotification(title, notifOptions);
+          }).catch(() => {
+            try { new Notification(title, notifOptions); } catch (e) {}
+          });
+        } else {
+          try { new Notification(title, notifOptions); } catch (e) {}
+        }
+      }
+    };
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        return; // 처음 앱 켤 때 기존에 있던 과거 글은 알림 울리지 않음
+      }
+
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           const prayer = change.doc.data();
-          const pDate = prayer.createdAt?.toDate ? prayer.createdAt.toDate() : new Date();
-          // 앱 실행 시점 이후에 새로 올라온 긴급 기도인 경우 알림 발송
-          if (pDate.getTime() >= mountTime.getTime() - 3000) {
+          // 긴급 기도만 알림 발송
+          if (prayer.isUrgent) {
             const title = `🚨 [긴급 기도] ${prayer.author || '익명'} 성도님의 기도 요청`;
             const body = prayer.text ? (prayer.text.length > 50 ? prayer.text.slice(0, 50) + '…' : prayer.text) : '기도제목을 확인하고 함께 기도해주세요.';
-            
+
+            // 1. 화면 내 토스트
             showToast(`${title} - ${body}`);
 
-            // 브라우저 알림 권한이 있으면 시스템 알림 팝업도 직접 띄움
-            if ('Notification' in window && Notification.permission === 'granted') {
-              try {
-                new Notification(title, {
-                  body,
-                  icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
-                  tag: `urgent-${change.doc.id}`,
-                });
-              } catch (e) {
-                console.log('Direct notification fallback:', e);
-              }
-            }
+            // 2. 맑은 차임벨 소리 & 진동
+            playChime();
+            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+
+            // 3. 브라우저/모바일 시스템 푸시 알림
+            triggerSystemNotification(title, body, change.doc.id);
           }
         }
       });
     }, (err) => {
-      console.warn('긴급 기도 실시간 감시 알림:', err);
+      console.warn('긴급 기도 실시간 감시 오류:', err);
     });
 
     return () => unsubscribe();
