@@ -140,30 +140,40 @@ const Home = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {upcoming.map(ev => {
-              // category가 배열이거나 콤마로 구분된 문자열일 경우 첫 번째 요소 사용
-              const firstCat = Array.isArray(ev.category) ? ev.category[0] : (typeof ev.category === 'string' ? ev.category.split(',')[0].trim() : ev.category);
-              const colors = CATEGORY_COLORS[firstCat] || CATEGORY_COLORS.normal;
-              const label = CATEGORY_LABELS[firstCat] || CATEGORY_LABELS.normal;
+              // 카테고리를 배열로 정규화 (문자열/배열 모두 처리)
+              const cats = Array.isArray(ev.category)
+                ? ev.category
+                : (typeof ev.category === 'string' ? ev.category.split(',').map(s => s.trim()) : [ev.category]);
+
+              // 카드 배경/테두리는 첫 번째 카테고리 색상 사용
+              const firstColors = CATEGORY_COLORS[cats[0]] || CATEGORY_COLORS.normal;
 
               return (
                 <div key={ev.id} onClick={() => setSelectedEvent(ev)} style={{ textDecoration: 'none', cursor: 'pointer' }}>
                   <div style={{
                     display: 'flex', alignItems: 'center', gap: '0.8rem',
                     padding: '0.8rem 1rem', borderRadius: '12px',
-                    background: colors.bg, border: `1px solid ${colors.border}`,
+                    background: firstColors.bg, border: `1px solid ${firstColors.border}`,
                     transition: 'transform 0.15s',
                   }}
                     onMouseOver={e => e.currentTarget.style.transform = 'translateX(4px)'}
                     onMouseOut={e => e.currentTarget.style.transform = ''}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: colors.dot, flexShrink: 0 }} />
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: firstColors.dot, flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{ev.title}</p>
-                      <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.75rem', color: colors.text }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', fontSize: '0.75rem', color: firstColors.text, marginTop: '0.2rem' }}>
                         <span>{ev.date.slice(5).replace('-', '/')}</span>
                         {ev.time && <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}><Clock size={10} /> {ev.time}</span>}
-                        <span style={{ padding: '0 0.4rem', borderRadius: '6px', background: colors.bg, fontWeight: 600, fontSize: '0.68rem' }}>
-                          {label}
-                        </span>
+                        {/* 모든 카테고리 태그 표시 */}
+                        {cats.map(cat => {
+                          const c = CATEGORY_COLORS[cat] || CATEGORY_COLORS.normal;
+                          const lbl = CATEGORY_LABELS[cat] || CATEGORY_LABELS.normal;
+                          return (
+                            <span key={cat} style={{ padding: '0 0.4rem', borderRadius: '6px', background: c.bg, color: c.text, fontWeight: 600, fontSize: '0.68rem', border: `1px solid ${c.border}` }}>
+                              {lbl}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                     <ArrowRight size={14} color="var(--text-secondary)" />
