@@ -35,18 +35,19 @@ export default function PrayerWall() {
 
   const handlePostPrayer = async (e) => {
     e.preventDefault();
-    if (!currentUser) {
-      if (showToast) showToast('로그인이 필요합니다.');
-      return;
-    }
     if (!newPrayer.text.trim()) return;
 
     try {
+      const authorName = newPrayer.isAnonymous 
+        ? '익명' 
+        : (currentUser?.displayName || '관리자');
+      const authorId = currentUser?.uid || ('guest_' + Date.now());
+
       await addDoc(collection(db, 'prayerWall'), {
         text: newPrayer.text,
         verse: newPrayer.verse,
-        author: newPrayer.isAnonymous ? '익명' : (currentUser.displayName || '이름 없음'),
-        authorId: currentUser.uid,
+        author: authorName,
+        authorId: authorId,
         isUrgent: newPrayer.isUrgent,
         prayCount: 0,
         createdAt: serverTimestamp()

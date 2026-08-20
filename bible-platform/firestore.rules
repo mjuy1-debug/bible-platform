@@ -22,10 +22,7 @@ service cloud.firestore {
 
     // ✅ 공동 기도
     match /prayerWall/{docId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update: if request.auth != null;
-      allow delete: if request.auth != null;
+      allow read, write: if true;
     }
 
     // ✅ 소그룹

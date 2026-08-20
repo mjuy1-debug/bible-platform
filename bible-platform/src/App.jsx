@@ -28,6 +28,28 @@ import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/f
 const AppInner = () => {
   const { toast, showToast } = useContext(UserContext);
 
+  // 0. 브라우저 첫 터치 시 오디오 자동재생 잠금 해제 (알림 수신 시 즉시 소리 재생 가능하도록)
+  useEffect(() => {
+    const unlockAudio = () => {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx && !window.__globalAudioCtx) {
+          window.__globalAudioCtx = new AudioCtx();
+        }
+        if (window.__globalAudioCtx && window.__globalAudioCtx.state === 'suspended') {
+          window.__globalAudioCtx.resume();
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener('click', unlockAudio, { passive: true });
+    window.addEventListener('touchstart', unlockAudio, { passive: true });
+    return () => {
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+  }, []);
+
   // 1. FCM 포그라운드 푸시 수신
   useEffect(() => {
     if (messaging) {
@@ -43,11 +65,10 @@ const AppInner = () => {
   // 2. 실시간 긴급 기도 감시 (인덱스 에러 없이 동작 + 모바일 서비스워커 알림 + 소리/진동)
   useEffect(() => {
     let isInitialLoad = true;
-    // 인덱스 에러 방지를 위해 orderBy 단일 쿼리만 사용 (isUrgent는 JS에서 필터)
     const q = query(
       collection(db, 'prayerWall'),
       orderBy('createdAt', 'desc'),
-      limit(5)
+      limit(10)
     );
 
     // 알림 소리 재생 함수 (Web Audio API)
@@ -55,22 +76,26 @@ const AppInner = () => {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
-        const ctx = new AudioCtx();
+        const ctx = window.__globalAudioCtx || new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
         const now = ctx.currentTime;
         const osc1 = ctx.createOscillator();
         const osc2 = ctx.createOscillator();
         const gain = ctx.createGain();
 
         osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(587.33, now); // D5
-        osc1.frequency.setValueAtTime(880, now + 0.15); // A5
+        osc1.frequency.setValueAtTime(659.25, now);        // E5
+        osc1.frequency.setValueAtTime(880, now + 0.15);    // A5
+        osc1.frequency.setValueAtTime(1174.66, now + 0.3); // D6
 
         osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(587.33, now);
+        osc2.frequency.setValueAtTime(659.25, now);
         osc2.frequency.setValueAtTime(880, now + 0.15);
+        osc2.frequency.setValueAtTime(1174.66, now + 0.3);
 
-        gain.gain.setValueAtTime(0.3, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
 
         osc1.connect(gain);
         osc2.connect(gain);
@@ -78,8 +103,8 @@ const AppInner = () => {
 
         osc1.start(now);
         osc2.start(now);
-        osc1.stop(now + 0.8);
-        osc2.stop(now + 0.8);
+        osc1.stop(now + 1.0);
+        osc2.stop(now + 1.0);
       } catch (e) {
         console.log('Audio chime error:', e);
       }
@@ -92,7 +117,9 @@ const AppInner = () => {
           icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
           badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
           tag: `urgent-${docId}`,
-          vibrate: [200, 100, 200],
+          vibrate: [300, 100, 300, 100, 300],
+          silent: false,
+          renotify: true,
           requireInteraction: true,
           data: { url: '/#/prayer-wall' }
         };
@@ -129,7 +156,7 @@ const AppInner = () => {
 
             // 2. 맑은 차임벨 소리 & 진동
             playChime();
-            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]);
+            if ('vibrate' in navigator) navigator.vibrate([300, 100, 300, 100, 300]);
 
             // 3. 브라우저/모바일 시스템 푸시 알림
             triggerSystemNotification(title, body, change.doc.id);
