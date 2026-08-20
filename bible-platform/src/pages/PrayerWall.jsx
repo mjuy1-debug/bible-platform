@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Plus, X, HandHeart, Trash2 } from 'lucide-react';
 import { db } from '../services/firebase';
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, deleteDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
 import { messaging, getToken, VAPID_KEY } from '../services/firebase';
-import { Bell, BellRing } from 'lucide-react';
+import { Bell, BellRing, BellOff } from 'lucide-react';
 
 export default function PrayerWall() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -16,48 +16,70 @@ export default function PrayerWall() {
   const [pushRegistered, setPushRegistered] = useState(() => localStorage.getItem('push_enabled') === 'true');
   const [registeringPush, setRegisteringPush] = useState(false);
 
-  // 긴급 알림 원클릭 등록
-  const handleEnablePush = async () => {
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-      showToast('이 브라우저는 알림을 지원하지 않습니다.', 'error');
-      return;
-    }
-    setRegisteringPush(true);
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        showToast('알림 권한이 허용되지 않았습니다.', 'error');
-        setRegisteringPush(false);
-        return;
-      }
-      const swUrl = `${import.meta.env.BASE_URL}firebase-messaging-sw.js`;
-      const swReg = await navigator.serviceWorker.register(swUrl);
-      const token = await getToken(messaging, {
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: swReg
-      });
+  // 긴급 알림 켜기 / 끄기 토글
+  const handleTogglePush = async () => {
+    const uid = currentUser?.uid || ('guest_' + (localStorage.getItem('guest_uid') || Date.now()));
+    localStorage.setItem('guest_uid', uid);
 
-      if (token) {
-        const uid = currentUser?.uid || ('guest_' + (localStorage.getItem('guest_uid') || Date.now()));
-        localStorage.setItem('guest_uid', uid);
+    if (pushRegistered) {
+      // ── 알림 끄기 ──
+      setRegisteringPush(true);
+      try {
         await setDoc(doc(db, 'fcmTokens', uid), {
-          token,
-          notifHour: 8,
-          notifMinute: 0,
-          enabled: true,
-          displayName: currentUser?.displayName || '성도',
+          enabled: false,
           updatedAt: new Date().toISOString()
         }, { merge: true });
-
-        localStorage.setItem('push_enabled', 'true');
-        setPushRegistered(true);
-        showToast('🔔 긴급 기도 알림 수신이 활성화되었습니다! 🙏');
+        localStorage.setItem('push_enabled', 'false');
+        setPushRegistered(false);
+        showToast('🔕 긴급 기도 알림이 해제되었습니다.');
+      } catch (e) {
+        console.error('알림 끄기 오류:', e);
+        showToast('알림 해제 중 오류가 발생했습니다.', 'error');
       }
-    } catch (e) {
-      console.error('알림 등록 오류:', e);
-      showToast('알림 등록 중 오류가 발생했습니다.', 'error');
+      setRegisteringPush(false);
+    } else {
+      // ── 알림 켜기 ──
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        showToast('이 브라우저는 알림을 지원하지 않습니다.', 'error');
+        return;
+      }
+      setRegisteringPush(true);
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          showToast('알림 권한이 거부되었습니다. 브라우저 설정에서 허용해주세요.', 'error');
+          setRegisteringPush(false);
+          return;
+        }
+        const swUrl = `${import.meta.env.BASE_URL}firebase-messaging-sw.js`;
+        const swReg = await navigator.serviceWorker.register(swUrl);
+        const token = await getToken(messaging, {
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: swReg
+        });
+
+        if (token) {
+          await setDoc(doc(db, 'fcmTokens', uid), {
+            token,
+            notifHour: 8,
+            notifMinute: 0,
+            enabled: true,
+            displayName: currentUser?.displayName || '성도',
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+
+          localStorage.setItem('push_enabled', 'true');
+          setPushRegistered(true);
+          showToast('🔔 긴급 기도 알림이 켜졌습니다! 🙏');
+        } else {
+          showToast('알림 토큰 발급에 실패했습니다.', 'error');
+        }
+      } catch (e) {
+        console.error('알림 켜기 오류:', e);
+        showToast(`알림 등록 오류: ${e.message || '다시 시도해주세요'}`, 'error');
+      }
+      setRegisteringPush(false);
     }
-    setRegisteringPush(false);
   };
 
   useEffect(() => {
@@ -145,37 +167,45 @@ export default function PrayerWall() {
         </button>
       </div>
 
-      {/* 🔔 긴급 알림 수신 상태 배너 (항상 상태를 볼 수 있도록 표시) */}
+      {/* 🔔 긴급 알림 수신 상태 배너 (켜기 / 끄기 토글 지원) */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
         padding: '12px 16px', borderRadius: '12px', marginBottom: '16px',
         background: pushRegistered ? 'rgba(34, 197, 94, 0.08)' : 'rgba(212, 175, 55, 0.1)',
-        border: pushRegistered ? '1px solid rgba(34, 197, 94, 0.35)' : '1px solid rgba(212, 175, 55, 0.35)'
+        border: pushRegistered ? '1px solid rgba(34, 197, 94, 0.35)' : '1px solid rgba(212, 175, 55, 0.35)',
+        transition: 'all 0.2s',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <BellRing color={pushRegistered ? '#4ade80' : 'var(--accent-gold)'} size={20} />
+          {pushRegistered ? (
+            <BellRing color="#4ade80" size={20} />
+          ) : (
+            <BellOff color="var(--accent-gold)" size={20} />
+          )}
           <div>
             <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: pushRegistered ? '#4ade80' : 'var(--text-primary)' }}>
-              {pushRegistered ? '✅ 긴급 기도 푸시 알림 수신 중' : '🔔 긴급 중보기도 푸시 알림 받기'}
+              {pushRegistered ? '🔔 긴급 기도 알림: 켜짐 (수신 중)' : '🔕 긴급 기도 알림: 꺼짐'}
             </p>
-            <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-secondary)' }}>
-              {pushRegistered ? '새로운 긴급 기도가 올라오면 스마트폰으로 알림이 울립니다.' : '알림을 켜시면 긴급 기도 등록 시 즉시 알림을 받습니다.'}
+            <p style={{ margin: '2px 0 0', fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {pushRegistered ? '새로운 긴급 기도가 올라오면 스마트폰으로 즉시 알림이 울립니다.' : '알림을 켜시면 긴급 기도 등록 시 스마트폰으로 알림을 받습니다.'}
             </p>
           </div>
         </div>
 
         <button
-          onClick={handleEnablePush}
+          onClick={handleTogglePush}
           disabled={registeringPush}
           style={{
-            padding: '6px 14px', borderRadius: '20px',
-            background: pushRegistered ? 'rgba(255,255,255,0.08)' : 'var(--accent-gold)',
-            color: pushRegistered ? 'var(--text-secondary)' : '#1a1a2e',
-            border: pushRegistered ? '1px solid var(--glass-border)' : 'none',
-            fontWeight: 700, fontSize: '12px', cursor: 'pointer', flexShrink: 0
+            padding: '7px 16px', borderRadius: '20px',
+            background: pushRegistered ? 'rgba(239, 68, 68, 0.15)' : 'var(--accent-gold)',
+            color: pushRegistered ? '#f87171' : '#1a1a2e',
+            border: pushRegistered ? '1px solid rgba(239, 68, 68, 0.35)' : 'none',
+            fontWeight: 700, fontSize: '12px', cursor: 'pointer', flexShrink: 0,
+            transition: 'all 0.15s',
           }}
         >
-          {registeringPush ? '등록 중...' : (pushRegistered ? '알림 재등록/새로고침' : '알림 켜기 🔔')}
+          {registeringPush 
+            ? '처리 중...' 
+            : (pushRegistered ? '알림 끄기 🔕' : '알림 켜기 🔔')}
         </button>
       </div>
 
