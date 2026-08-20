@@ -9,7 +9,7 @@ export default function PrayerWall() {
   const { currentUser, showToast } = useContext(UserContext);
   const [prayers, setPrayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newPrayer, setNewPrayer] = useState({ text: '', verse: '', isAnonymous: false });
+  const [newPrayer, setNewPrayer] = useState({ text: '', verse: '', isAnonymous: false, isUrgent: false });
 
   useEffect(() => {
     const q = query(
@@ -47,12 +47,13 @@ export default function PrayerWall() {
         verse: newPrayer.verse,
         author: newPrayer.isAnonymous ? '익명' : (currentUser.displayName || '이름 없음'),
         authorId: currentUser.uid,
+        isUrgent: newPrayer.isUrgent,
         prayCount: 0,
         createdAt: serverTimestamp()
       });
       setIsModalOpen(false);
-      setNewPrayer({ text: '', verse: '', isAnonymous: false });
-      if (showToast) showToast('기도가 올라갔습니다. 🙏');
+      setNewPrayer({ text: '', verse: '', isAnonymous: false, isUrgent: false });
+      if (showToast) showToast(newPrayer.isUrgent ? '🚨 긴급 기도가 올라갔습니다. 성도들에게 알림을 발송합니다!' : '기도가 올라갔습니다. 🙏');
     } catch (error) {
       console.error('기도 올리기 오류:', error);
       if (showToast) showToast(`오류: ${error.code || error.message}`);
@@ -102,11 +103,26 @@ export default function PrayerWall() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '12px', padding: '16px' }}
+              style={{
+                background: prayer.isUrgent ? 'rgba(220,38,38,0.08)' : 'var(--glass-bg)',
+                border: prayer.isUrgent ? '1px solid rgba(220,38,38,0.45)' : '1px solid var(--glass-border)',
+                borderRadius: '12px', padding: '16px',
+              }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontWeight: 'bold', color: 'var(--accent-gold)' }}>{prayer.author}</span>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 'bold', color: 'var(--accent-gold)' }}>{prayer.author}</span>
+                  {prayer.isUrgent && (
+                    <span style={{
+                      fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '99px',
+                      background: 'rgba(220,38,38,0.18)', color: '#f87171', border: '1px solid rgba(220,38,38,0.4)',
+                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                    }}>
+                      🚨 긴급
+                    </span>
+                  )}
+                </div>
+                <span style={{ fontSize: '12px', color: 'var(--text-secondary)', flexShrink: 0 }}>
                   {prayer.createdAt?.toDate ? prayer.createdAt.toDate().toLocaleDateString() : ''}
                 </span>
               </div>
@@ -182,11 +198,41 @@ export default function PrayerWall() {
                   />
                   익명으로 올리기
                 </label>
+
+                {/* 긴급 체크박스 */}
+                <label style={{
+                  display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer',
+                  padding: '12px', borderRadius: '10px',
+                  background: newPrayer.isUrgent ? 'rgba(220,38,38,0.12)' : 'rgba(255,255,255,0.03)',
+                  border: newPrayer.isUrgent ? '1px solid rgba(220,38,38,0.45)' : '1px solid var(--glass-border)',
+                  transition: 'all 0.2s',
+                }}>
+                  <input 
+                    type="checkbox"
+                    checked={newPrayer.isUrgent}
+                    onChange={(e) => setNewPrayer({...newPrayer, isUrgent: e.target.checked})}
+                    style={{ marginTop: '2px', accentColor: '#ef4444' }}
+                  />
+                  <div>
+                    <p style={{ fontSize: '14px', fontWeight: 700, color: newPrayer.isUrgent ? '#f87171' : 'var(--text-primary)', margin: 0 }}>
+                      🚨 긴급 기도 요청
+                    </p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '3px 0 0', lineHeight: 1.5 }}>
+                      체크 시 알림을 설정한 모든 성도에게 즉시 푸시 알림이 발송됩니다.
+                    </p>
+                  </div>
+                </label>
+
                 <button 
                   type="submit"
-                  style={{ width: '100%', padding: '14px', borderRadius: '8px', background: 'var(--accent-gold)', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
+                  style={{
+                    width: '100%', padding: '14px', borderRadius: '8px',
+                    background: newPrayer.isUrgent ? '#dc2626' : 'var(--accent-gold)',
+                    color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer',
+                    fontSize: '15px', transition: 'background 0.2s',
+                  }}
                 >
-                  올리기
+                  {newPrayer.isUrgent ? '🚨 긴급 기도 올리기' : '올리기'}
                 </button>
               </form>
             </motion.div>

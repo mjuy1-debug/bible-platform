@@ -3,27 +3,28 @@ const admin = require('firebase-admin');
 
 admin.initializeApp();
 
+const APP_URL = 'https://mjuy1-debug.github.io/bible-platform';
+const ICON_URL = `${APP_URL}/icon-192.png`;
+
 /**
  * 매분 실행 - 각 사용자의 알림 시간과 현재 시간이 일치하면 FCM 푸시 알림 전송
- * 배포: firebase deploy --only functions
- * 
  * ⚠️ Firebase Blaze(유료) 플랜이 필요합니다
+ * 배포: firebase deploy --only functions
  */
 exports.sendDailyDevotionNotifications = functions.scheduler.onSchedule(
   { schedule: 'every 1 minutes', timeZone: 'Asia/Seoul' },
   async () => {
     const db = admin.firestore();
-    
-    // 서버는 기본적으로 UTC(영국) 시간이므로 한국 시간(KST)으로 변환합니다.
+
+    // 서버는 UTC이므로 한국 시간(KST = UTC+9)으로 변환
     const now = new Date();
     const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-    const currentHour = kstTime.getUTCHours();
+    const currentHour   = kstTime.getUTCHours();
     const currentMinute = kstTime.getUTCMinutes();
 
-    // 현재 시간에 알림을 보내야 하는 사용자 조회
     const snapshot = await db.collection('fcmTokens')
       .where('enabled', '==', true)
-      .where('notifHour', '==', currentHour)
+      .where('notifHour',   '==', currentHour)
       .where('notifMinute', '==', currentMinute)
       .get();
 
@@ -36,7 +37,6 @@ exports.sendDailyDevotionNotifications = functions.scheduler.onSchedule(
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       if (!data.token) return;
-
       messages.push({
         token: data.token,
         notification: {
@@ -45,36 +45,94 @@ exports.sendDailyDevotionNotifications = functions.scheduler.onSchedule(
         },
         webpush: {
           notification: {
-            icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
-            badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+            icon: ICON_URL,
+            badge: ICON_URL,
             requireInteraction: false,
           },
-          fcmOptions: {
-            link: 'https://mjuy1-debug.github.io/bible-platform/'
-          }
+          fcmOptions: { link: APP_URL }
         }
       });
     });
 
     if (messages.length === 0) return;
 
-    // 최대 500개씩 배치 전송
     const chunks = [];
-    for (let i = 0; i < messages.length; i += 500) {
-      chunks.push(messages.slice(i, i + 500));
-    }
+    for (let i = 0; i < messages.length; i += 500) chunks.push(messages.slice(i, i + 500));
 
     for (const chunk of chunks) {
       const result = await admin.messaging().sendEach(chunk);
-      console.log(`전송 완료: 성공 ${result.successCount}명 / 실패 ${result.failureCount}명`);
-
-      // 유효하지 않은 토큰 정리
+      console.log(`말씀 알림 전송: 성공 ${result.successCount}명 / 실패 ${result.failureCount}명`);
       result.responses.forEach((resp, idx) => {
         if (!resp.success && resp.error?.code === 'messaging/registration-token-not-registered') {
           const uid = snapshot.docs[idx]?.id;
-          if (uid) {
-            db.collection('fcmTokens').doc(uid).update({ enabled: false });
-          }
+          if (uid) db.collection('fcmTokens').doc(uid).update({ enabled: false });
+        }
+      });
+    }
+  }
+);
+
+/**
+ * 긴급 기도 제목 알림
+ * prayerWall 컬렉션에 isUrgent=true 문서가 생성되면
+ * 알림이 활성화된 모든 사용자에게 즉시 FCM 푸시 전송
+ * 배포: firebase deploy --only functions
+ */
+exports.sendUrgentPrayerNotification = functions.firestore.onDocumentCreated(
+  'prayerWall/{docId}',
+  async (event) => {
+    const data = event.data?.data();
+    if (!data || !data.isUrgent) return; // 긴급 체크 안 된 기도는 무시
+
+    const db     = admin.firestore();
+    const author  = data.author || '익명';
+    const text    = data.text   || '';
+    const preview = text.length > 60 ? text.slice(0, 60) + '…' : text;
+
+    // 알림 활성화된 모든 사용자 토큰 조회
+    const tokenSnap = await db.collection('fcmTokens')
+      .where('enabled', '==', true)
+      .get();
+
+    if (tokenSnap.empty) {
+      console.log('긴급 기도 알림: 등록된 토큰 없음');
+      return;
+    }
+
+    const messages = [];
+    tokenSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (!d.token) return;
+      messages.push({
+        token: d.token,
+        notification: {
+          title: `🚨 긴급 기도 요청 — ${author}`,
+          body: preview,
+        },
+        webpush: {
+          notification: {
+            icon:  ICON_URL,
+            badge: ICON_URL,
+            requireInteraction: true,     // 긴급 → 사용자가 직접 닫아야 함
+            vibrate: [200, 100, 200],
+          },
+          fcmOptions: { link: `${APP_URL}/#/prayer-wall` }
+        }
+      });
+    });
+
+    if (messages.length === 0) return;
+
+    const chunks = [];
+    for (let i = 0; i < messages.length; i += 500) chunks.push(messages.slice(i, i + 500));
+
+    for (const chunk of chunks) {
+      const result = await admin.messaging().sendEach(chunk);
+      console.log(`긴급 기도 알림 전송: 성공 ${result.successCount}명 / 실패 ${result.failureCount}명`);
+      result.responses.forEach((resp, idx) => {
+        if (!resp.success && resp.error?.code === 'messaging/registration-token-not-registered') {
+          const uid = tokenSnap.docs[idx]?.id;
+          if (uid) db.collection('fcmTokens').doc(uid).update({ enabled: false });
         }
       });
     }
