@@ -195,7 +195,11 @@ export default function Hymns() {
             <motion.div
               key={hymn.num}
               whileHover={{ scale: 1.01 }}
-              onClick={() => setSelectedHymn(hymn)}
+              onClick={() => {
+                setSelectedHymn(hymn);
+                setViewMode('lyrics');
+                setScoreZoom(false);
+              }}
               style={{
                 background: 'var(--glass-bg)',
                 border: '1px solid var(--glass-border)',
@@ -450,7 +454,7 @@ export default function Hymns() {
                 /* 🎼 악보 이미지 뷰어 */
                 <div style={{
                   padding: '20px', overflowY: 'auto', overflowX: scoreZoom ? 'auto' : 'hidden', flex: 1,
-                  background: '#111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'
+                  background: '#0d0d0d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'
                 }}>
                   <div style={{
                     background: '#ffffff', borderRadius: '12px', padding: '16px',
@@ -459,13 +463,16 @@ export default function Hymns() {
                     width: scoreZoom ? '140%' : '100%',
                     transition: 'width 0.3s ease',
                     textAlign: 'center',
-                    minHeight: '280px',
+                    minHeight: '200px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}>
                     <img
-                      src={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`}
+                      key={`score-${selectedHymn.num}`}
+                      src={`https://wsrv.nl/?url=http%3A%2F%2Fwww.holybible.or.kr%2FHYMN%2FHYMN_SCR%2F${String(selectedHymn.num).padStart(3, '0')}.jpg&output=jpg&n=-1`}
                       alt={`통일찬송가 ${selectedHymn.num}장 악보`}
                       style={{
                         width: '100%',
@@ -474,14 +481,24 @@ export default function Hymns() {
                         borderRadius: '6px'
                       }}
                       loading="eager"
+                      onLoad={(e) => { e.currentTarget.style.opacity = '1'; }}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = `http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`;
+                        // wsrv.nl 실패 시 직접 URL 시도
+                        const directUrl = `https://corsproxy.io/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`;
+                        if (e.currentTarget.src !== directUrl) {
+                          e.currentTarget.src = directUrl;
+                        } else {
+                          // 모두 실패 → 안내 메시지로 교체
+                          e.currentTarget.parentElement.innerHTML = `<div style="padding:20px;color:#666;font-size:13px;text-align:center">
+                            <p>악보를 불러올 수 없습니다.<br/>
+                            <a href="http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg" target="_blank" rel="noopener noreferrer" style="color:#4a9eff">원본 이미지 보기 ↗</a></p></div>`;
+                        }
                       }}
                     />
                   </div>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '12px', textAlign: 'center' }}>
-                    💡 악보를 더 크게 보시려면 상단의 <strong>[🔍 악보 확대]</strong> 버튼을 누르거나 이미지를 터치하세요.
+                    💡 악보를 더 크게 보시려면 <strong>[🔍 악보 확대]</strong> 버튼을 누르세요.
                   </p>
                 </div>
               )}
