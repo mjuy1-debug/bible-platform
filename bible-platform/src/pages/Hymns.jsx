@@ -13,6 +13,7 @@ export default function Hymns() {
   const [viewMode, setViewMode] = useState('lyrics'); // 'lyrics' (가사) or 'score' (악보)
   const [fontSize, setFontSize] = useState(18); // 기본 18px (어르신 가독성)
   const [scoreZoom, setScoreZoom] = useState(false);
+  const [scoreLoading, setScoreLoading] = useState(false);
   const [favoriteHymns, setFavoriteHymns] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('favorite_hymns') || '[]');
@@ -199,6 +200,7 @@ export default function Hymns() {
                 setSelectedHymn(hymn);
                 setViewMode('lyrics');
                 setScoreZoom(false);
+                setScoreLoading(false);
               }}
               style={{
                 background: 'var(--glass-bg)',
@@ -352,7 +354,7 @@ export default function Hymns() {
                     📝 가사 보기
                   </button>
                   <button
-                    onClick={() => setViewMode('score')}
+                    onClick={() => { setViewMode('score'); setScoreLoading(true); }}
                     style={{
                       padding: '4px 12px', borderRadius: '14px', border: 'none', cursor: 'pointer',
                       background: viewMode === 'score' ? 'var(--accent-gold)' : 'transparent',
@@ -456,17 +458,51 @@ export default function Hymns() {
                   padding: '20px', overflowY: 'auto', overflowX: scoreZoom ? 'auto' : 'hidden', flex: 1,
                   background: '#0d0d0d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'
                 }}>
+                  {/* 로딩 스켈레톤 */}
+                  {scoreLoading && (
+                    <div style={{
+                      width: '100%', borderRadius: '12px', padding: '16px',
+                      background: '#1a1a1a', boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                      display: 'flex', flexDirection: 'column', gap: '10px',
+                      animation: 'pulse 1.5s ease-in-out infinite'
+                    }}>
+                      <style>{`
+                        @keyframes skeletonPulse {
+                          0%, 100% { opacity: 0.4; }
+                          50% { opacity: 1; }
+                        }
+                      `}</style>
+                      {/* 악보 이름 스켈레톤 */}
+                      <div style={{ height: '18px', width: '60%', borderRadius: '6px', background: 'linear-gradient(90deg, rgba(212,175,55,0.2) 0%, rgba(212,175,55,0.4) 50%, rgba(212,175,55,0.2) 100%)', backgroundSize: '200% 100%', animation: 'skeletonPulse 1.4s ease-in-out infinite' }} />
+                      {/* 오선지 줄 스켈레톤 (7줄) */}
+                      {[1,2,3,4,5,6,7].map(i => (
+                        <div key={i} style={{
+                          height: i % 3 === 0 ? '40px' : '22px',
+                          width: i === 7 ? '75%' : '100%',
+                          borderRadius: '6px',
+                          background: 'linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 100%)',
+                          backgroundSize: '200% 100%',
+                          animation: `skeletonPulse ${1.2 + i * 0.08}s ease-in-out infinite`,
+                          animationDelay: `${i * 0.07}s`
+                        }} />
+                      ))}
+                      <div style={{ textAlign: 'center', marginTop: '8px', fontSize: '12px', color: 'rgba(212,175,55,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-gold)', animation: 'skeletonPulse 0.8s ease-in-out infinite' }} />
+                        악보 이미지 불러오는 중…
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 실제 악보 이미지 (로딩 중엔 숨김, 완료 시 fade-in) */}
                   <div style={{
+                    display: scoreLoading ? 'none' : 'block',
                     background: '#ffffff', borderRadius: '12px', padding: '16px',
                     boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
                     maxWidth: scoreZoom ? 'none' : '100%',
                     width: scoreZoom ? '140%' : '100%',
-                    transition: 'width 0.3s ease',
+                    transition: 'width 0.3s ease, opacity 0.4s ease',
                     textAlign: 'center',
                     minHeight: '200px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                     position: 'relative',
                     overflow: 'hidden'
                   }}>
@@ -478,26 +514,29 @@ export default function Hymns() {
                         width: '100%',
                         height: 'auto',
                         display: 'block',
-                        borderRadius: '6px'
+                        borderRadius: '6px',
+                        opacity: 0,
+                        transition: 'opacity 0.45s ease'
                       }}
                       loading="eager"
-                      onLoad={(e) => { e.currentTarget.style.opacity = '1'; }}
+                      onLoad={(e) => {
+                        setScoreLoading(false);
+                        e.currentTarget.style.opacity = '1';
+                      }}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        // wsrv.nl 실패 시 직접 URL 시도
                         const directUrl = `https://corsproxy.io/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`;
                         if (e.currentTarget.src !== directUrl) {
                           e.currentTarget.src = directUrl;
                         } else {
-                          // 모두 실패 → 안내 메시지로 교체
-                          e.currentTarget.parentElement.innerHTML = `<div style="padding:20px;color:#666;font-size:13px;text-align:center">
-                            <p>악보를 불러올 수 없습니다.<br/>
-                            <a href="http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg" target="_blank" rel="noopener noreferrer" style="color:#4a9eff">원본 이미지 보기 ↗</a></p></div>`;
+                          setScoreLoading(false);
+                          e.currentTarget.parentElement.innerHTML = `<div style="padding:20px;color:#666;font-size:13px;text-align:center"><p>악보를 불러올 수 없습니다.<br/><a href="http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg" target="_blank" rel="noopener noreferrer" style="color:#4a9eff">원본 이미지 보기 ↗</a></p></div>`;
                         }
                       }}
                     />
                   </div>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '12px', textAlign: 'center' }}>
+
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '12px', textAlign: 'center', display: scoreLoading ? 'none' : 'block' }}>
                     💡 악보를 더 크게 보시려면 <strong>[🔍 악보 확대]</strong> 버튼을 누르세요.
                   </p>
                 </div>
