@@ -794,12 +794,12 @@ export default function Groups() {
 
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '0.8rem' }}>
-        <div>
-          <h1 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.5rem)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+          <h1 style={{ fontSize: 'clamp(1.3rem, 4.5vw, 1.6rem)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0, lineHeight: 1.2 }}>
             <Users color="var(--accent-gold)" /> 소그룹 묵상방
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem', margin: '4px 0 0 0' }}>
+          <p style={{ fontSize: 'clamp(0.82rem, 2.5vw, 0.88rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.55, wordBreak: 'keep-all', overflowWrap: 'break-word', margin: '6px 0 0 0' }}>
             구역 및 전도회 소그룹 성도들과 함께 오늘의 말씀과 은혜를 나누는 나눔방입니다.
           </p>
         </div>

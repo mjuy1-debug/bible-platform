@@ -444,14 +444,14 @@ const Devotion = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h2 className="serif-font" style={{ fontSize: '2rem', color: 'var(--accent-gold)' }}>묵상 노트</h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', flexWrap: 'wrap', gap: '1.2rem' }}>
+        <div style={{ flex: '1 1 300px', minWidth: 0 }}>
+          <h2 className="serif-font" style={{ fontSize: 'clamp(1.6rem, 5vw, 2rem)', color: 'var(--accent-gold)', margin: 0, lineHeight: 1.2 }}>묵상 노트</h2>
+          <p style={{ fontSize: 'clamp(0.82rem, 2.5vw, 0.88rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.55, wordBreak: 'keep-all', overflowWrap: 'break-word', margin: '6px 0 0 0' }}>
             매일 주시는 말씀을 묵상하고 나의 고백과 기도를 기록하는 은혜의 공간입니다.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)', overflowX: 'auto', maxWidth: '100%' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)', overflowX: 'auto', maxWidth: '100%', flexShrink: 0 }}>
           {['write', 'list', 'shared'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               style={{ padding: '0.5rem 1.5rem', borderRadius: '30px', border: 'none', cursor: 'pointer',

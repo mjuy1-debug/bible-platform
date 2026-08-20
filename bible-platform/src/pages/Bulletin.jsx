@@ -407,19 +407,19 @@ export default function Bulletin() {
 
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '0.8rem' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+          <h1 style={{ fontSize: 'clamp(1.3rem, 4.5vw, 1.6rem)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0, lineHeight: 1.2 }}>
             <FileText color="var(--accent-gold)" /> 교회 주보
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem', margin: '4px 0 0 0' }}>
+          <p style={{ fontSize: 'clamp(0.82rem, 2.5vw, 0.88rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.55, wordBreak: 'keep-all', overflowWrap: 'break-word', margin: '6px 0 0 0' }}>
             벧엘교회의 주간 예배 순서, 교회 소식 및 나눔을 확인하실 수 있습니다.
           </p>
         </div>
         {isAdmin && (
           <button 
             onClick={() => setIsUploadMode(!isUploadMode)}
-            style={{ background: isUploadMode ? 'transparent' : 'var(--accent-gold)', color: isUploadMode ? 'var(--text-primary)' : '#fff', border: isUploadMode ? '1px solid var(--glass-border)' : 'none', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+            style={{ background: isUploadMode ? 'transparent' : 'var(--accent-gold)', color: isUploadMode ? 'var(--text-primary)' : '#fff', border: isUploadMode ? '1px solid var(--glass-border)' : 'none', borderRadius: '20px', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontWeight: 'bold', flexShrink: 0, marginTop: '2px' }}
           >
             {isUploadMode ? '목록으로' : <><Edit size={18} /> 새 주보 작성</>}
           </button>

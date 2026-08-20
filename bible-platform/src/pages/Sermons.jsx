@@ -346,10 +346,12 @@ export default function Sermons() {
 
   return (
     <div className="fade-in pb-20">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.8rem' }}>
-        <div>
-          <h2 className="serif-font" style={{ fontSize: '1.8rem', color: 'var(--accent-gold)' }}>말씀과 설교</h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>벧엘교회 주일 설교와 특별 집회 말씀</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+          <h2 className="serif-font" style={{ fontSize: 'clamp(1.5rem, 5vw, 1.8rem)', color: 'var(--accent-gold)', margin: 0, lineHeight: 1.2 }}>말씀과 설교</h2>
+          <p style={{ fontSize: 'clamp(0.82rem, 2.5vw, 0.88rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.55, wordBreak: 'keep-all', overflowWrap: 'break-word', margin: '6px 0 0 0' }}>
+            벧엘교회 주일 설교와 특별 집회 말씀
+          </p>
         </div>
         
         {isAdmin && (
