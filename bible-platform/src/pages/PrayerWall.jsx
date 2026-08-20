@@ -12,22 +12,13 @@ export default function PrayerWall() {
   const [newPrayer, setNewPrayer] = useState({ text: '', verse: '', isAnonymous: false });
 
   useEffect(() => {
-    // 인덱스 없이도 동작하도록 where 조건 제거, 클라이언트에서 7일 필터링
     const q = query(
       collection(db, 'prayerWall'),
       orderBy('createdAt', 'desc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-      const p = snapshot.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(item => {
-          if (!item.createdAt?.toDate) return true;
-          return item.createdAt.toDate() >= sevenDaysAgo;
-        });
+      const p = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       // 최신순 정렬 (createdAt 내림차순)
       p.sort((a, b) => {
         const aTime = a.createdAt?.toDate?.()?.getTime() ?? 0;
