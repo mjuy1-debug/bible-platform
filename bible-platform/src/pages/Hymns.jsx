@@ -10,7 +10,9 @@ export default function Hymns() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [selectedHymn, setSelectedHymn] = useState(null);
+  const [viewMode, setViewMode] = useState('lyrics'); // 'lyrics' (가사) or 'score' (악보)
   const [fontSize, setFontSize] = useState(18); // 기본 18px (어르신 가독성)
+  const [scoreZoom, setScoreZoom] = useState(false);
   const [favoriteHymns, setFavoriteHymns] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('favorite_hymns') || '[]');
@@ -327,38 +329,93 @@ export default function Hymns() {
                 </button>
               </div>
 
-              {/* 모달 툴바 (폰트 조절 & 기능 버튼) */}
+              {/* 모달 툴바 (가사/악보 전환 & 폰트 조절 & 기능 버튼) */}
               <div style={{
                 padding: '10px 20px', background: 'rgba(0,0,0,0.2)', borderBottom: '1px solid var(--glass-border)',
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px'
               }}>
-                {/* 폰트 조절 (어르신 맞춤) */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>글자 크기:</span>
+                {/* 가사 / 악보 모드 전환 버튼 */}
+                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', borderRadius: '18px', padding: '3px', border: '1px solid var(--glass-border)' }}>
                   <button
-                    onClick={() => setFontSize(prev => Math.max(14, prev - 2))}
-                    style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '12px' }}
+                    onClick={() => setViewMode('lyrics')}
+                    style={{
+                      padding: '4px 12px', borderRadius: '14px', border: 'none', cursor: 'pointer',
+                      background: viewMode === 'lyrics' ? 'var(--accent-gold)' : 'transparent',
+                      color: viewMode === 'lyrics' ? '#111' : 'var(--text-secondary)',
+                      fontWeight: 700, fontSize: '12px', transition: 'all 0.2s'
+                    }}
                   >
-                    가-
+                    📝 가사 보기
                   </button>
-                  <span style={{ fontSize: '12px', fontWeight: 700, minWidth: '32px', textAlign: 'center' }}>
-                    {fontSize}px
-                  </span>
                   <button
-                    onClick={() => setFontSize(prev => Math.min(30, prev + 2))}
-                    style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '12px' }}
+                    onClick={() => setViewMode('score')}
+                    style={{
+                      padding: '4px 12px', borderRadius: '14px', border: 'none', cursor: 'pointer',
+                      background: viewMode === 'score' ? 'var(--accent-gold)' : 'transparent',
+                      color: viewMode === 'score' ? '#111' : 'var(--text-secondary)',
+                      fontWeight: 700, fontSize: '12px', transition: 'all 0.2s'
+                    }}
                   >
-                    가+
+                    🎼 악보 보기
                   </button>
                 </div>
 
+                {/* 가사 모드일 때: 폰트 조절 */}
+                {viewMode === 'lyrics' ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>글자 크기:</span>
+                    <button
+                      onClick={() => setFontSize(prev => Math.max(14, prev - 2))}
+                      style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '12px' }}
+                    >
+                      가-
+                    </button>
+                    <span style={{ fontSize: '12px', fontWeight: 700, minWidth: '32px', textAlign: 'center' }}>
+                      {fontSize}px
+                    </span>
+                    <button
+                      onClick={() => setFontSize(prev => Math.min(30, prev + 2))}
+                      style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', fontSize: '12px' }}
+                    >
+                      가+
+                    </button>
+                  </div>
+                ) : (
+                  /* 악보 모드일 때: 확대 토글 */
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button
+                      onClick={() => setScoreZoom(!scoreZoom)}
+                      style={{
+                        padding: '4px 10px', borderRadius: '14px',
+                        background: scoreZoom ? 'var(--accent-gold)' : 'rgba(255,255,255,0.08)',
+                        color: scoreZoom ? '#111' : 'var(--text-primary)',
+                        border: 'none', fontSize: '12px', fontWeight: 600, cursor: 'pointer'
+                      }}
+                    >
+                      {scoreZoom ? '🔍 원래 크기' : '🔍 악보 확대'}
+                    </button>
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  <button
-                    onClick={() => handleCopyLyrics(selectedHymn)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '14px', background: 'rgba(255,255,255,0.08)', border: 'none', color: 'var(--text-primary)', fontSize: '12px', cursor: 'pointer' }}
-                  >
-                    <Copy size={13} /> 복사
-                  </button>
+                  {viewMode === 'lyrics' ? (
+                    <button
+                      onClick={() => handleCopyLyrics(selectedHymn)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '14px', background: 'rgba(255,255,255,0.08)', border: 'none', color: 'var(--text-primary)', fontSize: '12px', cursor: 'pointer' }}
+                    >
+                      <Copy size={13} /> 복사
+                    </button>
+                  ) : (
+                    <a
+                      href={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${selectedHymn.num}.jpg`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download={`통일찬송가_${selectedHymn.num}장_${selectedHymn.title}.jpg`}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '14px', background: 'rgba(255,255,255,0.08)', border: 'none', color: 'var(--text-primary)', fontSize: '12px', textDecoration: 'none', cursor: 'pointer' }}
+                    >
+                      원본 열기 ↗
+                    </a>
+                  )}
                   <button
                     onClick={() => handleShareKakao(selectedHymn)}
                     style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '14px', background: 'var(--accent-gold)', border: 'none', color: '#111', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
@@ -368,26 +425,58 @@ export default function Hymns() {
                 </div>
               </div>
 
-              {/* 가사 본문 영역 */}
-              <div style={{
-                padding: '24px 20px', overflowY: 'auto', flex: 1,
-                lineHeight: 1.8, wordBreak: 'keep-all', overflowWrap: 'break-word',
-                fontSize: `${fontSize}px`, color: 'var(--text-primary)'
-              }}>
-                {selectedHymn.lyrics.map((verse, idx) => (
-                  <div key={idx} style={{
-                    marginBottom: '1.4rem',
-                    padding: '12px 16px',
-                    borderRadius: '12px',
-                    background: verse.includes('[후렴]') ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255,255,255,0.02)',
-                    borderLeft: verse.includes('[후렴]') ? '3px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.15)'
+              {/* 모달 본문 영역 (가사 또는 악보 이미지) */}
+              {viewMode === 'lyrics' ? (
+                <div style={{
+                  padding: '24px 20px', overflowY: 'auto', flex: 1,
+                  lineHeight: 1.8, wordBreak: 'keep-all', overflowWrap: 'break-word',
+                  fontSize: `${fontSize}px`, color: 'var(--text-primary)'
+                }}>
+                  {selectedHymn.lyrics.map((verse, idx) => (
+                    <div key={idx} style={{
+                      marginBottom: '1.4rem',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      background: verse.includes('[후렴]') ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255,255,255,0.02)',
+                      borderLeft: verse.includes('[후렴]') ? '3px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.15)'
+                    }}>
+                      <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                        {verse}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* 🎼 악보 이미지 뷰어 */
+                <div style={{
+                  padding: '20px', overflowY: 'auto', overflowX: scoreZoom ? 'auto' : 'hidden', flex: 1,
+                  background: '#111', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start'
+                }}>
+                  <div style={{
+                    background: '#ffffff', borderRadius: '12px', padding: '16px',
+                    boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                    maxWidth: scoreZoom ? 'none' : '100%',
+                    width: scoreZoom ? '140%' : '100%',
+                    transition: 'width 0.3s ease',
+                    textAlign: 'center'
                   }}>
-                    <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                      {verse}
-                    </p>
+                    <img
+                      src={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${selectedHymn.num}.jpg`}
+                      alt={`통일찬송가 ${selectedHymn.num}장 악보`}
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        display: 'block',
+                        borderRadius: '6px'
+                      }}
+                      loading="lazy"
+                    />
                   </div>
-                ))}
-              </div>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '12px', textAlign: 'center' }}>
+                    💡 악보를 더 크게 보시려면 상단의 <strong>[🔍 악보 확대]</strong> 버튼을 누르거나 이미지를 터치하세요.
+                  </p>
+                </div>
+              )}
 
               {/* 하단 닫기 바 */}
               <div style={{ padding: '12px 20px', borderTop: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
