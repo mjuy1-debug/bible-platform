@@ -407,7 +407,7 @@ export default function Hymns() {
                     </button>
                   ) : (
                     <a
-                      href={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${selectedHymn.num}.jpg`}
+                      href={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download={`통일찬송가_${selectedHymn.num}장_${selectedHymn.title}.jpg`}
@@ -458,10 +458,14 @@ export default function Hymns() {
                     maxWidth: scoreZoom ? 'none' : '100%',
                     width: scoreZoom ? '140%' : '100%',
                     transition: 'width 0.3s ease',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    minHeight: '280px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}>
                     <img
-                      src={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${selectedHymn.num}.jpg`}
+                      src={`https://wsrv.nl/?url=http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`}
                       alt={`통일찬송가 ${selectedHymn.num}장 악보`}
                       style={{
                         width: '100%',
@@ -469,7 +473,11 @@ export default function Hymns() {
                         display: 'block',
                         borderRadius: '6px'
                       }}
-                      loading="lazy"
+                      loading="eager"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `http://www.holybible.or.kr/HYMN/HYMN_SCR/${String(selectedHymn.num).padStart(3, '0')}.jpg`;
+                      }}
                     />
                   </div>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '12px', textAlign: 'center' }}>

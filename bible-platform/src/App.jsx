@@ -22,6 +22,8 @@ import Memorize from './pages/Memorize';
 import BibleMap from './pages/BibleMap';
 import Hymns from './pages/Hymns';
 import Stats from './pages/Stats';
+import Quiz from './pages/Quiz';
+import Announce from './pages/Announce';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
@@ -190,6 +192,50 @@ const AppInner = () => {
     return () => unsubscribe();
   }, [showToast]);
 
+  // 3. 교회 전체 공지 실시간 감시 (관리자가 올리면 즉시 토스트 + 시스템 알림)
+  useEffect(() => {
+    let isInitialLoad = true;
+    const q = query(
+      collection(db, 'churchAnnouncements'),
+      orderBy('createdAt', 'desc'),
+      limit(1)
+    );
+
+    const unsubAnnounce = onSnapshot(q, (snapshot) => {
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        return;
+      }
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          const data = change.doc.data();
+          const title = data.title || '교회 공지';
+          const body = data.body || '';
+          const preview = body.length > 60 ? body.slice(0, 60) + '…' : body;
+          showToast(`📢 [교회 공지] ${title} — ${preview}`);
+          if ('Notification' in window && Notification.permission === 'granted') {
+            const notifOptions = {
+              body: preview,
+              icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+              tag: `announce-${change.doc.id}`,
+              requireInteraction: false,
+              data: { url: '/#/announce' }
+            };
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.ready.then(reg => reg.showNotification(`📢 ${title}`, notifOptions)).catch(() => {
+                try { new Notification(`📢 ${title}`, notifOptions); } catch (e) {}
+              });
+            } else {
+              try { new Notification(`📢 ${title}`, notifOptions); } catch (e) {}
+            }
+          }
+        }
+      });
+    }, (err) => console.warn('공지 감시 오류:', err));
+
+    return () => unsubAnnounce();
+  }, [showToast]);
+
   return (
     <>
       <Navbar />
@@ -218,6 +264,8 @@ const AppInner = () => {
           <Route path="/bible-map" element={<BibleMap />} />
           <Route path="/hymns" element={<Hymns />} />
           <Route path="/stats" element={<Stats />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/announce" element={<Announce />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

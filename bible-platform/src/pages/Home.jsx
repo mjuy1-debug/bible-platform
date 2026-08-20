@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
@@ -21,6 +21,8 @@ const MAIN_LINKS = [
 
 // 커뮤니티 & 기타
 const COMMUNITY_LINKS = [
+  { to: '/announce',   icon: Megaphone,     title: '교회 공지',   color: '#fbbf24' },
+  { to: '/quiz',       icon: Trophy,        title: '말씀 퀴즈',   color: '#f59e0b' },
   { to: '/schedule',   icon: CalendarClock, title: '일정 & 계획',  color: '#e8a73d' },
   { to: '/bulletin',   icon: FileText,      title: '교회 주보',   color: '#ff8a65' },
   { to: '/prayer-wall',icon: Handshake,     title: '중보 기도',   color: '#81c784' },

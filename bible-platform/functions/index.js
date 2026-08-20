@@ -138,3 +138,68 @@ exports.sendUrgentPrayerNotification = functions.firestore.onDocumentCreated(
     }
   }
 );
+/**
+ * 교회 전체 공지 알림
+ * churchAnnouncements 컬렉션에 문서가 생성되면
+ * 알림이 활성화된 모든 사용자에게 즉시 FCM 푸시 전송
+ * 배포: firebase deploy --only functions
+ */
+exports.sendChurchAnnouncementNotification = functions.firestore.onDocumentCreated(
+  'churchAnnouncements/{docId}',
+  async (event) => {
+    const data = event.data?.data();
+    if (!data) return;
+
+    const db     = admin.firestore();
+    const title  = data.title  || '교회 공지';
+    const body   = data.body   || '';
+    const preview = body.length > 80 ? body.slice(0, 80) + '…' : body;
+
+    // 알림 활성화된 모든 사용자 토큰 조회
+    const tokenSnap = await db.collection('fcmTokens')
+      .where('enabled', '==', true)
+      .get();
+
+    if (tokenSnap.empty) {
+      console.log('교회 공지 알림: 등록된 토큰 없음');
+      return;
+    }
+
+    const messages = [];
+    tokenSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (!d.token) return;
+      messages.push({
+        token: d.token,
+        notification: {
+          title: `📢 ${title}`,
+          body: preview,
+        },
+        webpush: {
+          notification: {
+            icon:  ICON_URL,
+            badge: ICON_URL,
+            requireInteraction: false,
+          },
+          fcmOptions: { link: `${APP_URL}/#/announce` }
+        }
+      });
+    });
+
+    if (messages.length === 0) return;
+
+    const chunks = [];
+    for (let i = 0; i < messages.length; i += 500) chunks.push(messages.slice(i, i + 500));
+
+    for (const chunk of chunks) {
+      const result = await admin.messaging().sendEach(chunk);
+      console.log(`교회 공지 알림 전송: 성공 ${result.successCount}명 / 실패 ${result.failureCount}명`);
+      result.responses.forEach((resp, idx) => {
+        if (!resp.success && resp.error?.code === 'messaging/registration-token-not-registered') {
+          const uid = tokenSnap.docs[idx]?.id;
+          if (uid) db.collection('fcmTokens').doc(uid).update({ enabled: false });
+        }
+      });
+    }
+  }
+);
