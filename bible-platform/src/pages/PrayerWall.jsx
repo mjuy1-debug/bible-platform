@@ -5,11 +5,60 @@ import { db } from '../services/firebase';
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc, doc, increment, deleteDoc } from 'firebase/firestore';
 import { UserContext } from '../context/UserContext';
 
+import { messaging, getToken, VAPID_KEY } from '../services/firebase';
+import { Bell, BellRing } from 'lucide-react';
+
 export default function PrayerWall() {
   const { currentUser, showToast } = useContext(UserContext);
   const [prayers, setPrayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPrayer, setNewPrayer] = useState({ text: '', verse: '', isAnonymous: false, isUrgent: false });
+  const [pushRegistered, setPushRegistered] = useState(() => localStorage.getItem('push_enabled') === 'true');
+  const [registeringPush, setRegisteringPush] = useState(false);
+
+  // 긴급 알림 원클릭 등록
+  const handleEnablePush = async () => {
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+      showToast('이 브라우저는 알림을 지원하지 않습니다.', 'error');
+      return;
+    }
+    setRegisteringPush(true);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        showToast('알림 권한이 허용되지 않았습니다.', 'error');
+        setRegisteringPush(false);
+        return;
+      }
+      const swUrl = `${import.meta.env.BASE_URL}firebase-messaging-sw.js`;
+      const swReg = await navigator.serviceWorker.register(swUrl);
+      const token = await getToken(messaging, {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: swReg
+      });
+
+      if (token) {
+        const uid = currentUser?.uid || ('guest_' + (localStorage.getItem('guest_uid') || Date.now()));
+        localStorage.setItem('guest_uid', uid);
+        await setDoc(doc(db, 'fcmTokens', uid), {
+          token,
+          notifHour: 8,
+          notifMinute: 0,
+          enabled: true,
+          displayName: currentUser?.displayName || '성도',
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        localStorage.setItem('push_enabled', 'true');
+        setPushRegistered(true);
+        showToast('🔔 긴급 기도 알림 수신이 활성화되었습니다! 🙏');
+      }
+    } catch (e) {
+      console.error('알림 등록 오류:', e);
+      showToast('알림 등록 중 오류가 발생했습니다.', 'error');
+    }
+    setRegisteringPush(false);
+  };
 
   useEffect(() => {
     const q = query(
@@ -84,7 +133,7 @@ export default function PrayerWall() {
 
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <HandHeart color="var(--accent-gold)" /> 중보 기도
         </h1>
@@ -95,6 +144,37 @@ export default function PrayerWall() {
           <Plus size={18} /> 기도 올리기
         </button>
       </div>
+
+      {/* 🔔 긴급 알림 수신 상태 배너 */}
+      {!pushRegistered && (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
+          padding: '12px 16px', borderRadius: '12px', marginBottom: '16px',
+          background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212, 175, 55, 0.35)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <BellRing color="var(--accent-gold)" size={20} />
+            <div>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                긴급 중보기도 푸시 알림 받기
+              </p>
+              <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-secondary)' }}>
+                새로운 긴급 기도가 등록되면 스마트폰으로 즉시 알림을 보내드립니다.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleEnablePush}
+            disabled={registeringPush}
+            style={{
+              padding: '6px 14px', borderRadius: '20px', background: 'var(--accent-gold)', color: '#1a1a2e',
+              border: 'none', fontWeight: 700, fontSize: '12px', cursor: 'pointer', flexShrink: 0
+            }}
+          >
+            {registeringPush ? '등록 중...' : '알림 켜기 🔔'}
+          </button>
+        </div>
+      )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <AnimatePresence>
