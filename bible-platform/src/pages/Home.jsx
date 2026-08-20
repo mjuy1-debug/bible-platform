@@ -2,14 +2,16 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
+import LiveBanner from '../components/LiveBanner';
 
 // 홈화면 퀵 링크 - 주요 기능
 const MAIN_LINKS = [
   { to: '/read',       icon: BookOpen,     title: '성경 읽기',   color: '#4f86c6' },
+  { to: '/hymns',      icon: Music,        title: '찬송가',      color: '#e5a93b' },
   { to: '/devotion',   icon: BookHeart,    title: '묵상 노트',   color: '#c4a484' },
   { to: '/plan',       icon: CalendarDays, title: '통독 플랜',   color: '#5bbf6e' },
   { to: '/ai',         icon: Sparkles,     title: 'AI 도우미',   color: '#9b7de8' },
@@ -52,8 +54,11 @@ const Home = () => {
     <>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
 
+      {/* 실시간 주일/수요 예배 라이브 스트리밍 알림 배너 */}
+      <LiveBanner />
+
       {/* Hero */}
-      <div style={{ textAlign: 'center', padding: 'clamp(2.5rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3.5rem)', position: 'relative' }}>
+      <div style={{ textAlign: 'center', padding: 'clamp(2rem, 5vw, 4rem) 0 clamp(2rem, 4vw, 3.5rem)', position: 'relative' }}>
         <motion.span
           style={{ display: 'inline-block', background: 'var(--bg-secondary)', padding: '0.4rem 1.2rem',
             borderRadius: '20px', fontSize: '0.82rem', color: 'var(--accent-gold)', marginBottom: '1.2rem',

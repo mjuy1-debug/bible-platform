@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, BookHeart, User, CalendarClock, MonitorPlay, Newspaper, Users, HandHeart, Brain } from 'lucide-react';
+import { BookOpen, BookHeart, User, CalendarClock, MonitorPlay, Newspaper, Users, HandHeart, Brain, Music } from 'lucide-react';
 
 const TABS = [
   { to: '/schedule',    icon: CalendarClock, label: '일정' },
   { to: '/sermon',      icon: MonitorPlay,   label: '말씀' },
   { to: '/read',        icon: BookOpen,      label: '읽기' },
+  { to: '/hymns',       icon: Music,         label: '찬송' },
   { to: '/devotion',    icon: BookHeart,     label: '묵상' },
   { to: '/prayer-wall', icon: HandHeart,     label: '중보' },
   { to: '/groups',      icon: Users,         label: '소그룹' },
   { to: '/bulletin',    icon: Newspaper,     label: '주보' },
-  { to: '/memorize',    icon: Brain,         label: '암송' },
   { to: '/profile',     icon: User,          label: '프로필' },
 ];
 

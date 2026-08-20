@@ -20,6 +20,8 @@ import Groups from './pages/Groups';
 import Bulletin from './pages/Bulletin';
 import Memorize from './pages/Memorize';
 import BibleMap from './pages/BibleMap';
+import Hymns from './pages/Hymns';
+import Stats from './pages/Stats';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
@@ -214,6 +216,8 @@ const AppInner = () => {
           <Route path="/bulletin" element={<Bulletin />} />
           <Route path="/memorize" element={<Memorize />} />
           <Route path="/bible-map" element={<BibleMap />} />
+          <Route path="/hymns" element={<Hymns />} />
+          <Route path="/stats" element={<Stats />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
