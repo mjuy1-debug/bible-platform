@@ -49,9 +49,10 @@ export default function Hymns() {
       // 검색어 필터
       if (!q) return true;
 
-      const numMatch = String(h.num) === q || String(h.newNum) === q;
-      const titleMatch = h.title.toLowerCase().includes(q) || h.engTitle.toLowerCase().includes(q);
-      const lyricsMatch = h.lyrics.some(line => line.toLowerCase().includes(q));
+      const cleanNum = q.replace(/장$/, '').trim();
+      const numMatch = String(h.num) === cleanNum || String(h.newNum) === cleanNum || String(h.num) === q;
+      const titleMatch = h.title.toLowerCase().includes(q) || h.title.replace(/\s+/g, '').includes(q.replace(/\s+/g, ''));
+      const lyricsMatch = h.lyrics.some(line => line.toLowerCase().includes(q) || line.replace(/\s+/g, '').includes(q.replace(/\s+/g, '')));
 
       return numMatch || titleMatch || lyricsMatch;
     });
