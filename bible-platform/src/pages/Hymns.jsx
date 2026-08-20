@@ -37,6 +37,44 @@ export default function Hymns() {
     localStorage.setItem('favorite_hymns', JSON.stringify(updated));
   };
 
+  // 찬송가 가사 스마트 파싱: 마지막 절에 붙어있는 후렴을 분리 → 각 절 뒤에 삽입
+  const parseHymnLyrics = (lyrics) => {
+    if (!lyrics || lyrics.length < 2) return lyrics;
+    const last = lyrics[lyrics.length - 1];
+    const verses = lyrics.slice(0, -1);
+    const avgLen = verses.reduce((s, l) => s + l.length, 0) / verses.length;
+
+    // 이미 [후렴]이 별도 항목으로 존재하면 그대로 반환
+    if (lyrics.some(l => l.startsWith('[후렴]') || l.trim().startsWith('[후렴]'))) return lyrics;
+
+    // 마지막 절이 다른 절 평균보다 1.45배 이상 길어야 후렴이 붙어있다고 판단
+    if (last.length <= avgLen * 1.45) return lyrics;
+
+    // 후렴 분리: 다른 절 평균 길이만큼을 절로, 나머지를 후렴으로 분리
+    const words = last.split(' ');
+    let cutPoint = 0;
+    let len = 0;
+    for (let i = 0; i < words.length; i++) {
+      len += words[i].length + 1;
+      if (len >= avgLen * 0.92) { cutPoint = i + 1; break; }
+    }
+
+    if (cutPoint <= 0 || cutPoint >= words.length) return lyrics;
+
+    const lastVerse = words.slice(0, cutPoint).join(' ').trim();
+    const chorus = '[후렴] ' + words.slice(cutPoint).join(' ').trim();
+
+    // 각 절 뒤에 후렴 삽입
+    const result = [];
+    for (const v of verses) {
+      result.push(v);
+      result.push(chorus);
+    }
+    result.push(lastVerse);
+    result.push(chorus);
+    return result;
+  };
+
   // 찬송가 목록 필터링 (검색 & 카테고리)
   const filteredHymns = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -438,19 +476,33 @@ export default function Hymns() {
                   lineHeight: 1.8, wordBreak: 'keep-all', overflowWrap: 'break-word',
                   fontSize: `${fontSize}px`, color: 'var(--text-primary)'
                 }}>
-                  {selectedHymn.lyrics.map((verse, idx) => (
-                    <div key={idx} style={{
-                      marginBottom: '1.4rem',
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      background: verse.includes('[후렴]') ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255,255,255,0.02)',
-                      borderLeft: verse.includes('[후렴]') ? '3px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.15)'
-                    }}>
-                      <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                        {verse}
-                      </p>
-                    </div>
-                  ))}
+                  {parseHymnLyrics(selectedHymn.lyrics).map((verse, idx) => {
+                    const isChorus = verse.startsWith('[후렴]');
+                    const displayText = isChorus ? verse.replace(/^\[후렴\]\s*/, '') : verse;
+                    return (
+                      <div key={idx} style={{
+                        marginBottom: '1.2rem',
+                        padding: '12px 16px',
+                        borderRadius: '12px',
+                        background: isChorus ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255,255,255,0.02)',
+                        borderLeft: isChorus ? '3px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.15)'
+                      }}>
+                        {isChorus && (
+                          <span style={{
+                            display: 'inline-block', marginBottom: '4px',
+                            fontSize: `${Math.max(10, fontSize - 4)}px`,
+                            fontWeight: 800, color: 'var(--accent-gold)',
+                            letterSpacing: '0.05em'
+                          }}>
+                            ♪ 후렴
+                          </span>
+                        )}
+                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                          {displayText}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 /* 🎼 악보 이미지 뷰어 */
