@@ -407,10 +407,15 @@ export default function Bulletin() {
 
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FileText color="var(--accent-gold)" /> 교회 주보
-        </h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '0.8rem' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0 }}>
+            <FileText color="var(--accent-gold)" /> 교회 주보
+          </h1>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem', margin: '4px 0 0 0' }}>
+            벧엘교회의 주간 예배 순서, 교회 소식 및 나눔을 확인하실 수 있습니다.
+          </p>
+        </div>
         {isAdmin && (
           <button 
             onClick={() => setIsUploadMode(!isUploadMode)}

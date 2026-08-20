@@ -445,7 +445,12 @@ const Devotion = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 className="serif-font" style={{ fontSize: '2rem', color: 'var(--accent-gold)' }}>묵상 노트</h2>
+        <div>
+          <h2 className="serif-font" style={{ fontSize: '2rem', color: 'var(--accent-gold)' }}>묵상 노트</h2>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem' }}>
+            매일 주시는 말씀을 묵상하고 나의 고백과 기도를 기록하는 은혜의 공간입니다.
+          </p>
+        </div>
         <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.3rem', borderRadius: '30px', border: '1px solid var(--glass-border)', overflowX: 'auto', maxWidth: '100%' }}>
           {['write', 'list', 'shared'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}

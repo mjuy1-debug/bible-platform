@@ -155,10 +155,15 @@ export default function PrayerWall() {
 
   return (
     <div style={{ paddingBottom: '2rem', maxWidth: '820px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <HandHeart color="var(--accent-gold)" /> 중보 기도
-        </h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '0.8rem' }}>
+        <div>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)', margin: 0 }}>
+            <HandHeart color="var(--accent-gold)" /> 중보 기도
+          </h1>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.3rem', margin: '4px 0 0 0' }}>
+            성도들과 함께 기도 제목을 나누고, 서로를 위해 마음 모아 중보하는 기도 나눔터입니다.
+          </p>
+        </div>
         <button 
           onClick={() => setIsModalOpen(true)}
           style={{ background: 'var(--accent-gold)', color: '#fff', border: 'none', borderRadius: '20px', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', fontWeight: 'bold' }}
