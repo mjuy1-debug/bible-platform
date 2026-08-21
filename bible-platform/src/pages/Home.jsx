@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone, Video } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
@@ -11,6 +11,7 @@ import LiveBanner from '../components/LiveBanner';
 // 홈화면 퀵 링크 - 주요 기능
 const MAIN_LINKS = [
   { to: '/read',       icon: BookOpen,     title: '성경 읽기',   color: '#4f86c6' },
+  { to: '/sermon',     icon: Video,        title: '말씀과 설교', color: '#ff6b6b' },
   { to: '/hymns',      icon: Music,        title: '찬송가',      color: '#e5a93b' },
   { to: '/devotion',   icon: BookHeart,    title: '묵상 노트',   color: '#c4a484' },
   { to: '/plan',       icon: CalendarDays, title: '통독 플랜',   color: '#5bbf6e' },
