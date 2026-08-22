@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tv, Play, Settings, X, Save, Radio, Check, Power, ExternalLink, Bell, BellRing, AlertCircle } from 'lucide-react';
+import { 
+  Tv, Play, Settings, X, Save, Radio, Check, Power, 
+  ExternalLink, Bell, BellRing, Image as ImageIcon, Eye, EyeOff, Upload, Sparkles 
+} from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
@@ -15,6 +18,28 @@ const PRESET_SERVICES = [
   { title: '🔴 금요 심야기도회 생방송 중', subtitle: '지금 금요 심야 은혜기도회가 실시간으로 방송되고 있습니다.' },
   { title: '🔴 CCM 찬양듣기 생방송 중', subtitle: '지금 은혜로운 CCM 찬양이 실시간으로 연속 방송되고 있습니다. 함께 찬양해요!' },
   { title: '🔴 특별 부흥 성회 생방송 중', subtitle: '지금 특별 부흥 성회가 실시간으로 방송되고 있습니다.' },
+];
+
+// 대기/대체 화면 추천 프리셋
+const COVER_PRESETS = [
+  {
+    name: '예배 준비 대기',
+    text: '잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.',
+    bg: 'linear-gradient(135deg, #1e1b18 0%, #2a241a 50%, #151311 100%)',
+    color: '#d4af37'
+  },
+  {
+    name: '찬양 준비 대기',
+    text: '지금은 찬양으로 예배를 준비하는 시간입니다.\n주님의 이름을 높여 찬양합니다 🎵',
+    bg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #090d16 100%)',
+    color: '#60a5fa'
+  },
+  {
+    name: '방송 점검 안내',
+    text: '원활한 실시간 방송 송출을 위해 잠시 점검 중입니다.\n잠시만 기다려 주시기 바랍니다 ⚙️',
+    bg: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
+    color: '#f43f5e'
+  },
 ];
 
 // 유튜브 Video ID 추출 함수 (watch?v=, youtu.be/, /live/, /embed/ 모두 지원)
@@ -46,6 +71,11 @@ export default function LiveBanner() {
   const [liveSubtitle, setLiveSubtitle] = useState('지금 실시간 예배가 방송되고 있습니다.');
   const [liveUrl, setLiveUrl] = useState(DEFAULT_YOUTUBE_LIVE_URL);
   
+  // 대체/대기 화면 상태
+  const [isCoverActive, setIsCoverActive] = useState(false);
+  const [coverImageUrl, setCoverImageUrl] = useState('');
+  const [coverNoticeText, setCoverNoticeText] = useState('잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.');
+
   // 인앱 유튜브 플레이어 모달 상태
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
@@ -55,7 +85,12 @@ export default function LiveBanner() {
   const [inputTitle, setInputTitle] = useState('🔴 주일 대예배 생방송 중');
   const [inputSubtitle, setInputSubtitle] = useState('지금 벧엘교회 주일 대예배가 실시간으로 방송되고 있습니다.');
   const [inputIsLive, setInputIsLive] = useState(false);
-  const [sendNotificationCheck, setSendNotificationCheck] = useState(false); // 알림 발송 체크 여부
+  const [sendNotificationCheck, setSendNotificationCheck] = useState(false);
+  const [inputCoverActive, setInputCoverActive] = useState(false);
+  const [inputCoverImageUrl, setInputCoverImageUrl] = useState('');
+  const [inputCoverNoticeText, setInputCoverNoticeText] = useState('잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.');
+
+  const fileInputRef = useRef(null);
 
   const isAdmin = Boolean(
     currentUser && (
@@ -86,6 +121,19 @@ export default function LiveBanner() {
           setLiveSubtitle(data.subtitle);
           setInputSubtitle(data.subtitle);
         }
+
+        // 대체화면 설정
+        const coverOn = Boolean(data.isCoverActive);
+        setIsCoverActive(coverOn);
+        setInputCoverActive(coverOn);
+        if (data.coverImageUrl !== undefined) {
+          setCoverImageUrl(data.coverImageUrl);
+          setInputCoverImageUrl(data.coverImageUrl);
+        }
+        if (data.coverNoticeText !== undefined) {
+          setCoverNoticeText(data.coverNoticeText);
+          setInputCoverNoticeText(data.coverNoticeText);
+        }
       } else {
         setIsLive(false);
         setInputIsLive(false);
@@ -108,6 +156,9 @@ export default function LiveBanner() {
         url: liveUrl,
         title: liveTitle,
         subtitle: liveSubtitle,
+        isCoverActive: isCoverActive,
+        coverImageUrl: coverImageUrl,
+        coverNoticeText: coverNoticeText,
         updatedBy: currentUser?.displayName || '관리자',
         updatedAt: new Date().toISOString()
       }, { merge: true });
@@ -135,6 +186,9 @@ export default function LiveBanner() {
         url: liveUrl,
         title: liveTitle,
         subtitle: liveSubtitle,
+        isCoverActive: isCoverActive,
+        coverImageUrl: coverImageUrl,
+        coverNoticeText: coverNoticeText,
         updatedBy: currentUser?.displayName || '관리자',
         updatedAt: new Date().toISOString()
       }, { merge: true });
@@ -150,10 +204,58 @@ export default function LiveBanner() {
     }
   };
 
+  // 3. 1초 대기화면 빠른 ON / OFF 토글
+  const handleQuickCoverToggle = async () => {
+    const nextCover = !isCoverActive;
+    try {
+      await setDoc(doc(db, 'settings', 'liveStream'), {
+        isCoverActive: nextCover,
+        updatedBy: currentUser?.displayName || '관리자',
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      setIsCoverActive(nextCover);
+      setInputCoverActive(nextCover);
+      if (showToast) {
+        showToast(nextCover ? '🖼️ 대체 대기화면을 띄웠습니다 (성도 화면에 대기 이미지 노출)' : '🎬 실시간 생방송 영상을 송출합니다!');
+      }
+    } catch (err) {
+      console.error('대체화면 토글 오류:', err);
+      if (showToast) showToast(`오류: ${err.message}`, 'error');
+    }
+  };
+
   // 프리셋 선택
   const handleSelectPreset = (preset) => {
     setInputTitle(preset.title);
     setInputSubtitle(preset.subtitle);
+  };
+
+  // 대기화면 프리셋 적용
+  const handleSelectCoverPreset = (preset) => {
+    setInputCoverNoticeText(preset.text);
+    setInputCoverImageUrl(''); // 텍스트/스타일 기반으로 복구
+  };
+
+  // 이미지 파일 로컬 업로드 처리 (Base64 변환)
+  const handleImageFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2.5 * 1024 * 1024) {
+      if (showToast) showToast('이미지 용량이 너무 큽니다. (2.5MB 이하 권장)', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      const base64 = uploadEvent.target?.result;
+      if (base64) {
+        setInputCoverImageUrl(base64);
+        if (showToast) showToast('대체 이미지가 선택되었습니다!');
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   // 관리자 설정 전체 저장 (Firestore)
@@ -168,11 +270,13 @@ export default function LiveBanner() {
         subtitle: inputSubtitle.trim() || '지금 실시간 예배가 방송되고 있습니다.',
         isLive: inputIsLive,
         forceLive: inputIsLive,
+        isCoverActive: inputCoverActive,
+        coverImageUrl: inputCoverImageUrl,
+        coverNoticeText: inputCoverNoticeText,
         updatedBy: currentUser?.displayName || '관리자',
         updatedAt: new Date().toISOString()
       };
 
-      // 관리자가 알림 발송을 체크했을 때만 notificationId 갱신
       if (inputIsLive && sendNotificationCheck) {
         payload.notificationId = Date.now().toString();
         payload.notificationTriggeredAt = Date.now();
@@ -184,8 +288,11 @@ export default function LiveBanner() {
       setLiveTitle(inputTitle.trim());
       setLiveSubtitle(inputSubtitle.trim());
       setIsLive(inputIsLive);
+      setIsCoverActive(inputCoverActive);
+      setCoverImageUrl(inputCoverImageUrl);
+      setCoverNoticeText(inputCoverNoticeText);
       setIsSettingOpen(false);
-      setSendNotificationCheck(false); // 저장 후 체크 해제 리셋
+      setSendNotificationCheck(false);
 
       if (showToast) {
         if (inputIsLive && sendNotificationCheck) {
@@ -205,13 +312,8 @@ export default function LiveBanner() {
   const formattedExternalUrl = formatYouTubeUrl(liveUrl);
 
   const handleBannerClick = () => {
-    if (activeVideoId) {
-      // 비디오 ID가 있으면 앱 내에서 팝업 플레이어로 바로 재생
-      setIsPlayerOpen(true);
-    } else {
-      // 채널 주소인 경우 유튜브 외부 링크로 이동
-      window.open(formattedExternalUrl, '_blank', 'noopener,noreferrer');
-    }
+    // 플레이어 모달 열기 (비디오 ID가 있거나 대체 이미지가 켜져 있으면 모달에서 바로 확인)
+    setIsPlayerOpen(true);
   };
 
   return (
@@ -246,9 +348,49 @@ export default function LiveBanner() {
             }}>
               {isLive ? '🔴 방송 중 (배너 켜짐)' : '⚫ 방송 종료 (배너 숨김)'}
             </span>
+
+            {/* 대체 대기화면 송출 중 배지 */}
+            {isLive && isCoverActive && (
+              <span style={{
+                fontSize: '11px',
+                fontWeight: 800,
+                padding: '2px 8px',
+                borderRadius: '99px',
+                background: 'rgba(212,175,55,0.25)',
+                border: '1px solid var(--accent-gold)',
+                color: 'var(--accent-gold)'
+              }}>
+                🖼️ 대체 대기화면 송출 중
+              </span>
+            )}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            {/* 방송 중일 때 대체 대기화면 1초 토글 버튼 */}
+            {isLive && (
+              <button
+                onClick={handleQuickCoverToggle}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  padding: '5px 11px',
+                  borderRadius: '8px',
+                  background: isCoverActive ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.08)',
+                  border: isCoverActive ? '1px solid var(--accent-gold)' : '1px solid var(--glass-border)',
+                  color: isCoverActive ? 'var(--accent-gold)' : 'var(--text-primary)',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                title={isCoverActive ? '대체 이미지를 내리고 실시간 영상을 송출합니다' : '실시간 영상 대신 임시 대기화면을 띄웁니다'}
+              >
+                <ImageIcon size={13} />
+                {isCoverActive ? '🎬 영상으로 전환' : '🖼️ 임시 대기화면 띄우기'}
+              </button>
+            )}
+
             {!isLive ? (
               <>
                 {/* 1) 알림 없이 배너만 켜기 */}
@@ -355,7 +497,7 @@ export default function LiveBanner() {
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
-              title="예배 제목 및 유튜브 링크 설정"
+              title="예배 제목, 유튜브 링크 및 대체 화면 설정"
             >
               <Settings size={13} /> 설정
             </button>
@@ -420,6 +562,14 @@ export default function LiveBanner() {
                   }}>
                     LIVE ON
                   </span>
+                  {isCoverActive && (
+                    <span style={{
+                      background: 'rgba(212,175,55,0.2)', color: 'var(--accent-gold)', fontSize: '10px', fontWeight: 700,
+                      padding: '2px 7px', borderRadius: '99px', border: '1px solid rgba(212,175,55,0.4)', flexShrink: 0
+                    }}>
+                      대기 중
+                    </span>
+                  )}
                   <h3 style={{ margin: 0, fontSize: 'clamp(0.92rem, 2.5vw, 1.05rem)', fontWeight: 800, color: '#fff', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.35 }}>
                     {liveTitle}
                   </h3>
@@ -473,25 +623,36 @@ export default function LiveBanner() {
         )}
       </AnimatePresence>
 
-      {/* 3. 인앱 유튜브 실시간 플레이어 모달 (어떤 기기에서도 화면 내에서 즉시 깔끔하게 재생) */}
+      {/* 3. 인앱 유튜브 실시간 플레이어 모달 (제일 상단에 최적화된 위치) */}
       <AnimatePresence>
         {isPlayerOpen && (
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
             style={{
-              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.88)', zIndex: 2100,
-              display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'clamp(10px, 3vw, 20px)'
+              position: 'fixed', 
+              top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.88)', 
+              zIndex: 2100,
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'flex-start', /* 화면 최상단 정렬 */
+              padding: 'clamp(10px, 3vw, 24px)',
+              paddingTop: 'clamp(14px, 3.5vh, 28px)', /* 최상단 여백 */
+              overflowY: 'auto'
             }}
             onClick={() => setIsPlayerOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 15 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 15 }}
+              initial={{ scale: 0.96, y: -20 }} 
+              animate={{ scale: 1, y: 0 }} 
+              exit={{ scale: 0.96, y: -20 }}
               onClick={(e) => e.stopPropagation()}
               style={{
                 background: '#141416', border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: '20px', width: '100%', maxWidth: '820px', overflow: 'hidden',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.85)',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
                 display: 'flex', flexDirection: 'column'
               }}
             >
@@ -521,6 +682,25 @@ export default function LiveBanner() {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: 'auto' }}>
+                  {/* 관리자인 경우 플레이어 내부에서도 1클릭 대기화면 전환 버튼 제공 */}
+                  {isAdmin && (
+                    <button
+                      onClick={handleQuickCoverToggle}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                        fontSize: '11px', fontWeight: 700, padding: '5px 10px', borderRadius: '8px',
+                        background: isCoverActive ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.1)',
+                        border: isCoverActive ? '1px solid var(--accent-gold)' : '1px solid rgba(255,255,255,0.2)',
+                        color: isCoverActive ? 'var(--accent-gold)' : '#fff',
+                        cursor: 'pointer'
+                      }}
+                      title="관리자: 실시간 영상 ↔ 대체 대기화면 전환"
+                    >
+                      <ImageIcon size={12} />
+                      {isCoverActive ? '영상 송출하기' : '대기화면 띄우기'}
+                    </button>
+                  )}
+
                   <a
                     href={formattedExternalUrl}
                     target="_blank"
@@ -544,17 +724,113 @@ export default function LiveBanner() {
                 </div>
               </div>
 
-              {/* 유튜브 iframe 반응형 플레이어 (16:9 비율) */}
-              <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000' }}>
-                <iframe
-                  src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1`}
-                  title="실시간 예배 방송"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  style={{
-                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none'
-                  }}
-                />
+              {/* 플레이어 본체 구역 (16:9 비율) */}
+              <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', overflow: 'hidden' }}>
+                {/* 1. 유튜브 실시간 스트림 영상 */}
+                {activeVideoId && (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1`}
+                    title="실시간 예배 방송"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    style={{
+                      position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none'
+                    }}
+                  />
+                )}
+
+                {/* 2. 관리자 설정 대체/대기 화면 오버레이 (isCoverActive = true 일 때 영상 위를 완전히 덮음) */}
+                <AnimatePresence>
+                  {isCoverActive && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      style={{
+                        position: 'absolute',
+                        top: 0, left: 0, width: '100%', height: '100%',
+                        zIndex: 10,
+                        background: coverImageUrl 
+                          ? `url(${coverImageUrl}) center / cover no-repeat` 
+                          : 'linear-gradient(135deg, #181512 0%, #262016 50%, #110f0d 100%)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '24px',
+                        textAlign: 'center',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      {/* 반투명 백드롭 (이미지가 있을 때 글자 가독성 보장) */}
+                      <div style={{
+                        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                        background: coverImageUrl ? 'rgba(0,0,0,0.55)' : 'transparent',
+                        zIndex: 1
+                      }} />
+
+                      <div style={{ position: 'relative', zIndex: 2, maxWidth: '85%' }}>
+                        <div style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '6px',
+                          padding: '4px 12px', borderRadius: '99px',
+                          background: 'rgba(212,175,55,0.2)', border: '1px solid var(--accent-gold)',
+                          color: 'var(--accent-gold)', fontSize: '11px', fontWeight: 800,
+                          marginBottom: '12px'
+                        }}>
+                          <Sparkles size={13} /> 예배 준비 및 안내
+                        </div>
+
+                        <h4 style={{
+                          margin: '0 0 10px 0',
+                          color: '#fff',
+                          fontSize: 'clamp(1rem, 3.5vw, 1.35rem)',
+                          fontWeight: 800,
+                          lineHeight: 1.4,
+                          whiteSpace: 'pre-line',
+                          wordBreak: 'keep-all',
+                          textShadow: '0 2px 10px rgba(0,0,0,0.8)'
+                        }}>
+                          {coverNoticeText || '잠시 후 예배가 시작됩니다.'}
+                        </h4>
+
+                        <p style={{
+                          margin: 0,
+                          color: 'rgba(255,255,255,0.8)',
+                          fontSize: 'clamp(0.75rem, 2vw, 0.88rem)',
+                          wordBreak: 'keep-all'
+                        }}>
+                          벧엘교회 온라인 실시간 방송
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* 영상 ID가 없고 대체화면도 꺼진 경우 안내 */}
+                {!activeVideoId && !isCoverActive && (
+                  <div style={{
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                    display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                    background: '#18181b', color: '#fff', padding: '20px', textAlign: 'center'
+                  }}>
+                    <Tv size={36} color="var(--accent-gold)" style={{ marginBottom: '10px' }} />
+                    <p style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: 700 }}>
+                      유튜브 채널 생방송으로 연결됩니다
+                    </p>
+                    <a
+                      href={formattedExternalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        padding: '8px 20px', borderRadius: '24px', background: '#dc2626', color: '#fff',
+                        textDecoration: 'none', fontWeight: 700, fontSize: '13px'
+                      }}
+                    >
+                      생방송 시청하러 가기
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* 플레이어 하단 안내 문구 */}
@@ -589,7 +865,9 @@ export default function LiveBanner() {
             style={{
               position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
               backgroundColor: 'rgba(0,0,0,0.75)', zIndex: 1200,
-              display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
+              display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '16px',
+              paddingTop: 'clamp(16px, 4vh, 32px)',
+              overflowY: 'auto'
             }}
             onClick={() => setIsSettingOpen(false)}
           >
@@ -598,8 +876,8 @@ export default function LiveBanner() {
               onClick={(e) => e.stopPropagation()}
               style={{
                 background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
-                borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '520px',
-                maxHeight: '90vh', overflowY: 'auto'
+                borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '540px',
+                marginBottom: '40px'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -635,7 +913,7 @@ export default function LiveBanner() {
                   </div>
                 </label>
 
-                {/* 2. 전교인 알림 발송 체크박스 (관리자가 체크할 때만 전송) */}
+                {/* 2. 전교인 알림 발송 체크박스 */}
                 {inputIsLive && (
                   <label style={{
                     display: 'flex', alignItems: 'center', gap: '12px', padding: '14px',
@@ -654,13 +932,133 @@ export default function LiveBanner() {
                         <BellRing size={16} /> 🔔 전교인에게 실시간 생방송 시작 푸시 알림 발송하기
                       </p>
                       <p style={{ margin: '3px 0 0', fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                        체크하고 저장 시 모든 성도님들의 스마트폰으로 <strong>생방송 알림과 차임벨</strong>이 즉시 발송됩니다. (체크하지 않으면 조용히 배너만 켜집니다)
+                        체크하고 저장 시 모든 성도님들의 스마트폰으로 <strong>생방송 알림과 차임벨</strong>이 즉시 발송됩니다.
                       </p>
                     </div>
                   </label>
                 )}
 
-                {/* 3. 빠른 예배 프리셋 선택 */}
+                {/* 3. [신규] 임시 대체/대기 화면 설정 구역 */}
+                <div style={{
+                  padding: '14px', borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                  display: 'flex', flexDirection: 'column', gap: '12px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={inputCoverActive}
+                        onChange={(e) => setInputCoverActive(e.target.checked)}
+                        style={{ width: '16px', height: '16px', accentColor: 'var(--accent-gold)' }}
+                      />
+                      <span style={{ fontSize: '13px', fontWeight: 800, color: inputCoverActive ? 'var(--accent-gold)' : 'var(--text-primary)' }}>
+                        🖼️ 임시 대체 대기화면 띄우기 (ON/OFF)
+                      </span>
+                    </label>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                      {inputCoverActive ? '현재 대기화면 송출 중' : '영상 정상 송출 중'}
+                    </span>
+                  </div>
+
+                  <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    방송 시작 전후 또는 잠시 대기가 필요할 때, 인앱 플레이어에 원하는 안내 문구나 이미지를 띄워놓고 언제든 해제할 수 있습니다.
+                  </p>
+
+                  {/* 빠른 대기 문구 선택 */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                      추천 대기 문구 선택:
+                    </label>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {COVER_PRESETS.map((cp, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleSelectCoverPreset(cp)}
+                          style={{
+                            padding: '4px 8px', borderRadius: '6px', fontSize: '11px',
+                            background: 'rgba(255,255,255,0.06)', border: '1px solid var(--glass-border)',
+                            color: 'var(--text-primary)', cursor: 'pointer'
+                          }}
+                        >
+                          {cp.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 대기 문구 직접 작성 */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                      대기화면 안내 문구:
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={inputCoverNoticeText}
+                      onChange={(e) => setInputCoverNoticeText(e.target.value)}
+                      placeholder="예: 잠시 후 은혜로운 예배가 시작됩니다."
+                      style={{
+                        width: '100%', padding: '8px 10px', borderRadius: '8px',
+                        background: 'var(--bg-primary)', border: '1px solid var(--glass-border)',
+                        color: 'var(--text-primary)', fontSize: '12px', resize: 'vertical', boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+
+                  {/* 이미지 직접 업로드 또는 URL */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '11.5px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                      배경 이미지 첨부 (선택):
+                    </label>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleImageFileChange}
+                        style={{ display: 'none' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                          display: 'inline-flex', alignItems: 'center', gap: '4px',
+                          padding: '6px 12px', borderRadius: '8px',
+                          background: 'rgba(212,175,55,0.15)', border: '1px solid var(--accent-gold)',
+                          color: 'var(--accent-gold)', fontSize: '12px', fontWeight: 600, cursor: 'pointer'
+                        }}
+                      >
+                        <Upload size={13} /> 내 기기에서 사진 선택
+                      </button>
+                      {inputCoverImageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setInputCoverImageUrl('')}
+                          style={{
+                            padding: '6px 10px', borderRadius: '8px',
+                            background: 'rgba(239,68,68,0.15)', border: '1px solid #ef4444',
+                            color: '#f87171', fontSize: '11px', cursor: 'pointer'
+                          }}
+                        >
+                          이미지 삭제
+                        </button>
+                      )}
+                    </div>
+                    {inputCoverImageUrl && (
+                      <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <img
+                          src={inputCoverImageUrl}
+                          alt="미리보기"
+                          style={{ width: '48px', height: '32px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--glass-border)' }}
+                        />
+                        <span style={{ fontSize: '11px', color: '#4ade80' }}>✓ 맞춤 이미지가 적용되었습니다</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 4. 빠른 예배 프리셋 선택 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>
                     빠른 예배 제목 선택
@@ -688,7 +1086,7 @@ export default function LiveBanner() {
                   </div>
                 </div>
 
-                {/* 4. 배너 제목 직접 수정 */}
+                {/* 5. 배너 제목 직접 수정 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
                     배너 타이틀
@@ -707,7 +1105,7 @@ export default function LiveBanner() {
                   />
                 </div>
 
-                {/* 5. 배너 설명 */}
+                {/* 6. 배너 설명 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
                     배너 안내 문구
@@ -726,7 +1124,7 @@ export default function LiveBanner() {
                   />
                 </div>
 
-                {/* 6. 유튜브 라이브 URL */}
+                {/* 7. 유튜브 라이브 URL */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
                     유튜브 라이브 스트리밍 주소
