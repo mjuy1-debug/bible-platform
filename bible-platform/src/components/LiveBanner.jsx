@@ -641,6 +641,26 @@ export default function LiveBanner() {
                 <p style={{ margin: '4px 0 0 0', fontSize: 'clamp(0.78rem, 2vw, 0.85rem)', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.45, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
                   {liveSubtitle}
                 </p>
+                <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span style={{
+                    fontSize: '10.5px',
+                    fontWeight: 800,
+                    color: 'rgba(255,255,255,0.55)',
+                    letterSpacing: '0.8px',
+                    textTransform: 'uppercase'
+                  }}>
+                    ⛪
+                  </span>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: 'rgba(255,255,255,0.65)',
+                    letterSpacing: '0.4px',
+                    wordBreak: 'keep-all'
+                  }}>
+                    화도벧엘교회 온라인 실시간 예배
+                  </span>
+                </div>
               </div>
             </div>
 
