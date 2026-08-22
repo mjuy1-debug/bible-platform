@@ -260,7 +260,7 @@ export default function LiveBanner() {
             style={{
               maxWidth: '960px',
               margin: '0 auto 1.5rem',
-              padding: 'clamp(0.85rem, 2.5vw, 1.1rem) clamp(1rem, 3vw, 1.4rem)',
+              padding: 'clamp(0.85rem, 2.5vw, 1.15rem) clamp(1rem, 3vw, 1.4rem)',
               borderRadius: '16px',
               background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.22) 0%, rgba(185, 28, 28, 0.12) 100%)',
               border: '1px solid rgba(239, 68, 68, 0.45)',
@@ -299,19 +299,19 @@ export default function LiveBanner() {
                 }} />
               </div>
 
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '2px' }}>
                   <span style={{
-                    background: '#dc2626', color: '#fff', fontSize: '11px', fontWeight: 800,
-                    padding: '2px 8px', borderRadius: '99px', letterSpacing: '0.5px'
+                    background: '#dc2626', color: '#fff', fontSize: '10px', fontWeight: 800,
+                    padding: '2px 7px', borderRadius: '99px', letterSpacing: '0.5px', flexShrink: 0
                   }}>
                     LIVE ON
                   </span>
-                  <h3 style={{ margin: 0, fontSize: 'clamp(0.95rem, 2.5vw, 1.05rem)', fontWeight: 800, color: '#fff' }}>
+                  <h3 style={{ margin: 0, fontSize: 'clamp(0.92rem, 2.5vw, 1.05rem)', fontWeight: 800, color: '#fff', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.35 }}>
                     {liveTitle}
                   </h3>
                 </div>
-                <p style={{ margin: '4px 0 0 0', fontSize: 'clamp(0.78rem, 2vw, 0.84rem)', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.4, wordBreak: 'keep-all' }}>
+                <p style={{ margin: '4px 0 0 0', fontSize: 'clamp(0.78rem, 2vw, 0.85rem)', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.45, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
                   {liveSubtitle}
                 </p>
               </div>
@@ -331,7 +331,7 @@ export default function LiveBanner() {
                 </button>
               )}
               
-              {/* 참여 버튼: 비디오 ID가 있으면 팝업 플레이어, 없으면 바로 새창 */}
+              {/* 참여 버튼 */}
               <button
                 onClick={handleBannerClick}
                 style={{
@@ -346,6 +346,7 @@ export default function LiveBanner() {
                   fontSize: '0.85rem',
                   border: 'none',
                   cursor: 'pointer',
+                  whiteSpace: 'nowrap',
                   boxShadow: '0 4px 12px rgba(220, 38, 38, 0.4)',
                   transition: 'all 0.2s',
                 }}
@@ -359,7 +360,7 @@ export default function LiveBanner() {
         )}
       </AnimatePresence>
 
-      {/* 3. 인앱 유튜브 실시간 플레이어 모달 (어떤 기기에서도 화면 내에서 즉시 재생) */}
+      {/* 3. 인앱 유튜브 실시간 플레이어 모달 (어떤 기기에서도 화면 내에서 즉시 깔끔하게 재생) */}
       <AnimatePresence>
         {isPlayerOpen && (
           <motion.div
@@ -367,7 +368,7 @@ export default function LiveBanner() {
             style={{
               position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
               backgroundColor: 'rgba(0,0,0,0.88)', zIndex: 2100,
-              display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
+              display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'clamp(10px, 3vw, 20px)'
             }}
             onClick={() => setIsPlayerOpen(false)}
           >
@@ -375,18 +376,38 @@ export default function LiveBanner() {
               initial={{ scale: 0.95, y: 15 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 15 }}
               onClick={(e) => e.stopPropagation()}
               style={{
-                background: '#111', border: '1px solid rgba(255,255,255,0.15)',
+                background: '#141416', border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: '20px', width: '100%', maxWidth: '820px', overflow: 'hidden',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.8)'
+                boxShadow: '0 20px 50px rgba(0,0,0,0.85)',
+                display: 'flex', flexDirection: 'column'
               }}
             >
               {/* 플레이어 상단 헤더 */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', background: '#1c1c1e', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
-                  <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.95rem' }}>{liveTitle}</span>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: 'clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 18px)',
+                background: '#1c1c1e',
+                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                gap: '10px',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: '1 1 200px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }} />
+                  <span style={{
+                    color: '#fff',
+                    fontWeight: 800,
+                    fontSize: 'clamp(0.85rem, 2.5vw, 0.98rem)',
+                    lineHeight: 1.35,
+                    wordBreak: 'keep-all',
+                    overflowWrap: 'break-word'
+                  }}>
+                    {liveTitle}
+                  </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: 'auto' }}>
                   <a
                     href={formattedExternalUrl}
                     target="_blank"
@@ -394,17 +415,18 @@ export default function LiveBanner() {
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '4px',
                       color: 'var(--accent-gold)', fontSize: '12px', textDecoration: 'none',
-                      padding: '4px 10px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)',
-                      border: '1px solid rgba(212,175,55,0.3)'
+                      padding: '5px 11px', borderRadius: '8px', background: 'rgba(212,175,55,0.12)',
+                      border: '1px solid rgba(212,175,55,0.35)', fontWeight: 600, whiteSpace: 'nowrap'
                     }}
                   >
                     <ExternalLink size={13} /> 유튜브 앱에서 열기
                   </a>
                   <button
                     onClick={() => setIsPlayerOpen(false)}
-                    style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', padding: '4px', display: 'flex' }}
+                    style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#fff', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    title="닫기"
                   >
-                    <X size={20} />
+                    <X size={18} />
                   </button>
                 </div>
               </div>
@@ -423,9 +445,23 @@ export default function LiveBanner() {
               </div>
 
               {/* 플레이어 하단 안내 문구 */}
-              <div style={{ padding: '12px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#1c1c1e', color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
-                <span>{liveSubtitle}</span>
-                <span style={{ color: 'var(--accent-gold)' }}>벧엘교회 온라인 라이브 예배</span>
+              <div style={{
+                padding: 'clamp(10px, 2.5vw, 13px) clamp(12px, 3vw, 18px)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: '#1c1c1e',
+                color: 'rgba(255,255,255,0.85)',
+                fontSize: 'clamp(0.76rem, 2vw, 0.84rem)',
+                gap: '8px',
+                flexWrap: 'wrap'
+              }}>
+                <span style={{ wordBreak: 'keep-all', overflowWrap: 'break-word', flex: '1 1 200px', lineHeight: 1.45 }}>
+                  {liveSubtitle}
+                </span>
+                <span style={{ color: 'var(--accent-gold)', fontWeight: 700, flexShrink: 0, fontSize: '0.8rem' }}>
+                  벧엘교회 온라인 라이브
+                </span>
               </div>
             </motion.div>
           </motion.div>
