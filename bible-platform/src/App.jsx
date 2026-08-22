@@ -27,7 +27,7 @@ import Announce from './pages/Announce';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
-import { collection, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { collection, doc, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
 const AppInner = () => {
   const { toast, showToast } = useContext(UserContext);
