@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tv, Play, Settings, X, Save, Radio, Check, Power } from 'lucide-react';
+import { Tv, Play, Settings, X, Save, Radio, Check, Power, ExternalLink, HelpCircle, AlertCircle } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
@@ -16,6 +16,28 @@ const PRESET_SERVICES = [
   { title: '🔴 특별 부흥 성회 생방송 중', subtitle: '지금 특별 부흥 성회가 실시간으로 방송되고 있습니다.' },
 ];
 
+// 유튜브 Video ID 추출 함수 (watch?v=, youtu.be/, /live/, /embed/ 모두 지원)
+function extractYouTubeVideoId(url) {
+  if (!url) return null;
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|live\/)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}
+
+// 모바일 및 웹에서 가장 안정적인 유튜브 이동 URL 가공
+function formatYouTubeUrl(url) {
+  if (!url) return DEFAULT_YOUTUBE_LIVE_URL;
+  const videoId = extractYouTubeVideoId(url);
+  if (videoId) {
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  }
+  // 채널 URL일 경우 /streams(실시간 탭) 또는 /live로 자동 정규화
+  if (url.includes('youtube.com/@') && !url.includes('/live') && !url.includes('/streams')) {
+    return `${url.replace(/\/$/, '')}/streams`;
+  }
+  return url;
+}
+
 export default function LiveBanner() {
   const { currentUser, showToast } = useContext(UserContext);
   const [isLive, setIsLive] = useState(false);
@@ -23,6 +45,9 @@ export default function LiveBanner() {
   const [liveSubtitle, setLiveSubtitle] = useState('지금 실시간 예배가 방송되고 있습니다.');
   const [liveUrl, setLiveUrl] = useState(DEFAULT_YOUTUBE_LIVE_URL);
   
+  // 인앱 유튜브 플레이어 모달 상태
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+
   // 모달 폼 상태
   const [isSettingOpen, setIsSettingOpen] = useState(false);
   const [inputUrl, setInputUrl] = useState(DEFAULT_YOUTUBE_LIVE_URL);
@@ -127,6 +152,20 @@ export default function LiveBanner() {
     } catch (err) {
       console.error('라이브 설정 저장 오류:', err);
       if (showToast) showToast(`저장 오류: ${err.message}`, 'error');
+    }
+  };
+
+  // 비디오 ID 추출 여부
+  const activeVideoId = extractYouTubeVideoId(liveUrl);
+  const formattedExternalUrl = formatYouTubeUrl(liveUrl);
+
+  const handleBannerClick = () => {
+    if (activeVideoId) {
+      // 비디오 ID가 있으면 앱 내에서 팝업 플레이어로 바로 재생
+      setIsPlayerOpen(true);
+    } else {
+      // 채널 주소인 경우 유튜브 외부 링크로 이동
+      window.open(formattedExternalUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -291,10 +330,10 @@ export default function LiveBanner() {
                   <Settings size={15} />
                 </button>
               )}
-              <a
-                href={liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              
+              {/* 참여 버튼: 비디오 ID가 있으면 팝업 플레이어, 없으면 바로 새창 */}
+              <button
+                onClick={handleBannerClick}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -305,7 +344,8 @@ export default function LiveBanner() {
                   borderRadius: '24px',
                   fontWeight: 700,
                   fontSize: '0.85rem',
-                  textDecoration: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
                   boxShadow: '0 4px 12px rgba(220, 38, 38, 0.4)',
                   transition: 'all 0.2s',
                 }}
@@ -313,13 +353,86 @@ export default function LiveBanner() {
                 onMouseOut={(e) => e.currentTarget.style.background = '#dc2626'}
               >
                 <Play size={15} fill="#fff" /> 실시간 예배 참여하기
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. 관리자 라이브 링크 & 방송 설정 모달 */}
+      {/* 3. 인앱 유튜브 실시간 플레이어 모달 (어떤 기기에서도 화면 내에서 즉시 재생) */}
+      <AnimatePresence>
+        {isPlayerOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.88)', zIndex: 2100,
+              display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px'
+            }}
+            onClick={() => setIsPlayerOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 15 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: '#111', border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '20px', width: '100%', maxWidth: '820px', overflow: 'hidden',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.8)'
+              }}
+            >
+              {/* 플레이어 상단 헤더 */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', background: '#1c1c1e', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
+                  <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.95rem' }}>{liveTitle}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <a
+                    href={formattedExternalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                      color: 'var(--accent-gold)', fontSize: '12px', textDecoration: 'none',
+                      padding: '4px 10px', borderRadius: '8px', background: 'rgba(212,175,55,0.1)',
+                      border: '1px solid rgba(212,175,55,0.3)'
+                    }}
+                  >
+                    <ExternalLink size={13} /> 유튜브 앱에서 열기
+                  </a>
+                  <button
+                    onClick={() => setIsPlayerOpen(false)}
+                    style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', padding: '4px', display: 'flex' }}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+
+              {/* 유튜브 iframe 반응형 플레이어 (16:9 비율) */}
+              <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000' }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1`}
+                  title="실시간 예배 방송"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none'
+                  }}
+                />
+              </div>
+
+              {/* 플레이어 하단 안내 문구 */}
+              <div style={{ padding: '12px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#1c1c1e', color: 'rgba(255,255,255,0.7)', fontSize: '12px' }}>
+                <span>{liveSubtitle}</span>
+                <span style={{ color: 'var(--accent-gold)' }}>벧엘교회 온라인 라이브 예배</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 4. 관리자 라이브 링크 & 방송 설정 모달 */}
       <AnimatePresence>
         {isSettingOpen && (
           <motion.div
@@ -336,7 +449,7 @@ export default function LiveBanner() {
               onClick={(e) => e.stopPropagation()}
               style={{
                 background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
-                borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '500px',
+                borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '520px',
                 maxHeight: '90vh', overflowY: 'auto'
               }}
             >
@@ -347,6 +460,28 @@ export default function LiveBanner() {
                 <button onClick={() => setIsSettingOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <X size={20} />
                 </button>
+              </div>
+
+              {/* 중요 안내 박스: 왜 채널로 가고 방송 화면이 안 떴는지 설명 */}
+              <div style={{
+                background: 'rgba(212, 175, 55, 0.08)',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                borderRadius: '12px',
+                padding: '12px 14px',
+                marginBottom: '16px',
+                fontSize: '12px',
+                lineHeight: 1.5,
+                color: 'var(--text-primary)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>
+                  <AlertCircle size={15} /> 💡 방송 화면이 즉시 뜨게 하는 올바른 링크 안내
+                </div>
+                <p style={{ margin: '0 0 6px 0', color: 'var(--text-secondary)' }}>
+                  일반 채널 주소(<code>@채널이름</code>)를 넣으면 모바일 유튜브 앱에서 방송 화면 대신 <strong>채널 홈 화면</strong>으로 이동합니다.
+                </p>
+                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px 10px', borderRadius: '8px', borderLeft: '3px solid var(--accent-gold)' }}>
+                  <strong>권장 방법:</strong> 유튜브에서 방송을 시작한 후, 방송 화면의 <strong>[공유] ➔ [링크 복사]</strong>를 눌러 얻은 주소(예: <code>https://youtu.be/xxx</code> 또는 <code>https://youtube.com/watch?v=xxx</code>)를 아래에 붙여넣으시면 성도들의 화면에 <strong>생방송이 즉시 재생</strong>됩니다!
+                </div>
               </div>
 
               <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -442,23 +577,29 @@ export default function LiveBanner() {
                 {/* 5. 유튜브 라이브 URL */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
-                    유튜브 라이브 스트리밍 주소
+                    유튜브 라이브 스트리밍 주소 (영상 링크 또는 채널 링크)
                   </label>
                   <input
                     type="url"
                     required
                     value={inputUrl}
                     onChange={(e) => setInputUrl(e.target.value)}
-                    placeholder="https://www.youtube.com/@채널이름/live"
+                    placeholder="https://youtu.be/xxxx 또는 https://www.youtube.com/watch?v=xxxx"
                     style={{
                       width: '100%', padding: '10px 12px', borderRadius: '8px',
                       background: 'var(--bg-primary)', border: '1px solid var(--glass-border)',
                       color: 'var(--text-primary)', fontSize: '13px', boxSizing: 'border-box'
                     }}
                   />
-                  <p style={{ margin: '4px 0 0', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    💡 채널 주소 뒤에 <code>/live</code>를 붙여두시면 생방송 시 항상 해당 영상으로 자동 연결됩니다.
-                  </p>
+                  {extractYouTubeVideoId(inputUrl) ? (
+                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: '#4ade80', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Check size={13} /> 개별 실시간 영상 링크가 감지되었습니다! (앱 내 팝업 및 직통 재생 지원)
+                    </p>
+                  ) : (
+                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      💡 방송 시작 후 영상의 <strong>[공유] 링크</strong>를 넣으시면 가장 확실하게 생방송 화면이 뜹니다.
+                    </p>
+                  )}
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
