@@ -5,8 +5,8 @@ import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
-// 기본 벧엘교회 유튜브 채널 라이브 URL
-const DEFAULT_YOUTUBE_LIVE_URL = 'https://www.youtube.com/@bethelchurch/live';
+// 기본 벧엘교회(유정파파) 유튜브 채널 고정 라이브 URL
+const DEFAULT_YOUTUBE_LIVE_URL = 'https://www.youtube.com/@유정파파-n6e/live';
 
 const PRESET_SERVICES = [
   { title: '🔴 주일 대예배 생방송 중', subtitle: '지금 벧엘교회 주일 대예배가 실시간으로 방송되고 있습니다.' },
