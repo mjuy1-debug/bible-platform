@@ -111,14 +111,49 @@ export default function Bulletin() {
     currentUser.displayName?.includes('유정파파')
   );
 
+  // 주보 실제 날짜(date) 파싱 헬퍼 함수
+  const parseBulletinDate = (bulletin) => {
+    if (bulletin.date) {
+      const cleaned = String(bulletin.date).trim();
+      let parsed = new Date(cleaned).getTime();
+      if (!isNaN(parsed) && parsed > 0) {
+        return parsed;
+      }
+      const match = cleaned.match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
+      if (match) {
+        const year = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10) - 1;
+        const day = parseInt(match[3], 10);
+        parsed = new Date(year, month, day).getTime();
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+      }
+    }
+    if (bulletin.createdAt?.seconds) {
+      return bulletin.createdAt.seconds * 1000;
+    }
+    return 0;
+  };
+
   useEffect(() => {
-    const q = query(collection(db, 'bulletins'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, 'bulletins'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setBulletins(
-        snapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(b => !b.isSermon && (b.isDigital || b.imageUrl || b.worshipOrder))
-      );
+      const list = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(b => !b.isSermon && (b.isDigital || b.imageUrl || b.worshipOrder));
+
+      // 실제 주보 날짜(date) 최신순(내림차순) 정렬, 동일할 경우 생성일시(createdAt) 최신순
+      list.sort((a, b) => {
+        const timeA = parseBulletinDate(a);
+        const timeB = parseBulletinDate(b);
+        if (timeB !== timeA) {
+          return timeB - timeA;
+        }
+        const createdA = a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0;
+        const createdB = b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0;
+        return createdB - createdA;
+      });
+
+      setBulletins(list);
     });
     return () => unsubscribe();
   }, []);
