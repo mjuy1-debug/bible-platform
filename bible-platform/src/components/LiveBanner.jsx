@@ -148,6 +148,16 @@ export default function LiveBanner() {
     }
   }, [isPlayerOpen]);
 
+  // 광고 건너뛰기를 누르기 위해 영상을 열었을 때, 12초 후 자동으로 커버 사진으로 복귀!
+  useEffect(() => {
+    if (isPeekVideo) {
+      const peekTimer = setTimeout(() => {
+        setIsPeekVideo(false);
+      }, 12 * 1000); // 12초 후 커버 사진 자동 복귀
+      return () => clearTimeout(peekTimer);
+    }
+  }, [isPeekVideo]);
+
   const isAdmin = Boolean(
     currentUser && (
       currentUser.email?.includes('admin') || 
@@ -896,7 +906,7 @@ export default function LiveBanner() {
                   )}
                 </AnimatePresence>
 
-                {/* 3. 임시 영상 보기 모드일 때: 다시 커버 이미지로 덮기 플로팅 버튼 */}
+                {/* 3. 임시 영상 보기 모드일 때: 다시 커버 이미지로 덮기 플로팅 버튼 (12초 후 자동 복귀) */}
                 {isCoverActive && isPeekVideo && (
                   <button
                     onClick={() => setIsPeekVideo(false)}
@@ -910,18 +920,18 @@ export default function LiveBanner() {
                       gap: '5px',
                       padding: '6px 13px',
                       borderRadius: '20px',
-                      background: 'rgba(0,0,0,0.82)',
+                      background: 'rgba(0,0,0,0.85)',
                       border: '1px solid var(--accent-gold)',
                       color: 'var(--accent-gold)',
-                      fontSize: '11.5px',
+                      fontSize: '11px',
                       fontWeight: 800,
                       cursor: 'pointer',
                       backdropFilter: 'blur(6px)',
                       boxShadow: '0 4px 15px rgba(0,0,0,0.7)'
                     }}
-                    title="광고를 건너뛴 후 다시 깨끗한 커버 사진으로 복귀합니다"
+                    title="클릭하거나 12초 후 자동으로 커버 사진으로 복귀합니다"
                   >
-                    🖼️ 커버 사진으로 복귀
+                    🖼️ 커버 사진 복귀 (12초 후 자동 복귀)
                   </button>
                 )}
 
