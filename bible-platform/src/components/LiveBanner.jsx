@@ -132,13 +132,15 @@ export default function LiveBanner() {
   const [inputCoverNoticeText, setInputCoverNoticeText] = useState('잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.');
   const [isCompressing, setIsCompressing] = useState(false);
   const [showAdNotice, setShowAdNotice] = useState(true);
+  const [isPeekVideo, setIsPeekVideo] = useState(false); // 커버 이미지 덮여있을 때 광고 스킵을 위한 임시 영상 보기 모드
 
   const fileInputRef = useRef(null);
 
-  // 플레이어를 열었을 때 광고 안내 문구를 2분(120초) 후 자동 숨김 처리
+  // 플레이어를 열었을 때 상태 초기화 및 광고 안내 문구 2분 후 자동 숨김
   useEffect(() => {
     if (isPlayerOpen) {
       setShowAdNotice(true);
+      setIsPeekVideo(false);
       const timer = setTimeout(() => {
         setShowAdNotice(false);
       }, 120 * 1000);
@@ -791,14 +793,14 @@ export default function LiveBanner() {
                   />
                 )}
 
-                {/* 2. 관리자 설정 대체/대기 화면 오버레이 */}
+                {/* 2. 관리자 설정 대체/대기 화면 오버레이 (isCoverActive && !isPeekVideo 일 때만 렌더링) */}
                 <AnimatePresence>
-                  {isCoverActive && (
+                  {isCoverActive && !isPeekVideo && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.25 }}
                       style={{
                         position: 'absolute',
                         top: 0, left: 0, width: '100%', height: '100%',
@@ -860,9 +862,68 @@ export default function LiveBanner() {
                           </p>
                         </div>
                       )}
+
+                      {/* 커버 화면 우측 하단: 광고 건너뛰기를 위한 임시 영상 열기 버튼 */}
+                      {activeVideoId && (
+                        <button
+                          onClick={() => setIsPeekVideo(true)}
+                          style={{
+                            position: 'absolute',
+                            bottom: '12px',
+                            right: '12px',
+                            zIndex: 5,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            background: 'rgba(0,0,0,0.75)',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            color: '#fff',
+                            fontSize: '11.5px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            backdropFilter: 'blur(6px)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                            transition: 'all 0.2s'
+                          }}
+                          title="광고 건너뛰기를 누르거나 영상을 조작하기 위해 화면을 엽니다"
+                        >
+                          ⚡ 광고 건너뛰기 / 영상 보기
+                        </button>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {/* 3. 임시 영상 보기 모드일 때: 다시 커버 이미지로 덮기 플로팅 버튼 */}
+                {isCoverActive && isPeekVideo && (
+                  <button
+                    onClick={() => setIsPeekVideo(false)}
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      left: '12px',
+                      zIndex: 20,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '6px 13px',
+                      borderRadius: '20px',
+                      background: 'rgba(0,0,0,0.82)',
+                      border: '1px solid var(--accent-gold)',
+                      color: 'var(--accent-gold)',
+                      fontSize: '11.5px',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      backdropFilter: 'blur(6px)',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.7)'
+                    }}
+                    title="광고를 건너뛴 후 다시 깨끗한 커버 사진으로 복귀합니다"
+                  >
+                    🖼️ 커버 사진으로 복귀
+                  </button>
+                )}
 
                 {/* 영상 ID가 없고 대체화면도 꺼진 경우 안내 */}
                 {!activeVideoId && !isCoverActive && (
@@ -935,7 +996,7 @@ export default function LiveBanner() {
                           lineHeight: 1.45,
                           wordBreak: 'keep-all'
                         }}>
-                          광고가 나올 수 있으니 잠시만 기다려 주세요 광고가 나온 뒤에 은혜로운 찬양이 흘러 나옵니다
+                          광고가 나올 수 있으니 잠시만 기다려 주세요 (우측 하단 ⚡버튼으로 [광고 건너뛰기] 가능)
                         </p>
                       </div>
                     </motion.div>
