@@ -64,6 +64,49 @@ function formatYouTubeUrl(url) {
   return url;
 }
 
+// 클라이언트 측 고성능 이미지 자동 압축 (Firestore 1MB 용량 제한 완벽 해결)
+async function compressImageToSafeDataUrl(file, maxWidth = 1200, maxHeight = 675, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+        
+        // 500KB를 넘으면 2차 경량화 압축
+        if (dataUrl.length > 500000) {
+          dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+        }
+
+        resolve(dataUrl);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
+
 export default function LiveBanner() {
   const { currentUser, showToast } = useContext(UserContext);
   const [isLive, setIsLive] = useState(false);
@@ -89,6 +132,7 @@ export default function LiveBanner() {
   const [inputCoverActive, setInputCoverActive] = useState(false);
   const [inputCoverImageUrl, setInputCoverImageUrl] = useState('');
   const [inputCoverNoticeText, setInputCoverNoticeText] = useState('잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.');
+  const [isCompressing, setIsCompressing] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -237,25 +281,23 @@ export default function LiveBanner() {
     setInputCoverImageUrl(''); // 텍스트/스타일 기반으로 복구
   };
 
-  // 이미지 파일 로컬 업로드 처리 (Base64 변환)
-  const handleImageFileChange = (e) => {
+  // 이미지 파일 로컬 업로드 처리 (자동 리사이즈 & 초경량 압축)
+  const handleImageFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2.5 * 1024 * 1024) {
-      if (showToast) showToast('이미지 용량이 너무 큽니다. (2.5MB 이하 권장)', 'error');
-      return;
+    try {
+      setIsCompressing(true);
+      if (showToast) showToast('이미지를 최적화 압축 중입니다...');
+      const compressedBase64 = await compressImageToSafeDataUrl(file, 1200, 675, 0.72);
+      setInputCoverImageUrl(compressedBase64);
+      if (showToast) showToast('✅ 대체 대기 이미지가 안전하게 최적화되었습니다!');
+    } catch (err) {
+      console.error('이미지 압축 오류:', err);
+      if (showToast) showToast('이미지 처리 중 오류가 발생했습니다.', 'error');
+    } finally {
+      setIsCompressing(false);
     }
-
-    const reader = new FileReader();
-    reader.onload = (uploadEvent) => {
-      const base64 = uploadEvent.target?.result;
-      if (base64) {
-        setInputCoverImageUrl(base64);
-        if (showToast) showToast('대체 이미지가 선택되었습니다!');
-      }
-    };
-    reader.readAsDataURL(file);
   };
 
   // 관리자 설정 전체 저장 (Firestore)
