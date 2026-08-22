@@ -283,80 +283,99 @@ export default function Bulletin() {
   // --- Rendering Helpers ---
   const renderDigitalBulletin = (bulletin) => (
     <div style={{ margin: '0 auto', maxWidth: '800px', padding: '10px 0 30px' }}>
-      <div style={{ background: '#fff', color: '#333', padding: '24px 20px', borderRadius: '16px', boxShadow: 'var(--shadow-lg)' }}>
-        <h1 style={{ textAlign: 'center', color: '#1a365d', fontSize: '1.5rem', borderBottom: '2px solid #1a365d', paddingBottom: '16px', marginBottom: '24px', fontFamily: 'var(--font-serif)', lineHeight: '1.4' }}>
-          {bulletin.title} <span style={{ fontSize: '1rem', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '6px' }}>{bulletin.date}</span>
+      <div style={{
+        background: '#fff',
+        color: '#333',
+        padding: 'clamp(16px, 3.5vw, 28px) clamp(12px, 3vw, 24px)',
+        borderRadius: '16px',
+        boxShadow: 'var(--shadow-lg)',
+        wordBreak: 'keep-all',
+        overflowWrap: 'break-word'
+      }}>
+        <h1 style={{
+          textAlign: 'center',
+          color: '#1a365d',
+          fontSize: 'clamp(1.25rem, 4vw, 1.55rem)',
+          borderBottom: '2px solid #1a365d',
+          paddingBottom: '16px',
+          marginBottom: '24px',
+          fontFamily: 'var(--font-serif)',
+          lineHeight: '1.4',
+          wordBreak: 'keep-all',
+          overflowWrap: 'break-word'
+        }}>
+          {bulletin.title} <span style={{ fontSize: 'clamp(0.85rem, 2.5vw, 1rem)', fontWeight: 'normal', color: '#666', display: 'block', marginTop: '6px' }}>{bulletin.date}</span>
         </h1>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
           
           {/* Section 1: 주일 예배 */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
             {/* 오전 예배 */}
-            <div style={{ flex: '1 1 300px' }}>
-              <h2 style={{ fontSize: '1.2rem', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+            <div style={{ flex: '1 1 290px', minWidth: 0 }}>
+              <h2 style={{ fontSize: 'clamp(1.05rem, 3vw, 1.2rem)', color: '#4a148c', borderBottom: '2px solid #4a148c', paddingBottom: '8px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', wordBreak: 'keep-all' }}>
+                <span style={{ background: '#4a148c', color: '#fff', borderRadius: '50%', width: '22px', height: '22px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', flexShrink: 0 }}>✞</span>
                 주일 오전 예배
               </h2>
-              <div style={{ marginBottom: '16px', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-                <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+              <div style={{ marginBottom: '12px' }}>
+                <table style={{ width: '100%', fontSize: 'clamp(0.84rem, 2.3vw, 0.94rem)', borderCollapse: 'collapse' }}>
                   <tbody>
                     {bulletin.worshipOrder?.map((item, idx) => (
                       <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                        <td style={{ padding: '10px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top' }}>{item.type}</td>
-                        <td style={{ padding: '10px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top' }}>{item.content}</td>
-                        <td style={{ padding: '10px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top' }}>{item.leader}</td>
+                        <td style={{ padding: '8px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.type}</td>
+                        <td style={{ padding: '8px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.content}</td>
+                        <td style={{ padding: '8px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.leader}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <div style={{ textAlign: 'center', fontSize: '0.85rem', color: '#666' }}>※ 표는 일어나 주세요</div>
+              <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#666' }}>※ 표는 일어나 주세요</div>
             </div>
 
             {/* 오후 예배 (선택적) */}
             {bulletin.includeAfternoon && bulletin.afternoonOrder?.length > 0 && (
-              <div style={{ flex: '1 1 300px' }}>
-                <h2 style={{ fontSize: '1.2rem', color: '#6b21a8', borderBottom: '2px solid #6b21a8', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✞</span>
+              <div style={{ flex: '1 1 290px', minWidth: 0 }}>
+                <h2 style={{ fontSize: 'clamp(1.05rem, 3vw, 1.2rem)', color: '#6b21a8', borderBottom: '2px solid #6b21a8', paddingBottom: '8px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', wordBreak: 'keep-all' }}>
+                  <span style={{ background: '#6b21a8', color: '#fff', borderRadius: '50%', width: '22px', height: '22px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', flexShrink: 0 }}>✞</span>
                   주일 오후 예배
                 </h2>
-                <div style={{ marginBottom: '16px', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
-                  <table style={{ width: '100%', fontSize: '0.95rem', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                <div style={{ marginBottom: '12px' }}>
+                  <table style={{ width: '100%', fontSize: 'clamp(0.84rem, 2.3vw, 0.94rem)', borderCollapse: 'collapse' }}>
                     <tbody>
                       {bulletin.afternoonOrder.map((item, idx) => (
                         <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                          <td style={{ padding: '10px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top' }}>{item.type}</td>
-                          <td style={{ padding: '10px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top' }}>{item.content}</td>
-                          <td style={{ padding: '10px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top' }}>{item.leader}</td>
+                          <td style={{ padding: '8px 4px', width: '28%', fontWeight: item.type.includes('※') ? 'bold' : 'normal', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.type}</td>
+                          <td style={{ padding: '8px 4px', width: '44%', textAlign: 'center', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.content}</td>
+                          <td style={{ padding: '8px 4px', width: '28%', textAlign: 'right', color: '#555', verticalAlign: 'top', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.leader}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <div style={{ textAlign: 'center', fontSize: '0.85rem', color: '#666' }}>※ 표는 일어나 주세요</div>
+                <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#666' }}>※ 표는 일어나 주세요</div>
               </div>
             )}
           </div>
 
           {/* Section 2: 교회 소식 */}
           <div>
-            <h2 style={{ fontSize: '1.2rem', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>ℹ</span>
+            <h2 style={{ fontSize: 'clamp(1.05rem, 3vw, 1.2rem)', color: '#2b6cb0', borderBottom: '2px solid #2b6cb0', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', wordBreak: 'keep-all' }}>
+              <span style={{ background: '#2b6cb0', color: '#fff', borderRadius: '50%', width: '22px', height: '22px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', flexShrink: 0 }}>ℹ</span>
               교회 소식
             </h2>
 
             {bulletin.newsSubtitle && (
-              <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '12px', padding: '16px', marginBottom: '20px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', fontSize: '0.95rem', color: '#2b4a70', lineHeight: 1.7 }}>
+              <div style={{ background: '#eef6ff', border: '1px solid #bee3f8', borderRadius: '12px', padding: '14px 16px', marginBottom: '18px', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'keep-all', fontSize: 'clamp(0.88rem, 2.4vw, 0.95rem)', color: '#2b4a70', lineHeight: 1.7 }}>
                 {bulletin.newsSubtitle}
               </div>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', fontSize: '1rem', lineHeight: 1.7 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px', fontSize: 'clamp(0.9rem, 2.5vw, 0.98rem)', lineHeight: 1.7 }}>
               {bulletin.news?.map((newsItem, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '24px', height: '24px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', marginTop: '3px', fontWeight: 'bold' }}>{idx + 1}</span>
-                  <span style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', flex: 1 }}>
+                <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#fff', background: '#2b6cb0', borderRadius: '50%', width: '22px', height: '22px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', marginTop: '2px', fontWeight: 'bold' }}>{idx + 1}</span>
+                  <span style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'keep-all', flex: 1, lineHeight: 1.65 }}>
                     {newsItem}
                   </span>
                 </div>
@@ -371,30 +390,30 @@ export default function Bulletin() {
           </div>
 
           {/* Section 3: 기타 정보 (3열 그리드) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-            <div style={{ background: '#f8f5ff', padding: '20px', borderRadius: '16px', border: '1px solid #e9d8fd' }}>
-              <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>✿ 성도의 기본생활 ✿</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem', color: '#444' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '16px' }}>
+            <div style={{ background: '#f8f5ff', padding: '16px', borderRadius: '16px', border: '1px solid #e9d8fd', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+              <h3 style={{ textAlign: 'center', color: '#4a148c', marginBottom: '14px', fontSize: '0.95rem', fontWeight: 'bold' }}>✿ 성도의 기본생활 ✿</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: 'clamp(0.82rem, 2.2vw, 0.88rem)', color: '#444', lineHeight: 1.55 }}>
                 {STATIC_INFO.basicLife.map((life, i) => (
                   <div key={i}>• {life}</div>
                 ))}
               </div>
             </div>
 
-            <div style={{ background: '#ebf8ff', padding: '20px', borderRadius: '16px', border: '1px solid #bee3f8' }}>
-              <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>벧엘교회 기도 제목</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.9rem', color: '#444' }}>
+            <div style={{ background: '#ebf8ff', padding: '16px', borderRadius: '16px', border: '1px solid #bee3f8', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+              <h3 style={{ textAlign: 'center', color: '#2b6cb0', marginBottom: '14px', fontSize: '0.95rem', fontWeight: 'bold' }}>벧엘교회 기도 제목</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: 'clamp(0.82rem, 2.2vw, 0.88rem)', color: '#444', lineHeight: 1.55 }}>
                 {STATIC_INFO.prayers.map((prayer, i) => (
                   <div key={i}>{prayer}</div>
                 ))}
               </div>
             </div>
 
-            <div style={{ background: '#fffbeb', padding: '20px', borderRadius: '16px', border: '1px solid #fde68a' }}>
-              <h3 style={{ textAlign: 'center', color: '#92400e', marginBottom: '16px', fontSize: '1rem', fontWeight: 'bold' }}>♥ 필리핀 지교회 ♥</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem' }}>
+            <div style={{ background: '#fffbeb', padding: '16px', borderRadius: '16px', border: '1px solid #fde68a', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+              <h3 style={{ textAlign: 'center', color: '#92400e', marginBottom: '14px', fontSize: '0.95rem', fontWeight: 'bold' }}>♥ 필리핀 지교회 ♥</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: 'clamp(0.85rem, 2.3vw, 0.92rem)', lineHeight: 1.55 }}>
                 {STATIC_INFO.branches.map((branch, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e' }}>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
                     <span>👤</span> {branch.name} : {branch.pastor}
                   </div>
                 ))}
@@ -403,34 +422,34 @@ export default function Bulletin() {
           </div>
 
           {/* 예배 시간 안내 */}
-          <div style={{ background: '#f0fdf4', padding: '20px 16px', borderRadius: '16px', border: '1px solid #bbf7d0' }}>
-            <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '16px', fontSize: '1.1rem', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
+          <div style={{ background: '#f0fdf4', padding: '18px 14px', borderRadius: '16px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+            <h3 style={{ textAlign: 'center', color: '#14532d', marginBottom: '14px', fontSize: 'clamp(1rem, 2.8vw, 1.1rem)', fontWeight: 'bold' }}>🕒 예배 시간 안내</h3>
             <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-              <table style={{ width: '100%', minWidth: '320px', fontSize: '0.82rem', borderCollapse: 'collapse', textAlign: 'center', background: '#fff', tableLayout: 'fixed' }}>
+              <table style={{ width: '100%', fontSize: 'clamp(0.76rem, 2.2vw, 0.84rem)', borderCollapse: 'collapse', textAlign: 'center', background: '#fff' }}>
                 <colgroup>
-                  <col style={{ width: '36%' }} />
-                  <col style={{ width: '36%' }} />
+                  <col style={{ width: '38%' }} />
+                  <col style={{ width: '34%' }} />
                   <col style={{ width: '28%' }} />
                 </colgroup>
                 <thead>
                   <tr style={{ background: '#dcfce7', color: '#14532d' }}>
-                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>일시</th>
-                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>예배종류</th>
-                    <th style={{ padding: '10px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all' }}>장소</th>
+                    <th style={{ padding: '8px 4px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>일시</th>
+                    <th style={{ padding: '8px 4px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>예배종류</th>
+                    <th style={{ padding: '8px 4px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word' }}>장소</th>
                   </tr>
                 </thead>
                 <tbody>
                   {STATIC_INFO.schedule.map((item, i) => (
                     <tr key={i} style={{ background: i % 2 === 0 ? '#fff' : '#f9fefb' }}>
-                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.time}</td>
-                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.name}</td>
-                      <td style={{ padding: '9px 6px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.4 }}>{item.place}</td>
+                      <td style={{ padding: '8px 4px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.time}</td>
+                      <td style={{ padding: '8px 4px', border: '1px solid #bbf7d0', fontWeight: 'bold', color: '#166534', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.name}</td>
+                      <td style={{ padding: '8px 4px', border: '1px solid #bbf7d0', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.45 }}>{item.place}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div style={{ textAlign: 'center', background: '#166534', color: '#fff', padding: '12px', borderRadius: '12px', marginTop: '16px', fontSize: '0.9rem', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+            <div style={{ textAlign: 'center', background: '#166534', color: '#fff', padding: '10px 14px', borderRadius: '12px', marginTop: '14px', fontSize: 'clamp(0.8rem, 2.3vw, 0.88rem)', lineHeight: 1.55, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
               날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
             </div>
           </div>
