@@ -136,14 +136,14 @@ export default function LiveBanner() {
 
   const fileInputRef = useRef(null);
 
-  // 플레이어를 열었을 때 상태 초기화 및 광고 안내 문구 2분 후 자동 숨김
+  // 플레이어를 열었을 때 상태 초기화 및 광고 안내 문구 12초 후 자동 숨김 (초반 안내 후 빠르게 사라짐)
   useEffect(() => {
     if (isPlayerOpen) {
       setShowAdNotice(true);
       setIsPeekVideo(false);
       const timer = setTimeout(() => {
         setShowAdNotice(false);
-      }, 120 * 1000);
+      }, 12 * 1000); // 12초 후 부드럽게 자동 숨김
       return () => clearTimeout(timer);
     }
   }, [isPlayerOpen]);
