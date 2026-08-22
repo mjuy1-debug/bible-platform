@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tv, Play, Settings, X, Save, Radio, Check, Power, ExternalLink, HelpCircle, AlertCircle } from 'lucide-react';
+import { Tv, Play, Settings, X, Save, Radio, Check, Power, ExternalLink, Bell, BellRing, AlertCircle } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
@@ -54,6 +54,7 @@ export default function LiveBanner() {
   const [inputTitle, setInputTitle] = useState('🔴 주일 대예배 생방송 중');
   const [inputSubtitle, setInputSubtitle] = useState('지금 벧엘교회 주일 대예배가 실시간으로 방송되고 있습니다.');
   const [inputIsLive, setInputIsLive] = useState(false);
+  const [sendNotificationCheck, setSendNotificationCheck] = useState(false); // 알림 발송 체크 여부
 
   const isAdmin = Boolean(
     currentUser && (
@@ -96,7 +97,7 @@ export default function LiveBanner() {
     return () => unsub();
   }, []);
 
-  // 관리자 빠른 ON/OFF 토글
+  // 1. 빠른 배너 ON / OFF (알림 없이 조용히 배너만 켜기/끄기)
   const handleQuickToggle = async () => {
     const nextState = !isLive;
     try {
@@ -113,11 +114,38 @@ export default function LiveBanner() {
       setIsLive(nextState);
       setInputIsLive(nextState);
       if (showToast) {
-        showToast(nextState ? '🔴 실시간 방송 배너를 켰습니다! (모든 성도에게 표시됨)' : '⏹️ 실시간 방송 배너를 껐습니다.');
+        showToast(nextState ? '🔴 배너를 켰습니다 (알림 없이 조용히 켜짐).' : '⏹️ 실시간 방송 배너를 껐습니다.');
       }
     } catch (err) {
       console.error('라이브 토글 오류:', err);
       if (showToast) showToast(`오류: ${err.message}`, 'error');
+    }
+  };
+
+  // 2. 알림과 함께 배너 켜기 / 전교인 알림 즉시 발송
+  const handleToggleWithNotification = async () => {
+    try {
+      const notifId = Date.now().toString();
+      await setDoc(doc(db, 'settings', 'liveStream'), {
+        isLive: true,
+        forceLive: true,
+        notificationId: notifId,
+        notificationTriggeredAt: Date.now(),
+        url: liveUrl,
+        title: liveTitle,
+        subtitle: liveSubtitle,
+        updatedBy: currentUser?.displayName || '관리자',
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      setIsLive(true);
+      setInputIsLive(true);
+      if (showToast) {
+        showToast('🔔 실시간 생방송 시작 알림이 모든 성도들에게 발송되었습니다!');
+      }
+    } catch (err) {
+      console.error('알림 발송 오류:', err);
+      if (showToast) showToast(`알림 발송 오류: ${err.message}`, 'error');
     }
   };
 
@@ -133,7 +161,7 @@ export default function LiveBanner() {
     if (!inputUrl.trim()) return;
 
     try {
-      await setDoc(doc(db, 'settings', 'liveStream'), {
+      const payload = {
         url: inputUrl.trim(),
         title: inputTitle.trim() || '🔴 실시간 예배 생방송 중',
         subtitle: inputSubtitle.trim() || '지금 실시간 예배가 방송되고 있습니다.',
@@ -141,14 +169,30 @@ export default function LiveBanner() {
         forceLive: inputIsLive,
         updatedBy: currentUser?.displayName || '관리자',
         updatedAt: new Date().toISOString()
-      }, { merge: true });
+      };
+
+      // 관리자가 알림 발송을 체크했을 때만 notificationId 갱신
+      if (inputIsLive && sendNotificationCheck) {
+        payload.notificationId = Date.now().toString();
+        payload.notificationTriggeredAt = Date.now();
+      }
+
+      await setDoc(doc(db, 'settings', 'liveStream'), payload, { merge: true });
 
       setLiveUrl(inputUrl.trim());
       setLiveTitle(inputTitle.trim());
       setLiveSubtitle(inputSubtitle.trim());
       setIsLive(inputIsLive);
       setIsSettingOpen(false);
-      if (showToast) showToast('✅ 실시간 방송 설정이 저장되었습니다!');
+      setSendNotificationCheck(false); // 저장 후 체크 해제 리셋
+
+      if (showToast) {
+        if (inputIsLive && sendNotificationCheck) {
+          showToast('✅ 설정 저장 완료 및 전교인 생방송 푸시 알림이 발송되었습니다!');
+        } else {
+          showToast('✅ 실시간 방송 설정이 저장되었습니다!');
+        }
+      }
     } catch (err) {
       console.error('라이브 설정 저장 오류:', err);
       if (showToast) showToast(`저장 오류: ${err.message}`, 'error');
@@ -176,20 +220,20 @@ export default function LiveBanner() {
         <div style={{
           maxWidth: '960px',
           margin: '0 auto 1rem',
-          padding: '8px 14px',
-          borderRadius: '12px',
+          padding: '10px 14px',
+          borderRadius: '14px',
           background: isLive ? 'rgba(220, 38, 38, 0.12)' : 'rgba(212, 175, 55, 0.08)',
           border: isLive ? '1px solid rgba(239, 68, 68, 0.35)' : '1px solid rgba(212, 175, 55, 0.25)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '8px'
+          gap: '10px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <Radio size={15} color={isLive ? '#ef4444' : 'var(--accent-gold)'} />
             <span style={{ fontSize: '12px', fontWeight: 700, color: isLive ? '#f87171' : 'var(--accent-gold)' }}>
-              실시간 방송 관리 (수동 제어):
+              실시간 방송 관리:
             </span>
             <span style={{
               fontSize: '11px',
@@ -203,28 +247,96 @@ export default function LiveBanner() {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {/* 빠른 ON / OFF 토글 버튼 */}
-            <button
-              onClick={handleQuickToggle}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '5px 12px',
-                borderRadius: '8px',
-                background: isLive ? '#4b5563' : '#dc2626',
-                border: 'none',
-                color: '#fff',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              <Power size={13} />
-              {isLive ? '배너 끄기' : '🔴 지금 배너 켜기'}
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+            {!isLive ? (
+              <>
+                {/* 1) 알림 없이 배너만 켜기 */}
+                <button
+                  onClick={handleQuickToggle}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 10px',
+                    borderRadius: '8px',
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text-primary)',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                  title="알림 발송 없이 조용히 배너만 켭니다"
+                >
+                  <Power size={13} /> 배너만 켜기
+                </button>
+
+                {/* 2) 전교인 알림과 함께 배너 켜기 */}
+                <button
+                  onClick={handleToggleWithNotification}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 12px',
+                    borderRadius: '8px',
+                    background: '#dc2626',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(220, 38, 38, 0.4)'
+                  }}
+                  title="배너를 켜고 전교인에게 즉시 생방송 시작 푸시 알림을 발송합니다"
+                >
+                  <BellRing size={13} /> 🔔 알림 보내며 켜기
+                </button>
+              </>
+            ) : (
+              <>
+                {/* 배너 끄기 */}
+                <button
+                  onClick={handleQuickToggle}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 12px',
+                    borderRadius: '8px',
+                    background: '#4b5563',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Power size={13} /> 배너 끄기
+                </button>
+
+                {/* 방송 중 알림 재발송 */}
+                <button
+                  onClick={handleToggleWithNotification}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 10px',
+                    borderRadius: '8px',
+                    background: 'rgba(220, 38, 38, 0.25)',
+                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                    color: '#fca5a5',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer'
+                  }}
+                  title="현재 방송 중인 알림을 성도들에게 다시 전송합니다"
+                >
+                  <Bell size={13} /> 🔔 알림 다시 보내기
+                </button>
+              </>
+            )}
 
             {/* 상세 설정 버튼 */}
             <button
@@ -498,28 +610,6 @@ export default function LiveBanner() {
                 </button>
               </div>
 
-              {/* 중요 안내 박스: 왜 채널로 가고 방송 화면이 안 떴는지 설명 */}
-              <div style={{
-                background: 'rgba(212, 175, 55, 0.08)',
-                border: '1px solid rgba(212, 175, 55, 0.3)',
-                borderRadius: '12px',
-                padding: '12px 14px',
-                marginBottom: '16px',
-                fontSize: '12px',
-                lineHeight: 1.5,
-                color: 'var(--text-primary)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>
-                  <AlertCircle size={15} /> 💡 방송 화면이 즉시 뜨게 하는 올바른 링크 안내
-                </div>
-                <p style={{ margin: '0 0 6px 0', color: 'var(--text-secondary)' }}>
-                  일반 채널 주소(<code>@채널이름</code>)를 넣으면 모바일 유튜브 앱에서 방송 화면 대신 <strong>채널 홈 화면</strong>으로 이동합니다.
-                </p>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px 10px', borderRadius: '8px', borderLeft: '3px solid var(--accent-gold)' }}>
-                  <strong>권장 방법:</strong> 유튜브에서 방송을 시작한 후, 방송 화면의 <strong>[공유] ➔ [링크 복사]</strong>를 눌러 얻은 주소(예: <code>https://youtu.be/xxx</code> 또는 <code>https://youtube.com/watch?v=xxx</code>)를 아래에 붙여넣으시면 성도들의 화면에 <strong>생방송이 즉시 재생</strong>됩니다!
-                </div>
-              </div>
-
               <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {/* 1. 수동 라이브 켜기 / 끄기 토글 */}
                 <label style={{
@@ -544,7 +634,32 @@ export default function LiveBanner() {
                   </div>
                 </label>
 
-                {/* 2. 빠른 예배 프리셋 선택 */}
+                {/* 2. 전교인 알림 발송 체크박스 (관리자가 체크할 때만 전송) */}
+                {inputIsLive && (
+                  <label style={{
+                    display: 'flex', alignItems: 'center', gap: '12px', padding: '14px',
+                    borderRadius: '12px', background: sendNotificationCheck ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.03)',
+                    border: sendNotificationCheck ? '1px solid var(--accent-gold)' : '1px solid var(--glass-border)',
+                    cursor: 'pointer'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={sendNotificationCheck}
+                      onChange={(e) => setSendNotificationCheck(e.target.checked)}
+                      style={{ width: '18px', height: '18px', accentColor: 'var(--accent-gold)' }}
+                    />
+                    <div>
+                      <p style={{ margin: 0, fontSize: '13.5px', fontWeight: 800, color: sendNotificationCheck ? 'var(--accent-gold)' : 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <BellRing size={16} /> 🔔 전교인에게 실시간 생방송 시작 푸시 알림 발송하기
+                      </p>
+                      <p style={{ margin: '3px 0 0', fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                        체크하고 저장 시 모든 성도님들의 스마트폰으로 <strong>생방송 알림과 차임벨</strong>이 즉시 발송됩니다. (체크하지 않으면 조용히 배너만 켜집니다)
+                      </p>
+                    </div>
+                  </label>
+                )}
+
+                {/* 3. 빠른 예배 프리셋 선택 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>
                     빠른 예배 제목 선택
@@ -572,7 +687,7 @@ export default function LiveBanner() {
                   </div>
                 </div>
 
-                {/* 3. 배너 제목 직접 수정 */}
+                {/* 4. 배너 제목 직접 수정 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
                     배너 타이틀
@@ -591,7 +706,7 @@ export default function LiveBanner() {
                   />
                 </div>
 
-                {/* 4. 배너 설명 */}
+                {/* 5. 배너 설명 */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
                     배너 안내 문구
@@ -610,32 +725,26 @@ export default function LiveBanner() {
                   />
                 </div>
 
-                {/* 5. 유튜브 라이브 URL */}
+                {/* 6. 유튜브 라이브 URL */}
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)' }}>
-                    유튜브 라이브 스트리밍 주소 (영상 링크 또는 채널 링크)
+                    유튜브 라이브 스트리밍 주소
                   </label>
                   <input
                     type="url"
                     required
                     value={inputUrl}
                     onChange={(e) => setInputUrl(e.target.value)}
-                    placeholder="https://youtu.be/xxxx 또는 https://www.youtube.com/watch?v=xxxx"
+                    placeholder="https://www.youtube.com/@유정파파-n6e/live"
                     style={{
                       width: '100%', padding: '10px 12px', borderRadius: '8px',
                       background: 'var(--bg-primary)', border: '1px solid var(--glass-border)',
                       color: 'var(--text-primary)', fontSize: '13px', boxSizing: 'border-box'
                     }}
                   />
-                  {extractYouTubeVideoId(inputUrl) ? (
-                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: '#4ade80', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Check size={13} /> 개별 실시간 영상 링크가 감지되었습니다! (앱 내 팝업 및 직통 재생 지원)
-                    </p>
-                  ) : (
-                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                      💡 방송 시작 후 영상의 <strong>[공유] 링크</strong>를 넣으시면 가장 확실하게 생방송 화면이 뜹니다.
-                    </p>
-                  )}
+                  <p style={{ margin: '4px 0 0', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    💡 <code>https://www.youtube.com/@유정파파-n6e/live</code> 고정 주소를 사용하시면 매번 바꾸지 않아도 방송 시 자동 연결됩니다.
+                  </p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>

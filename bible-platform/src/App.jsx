@@ -236,6 +236,113 @@ const AppInner = () => {
     return () => unsubAnnounce();
   }, [showToast]);
 
+  // 4. 실시간 생방송 알림 감시 (관리자가 방송 알림을 체크하여 발송했을 때만 전교인에게 푸시 + 차임벨)
+  useEffect(() => {
+    let isInitial = true;
+    const unsubLive = onSnapshot(doc(db, 'settings', 'liveStream'), (snap) => {
+      if (isInitial) {
+        isInitial = false;
+        // 앱을 켰을 때, 최근 15분 이내에 알림이 발송되었고 아직 확인하지 않은 알림이면 1회 띄움
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.isLive && data.notificationId) {
+            const notifTime = data.notificationTriggeredAt || 0;
+            const fifteenMinutesAgo = Date.now() - (15 * 60 * 1000);
+            const lastSeenNotifId = localStorage.getItem('last_seen_live_notif_id');
+            if (notifTime > fifteenMinutesAgo && lastSeenNotifId !== String(data.notificationId)) {
+              localStorage.setItem('last_seen_live_notif_id', String(data.notificationId));
+              const title = data.title || '🔴 [생방송] 실시간 예배 중계';
+              const body = data.subtitle || '지금 벧엘교회 실시간 예배가 방송되고 있습니다. 참여하세요!';
+              showToast(`${title} — ${body}`);
+              if ('Notification' in window && Notification.permission === 'granted') {
+                const notifOptions = {
+                  body,
+                  icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                  badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                  tag: `live-${data.notificationId}`,
+                  vibrate: [200, 100, 200, 100, 400],
+                  renotify: true,
+                  requireInteraction: true,
+                  data: { url: '/' }
+                };
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.ready.then(reg => reg.showNotification(title, notifOptions)).catch(() => {
+                    try { new Notification(title, notifOptions); } catch (e) {}
+                  });
+                } else {
+                  try { new Notification(title, notifOptions); } catch (e) {}
+                }
+              }
+            }
+          }
+        }
+        return;
+      }
+
+      if (snap.exists()) {
+        const data = snap.data();
+        // isLive 상태이고, notificationId가 새로 발송된 경우에만 알림 발송
+        if (data.isLive && data.notificationId) {
+          const lastSeenNotifId = localStorage.getItem('last_seen_live_notif_id');
+          if (lastSeenNotifId !== String(data.notificationId)) {
+            localStorage.setItem('last_seen_live_notif_id', String(data.notificationId));
+            const title = data.title || '🔴 [생방송] 실시간 예배 중계';
+            const body = data.subtitle || '지금 벧엘교회 실시간 예배가 방송되고 있습니다. 참여하세요!';
+            
+            // 1. 화면 내 강조 토스트
+            showToast(`${title} — ${body}`);
+
+            // 2. 맑은 차임벨 소리 & 진동
+            try {
+              const AudioContext = window.AudioContext || window.webkitAudioContext;
+              if (AudioContext) {
+                const ctx = new AudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.15); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.3); // G5
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 1.0);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 1.0);
+              }
+            } catch (e) {}
+
+            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 400]);
+
+            // 3. 브라우저/모바일 시스템 푸시 알림
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const notifOptions = {
+                body,
+                icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                tag: `live-${data.notificationId}`,
+                vibrate: [200, 100, 200, 100, 400],
+                renotify: true,
+                requireInteraction: true,
+                data: { url: '/' }
+              };
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(reg => reg.showNotification(title, notifOptions)).catch(() => {
+                  try { new Notification(title, notifOptions); } catch (e) {}
+                });
+              } else {
+                try { new Notification(title, notifOptions); } catch (e) {}
+              }
+            }
+          }
+        }
+      }
+    }, (err) => console.warn('라이브 방송 알림 감시 오류:', err));
+
+    return () => unsubLive();
+  }, [showToast]);
+
   return (
     <>
       <Navbar />
