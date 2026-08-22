@@ -131,8 +131,20 @@ export default function LiveBanner() {
   const [inputCoverImageUrl, setInputCoverImageUrl] = useState('');
   const [inputCoverNoticeText, setInputCoverNoticeText] = useState('잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.');
   const [isCompressing, setIsCompressing] = useState(false);
+  const [showAdNotice, setShowAdNotice] = useState(true);
 
   const fileInputRef = useRef(null);
+
+  // 플레이어를 열었을 때 광고 안내 문구를 2분(120초) 후 자동 숨김 처리
+  useEffect(() => {
+    if (isPlayerOpen) {
+      setShowAdNotice(true);
+      const timer = setTimeout(() => {
+        setShowAdNotice(false);
+      }, 120 * 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPlayerOpen]);
 
   const isAdmin = Boolean(
     currentUser && (
@@ -766,10 +778,10 @@ export default function LiveBanner() {
 
               {/* 플레이어 본체 구역 (16:9 비율) */}
               <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', overflow: 'hidden' }}>
-                {/* 1. 유튜브 실시간 스트림 영상 (광고 최소화 youtube-nocookie 적용) */}
+                {/* 1. 유튜브 실시간 스트림 영상 (광고 최소화 및 엉뚱한 곡 재생 방지 playlist lock) */}
                 {activeVideoId && (
                   <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+                    src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${activeVideoId}`}
                     title="실시간 예배 방송"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -880,50 +892,64 @@ export default function LiveBanner() {
 
               {/* 분리된 하단 설명 및 안내 화면 구역 */}
               <div style={{
-                padding: 'clamp(14px, 3vw, 20px)',
+                padding: 'clamp(14px, 3vw, 18px)',
                 background: '#18181b',
                 borderTop: '1px solid rgba(255,255,255,0.12)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '12px'
+                gap: '10px'
               }}>
-                {/* 1. 중요 안내 배너: 광고 대기 안내 */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '12px 14px',
-                  borderRadius: '12px',
-                  background: 'rgba(212, 175, 55, 0.12)',
-                  border: '1px solid rgba(212, 175, 55, 0.35)',
-                  color: 'var(--text-primary)'
-                }}>
-                  <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
-                    background: 'rgba(212, 175, 55, 0.2)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'var(--accent-gold)', flexShrink: 0
-                  }}>
-                    ⏳
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <p style={{ margin: 0, fontSize: 'clamp(0.85rem, 2.5vw, 0.92rem)', fontWeight: 800, color: 'var(--accent-gold)', wordBreak: 'keep-all' }}>
-                      광고가 나올 수 있으니 잠시만 기다려 주세요
-                    </p>
-                    <p style={{ margin: '2px 0 0', fontSize: 'clamp(0.74rem, 2vw, 0.8rem)', color: 'rgba(255, 255, 255, 0.75)', lineHeight: 1.4, wordBreak: 'keep-all' }}>
-                      유튜브 시작 광고가 지나간 후 본 생방송 예배가 바로 시작됩니다.
-                    </p>
-                  </div>
-                </div>
+                {/* 1. 광고 대기 안내 배너 (2분 후 부드럽게 자동 사라짐) */}
+                <AnimatePresence>
+                  {showAdNotice && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
+                      transition={{ duration: 0.4 }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        padding: '12px 14px',
+                        borderRadius: '12px',
+                        background: 'rgba(212, 175, 55, 0.12)',
+                        border: '1px solid rgba(212, 175, 55, 0.35)',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      <div style={{
+                        width: '30px', height: '30px', borderRadius: '50%',
+                        background: 'rgba(212, 175, 55, 0.2)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--accent-gold)', flexShrink: 0
+                      }}>
+                        ⏳
+                      </div>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <p style={{
+                          margin: 0,
+                          fontSize: 'clamp(0.84rem, 2.4vw, 0.92rem)',
+                          fontWeight: 800,
+                          color: 'var(--accent-gold)',
+                          lineHeight: 1.45,
+                          wordBreak: 'keep-all'
+                        }}>
+                          광고가 나올 수 있으니 잠시만 기다려 주세요 광고가 나온 뒤에 은혜로운 찬양이 흘러 나옵니다
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                {/* 2. 예배 상세 안내 및 부가 정보 */}
+                {/* 2. 예배/찬양 상세 안내 정보 */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   flexWrap: 'wrap',
-                  gap: '10px',
-                  padding: '4px 2px'
+                  gap: '8px',
+                  padding: '2px 0'
                 }}>
                   <div style={{ minWidth: 0, flex: '1 1 240px' }}>
                     <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 700, letterSpacing: '0.5px' }}>
@@ -932,29 +958,6 @@ export default function LiveBanner() {
                     <p style={{ margin: '2px 0 0', fontSize: 'clamp(0.8rem, 2vw, 0.86rem)', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.45, wordBreak: 'keep-all' }}>
                       {liveSubtitle || '지금 벧엘교회 실시간 예배가 방송되고 있습니다.'}
                     </p>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                    <a
-                      href={formattedExternalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        padding: '7px 14px',
-                        borderRadius: '20px',
-                        background: '#dc2626',
-                        color: '#fff',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        textDecoration: 'none',
-                        boxShadow: '0 2px 8px rgba(220, 38, 38, 0.35)'
-                      }}
-                    >
-                      <ExternalLink size={13} /> 실시간 채팅 참여하기
-                    </a>
                   </div>
                 </div>
               </div>
