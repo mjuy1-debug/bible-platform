@@ -148,12 +148,12 @@ export default function LiveBanner() {
     }
   }, [isPlayerOpen]);
 
-  // 광고 건너뛰기를 누르기 위해 영상을 열었을 때, 12초 후 자동으로 커버 사진으로 복귀!
+  // 광고 건너뛰기를 누르기 위해 영상을 열었을 때, 7초 후 자동으로 커버 사진으로 복귀! (5초 스킵 누른 직후 바로 복귀)
   useEffect(() => {
     if (isPeekVideo) {
       const peekTimer = setTimeout(() => {
         setIsPeekVideo(false);
-      }, 12 * 1000); // 12초 후 커버 사진 자동 복귀
+      }, 7 * 1000); // 7초 후 커버 사진 자동 복귀
       return () => clearTimeout(peekTimer);
     }
   }, [isPeekVideo]);
@@ -929,9 +929,9 @@ export default function LiveBanner() {
                       backdropFilter: 'blur(6px)',
                       boxShadow: '0 4px 15px rgba(0,0,0,0.7)'
                     }}
-                    title="클릭하거나 12초 후 자동으로 커버 사진으로 복귀합니다"
+                    title="클릭하거나 7초 후 자동으로 커버 사진으로 복귀합니다"
                   >
-                    🖼️ 커버 사진 복귀 (12초 후 자동 복귀)
+                    🖼️ 커버 사진 복귀 (잠시 후 자동 복귀)
                   </button>
                 )}
 
