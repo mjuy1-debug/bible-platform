@@ -23,22 +23,20 @@ const PRESET_SERVICES = [
 // 대기/대체 화면 추천 프리셋
 const COVER_PRESETS = [
   {
-    name: '예배 준비 대기',
+    name: '🖼️ 문구 없음 (이미지만 깔끔하게)',
+    text: '',
+  },
+  {
+    name: '🎵 CCM 찬양 대기',
+    text: '지금은 은혜로운 CCM 찬양을 듣는 시간입니다 🎵',
+  },
+  {
+    name: '🙏 예배 준비 대기',
     text: '잠시 후 은혜로운 예배가 시작됩니다.\n마음과 정성을 다해 기도로 준비합니다.',
-    bg: 'linear-gradient(135deg, #1e1b18 0%, #2a241a 50%, #151311 100%)',
-    color: '#d4af37'
   },
   {
-    name: '찬양 준비 대기',
-    text: '지금은 찬양으로 예배를 준비하는 시간입니다.\n주님의 이름을 높여 찬양합니다 🎵',
-    bg: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #090d16 100%)',
-    color: '#60a5fa'
-  },
-  {
-    name: '방송 점검 안내',
-    text: '원활한 실시간 방송 송출을 위해 잠시 점검 중입니다.\n잠시만 기다려 주시기 바랍니다 ⚙️',
-    bg: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)',
-    color: '#f43f5e'
+    name: '⚙️ 방송 점검 안내',
+    text: '원활한 실시간 방송 송출을 위해 잠시 점검 중입니다 ⚙️',
   },
 ];
 
@@ -768,10 +766,10 @@ export default function LiveBanner() {
 
               {/* 플레이어 본체 구역 (16:9 비율) */}
               <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', overflow: 'hidden' }}>
-                {/* 1. 유튜브 실시간 스트림 영상 */}
+                {/* 1. 유튜브 실시간 스트림 영상 (광고 최소화 youtube-nocookie 적용) */}
                 {activeVideoId && (
                   <iframe
-                    src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1`}
+                    src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
                     title="실시간 예배 방송"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -781,7 +779,7 @@ export default function LiveBanner() {
                   />
                 )}
 
-                {/* 2. 관리자 설정 대체/대기 화면 오버레이 (isCoverActive = true 일 때 영상 위를 완전히 덮음) */}
+                {/* 2. 관리자 설정 대체/대기 화면 오버레이 */}
                 <AnimatePresence>
                   {isCoverActive && (
                     <motion.div
@@ -805,46 +803,51 @@ export default function LiveBanner() {
                         boxSizing: 'border-box'
                       }}
                     >
-                      {/* 반투명 백드롭 (이미지가 있을 때 글자 가독성 보장) */}
-                      <div style={{
-                        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                        background: coverImageUrl ? 'rgba(0,0,0,0.55)' : 'transparent',
-                        zIndex: 1
-                      }} />
-
-                      <div style={{ position: 'relative', zIndex: 2, maxWidth: '85%' }}>
+                      {/* 텍스트가 있을 때만 반투명 백드롭 표시 (문구 없으면 순수 원본 이미지 100% 선명하게 표시) */}
+                      {Boolean(coverNoticeText?.trim()) && (
                         <div style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '6px',
-                          padding: '4px 12px', borderRadius: '99px',
-                          background: 'rgba(212,175,55,0.2)', border: '1px solid var(--accent-gold)',
-                          color: 'var(--accent-gold)', fontSize: '11px', fontWeight: 800,
-                          marginBottom: '12px'
-                        }}>
-                          <Sparkles size={13} /> 예배 준비 및 안내
+                          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                          background: coverImageUrl ? 'rgba(0,0,0,0.55)' : 'transparent',
+                          zIndex: 1
+                        }} />
+                      )}
+
+                      {/* 텍스트가 작성되어 있을 때만 문구 레이어 표시 */}
+                      {Boolean(coverNoticeText?.trim()) && (
+                        <div style={{ position: 'relative', zIndex: 2, maxWidth: '85%' }}>
+                          <div style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '6px',
+                            padding: '4px 12px', borderRadius: '99px',
+                            background: 'rgba(212,175,55,0.2)', border: '1px solid var(--accent-gold)',
+                            color: 'var(--accent-gold)', fontSize: '11px', fontWeight: 800,
+                            marginBottom: '12px'
+                          }}>
+                            <Sparkles size={13} /> 안내
+                          </div>
+
+                          <h4 style={{
+                            margin: '0 0 10px 0',
+                            color: '#fff',
+                            fontSize: 'clamp(1rem, 3.5vw, 1.35rem)',
+                            fontWeight: 800,
+                            lineHeight: 1.4,
+                            whiteSpace: 'pre-line',
+                            wordBreak: 'keep-all',
+                            textShadow: '0 2px 10px rgba(0,0,0,0.8)'
+                          }}>
+                            {coverNoticeText}
+                          </h4>
+
+                          <p style={{
+                            margin: 0,
+                            color: 'rgba(255,255,255,0.8)',
+                            fontSize: 'clamp(0.75rem, 2vw, 0.88rem)',
+                            wordBreak: 'keep-all'
+                          }}>
+                            벧엘교회 온라인 실시간 방송
+                          </p>
                         </div>
-
-                        <h4 style={{
-                          margin: '0 0 10px 0',
-                          color: '#fff',
-                          fontSize: 'clamp(1rem, 3.5vw, 1.35rem)',
-                          fontWeight: 800,
-                          lineHeight: 1.4,
-                          whiteSpace: 'pre-line',
-                          wordBreak: 'keep-all',
-                          textShadow: '0 2px 10px rgba(0,0,0,0.8)'
-                        }}>
-                          {coverNoticeText || '잠시 후 예배가 시작됩니다.'}
-                        </h4>
-
-                        <p style={{
-                          margin: 0,
-                          color: 'rgba(255,255,255,0.8)',
-                          fontSize: 'clamp(0.75rem, 2vw, 0.88rem)',
-                          wordBreak: 'keep-all'
-                        }}>
-                          벧엘교회 온라인 실시간 방송
-                        </p>
-                      </div>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
