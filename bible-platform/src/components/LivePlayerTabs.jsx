@@ -283,18 +283,24 @@ function CCMTab({ liveUrl, onSelectVideo, customTracks }) {
 
 /* ─── 탭1: 성경 ─── */
 function BibleTab() {
+  const OLD_BOOKS = BIBLE_BOOKS.filter(b => b.testament === 'old');
+  const NEW_BOOKS = BIBLE_BOOKS.filter(b => b.testament === 'new');
+
   const [testament, setTestament] = useState('old');
-  const [book, setBook] = useState(BIBLE_BOOKS[0]);
+  const [book, setBook] = useState(OLD_BOOKS[0]);
   const [chapter, setChapter] = useState(1);
   const [verses, setVerses] = useState([]);
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
   const bookList = testament === 'old' ? OLD_BOOKS : NEW_BOOKS;
 
+  const [error, setError] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setVerses([]);
+    setError(false);
     fetchChapter(book.id, chapter)
       .then(d => {
         if (!cancelled) {
@@ -303,7 +309,10 @@ function BibleTab() {
         }
       })
       .catch(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          setError(true);
+        }
       });
     return () => {
       cancelled = true;
@@ -384,6 +393,25 @@ function BibleTab() {
           <div style={{ textAlign: 'center', padding: '28px 0', color: 'rgba(255,255,255,0.35)' }}>
             <Loader size={18} />
             <p style={{ margin: '6px 0 0', fontSize: '11.5px' }}>말씀을 불러오는 중...</p>
+          </div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '32px 12px', color: 'rgba(255,255,255,0.4)' }}>
+            <p style={{ fontSize: '24px', margin: '0 0 8px' }}>📶</p>
+            <p style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.6)', margin: '0 0 6px' }}>말씀을 불러오지 못했습니다</p>
+            <p style={{ fontSize: '11.5px', margin: 0, lineHeight: 1.5 }}>
+              인터넷 연결을 확인하신 후<br/>다시 시도해 주세요
+            </p>
+            <button
+              onClick={() => { setVerses([]); setError(false); setLoading(true); fetchChapter(book.id, chapter).then(d => { setVerses(d || []); setLoading(false); }).catch(() => { setLoading(false); setError(true); }); }}
+              style={{ marginTop: '14px', padding: '8px 18px', borderRadius: '8px', background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)', color: '#d4af37', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}
+            >
+              🔄 다시 불러오기
+            </button>
+          </div>
+        ) : verses.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '28px 0', color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>
+            <p style={{ fontSize: '22px', margin: '0 0 8px' }}>📖</p>
+            <p style={{ margin: 0 }}>구절 데이터가 없습니다</p>
           </div>
         ) : (
           verses.map(v => (
