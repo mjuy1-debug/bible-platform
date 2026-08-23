@@ -619,7 +619,17 @@ export default function LiveBanner() {
               </div>
 
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '2px' }}>
+                {/* 배지 행: 화도벧엘교회 → LIVE ON → 대기 중 */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '5px' }}>
+                  <span style={{
+                    background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.9)',
+                    fontSize: '10px', fontWeight: 800,
+                    padding: '2px 8px', borderRadius: '99px',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    letterSpacing: '0.3px', flexShrink: 0
+                  }}>
+                    ⛪ 화도벧엘교회
+                  </span>
                   <span style={{
                     background: '#dc2626', color: '#fff', fontSize: '10px', fontWeight: 800,
                     padding: '2px 7px', borderRadius: '99px', letterSpacing: '0.5px', flexShrink: 0
@@ -634,33 +644,14 @@ export default function LiveBanner() {
                       대기 중
                     </span>
                   )}
-                  <h3 style={{ margin: 0, fontSize: 'clamp(0.92rem, 2.5vw, 1.05rem)', fontWeight: 800, color: '#fff', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.35 }}>
-                    {liveTitle}
-                  </h3>
                 </div>
-                <p style={{ margin: '4px 0 0 0', fontSize: 'clamp(0.78rem, 2vw, 0.85rem)', color: 'rgba(255, 255, 255, 0.88)', lineHeight: 1.45, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+                {/* 예배 제목 */}
+                <h3 style={{ margin: '0 0 3px 0', fontSize: 'clamp(0.92rem, 2.5vw, 1.05rem)', fontWeight: 800, color: '#fff', wordBreak: 'keep-all', overflowWrap: 'break-word', lineHeight: 1.35 }}>
+                  {liveTitle}
+                </h3>
+                <p style={{ margin: 0, fontSize: 'clamp(0.78rem, 2vw, 0.85rem)', color: 'rgba(255, 255, 255, 0.80)', lineHeight: 1.45, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
                   {liveSubtitle}
                 </p>
-                <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{
-                    fontSize: '10.5px',
-                    fontWeight: 800,
-                    color: 'rgba(255,255,255,0.55)',
-                    letterSpacing: '0.8px',
-                    textTransform: 'uppercase'
-                  }}>
-                    ⛪
-                  </span>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    color: 'rgba(255,255,255,0.65)',
-                    letterSpacing: '0.4px',
-                    wordBreak: 'keep-all'
-                  }}>
-                    화도벧엘교회 온라인 실시간 예배
-                  </span>
-                </div>
               </div>
             </div>
 
