@@ -7,6 +7,7 @@ import {
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import LivePlayerTabs from './LivePlayerTabs';
 
 // 기본 벧엘교회(유정파파) 유튜브 채널 고정 라이브 URL
 const DEFAULT_YOUTUBE_LIVE_URL = 'https://www.youtube.com/@유정파파-n6e/live';
@@ -712,23 +713,23 @@ export default function LiveBanner() {
               zIndex: 2100,
               display: 'flex', 
               justifyContent: 'center', 
-              alignItems: 'flex-start', /* 화면 최상단 정렬 */
-              padding: 'clamp(10px, 3vw, 24px)',
-              paddingTop: 'clamp(14px, 3.5vh, 28px)', /* 최상단 여백 */
-              overflowY: 'auto'
+              alignItems: 'center',
+              padding: 'clamp(0px, 1.5vw, 16px)',
+              overflow: 'hidden'
             }}
             onClick={() => setIsPlayerOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.96, y: -20 }} 
+              initial={{ scale: 0.96, y: 15 }} 
               animate={{ scale: 1, y: 0 }} 
-              exit={{ scale: 0.96, y: -20 }}
+              exit={{ scale: 0.96, y: 15 }}
               onClick={(e) => e.stopPropagation()}
               style={{
                 background: '#141416', border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '20px', width: '100%', maxWidth: '820px', overflow: 'hidden',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.9)',
-                display: 'flex', flexDirection: 'column'
+                borderRadius: 'clamp(0px, 2vw, 16px)', width: '100%', maxWidth: '820px',
+                height: '100%', maxHeight: '100dvh',
+                overflow: 'hidden', display: 'flex', flexDirection: 'column',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.9)'
               }}
             >
               {/* 플레이어 상단 헤더 */}
@@ -799,8 +800,8 @@ export default function LiveBanner() {
                 </div>
               </div>
 
-              {/* 플레이어 본체 구역 (16:9 비율) */}
-              <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', overflow: 'hidden' }}>
+              {/* 플레이어 본체 구역 (16:9 비율 고정) */}
+              <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', background: '#000', overflow: 'hidden', flexShrink: 0 }}>
                 {/* 1. 유튜브 실시간 스트림 영상 (광고 최소화 및 엉뚱한 곡 재생 방지 playlist lock) */}
                 {activeVideoId && (
                   <iframe
@@ -972,77 +973,37 @@ export default function LiveBanner() {
                 )}
               </div>
 
-              {/* 분리된 하단 설명 및 안내 화면 구역 */}
-              <div style={{
-                padding: 'clamp(14px, 3vw, 18px)',
-                background: '#18181b',
-                borderTop: '1px solid rgba(255,255,255,0.12)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px'
-              }}>
-                {/* 1. 광고 대기 안내 배너 (2분 후 부드럽게 자동 사라짐) */}
-                <AnimatePresence>
-                  {showAdNotice && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
-                      transition={{ duration: 0.4 }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        padding: '12px 14px',
-                        borderRadius: '12px',
-                        background: 'rgba(212, 175, 55, 0.12)',
-                        border: '1px solid rgba(212, 175, 55, 0.35)',
-                        color: 'var(--text-primary)'
-                      }}
-                    >
-                      <div style={{
-                        width: '30px', height: '30px', borderRadius: '50%',
-                        background: 'rgba(212, 175, 55, 0.2)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'var(--accent-gold)', flexShrink: 0
-                      }}>
-                        ⏳
-                      </div>
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <p style={{
-                          margin: 0,
-                          fontSize: 'clamp(0.84rem, 2.4vw, 0.92rem)',
-                          fontWeight: 800,
-                          color: 'var(--accent-gold)',
-                          lineHeight: 1.45,
-                          wordBreak: 'keep-all'
-                        }}>
-                          광고가 나올 수 있으니 잠시만 기다려 주세요 (우측 하단 ⚡버튼으로 [광고 건너뛰기] 가능)
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* 2. 예배/찬양 상세 안내 정보 */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '8px',
-                  padding: '2px 0'
-                }}>
-                  <div style={{ minWidth: 0, flex: '1 1 240px' }}>
-                    <span style={{ fontSize: '11px', color: 'var(--accent-gold)', fontWeight: 700, letterSpacing: '0.5px' }}>
-                      BETHEL ONLINE LIVE
+              {/* 4. 광고 대기 슬림 안내 배너 (12초 후 자동 숨김) */}
+              <AnimatePresence>
+                {showAdNotice && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '7px 12px',
+                      background: 'rgba(212, 175, 55, 0.15)',
+                      borderBottom: '1px solid rgba(212, 175, 55, 0.3)',
+                      color: 'var(--accent-gold)',
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      flexShrink: 0
+                    }}
+                  >
+                    <span>⏳</span>
+                    <span style={{ wordBreak: 'keep-all', flex: 1, lineHeight: 1.35 }}>
+                      광고가 나올 수 있으니 잠시만 기다려 주세요 (우측 하단 ⚡버튼으로 [광고 건너뛰기] 가능)
                     </span>
-                    <p style={{ margin: '2px 0 0', fontSize: 'clamp(0.8rem, 2vw, 0.86rem)', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.45, wordBreak: 'keep-all' }}>
-                      {liveSubtitle || '지금 벧엘교회 실시간 예배가 방송되고 있습니다.'}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* 5. 분할 하단 탭 콘텐츠 패널 (성경 / 찬송가 / 주보 / 검색) */}
+              <LivePlayerTabs db={db} />
             </motion.div>
           </motion.div>
         )}
