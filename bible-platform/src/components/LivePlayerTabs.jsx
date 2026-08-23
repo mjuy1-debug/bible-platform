@@ -657,7 +657,29 @@ function HymnsTab() {
 /* ─── 탭3: 주보 (전체 예배순서, 오후예배, 교회소식, 기도제목 완벽 표시) ─── */
 function BulletinTab({ db }) {
   const [bulletins, setBulletins] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // 실제 주보 날짜 파싱 헬퍼 (Bulletin.jsx와 동일한 정렬 규칙)
+  const parseBulletinDate = (bulletin) => {
+    if (bulletin.date) {
+      const cleaned = String(bulletin.date).trim();
+      let parsed = new Date(cleaned).getTime();
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+      const match = cleaned.match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
+      if (match) {
+        const year = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10) - 1;
+        const day = parseInt(match[3], 10);
+        parsed = new Date(year, month, day).getTime();
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+      }
+    }
+    if (bulletin.createdAt?.seconds) {
+      return bulletin.createdAt.seconds * 1000;
+    }
+    return 0;
+  };
 
   useEffect(() => {
     if (!db) {
@@ -675,12 +697,12 @@ function BulletinTab({ db }) {
             .filter(b => !b.isSermon && (b.isDigital || b.imageUrl || b.worshipOrder));
 
           list.sort((a, b) => {
+            const timeA = parseBulletinDate(a);
+            const timeB = parseBulletinDate(b);
+            if (timeB !== timeA) return timeB - timeA;
             const dateA = a.date || '';
             const dateB = b.date || '';
-            if (dateB !== dateA) return dateB.localeCompare(dateA);
-            const timeA = a.createdAt?.seconds || 0;
-            const timeB = b.createdAt?.seconds || 0;
-            return timeB - timeA;
+            return dateB.localeCompare(dateA);
           });
 
           setBulletins(list);
@@ -692,7 +714,9 @@ function BulletinTab({ db }) {
     return () => unsub && unsub();
   }, [db]);
 
-  const latest = bulletins[0];
+  // 선택된 주보가 있으면 그것을 표시하고, 없으면 항상 가장 최신(0번째) 주보 표시
+  const currentBulletin = (selectedId && bulletins.find(b => b.id === selectedId)) || bulletins[0];
+  const latest = currentBulletin;
 
   if (loading) {
     return (
@@ -723,6 +747,32 @@ function BulletinTab({ db }) {
     <div style={{ ...S.panel, paddingBottom: '80px' }}>
       {latest ? (
         <div>
+          {/* 주보 날짜 선택 드롭다운 (주보가 여러 개 있을 때 지난 주보 선택 가능) */}
+          {bulletins.length > 1 && (
+            <div style={{ marginBottom: '12px' }}>
+              <select
+                value={latest.id}
+                onChange={(e) => setSelectedId(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: '#1c1c1e',
+                  border: '1px solid rgba(212,175,55,0.3)',
+                  color: 'var(--accent-gold, #d4af37)',
+                  fontSize: '12px',
+                  fontWeight: 700
+                }}
+              >
+                {bulletins.map((b, idx) => (
+                  <option key={b.id} value={b.id}>
+                    {idx === 0 ? '✨ [최신] ' : '📜 '} {b.date ? `(${b.date}) ` : ''}{b.title || '주일 주보'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* 주보 헤더 카드 */}
           <div style={{
             background: 'linear-gradient(135deg, #1c1c20 0%, #161618 100%)',
