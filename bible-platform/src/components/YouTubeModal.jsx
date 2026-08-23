@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, ExternalLink, Sparkles, Tv, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Play, ExternalLink, Sparkles, BookOpen } from 'lucide-react';
 
 function YouTubeIcon({ size = 20, color = 'currentColor' }) {
   return (
@@ -16,18 +16,18 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
   const {
     title = '바이블프로젝트 말씀 영상',
     characterName = '',
-    searchKeyword = '',
-    defaultVideoId = '9btp7VMvjR4',
+    relationReason = '',
+    videoId = 'n_2HzBuoMWM',
+    channelTitle = '바이블프로젝트 공식 영상',
     description = '성경 인물과 말씀의 핵심을 시각적으로 깊이 있게 이해할 수 있는 고품질 애니메이션 영상입니다.',
     duration = '약 7~9분',
     channel = '바이블프로젝트 (BibleProject - Korean)',
-    channelUrl = 'https://www.youtube.com/@BibleProjectKorean',
     officialHome = 'https://bibleproject.com/korean/',
-    searchUrl = `https://www.youtube.com/@BibleProjectKorean/search?query=${encodeURIComponent(searchKeyword || characterName || title)}`
+    searchUrl = `https://www.youtube.com/@BibleProjectKorean/search?query=${encodeURIComponent(characterName || '바이블프로젝트')}`
   } = videoInfo;
 
-  // 실제 검증된 바이블프로젝트 영상 인앱 임베드
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${defaultVideoId}?rel=0&modestbranding=1`;
+  // 검증된 바이블프로젝트 영상 인앱 임베드
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
 
   const handleOpenChannelSearch = () => {
     window.open(searchUrl, '_blank', 'noopener,noreferrer');
@@ -107,10 +107,10 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                {characterName ? `👑 ${characterName} 말씀 영상` : title}
+                {characterName ? `👑 ${characterName} 연계 말씀 영상` : title}
               </h3>
               <span style={{ fontSize: '0.75rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
-                {channel} • {duration}
+                {channelTitle} • {duration}
               </span>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
           />
         </div>
 
-        {/* 본문 영역: 공식 채널 바로가기 및 묵상 가이드 */}
+        {/* 본문 영역: 연계 묵상 포인트 및 공식 채널 바로가기 */}
         <div style={{
           padding: '16px 20px',
           display: 'flex',
@@ -167,7 +167,26 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
           background: 'rgba(20, 20, 26, 0.98)',
           overflowY: 'auto'
         }}>
-          {/* 유튜브 공식 채널에서 해당 주제 영상 바로 시청 버튼 */}
+          {/* 인물/주제 연계 설명 배너 */}
+          {relationReason && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 14px',
+              borderRadius: '12px',
+              background: 'rgba(212, 175, 55, 0.12)',
+              border: '1px solid rgba(212, 175, 55, 0.3)',
+              fontSize: '0.82rem',
+              color: 'var(--accent-gold)',
+              fontWeight: 700
+            }}>
+              <BookOpen size={16} />
+              <span>{relationReason}</span>
+            </div>
+          )}
+
+          {/* 유튜브 공식 채널에서 해당 인물 영상 전체 보기 */}
           <div
             onClick={handleOpenChannelSearch}
             style={{
@@ -197,23 +216,23 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
                 <Play size={16} fill="#fff" style={{ marginLeft: '2px' }} />
               </div>
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>
-                  ▶️ 바이블프로젝트 공식 유튜브에서 시청하기
+                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#fff' }}>
+                  ▶️ YouTube 바이블프로젝트 공식 채널에서 보기
                 </div>
                 <div style={{ fontSize: '0.74rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                  공식 채널(@BibleProjectKorean)에서 "{searchKeyword || characterName || title}" 영상을 확인합니다
+                  공식 채널(@BibleProjectKorean)의 "{characterName || title}" 관련 영상들 보기
                 </div>
               </div>
             </div>
             <ExternalLink size={16} color="#ff6b6b" />
           </div>
 
-          {/* 영상 설명 & 묵상 가이드 */}
+          {/* 영상 상세 설명 & 묵상 가이드 */}
           <div style={{
             padding: '12px 14px',
             borderRadius: '12px',
-            background: 'rgba(212, 175, 55, 0.08)',
-            border: '1px solid rgba(212, 175, 55, 0.2)'
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid var(--glass-border)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.82rem', marginBottom: '4px' }}>
               <Sparkles size={14} /> 묵상 가이드
@@ -222,8 +241,9 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
               margin: 0,
               fontSize: '0.82rem',
               color: 'var(--text-secondary)',
-              lineHeight: 1.5,
-              wordBreak: 'keep-all'
+              lineHeight: 1.55,
+              wordBreak: 'keep-all',
+              whiteSpace: 'pre-line'
             }}>
               {description}
             </p>
@@ -241,7 +261,7 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
           flexWrap: 'wrap',
           gap: '10px'
         }}>
-          {/* 바이블프로젝트 한국어 공식 홈페이지 (404 없는 공식 메인 주소) */}
+          {/* 바이블프로젝트 한국어 공식 홈페이지 */}
           <button
             onClick={handleOpenBpHome}
             style={{
@@ -258,7 +278,7 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
               cursor: 'pointer'
             }}
           >
-            <ExternalLink size={12} /> 바이블프로젝트 공식 홈 (bibleproject.com/korean)
+            <ExternalLink size={12} /> 바이블프로젝트 공식 홈
           </button>
 
           {/* 닫기 & 퀴즈 풀기 버튼 */}

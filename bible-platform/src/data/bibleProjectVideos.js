@@ -1,314 +1,288 @@
-// 바이블프로젝트 (BibleProject - Korean) 공식 채널 및 말씀 영상 데이터베이스
+// 바이블프로젝트 (BibleProject - Korean) 공식 채널 및 성경 인물/주제별 정밀 매칭 데이터베이스
 // 공식 채널: https://www.youtube.com/@BibleProjectKorean
 // 공식 웹사이트: https://bibleproject.com/korean/
 
 export const BP_CHANNEL_URL = 'https://www.youtube.com/@BibleProjectKorean';
 export const BP_OFFICIAL_HOME = 'https://bibleproject.com/korean/';
 
-// 실제 검증된 바이블프로젝트 한국어 공식 대표 영상 ID
-export const BP_FEATURED_VIDEOS = {
-  'righteousness': { videoId: 'n_2HzBuoMWM', title: '성경에서 말하는 참된 의(Righteousness)' },
-  'kingdom': { videoId: '9btp7VMvjR4', title: '바실레이아: 하나님의 영원한 왕국' },
-  'mammon': { videoId: 'Njsb4LqREJ0', title: '예수님이 말씀하신 맘몬과 하나님 나라' },
-  'fruit': { videoId: 'xT4wB3W0hU4', title: '좋은 열매와 나쁜 열매의 분별' },
-  'torah': { videoId: 'nBjpcg610TI', title: '토라: 하나님의 거룩한 가르침' }
-};
-
-export const BIBLE_PROJECT_VIDEOS = {
-  // === 구약 주요 인물 ===
-  'hero_char_1': {
-    characterName: '아담',
-    title: '창세기 개요 (창조와 타락, 구속사의 시작)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '하나님의 형상으로 지음 받은 첫 사람 아담과 에덴에서의 타락, 그리고 구속사의 시작을 다룹니다.',
-    duration: '약 7~9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+// 실제 검증된 바이블프로젝트 한국어 공식 주제별 영상 데이터베이스
+export const BP_TOPIC_VIDEOS = {
+  // 1. 창조 / 생명나무 / 에덴
+  'tree_of_life': {
+    videoId: 'MH09_PpxjKg',
+    topicTitle: '에츠: 생명나무와 에덴의 선택',
+    channelTitle: '바이블프로젝트 - 에츠(Ets)',
+    summary: '창세기 에덴동산에 있던 생명나무와 선악과의 영적 의미, 그리고 생명의 길을 택하는 믿음을 배웁니다.'
   },
-  'hero_char_2': {
-    characterName: '하와',
-    title: '창세기 개요 (하와와 뱀의 유혹, 원시 복음)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '모든 산 자의 어머니 하와와 죄의 시작, 원시 복음(창 3:15)의 언약을 배웁니다.',
-    duration: '약 7~9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 2. 피 / 제사 / 대속
+  'dam_blood': {
+    videoId: '994U98FERMk',
+    topicTitle: '담: 피와 인간 생명의 본질, 그리고 대속',
+    channelTitle: '바이블프로젝트 - 담(Dam)',
+    summary: '피(담)가 지닌 거룩한 생명의 가치와 구약의 희생 제사, 예수 그리스도의 십자가 보혈의 대속을 조명합니다.'
   },
-  'hero_char_3': {
-    characterName: '아벨',
-    title: '창세기 개요 (가인과 아벨의 제사)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '믿음으로 더 나은 제사를 드린 의인 아벨과 하나님을 기쁘시게 하는 참된 예배를 조명합니다.',
-    duration: '약 7~9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 3. 의 / 섭리 / 신실하심
+  'righteousness': {
+    videoId: 'n_2HzBuoMWM',
+    topicTitle: '성경에서 말하는 참된 의(Righteousness)',
+    channelTitle: '바이블프로젝트 - 의(Righteousness)',
+    summary: '하나님의 공의로운 성품과 고난 속에서도 신실하게 일하시는 섭리, 믿음으로 의롭게 되는 진리를 다룹니다.'
   },
-  'hero_char_4': {
-    characterName: '에녹',
-    title: '창세기 (하나님과 동행한 삶)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '죽음을 보지 않고 하나님과 300년간 동행한 믿음의 사람 에녹의 영적 비밀을 배웁니다.',
-    duration: '약 7~9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 4. 토라 / 율법 / 계명
+  'torah': {
+    videoId: 'nBjpcg610TI',
+    topicTitle: '토라: 하나님의 거룩한 가르침과 언약',
+    channelTitle: '바이블프로젝트 - 토라(Torah)',
+    summary: '단순한 법조문이 아닌 하나님의 백성을 사랑으로 인도하는 생명의 지침서인 토라의 본질을 설명합니다.'
   },
-  'hero_char_5': {
-    characterName: '노아',
-    title: '창세기 (노아의 방주와 무지개 언약)',
-    searchKeyword: '노아',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '죄악이 가득한 세상 속에서 의인 노아를 통해 인류를 구원하시고 무지개 언약을 맺으신 하나님의 은혜를 봅니다.',
-    duration: '약 7~9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 5. 하나님 나라 / 왕국 / 왕권
+  'basileia_kingdom': {
+    videoId: '9btp7VMvjR4',
+    topicTitle: '바실레이아: 예수님이 선포하신 하나님 나라',
+    channelTitle: '바이블프로젝트 - 바실레이아(Basileia)',
+    summary: '세상의 권력과 대비되는 하나님의 거룩한 통치, 백성, 그리고 영원한 메시아 왕국의 비밀을 배웁니다.'
   },
-  'hero_char_7': {
-    characterName: '아브라함',
-    title: '창세기 (아브라함의 부르심과 언약)',
-    searchKeyword: '아브라함',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '본토 친척 아비 집을 떠나 믿음의 조상이 된 아브라함과 하나님이 맺으신 횃불 언약을 조명합니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 6. 선하심 / 창조의 질서
+  'tov_goodness': {
+    videoId: 'HTNQF777wFY',
+    topicTitle: '토브: 하나님이 보시기에 심히 좋았던 선함',
+    channelTitle: '바이블프로젝트 - 토브(Tov)',
+    summary: '창조 세계를 향한 하나님의 선하신 뜻(토브)과 어둠을 이기는 하나님의 신실하신 지혜를 묵상합니다.'
   },
-  'hero_char_8': {
-    characterName: '사라',
-    title: '창세기 (약속의 어머니 사라)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '불가능 속에서 웃음(이삭)을 선물로 받으며 열국의 어머니가 된 사라의 믿음의 여정을 다룹니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 7. 땅 / 보존 / 청지기 언약
+  'erets_land': {
+    videoId: '2oC20-VWCEI',
+    topicTitle: '에레츠: 하나님이 주신 땅과 청지기 사명',
+    channelTitle: '바이블프로젝트 - 에레츠(Erets)',
+    summary: '하나님이 창조하시고 백성에게 맡기신 거룩한 기업(에레츠)과 노아의 보존 언약을 살펴봅니다.'
   },
-  'hero_char_10': {
-    characterName: '이삭',
-    title: '창세기 (모리아 산의 순종과 이삭)',
-    searchKeyword: '창세기',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '모리아 산에서 묵묵히 순종하여 번제단에 오른 이삭과 여호와 이레의 예비하심을 배웁니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 8. 맘몬 / 물질과 하나님 나라
+  'mammon': {
+    videoId: 'Njsb4LqREJ0',
+    topicTitle: '맘몬: 재물과 하나님 나라의 우선순위',
+    channelTitle: '바이블프로젝트 - 맘몬(Mammon)',
+    summary: '세상의 물질적 안정감 대신 하나님의 나라와 의를 먼저 구하는 참된 청지기 신앙을 가르칩니다.'
   },
-  'hero_char_12': {
-    characterName: '야곱',
-    title: '창세기 (벧엘에서 브니엘까지, 야곱)',
-    searchKeyword: '야곱',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '속이는 자에서 하나님과 겨루어 이긴 이스라엘로 변화되는 야곱의 인생 역전을 그립니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 9. 성령의 열매 / 분별
+  'good_fruit': {
+    videoId: 'xT4wB3W0hU4',
+    topicTitle: '좋은 열매와 나쁜 열매의 분별 (산상수훈)',
+    channelTitle: '바이블프로젝트 - 좋은 열매(Good Fruit)',
+    summary: '예수님이 말씀하신 삶의 열매를 통해 참된 제자도와 거룩한 관계를 분별하는 지혜를 나눕니다.'
   },
-  'hero_char_14': {
-    characterName: '요셉',
-    title: '창세기 (꿈의 사람 요셉과 하나님의 섭리)',
-    searchKeyword: '요셉',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '노예와 죄수에서 애굽의 총리가 되어 민족을 구원한 요셉의 용서와 하나님의 놀라운 섭리입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 10. 온전함 / 성화
+  'teleios': {
+    videoId: 'Ir16JZy9qH0',
+    topicTitle: '텔레이오스: 본래의 목적을 이룬 온전한 상태',
+    channelTitle: '바이블프로젝트 - 텔레이오스(Teleios)',
+    summary: '그리스도를 닮아 하나님의 창조 목적에 도달하는 거룩한 성화의 삶을 조명합니다.'
   },
-  'hero_char_16': {
-    characterName: '모세',
-    title: '출애굽기 개요 (부르심과 홍해의 기적, 율법)',
-    searchKeyword: '출애굽기',
-    defaultVideoId: 'nBjpcg610TI',
-    description: '불타는 떨기나무에서 부르심을 받아 출애굽의 영도자가 된 모세의 삶과 하나님의 놀라운 구원을 보여줍니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 11. 사랑과 용서 / 비판 금지
+  'judging': {
+    videoId: 'q3l3V-ZroKY',
+    topicTitle: '남을 판단하지 않는 사랑과 자기 성찰',
+    channelTitle: '바이블프로젝트 - 판단(Judging)',
+    summary: '형제의 눈 속 티보다 내 눈의 들보를 먼저 살피는 겸손과 긍휼의 마음을 배웁니다.'
   },
-  'hero_char_21': {
-    characterName: '여호수아',
-    title: '여호수아 개요 (강하고 담대하라)',
-    searchKeyword: '여호수아',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '모세의 뒤를 이어 가나안 땅을 정복하고 하나님 나라의 유업을 나눈 여호수아의 순종입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 12. 영적 전쟁 / 악의 극복
+  'tannin': {
+    videoId: '-0Ycy6zu8PI',
+    topicTitle: '탄닌: 혼돈과 악의 세력을 이기시는 하나님',
+    channelTitle: '바이블프로젝트 - 탄닌(Tannin)',
+    summary: '성경 속 혼돈과 어둠의 세력을 완전히 제압하시고 승리하시는 전능하신 하나님의 능력을 선포합니다.'
   },
-  'hero_char_26': {
-    characterName: '룻',
-    title: '룻기 개요 (신실한 사랑 헤세드)',
-    searchKeyword: '룻기',
-    defaultVideoId: 'xT4wB3W0hU4',
-    description: '이방 여인 룻이 시어머니 나오미를 따라 약속의 땅으로 와서 기업 무를 자 보아스를 만나 다윗의 조상이 된 감동의 역사입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_33': {
-    characterName: '다윗 왕',
-    title: '사무엘서 개요 (하나님 마음에 합한 왕 다윗)',
-    searchKeyword: '다윗',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '목동에서 왕이 되어 통일 이스라엘을 이루고 영원한 다윗 언약을 받은 메시아 왕권의 예표입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_36': {
-    characterName: '솔로몬 왕',
-    title: '열왕기 개요 (성전 건축과 솔로몬의 지혜)',
-    searchKeyword: '솔로몬',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '하나님께 듣는 마음(지혜)을 구하여 성전을 짓고 번영을 누렸으나 우상숭배로 분열의 빌미를 준 솔로몬의 일대기입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_42': {
-    characterName: '욥',
-    title: '욥기 개요 (고난의 신비와 하나님의 지혜)',
-    searchKeyword: '욥기',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '이해할 수 없는 극심한 고난 속에서도 믿음의 줄을 놓지 않고 마침내 귀로만 듣던 하나님을 눈으로 뵈옵게 된 욥의 신앙입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_43': {
-    characterName: '이사야 선지자',
-    title: '이사야 개요 (고난받는 종과 새 하늘 새 땅)',
-    searchKeyword: '이사야',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '보좌에 앉으신 거룩하신 하나님을 뵙고 고난받는 종 메시아의 십자가 대속과 영원한 새 예루살렘을 예언한 선지자입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_46': {
-    characterName: '다니엘',
-    title: '다니엘 개요 (풀무불과 사자굴, 영원한 하나님 나라)',
-    searchKeyword: '다니엘',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '이방 바벨론 제국 한복판에서 뜻을 정하여 타협하지 않고 역사의 주관자이신 하나님의 영원한 나라를 바라본 선지자입니다.',
-    duration: '약 9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_53': {
-    characterName: '요나 선지자',
-    title: '요나 개요 (물고기 배 속과 하나님의 자비)',
-    searchKeyword: '요나',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '원수의 도시 니느웨까지도 불쌍히 여기시는 하나님의 무한한 사랑과 은혜를 반어법으로 폭로하는 요나서입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-
-  // === 신약 주요 인물 ===
-  'hero_char_56': {
-    characterName: '세례 요한',
-    title: '마태복음 (주의 길을 예비한 광야의 소리 세례 요한)',
-    searchKeyword: '마태복음',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '예수 그리스도의 오심을 선포하며 회개의 세례를 베풀고 어린 양을 증거한 마지막 구약 선지자 세례 요한입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_57': {
-    characterName: '마리아',
-    title: '누가복음 (예수님의 탄생과 주의 여종 마리아)',
-    searchKeyword: '누가복음',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '동정녀의 몸으로 성령으로 잉태될 것을 믿음으로 순종하여 인류 구원의 통로가 된 마리아의 순종입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_59': {
-    characterName: '예수 그리스도',
-    title: '복음서 (만왕의 왕 예수 그리스도와 하나님 나라)',
-    searchKeyword: '예수',
-    defaultVideoId: '9btp7VMvjR4',
-    description: '만왕의 왕이자 참 구원자이신 예수 그리스도의 성육신, 십자가 대속, 부활과 승천의 복음입니다.',
-    duration: '약 9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_60': {
-    characterName: '사도 베드로',
-    title: '사도행전 (오순절 성령과 베드로 사도)',
-    searchKeyword: '사도행전',
-    defaultVideoId: 'xT4wB3W0hU4',
-    description: '실패와 배신을 딛고 다시 부활 예수님을 만나 오순절 성령으로 초대교회를 세운 수제자 베드로의 변화입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_61': {
-    characterName: '사도 요한',
-    title: '요한복음 (사랑의 사도 요한과 말씀의 은혜)',
-    searchKeyword: '요한복음',
-    defaultVideoId: 'xT4wB3W0hU4',
-    description: '예수님의 품에 기대어 사랑을 증거하고 말씀이 육신이 되심을 밝힌 사도 요한입니다.',
-    duration: '약 9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_73': {
-    characterName: '스데반 집사',
-    title: '사도행전 (첫 순교자 스데반과 하늘 영광)',
-    searchKeyword: '사도행전',
-    defaultVideoId: 'xT4wB3W0hU4',
-    description: '은혜와 권능이 충만하여 담대히 복음을 전하고 돌에 맞으면서도 원수를 위해 기도한 첫 순교자 스데반입니다.',
-    duration: '약 8분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
-  },
-  'hero_char_77': {
-    characterName: '사도 바울',
-    title: '사도행전 & 서신서 (이방인의 사도 바울)',
-    searchKeyword: '바울',
-    defaultVideoId: 'n_2HzBuoMWM',
-    description: '다메섹 도상에서 부활의 주님을 만난 후 로마 제국 전역에 복음을 전하고 신약 서신 13권을 기록한 위대한 사도 바울입니다.',
-    duration: '약 9분',
-    channel: '바이블프로젝트 (BibleProject - Korean)'
+  // 13. 최후 심판 / 영원한 삶
+  'gehenna': {
+    videoId: 'bwZsJhLIQlQ',
+    topicTitle: '게헨나: 성경이 경고하는 심판과 영원한 삶',
+    channelTitle: '바이블프로젝트 - 게헨나(Gehenna)',
+    summary: '예수님이 경고하신 영적 심판의 엄중함과 복음 안에 있는 참된 구원의 은혜를 묵상합니다.'
   }
 };
 
-// 헬퍼 함수
+// 성경 인물별 1:1 정밀 매칭
+export const CHARACTER_VIDEO_MAPPING = {
+  // 창세기 인물들
+  '아담': { topicKey: 'tree_of_life', relation: '에덴동산의 선악과와 생명나무(에츠)의 선택' },
+  '하와': { topicKey: 'tree_of_life', relation: '유혹과 선악과, 원시 복음의 약속' },
+  '가인': { topicKey: 'dam_blood', relation: '아벨의 핏소리와 제사의 본질' },
+  '아벨': { topicKey: 'dam_blood', relation: '더 나은 제사와 믿음의 피(담)' },
+  '에녹': { topicKey: 'teleios', relation: '하나님과 동행하며 온전함(텔레이오스)을 이룬 삶' },
+  '노아': { topicKey: 'erets_land', relation: '방주와 세상을 보존하시는 하나님의 땅(에레츠) 언약' },
+  '아브라함': { topicKey: 'torah', relation: '본토 친척을 떠나 믿음으로 순종한 언약의 토라' },
+  '사라': { topicKey: 'tov_goodness', relation: '불가능 속에서 웃음을 주신 하나님의 선하심(토브)' },
+  '이삭': { topicKey: 'dam_blood', relation: '모리아 산 번제단의 순종과 대속의 어린양' },
+  '야곱': { topicKey: 'righteousness', relation: '속이는 자에서 이스라엘로 빚으신 하나님의 신실한 의' },
+  '요셉': { topicKey: 'righteousness', relation: '노예와 감옥의 고난을 선으로 바꾸신 하나님의 섭리와 의' },
+  '유다': { topicKey: 'dam_blood', relation: '형제를 위해 자신을 담보로 바친 희생과 메시아 혈통' },
+
+  // 출애굽 & 광야 인물들
+  '모세': { topicKey: 'torah', relation: '시내산에서 전수받은 하나님의 거룩한 가르침 토라' },
+  '아론': { topicKey: 'dam_blood', relation: '성막의 피 제사와 대제사장의 속죄 사역' },
+  '미리암': { topicKey: 'tov_goodness', relation: '홍해를 가르신 하나님의 선하심을 찬양한 여선지자' },
+  '이드로': { topicKey: 'teleios', relation: '모세의 과중함을 덜어준 지혜와 질서의 온전함' },
+  '여호수아': { topicKey: 'basileia_kingdom', relation: '약속의 땅을 정복하고 세워가는 하나님 나라의 통치' },
+  '갈렙': { topicKey: 'righteousness', relation: '이 산지를 내게 주소서 외친 흔들림 없는 믿음의 의' },
+
+  // 사사기 & 왕정 인물들
+  '기드온': { topicKey: 'tannin', relation: '300 용사로 수많은 대적을 물리친 하나님의 승리' },
+  '삼손': { topicKey: 'teleios', relation: '나실인의 성별과 마지막 순종의 온전함' },
+  '룻': { topicKey: 'good_fruit', relation: '시어머니를 향한 헤세드 사랑과 풍성한 삶의 열매' },
+  '보아스': { topicKey: 'righteousness', relation: '기업 무를 자로서 약자를 책임진 의로운 사랑' },
+  '한나': { topicKey: 'tov_goodness', relation: '눈물의 기도에 응답하신 하나님의 선하신 긍휼' },
+  '사무엘': { topicKey: 'torah', relation: '말씀을 듣고 선포하여 이스라엘을 세운 신실한 선지자' },
+  '다윗': { topicKey: 'basileia_kingdom', relation: '하나님 마음에 합한 왕과 영원한 메시아 왕국 언약' },
+  '솔로몬': { topicKey: 'tov_goodness', relation: '듣는 마음(지혜)을 구하여 성전을 세운 지혜의 왕' },
+  '엘리야': { topicKey: 'tannin', relation: '갈멜산에서 바알 우상을 꺾고 불로 응답받은 영적 승리' },
+  '엘리사': { topicKey: 'tov_goodness', relation: '갑절의 영감으로 백성을 살린 하나님의 선한 기적들' },
+  '욥': { topicKey: 'tov_goodness', relation: '고난 속에서도 하나님의 절대적 선하심을 신뢰한 인내' },
+  '이사야': { topicKey: 'basileia_kingdom', relation: '고난받는 종 메시아와 도래할 평화의 왕국 예언' },
+  '예레미야': { topicKey: 'torah', relation: '돌판이 아닌 마음에 새겨질 새 언약의 토라 선포' },
+  '다니엘': { topicKey: 'basileia_kingdom', relation: '바벨론 제국을 넘어선 영원한 하나님 나라의 환상' },
+  '에스더': { topicKey: 'righteousness', relation: '죽으면 죽으리이다 민족을 구원한 섭리와 의' },
+  '요나': { topicKey: 'tov_goodness', relation: '원수 니느웨까지 품으시는 하나님의 무한한 선하심' },
+
+  // 신약 인물들
+  '세례 요한': { topicKey: 'basileia_kingdom', relation: '회개하라 천국이 가까웠느니라 외친 왕국의 선구자' },
+  '마리아': { topicKey: 'tov_goodness', relation: '주의 여종이오니 말씀대로 이루어지이다 순종의 믿음' },
+  '요셉(예수 육신의 아버지)': { topicKey: 'righteousness', relation: '말씀대로 순종하여 마리아를 데려온 의로운 사람' },
+  '예수 그리스도': { topicKey: 'basileia_kingdom', relation: '만왕의 왕이자 구원의 완성자이신 하나님 나라의 주' },
+  '사도 베드로': { topicKey: 'good_fruit', relation: '실패를 딛고 성령으로 교회를 세운 충성된 사역의 열매' },
+  '사도 요한': { topicKey: 'tov_goodness', relation: '하나님은 사랑이시라 선포한 사랑의 사도의 묵상' },
+  '스데반': { topicKey: 'dam_blood', relation: '원수를 위해 기도하며 보혈의 주님을 바라본 첫 순교' },
+  '사도 바울': { topicKey: 'righteousness', relation: '오직 의인은 믿음으로 말미암아 살리라 이방인의 사도' },
+  '바나바': { topicKey: 'good_fruit', relation: '위로와 격려로 형제를 세운 사랑의 열매' },
+  '디모데': { topicKey: 'teleios', relation: '어릴 때부터 성경을 배우며 하나님의 사람으로 온전케 됨' }
+};
+
+// 헬퍼: 퀴즈 세트 객체로부터 100% 정밀한 영상 매핑 정보 생성
 export function getBibleProjectVideo(quiz) {
   if (!quiz) return null;
 
-  // 1. 직접 매핑
-  if (BIBLE_PROJECT_VIDEOS[quiz.id]) {
-    const item = BIBLE_PROJECT_VIDEOS[quiz.id];
-    return {
-      ...item,
-      channelUrl: BP_CHANNEL_URL,
-      officialHome: BP_OFFICIAL_HOME,
-      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent(item.searchKeyword || item.characterName)}`
-    };
-  }
-
-  // 2. 인물 이름 매칭
-  if (quiz.category === '👑 성경 인물 열전') {
-    const rawName = quiz.roundTitle.replace(/^\[.*?\]\s*/, '').trim();
-    const found = Object.values(BIBLE_PROJECT_VIDEOS).find(v => 
-      rawName.includes(v.characterName) || v.characterName.includes(rawName)
-    );
-    if (found) {
-      return {
-        ...found,
-        channelUrl: BP_CHANNEL_URL,
-        officialHome: BP_OFFICIAL_HOME,
-        searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent(found.searchKeyword || found.characterName)}`
-      };
+  // 1. 인물 카테고리인 경우
+  if (quiz.category === '👑 성경 인물 열전' || quiz.roundTitle?.includes('인물') || quiz.roundTitle?.includes('열전')) {
+    const rawTitle = quiz.roundTitle.replace(/^\[.*?\]\s*/, '').trim();
+    
+    // 매핑 테이블에서 매칭되는 인물 탐색
+    for (const [name, mapInfo] of Object.entries(CHARACTER_VIDEO_MAPPING)) {
+      if (rawTitle.includes(name) || (quiz.description && quiz.description.includes(name))) {
+        const topic = BP_TOPIC_VIDEOS[mapInfo.topicKey];
+        return {
+          characterName: name,
+          title: `바이블프로젝트: ${name}과 ${topic.topicTitle}`,
+          relationReason: `[${name} 묵상 연계] ${mapInfo.relation}`,
+          videoId: topic.videoId,
+          channelTitle: topic.channelTitle,
+          description: `${topic.summary}\n\n💡 묵상 포인트: ${name}의 삶을 통해 ${mapInfo.relation}을 깊이 있게 조명합니다.`,
+          duration: '약 6~9분',
+          channel: '바이블프로젝트 (BibleProject - Korean)',
+          channelUrl: BP_CHANNEL_URL,
+          officialHome: BP_OFFICIAL_HOME,
+          searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 ' + name)}`
+        };
+      }
     }
+
+    // 미매칭 인물 기본
+    const defaultTopic = BP_TOPIC_VIDEOS['righteousness'];
     return {
-      characterName: rawName,
-      title: `${rawName} 말씀 탐구`,
-      searchKeyword: rawName,
-      defaultVideoId: '9btp7VMvjR4',
-      description: `바이블프로젝트의 깊이 있는 애니메이션으로 ${rawName}의 신앙과 구속사적 의미를 묵상해보세요.`,
+      characterName: rawTitle,
+      title: `바이블프로젝트: ${rawTitle} 말씀 탐구`,
+      relationReason: `성경 속 인물의 신앙을 통해 하나님의 신실하신 공의와 섭리를 배웁니다.`,
+      videoId: defaultTopic.videoId,
+      channelTitle: defaultTopic.channelTitle,
+      description: `${defaultTopic.summary}\n\n💡 묵상 포인트: 믿음의 선진들의 삶에 나타난 하나님의 뜻을 묵상합니다.`,
       duration: '약 7~9분',
       channel: '바이블프로젝트 (BibleProject - Korean)',
       channelUrl: BP_CHANNEL_URL,
       officialHome: BP_OFFICIAL_HOME,
-      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent(rawName)}`
+      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 ' + rawTitle)}`
     };
   }
 
-  // 3. 책 이름 매칭
-  const bookName = quiz.bookName || '성경';
+  // 2. 카테고리별 주제 매칭
+  if (quiz.category?.includes('비유')) {
+    const topic = BP_TOPIC_VIDEOS['good_fruit'];
+    return {
+      characterName: '',
+      title: `바이블프로젝트: 예수님의 비유와 하나님 나라`,
+      relationReason: `예수님의 비유는 하나님 나라(바실레이아)의 비밀과 삶의 열매를 가르치십니다.`,
+      videoId: topic.videoId,
+      channelTitle: topic.channelTitle,
+      description: topic.summary,
+      duration: '약 8분',
+      channel: '바이블프로젝트 (BibleProject - Korean)',
+      channelUrl: BP_CHANNEL_URL,
+      officialHome: BP_OFFICIAL_HOME,
+      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 산상수훈 비유')}`
+    };
+  }
+
+  if (quiz.category?.includes('기도')) {
+    const topic = BP_TOPIC_VIDEOS['judging'];
+    return {
+      characterName: '',
+      title: `바이블프로젝트: 주기도문과 참된 기도`,
+      relationReason: `예수님이 가르쳐 주신 기도의 본질과 자기 성찰의 영성을 다룹니다.`,
+      videoId: topic.videoId,
+      channelTitle: topic.channelTitle,
+      description: '하나님 앞에 겸손히 나아가는 참된 기도의 삶을 묵상합니다.',
+      duration: '약 7분',
+      channel: '바이블프로젝트 (BibleProject - Korean)',
+      channelUrl: BP_CHANNEL_URL,
+      officialHome: BP_OFFICIAL_HOME,
+      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 기도')}`
+    };
+  }
+
+  if (quiz.category?.includes('교리')) {
+    const topic = BP_TOPIC_VIDEOS['righteousness'];
+    return {
+      characterName: '',
+      title: `바이블프로젝트: 기독교 핵심 진리와 의`,
+      relationReason: `성경 전체를 관통하는 하나님의 공의와 구원의 진리를 조명합니다.`,
+      videoId: topic.videoId,
+      channelTitle: topic.channelTitle,
+      description: topic.summary,
+      duration: '약 8분',
+      channel: '바이블프로젝트 (BibleProject - Korean)',
+      channelUrl: BP_CHANNEL_URL,
+      officialHome: BP_OFFICIAL_HOME,
+      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 교리')}`
+    };
+  }
+
+  if (quiz.category?.includes('지리') || quiz.category?.includes('문화')) {
+    const topic = BP_TOPIC_VIDEOS['erets_land'];
+    return {
+      characterName: '',
+      title: `바이블프로젝트: 성경의 땅과 하나님의 언약`,
+      relationReason: `성경의 지리적 무대인 거룩한 땅(에레츠)과 하나님의 구속 역사를 다룹니다.`,
+      videoId: topic.videoId,
+      channelTitle: topic.channelTitle,
+      description: topic.summary,
+      duration: '약 8분',
+      channel: '바이블프로젝트 (BibleProject - Korean)',
+      channelUrl: BP_CHANNEL_URL,
+      officialHome: BP_OFFICIAL_HOME,
+      searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 성경 지리')}`
+    };
+  }
+
+  // 3. 기본 성경 책 매칭
+  const bookName = quiz.bookName || '창세기';
+  const topic = BP_TOPIC_VIDEOS['torah'];
   return {
     characterName: '',
-    title: `${bookName} 말씀 개요`,
-    searchKeyword: bookName,
-    defaultVideoId: 'nBjpcg610TI',
-    description: `${bookName}의 전체 구조와 핵심 구속사 메시지를 바이블프로젝트 애니메이션으로 함께 묵상합니다.`,
-    duration: '약 7~9분',
+    title: `바이블프로젝트: ${bookName} 말씀 가이드`,
+    relationReason: `${bookName} 본문 속에 담긴 하나님의 말씀과 구속사적 의미를 묵상합니다.`,
+    videoId: topic.videoId,
+    channelTitle: topic.channelTitle,
+    description: topic.summary,
+    duration: '약 8분',
     channel: '바이블프로젝트 (BibleProject - Korean)',
     channelUrl: BP_CHANNEL_URL,
     officialHome: BP_OFFICIAL_HOME,
-    searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent(bookName)}`
+    searchUrl: `${BP_CHANNEL_URL}/search?query=${encodeURIComponent('바이블프로젝트 ' + bookName)}`
   };
 }
