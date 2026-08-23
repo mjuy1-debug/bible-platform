@@ -321,7 +321,7 @@ export default function Memorize() {
       }}>
         {[
           { key: 'train', label: '🎯 4단계 암송 훈련', icon: <Brain size={16} /> },
-          { key: 'library', label: `📚 암송 구절집 (60+)`, icon: <BookOpen size={16} /> },
+          { key: 'library', label: `📚 암송 구절집 (100구절)`, icon: <BookOpen size={16} /> },
           { key: 'records', label: `🏆 나의 기록 (${records.length})`, icon: <Trophy size={16} /> },
           { key: 'tips', label: '💡 암송 비법', icon: <Lightbulb size={16} /> }
         ].map(tab => (
