@@ -9,18 +9,18 @@ import { fetchChapter } from '../services/bibleService';
 import { TONGL_HYMNS } from '../data/hymnsData';
 
 export const DEFAULT_CCM_TRACKS = [
-  { id: '1', title: '은혜 (손경민) - 햇살콩 캘리/음원', category: '은혜/워십', artist: '손경민', url: 'https://www.youtube.com/watch?v=pZuW2CV0mXY' },
-  { id: '2', title: '꽃들도 (Flowers) - 마커스워십 (소진영 인도)', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=0Eq3R4P_NdQ' },
-  { id: '3', title: '손경민 작곡 찬양 29곡 (2시간 연속재생)', category: '베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=DgtY1F99BA4' },
-  { id: '4', title: '오직 예수 뿐이네 - 마커스워십 Official', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=gfNH21Q9tOk' },
-  { id: '5', title: '요게벳의 노래 (Feat. 조찬미) - 염평안 2집', category: '위로/평안', artist: '염평안', url: 'https://www.youtube.com/watch?v=cAmq9LH46Xg' },
-  { id: '6', title: '주가 일하시네 (Official) - 브라이언킴', category: '은혜/워십', artist: '김브라이언', url: 'https://www.youtube.com/watch?v=kwFW0zE80UU' },
-  { id: '7', title: '시간을 뚫고 - WELOVE (위러브) Official', category: '베스트', artist: 'WELOVE', url: 'https://www.youtube.com/watch?v=A0FUMbDKmLA' },
-  { id: '8', title: '광야를 지나며 (가사 자막) - 히즈윌 (HisWill)', category: '위로/평안', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=1UBsTYjh91Y' },
-  { id: '9', title: '기도할 때 듣는 잔잔한 피아노 찬양 2시간', category: '기도/묵상', artist: '마음의 평안', url: 'https://www.youtube.com/watch?v=r5qkYQ8hI6Q' },
-  { id: '10', title: '내 모습 이대로 (Just as I Am) - 제이어스 Live', category: '은혜/워십', artist: '제이어스', url: 'https://www.youtube.com/watch?v=FV5nMb93UwY' },
-  { id: '11', title: '소원 (삶의 작은 일에도) - 꿈이있는자유/한웅재', category: '위로/평안', artist: '한웅재', url: 'https://www.youtube.com/watch?v=JGqENiEQ3l4' },
-  { id: '12', title: '감사함으로 - 마커스워십 Live', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=8r-_4flpZOo' }
+  { id: '1', title: '마커스워십 (Markers Worship) 묵상 & 워십 찬양 베스트 모음', category: '워십/찬양팀', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=gQ2X2m7BwTY' },
+  { id: '2', title: '손경민 작곡 찬양 베스트 29곡 모음 (2시간 연속재생/무광고)', category: '은혜/베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=DgtY1F99BA4' },
+  { id: '3', title: '위러브 (WELOVE) 대표 워십 찬양 베스트 모음집', category: '워십/찬양팀', artist: 'WELOVE', url: 'https://www.youtube.com/watch?v=yH-yV4qJKI0' },
+  { id: '4', title: '어노인팅 (Anointing) BEST 예배 찬양 20곡 연속듣기', category: '워십/찬양팀', artist: '어노인팅', url: 'https://www.youtube.com/watch?v=FK2YHK0UQ4M' },
+  { id: '5', title: '제이어스 (J-US) 은혜의 워십 찬양 베스트 연속듣기', category: '워십/찬양팀', artist: '제이어스', url: 'https://www.youtube.com/watch?v=QTMRxWVFO1A' },
+  { id: '6', title: '히즈윌 (HisWill) 은혜와 위로의 찬양 모음집', category: '위로/평안', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=beMKqQn0iZw' },
+  { id: '7', title: '깊은 기도로 인도하는 피아노 묵상 찬양 (2시간)', category: '기도/묵상', artist: '피아노 묵상', url: 'https://www.youtube.com/watch?v=f742p7mQ0Ic' },
+  { id: '8', title: '손경민 작사/작곡 아침을 여는 은혜의 찬양 모음집', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=BrbImlcplw8' },
+  { id: '9', title: '산뜻한 하루를 시작할 때 듣는 아침 찬양 플레이리스트', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=crrfujNlEL8' },
+  { id: '10', title: '마음이 지치고 힘들 때 힘이 되는 위로와 회복의 찬양 모음', category: '위로/평안', artist: '위로와 회복', url: 'https://www.youtube.com/watch?v=D9b_SBEv_XY' },
+  { id: '11', title: '은혜의 찬송가 피아노 연주 베스트 모음 (묵상/기도/일할 때)', category: '찬송가', artist: '찬송가 연주', url: 'https://www.youtube.com/watch?v=BeoPMcAS3JA' },
+  { id: '12', title: '잠들기 전 듣는 클래식 기타 찬송가 3시간 (수면/평안/묵상)', category: '수면/평안', artist: '수면 묵상', url: 'https://www.youtube.com/watch?v=dNntR1kU6ec' }
 ];
 
 const STATIC_INFO = {
