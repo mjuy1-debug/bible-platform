@@ -1,8 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BookOpen, Music, FileText, Search, ChevronLeft, ChevronRight, Loader, ZoomIn, ZoomOut, Image as ImageIcon, AlignLeft } from 'lucide-react';
+import { 
+  BookOpen, Music, FileText, Search, ChevronLeft, ChevronRight, 
+  Loader, ZoomIn, ZoomOut, Image as ImageIcon, AlignLeft, Play, 
+  CheckCircle2, Radio, Sparkles 
+} from 'lucide-react';
 import { BIBLE_BOOKS } from '../data/bibleData';
 import { fetchChapter } from '../services/bibleService';
 import { TONGL_HYMNS } from '../data/hymnsData';
+
+export const DEFAULT_CCM_TRACKS = [
+  { id: '1', title: '은혜로운 베스트 CCM 모음 30곡', category: '은혜/워십', artist: '벧엘 추천', url: 'https://www.youtube.com/watch?v=kY0wQ2mS0bU' },
+  { id: '2', title: '기도와 묵상을 위한 잔잔한 피아노 찬양', category: '기도/묵상', artist: '마음의 평안', url: 'https://www.youtube.com/watch?v=F_fP7FjI5oU' },
+  { id: '3', title: '지친 마음에 위로와 힘이 되는 찬양 모음', category: '위로/평안', artist: '치유와 회복', url: 'https://www.youtube.com/watch?v=9XgN7r6E5tM' },
+  { id: '4', title: '은혜 (손경민) & 행복 & 감사 연속 찬양', category: '베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=zJg1m_E-Uj0' },
+  { id: '5', title: '하루를 은혜로 시작하는 아침 찬양 모음', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=W0q3G4Qp5Hw' },
+  { id: '6', title: '주님 내가 여기 있사오니 - 마커스 워십 찬양', category: '워십/결단', artist: '마커스 워십', url: 'https://www.youtube.com/watch?v=7P_kPvZ-oE8' },
+  { id: '7', title: '꽃들도 & 광야를 지나며 & 주 은혜가 나를 채우네', category: '인기CCM', artist: '워십 찬양', url: 'https://www.youtube.com/watch?v=X8aZ2kM3uQ4' },
+  { id: '8', title: '밤에 듣는 평안한 성경말씀 낭독 & 잔잔한 찬양', category: '수면/평안', artist: '말씀과 찬양', url: 'https://www.youtube.com/watch?v=M5xN9pQ2vW8' },
+];
 
 const STATIC_INFO = {
   basicLife: [
@@ -18,6 +33,13 @@ const STATIC_INFO = {
     "③ 전교인 십일조 생활하기 위해 기도하자",
     "④ 교회부흥과 영,혼의 성장을 위해 기도하자",
     "⑤ 세계선교 및 나라와 민족을 위해 기도하자"
+  ],
+  schedule: [
+    { time: "주일 오전 11:00", name: "주일 대예배", place: "본당" },
+    { time: "주일 오후 02:00", name: "주일 오후 찬양예배", place: "본당" },
+    { time: "수요일 저녁 07:30", name: "수요 저녁예배", place: "본당" },
+    { time: "금요일 밤 08:30", name: "금요 심야기도회", place: "본당" },
+    { time: "매일 새벽 05:30", name: "새벽 기도회", place: "본당" }
   ]
 };
 
@@ -80,8 +102,167 @@ const S = {
   }
 };
 
-const OLD_BOOKS = BIBLE_BOOKS.filter(b => b.testament === 'old');
-const NEW_BOOKS = BIBLE_BOOKS.filter(b => b.testament === 'new');
+/* ─── 탭0: CCM 찬양곡 선택 ─── */
+function CCMTab({ liveUrl, onSelectVideo, customTracks }) {
+  const [query, setQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('전체');
+
+  const tracks = customTracks && customTracks.length > 0 ? customTracks : DEFAULT_CCM_TRACKS;
+  const categories = ['전체', ...Array.from(new Set(tracks.map(t => t.category).filter(Boolean)))];
+
+  const filtered = tracks.filter(t => {
+    const matchesCat = selectedCategory === '전체' || t.category === selectedCategory;
+    const matchesQ = !query.trim() || 
+      t.title.toLowerCase().includes(query.trim().toLowerCase()) || 
+      (t.artist && t.artist.toLowerCase().includes(query.trim().toLowerCase()));
+    return matchesCat && matchesQ;
+  });
+
+  return (
+    <div style={S.panel}>
+      {/* 안내 배너 */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%)',
+        border: '1px solid rgba(212,175,55,0.35)',
+        borderRadius: '12px',
+        padding: '10px 14px',
+        marginBottom: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
+      }}>
+        <span style={{ fontSize: '20px' }}>🎵</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ margin: 0, fontSize: '13px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)' }}>
+            원하시는 찬양곡을 선택해 보세요!
+          </p>
+          <p style={{ margin: '2px 0 0', fontSize: '11px', color: 'rgba(255,255,255,0.7)', wordBreak: 'keep-all' }}>
+            곡을 누르면 상단 영상에서 바로 재생됩니다.
+          </p>
+        </div>
+      </div>
+
+      {/* 검색창 */}
+      <input
+        type="text"
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="찬양 제목 또는 키워드 검색..."
+        style={{ ...S.input, marginBottom: '10px' }}
+      />
+
+      {/* 카테고리 칩 */}
+      {categories.length > 1 && (
+        <div style={{ display: 'flex', gap: '5px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '10px', scrollbarWidth: 'none' }}>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                padding: '4px 10px', borderRadius: '14px', fontSize: '11px', fontWeight: 700,
+                background: selectedCategory === cat ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.06)',
+                color: selectedCategory === cat ? '#111' : 'rgba(255,255,255,0.7)',
+                border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* 찬양곡 목록 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {filtered.map((item, idx) => {
+          const isPlaying = liveUrl && item.url && (liveUrl.includes(item.url) || item.url.includes(liveUrl));
+          return (
+            <div
+              key={item.id || idx}
+              onClick={() => onSelectVideo && onSelectVideo(item.url, `🔴 ${item.title}`)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '12px 14px',
+                borderRadius: '12px',
+                background: isPlaying ? 'rgba(212,175,55,0.18)' : 'rgba(255,255,255,0.04)',
+                border: isPlaying ? '1px solid var(--accent-gold, #d4af37)' : '1px solid rgba(255,255,255,0.08)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                gap: '12px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
+                <div style={{
+                  width: '32px', height: '32px', borderRadius: '50%',
+                  background: isPlaying ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.08)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: isPlaying ? '#111' : '#fff', flexShrink: 0
+                }}>
+                  {isPlaying ? <Radio size={16} /> : <Play size={14} style={{ marginLeft: '2px' }} />}
+                </div>
+
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px', flexWrap: 'wrap' }}>
+                    {item.category && (
+                      <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 6px', borderRadius: '4px', background: 'rgba(212,175,55,0.2)', color: 'var(--accent-gold, #d4af37)' }}>
+                        {item.category}
+                      </span>
+                    )}
+                    {isPlaying && (
+                      <span style={{ fontSize: '10px', fontWeight: 800, color: '#4ade80', display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                        <CheckCircle2 size={11} /> 현재 재생 중
+                      </span>
+                    )}
+                  </div>
+                  <p style={{
+                    margin: 0,
+                    fontSize: '13.5px',
+                    fontWeight: isPlaying ? 800 : 600,
+                    color: isPlaying ? '#fff' : 'rgba(255,255,255,0.92)',
+                    lineHeight: 1.35,
+                    wordBreak: 'keep-all'
+                  }}>
+                    {item.title}
+                  </p>
+                  {item.artist && (
+                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', display: 'block', marginTop: '2px' }}>
+                      {item.artist}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectVideo && onSelectVideo(item.url, `🔴 ${item.title}`);
+                }}
+                style={{
+                  ...S.btn,
+                  padding: '6px 12px',
+                  fontSize: '11.5px',
+                  background: isPlaying ? 'var(--accent-gold, #d4af37)' : 'rgba(212,175,55,0.12)',
+                  color: isPlaying ? '#111' : '#d4af37',
+                  flexShrink: 0
+                }}
+              >
+                {isPlaying ? '재생 중' : '재생'}
+              </button>
+            </div>
+          );
+        })}
+
+        {filtered.length === 0 && (
+          <p style={{ textAlign: 'center', padding: '30px 0', fontSize: '13px', color: 'rgba(255,255,255,0.4)' }}>
+            검색 결과가 없습니다.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 /* ─── 탭1: 성경 ─── */
 function BibleTab() {
@@ -483,125 +664,330 @@ function BulletinTab({ db }) {
   ];
 
   return (
-    <div style={{ ...S.panel, paddingBottom: '60px' }}>
+    <div style={{ ...S.panel, paddingBottom: '80px' }}>
       {latest ? (
         <div>
-          {/* 주보 제목 & 날짜 헤더 */}
-          <div style={{ marginBottom: '14px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <span style={{ ...S.label, color: 'var(--accent-gold, #d4af37)' }}>⛪ 화도벧엘교회 주보</span>
-            <p style={{ margin: 0, fontSize: '15.5px', fontWeight: 800, color: '#fff' }}>
+          {/* 주보 헤더 카드 */}
+          <div style={{
+            background: 'linear-gradient(135deg, #1c1c20 0%, #161618 100%)',
+            border: '1px solid rgba(212,175,55,0.3)',
+            borderRadius: '14px',
+            padding: '14px 16px',
+            marginBottom: '16px',
+            textAlign: 'center'
+          }}>
+            <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)', letterSpacing: '1px' }}>
+              ⛪ 화도벧엘교회 스마트 주보
+            </span>
+            <h3 style={{ margin: '4px 0 2px', fontSize: '16px', fontWeight: 800, color: '#fff' }}>
               {latest.title || '주일 주보'}
-            </p>
+            </h3>
             {latest.date && (
-              <p style={{ margin: '3px 0 0', fontSize: '11.5px', color: 'rgba(255,255,255,0.5)' }}>
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>
                 {latest.date}
-              </p>
+              </span>
             )}
           </div>
 
           {/* 이미지 주보인 경우 */}
           {latest.imageUrl && (
-            <img src={latest.imageUrl} alt="주보" style={{ width: '100%', borderRadius: '8px', marginBottom: '14px' }} />
+            <div style={{ marginBottom: '16px', textAlign: 'center' }}>
+              <img src={latest.imageUrl} alt="주보 이미지" style={{ width: '100%', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }} />
+            </div>
           )}
 
-          {/* 1. 주일 오전 예배 순서 */}
-          <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '12px 14px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h4 style={{ margin: '0 0 10px 0', fontSize: '12.5px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {/* 1. 주일 오전 예배 순서 (완벽한 좌/중/우 3열 정렬) */}
+          <div style={{
+            background: '#161618',
+            borderRadius: '14px',
+            padding: '14px 16px',
+            marginBottom: '16px',
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}>
+            <h4 style={{
+              margin: '0 0 12px 0',
+              fontSize: '13px',
+              fontWeight: 800,
+              color: 'var(--accent-gold, #d4af37)',
+              borderBottom: '1px solid rgba(212,175,55,0.25)',
+              paddingBottom: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
               <span>✞</span> 주일 오전 예배 순서
             </h4>
-            <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse' }}>
+
+            <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '12.5px', borderCollapse: 'collapse' }}>
+              <colgroup>
+                <col style={{ width: '28%' }} />
+                <col style={{ width: '44%' }} />
+                <col style={{ width: '28%' }} />
+              </colgroup>
               <tbody>
-                {(latest.worshipOrder?.length > 0 ? latest.worshipOrder : FALLBACK_ORDER).map((item, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: '6px 4px', width: '28%', fontWeight: item.type?.includes('※') ? 'bold' : 'normal', color: item.type?.includes('※') ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.6)', verticalAlign: 'top' }}>
-                      {item.type}
-                    </td>
-                    <td style={{ padding: '6px 4px', width: '46%', color: 'rgba(255,255,255,0.92)', verticalAlign: 'top', wordBreak: 'keep-all' }}>
-                      {item.content}
-                    </td>
-                    <td style={{ padding: '6px 4px', width: '26%', textAlign: 'right', color: 'rgba(255,255,255,0.45)', verticalAlign: 'top', wordBreak: 'keep-all' }}>
-                      {item.leader}
-                    </td>
-                  </tr>
-                ))}
+                {(latest.worshipOrder?.length > 0 ? latest.worshipOrder : FALLBACK_ORDER).map((item, i) => {
+                  const isStand = item.type?.includes('※');
+                  return (
+                    <tr key={i} style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
+                      <td style={{
+                        padding: '8px 4px',
+                        textAlign: 'left',
+                        fontWeight: isStand ? 800 : 500,
+                        color: isStand ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.7)',
+                        verticalAlign: 'middle',
+                        wordBreak: 'keep-all'
+                      }}>
+                        {item.type}
+                      </td>
+                      <td style={{
+                        padding: '8px 4px',
+                        textAlign: 'center',
+                        fontWeight: 600,
+                        color: '#fff',
+                        verticalAlign: 'middle',
+                        wordBreak: 'keep-all'
+                      }}>
+                        {item.content || '-'}
+                      </td>
+                      <td style={{
+                        padding: '8px 4px',
+                        textAlign: 'right',
+                        color: 'rgba(255,255,255,0.5)',
+                        verticalAlign: 'middle',
+                        wordBreak: 'keep-all'
+                      }}>
+                        {item.leader}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+            <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: '10.5px', color: 'rgba(255,255,255,0.4)' }}>
+              ※ 표는 일어서서 참여합니다
+            </p>
           </div>
 
           {/* 2. 주일 오후 예배 순서 (있는 경우) */}
           {latest.includeAfternoon && latest.afternoonOrder?.length > 0 && (
-            <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '12px 14px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h4 style={{ margin: '0 0 10px 0', fontSize: '12.5px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{
+              background: '#161618',
+              borderRadius: '14px',
+              padding: '14px 16px',
+              marginBottom: '16px',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}>
+              <h4 style={{
+                margin: '0 0 12px 0',
+                fontSize: '13px',
+                fontWeight: 800,
+                color: 'var(--accent-gold, #d4af37)',
+                borderBottom: '1px solid rgba(212,175,55,0.25)',
+                paddingBottom: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
                 <span>✞</span> 주일 오후 예배 순서
               </h4>
-              <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse' }}>
+
+              <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '12.5px', borderCollapse: 'collapse' }}>
+                <colgroup>
+                  <col style={{ width: '28%' }} />
+                  <col style={{ width: '44%' }} />
+                  <col style={{ width: '28%' }} />
+                </colgroup>
                 <tbody>
-                  {latest.afternoonOrder.map((item, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ padding: '6px 4px', width: '28%', fontWeight: item.type?.includes('※') ? 'bold' : 'normal', color: item.type?.includes('※') ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.6)', verticalAlign: 'top' }}>
-                        {item.type}
-                      </td>
-                      <td style={{ padding: '6px 4px', width: '46%', color: 'rgba(255,255,255,0.92)', verticalAlign: 'top', wordBreak: 'keep-all' }}>
-                        {item.content}
-                      </td>
-                      <td style={{ padding: '6px 4px', width: '26%', textAlign: 'right', color: 'rgba(255,255,255,0.45)', verticalAlign: 'top', wordBreak: 'keep-all' }}>
-                        {item.leader}
-                      </td>
-                    </tr>
-                  ))}
+                  {latest.afternoonOrder.map((item, i) => {
+                    const isStand = item.type?.includes('※');
+                    return (
+                      <tr key={i} style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
+                        <td style={{
+                          padding: '8px 4px',
+                          textAlign: 'left',
+                          fontWeight: isStand ? 800 : 500,
+                          color: isStand ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.7)',
+                          verticalAlign: 'middle',
+                          wordBreak: 'keep-all'
+                        }}>
+                          {item.type}
+                        </td>
+                        <td style={{
+                          padding: '8px 4px',
+                          textAlign: 'center',
+                          fontWeight: 600,
+                          color: '#fff',
+                          verticalAlign: 'middle',
+                          wordBreak: 'keep-all'
+                        }}>
+                          {item.content || '-'}
+                        </td>
+                        <td style={{
+                          padding: '8px 4px',
+                          textAlign: 'right',
+                          color: 'rgba(255,255,255,0.5)',
+                          verticalAlign: 'middle',
+                          wordBreak: 'keep-all'
+                        }}>
+                          {item.leader}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           )}
 
-          {/* 3. 교회 소식 */}
+          {/* 3. 교회 소식 & 알림 (줄바꿈 완벽 보존) */}
           {(latest.news?.length > 0 || latest.newsSubtitle) && (
-            <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '12px 14px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h4 style={{ margin: '0 0 10px 0', fontSize: '12.5px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{
+              background: '#161618',
+              borderRadius: '14px',
+              padding: '14px 16px',
+              marginBottom: '16px',
+              border: '1px solid rgba(255,255,255,0.08)'
+            }}>
+              <h4 style={{
+                margin: '0 0 12px 0',
+                fontSize: '13px',
+                fontWeight: 800,
+                color: 'var(--accent-gold, #d4af37)',
+                borderBottom: '1px solid rgba(212,175,55,0.25)',
+                paddingBottom: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
                 <span>ℹ</span> 교회 소식 & 알림
               </h4>
+
               {latest.newsSubtitle && (
-                <p style={{ margin: '0 0 8px 0', fontSize: '12px', color: 'rgba(212,175,55,0.9)', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+                <div style={{
+                  background: 'rgba(212,175,55,0.1)',
+                  border: '1px solid rgba(212,175,55,0.3)',
+                  borderRadius: '10px',
+                  padding: '10px 12px',
+                  marginBottom: '12px',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'keep-all',
+                  fontSize: '12px',
+                  color: '#fff',
+                  lineHeight: 1.6
+                }}>
                   {latest.newsSubtitle}
-                </p>
+                </div>
               )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {latest.news?.map((n, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '8px', fontSize: '12px', color: 'rgba(255,255,255,0.85)', lineHeight: 1.55 }}>
-                    <span style={{ color: 'var(--accent-gold, #d4af37)', fontWeight: 800, flexShrink: 0 }}>{idx + 1}.</span>
-                    <span style={{ wordBreak: 'keep-all' }}>{n}</span>
+                  <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                    <span style={{
+                      background: 'var(--accent-gold, #d4af37)',
+                      color: '#111',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      flexShrink: 0,
+                      marginTop: '2px'
+                    }}>
+                      {idx + 1}
+                    </span>
+                    <div style={{
+                      flex: 1,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'keep-all',
+                      fontSize: '12.5px',
+                      color: 'rgba(255,255,255,0.92)',
+                      lineHeight: 1.65,
+                      fontFamily: 'inherit'
+                    }}>
+                      {n}
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {latest.newsImageUrl && (
+                <div style={{ marginTop: '14px', textAlign: 'center' }}>
+                  <img src={latest.newsImageUrl} alt="소식 이미지" style={{ maxWidth: '100%', borderRadius: '8px' }} />
+                </div>
+              )}
             </div>
           )}
 
-          {/* 4. 기도 제목 & 기본 생활 */}
-          <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '12px 14px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 800, color: 'var(--accent-gold, #d4af37)' }}>
-              🙏 교회 기도 제목
-            </h4>
-            {STATIC_INFO.prayers.map((p, i) => (
-              <p key={i} style={{ margin: '0 0 5px', fontSize: '11.5px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45, wordBreak: 'keep-all' }}>
-                {p}
-              </p>
-            ))}
+          {/* 4. 성도의 기본생활 & 기도제목 */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
+            gap: '12px',
+            marginBottom: '16px'
+          }}>
+            <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800 }}>
+                ✿ 성도의 기본생활
+              </h5>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11.5px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
+                {STATIC_INFO.basicLife.map((life, i) => (
+                  <div key={i}>• {life}</div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800 }}>
+                🙏 벧엘교회 기도 제목
+              </h5>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11.5px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
+                {STATIC_INFO.prayers.map((prayer, i) => (
+                  <div key={i}>{prayer}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 5. 예배 시간 안내 */}
+          <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
+              🕒 정기 예배 시간 안내
+            </h5>
+            <table style={{ width: '100%', fontSize: '11.5px', borderCollapse: 'collapse', textAlign: 'center' }}>
+              <tbody>
+                {STATIC_INFO.schedule.map((item, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ padding: '6px 4px', color: 'rgba(255,255,255,0.6)' }}>{item.time}</td>
+                    <td style={{ padding: '6px 4px', fontWeight: 700, color: 'var(--accent-gold, #d4af37)' }}>{item.name}</td>
+                    <td style={{ padding: '6px 4px', color: 'rgba(255,255,255,0.7)' }}>{item.place}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       ) : (
         <div>
           <span style={{ ...S.label, color: 'var(--accent-gold, #d4af37)' }}>⛪ 기본 예배 순서 안내</span>
-          <table style={{ width: '100%', fontSize: '12.5px', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '12.5px', borderCollapse: 'collapse' }}>
+            <colgroup>
+              <col style={{ width: '28%' }} />
+              <col style={{ width: '44%' }} />
+              <col style={{ width: '28%' }} />
+            </colgroup>
             <tbody>
               {FALLBACK_ORDER.map((item, i) => (
                 <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <td style={{ padding: '8px 4px', width: '30%', color: item.type.includes('※') ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.7)', fontWeight: item.type.includes('※') ? 800 : 500 }}>
+                  <td style={{ padding: '8px 4px', color: item.type.includes('※') ? 'var(--accent-gold, #d4af37)' : 'rgba(255,255,255,0.7)', fontWeight: item.type.includes('※') ? 800 : 500 }}>
                     {item.type}
                   </td>
-                  <td style={{ padding: '8px 4px', width: '45%', color: '#fff' }}>
-                    {item.content}
+                  <td style={{ padding: '8px 4px', textAlign: 'center', color: '#fff' }}>
+                    {item.content || '-'}
                   </td>
-                  <td style={{ padding: '8px 4px', width: '25%', textAlign: 'right', color: 'rgba(255,255,255,0.45)' }}>
+                  <td style={{ padding: '8px 4px', textAlign: 'right', color: 'rgba(255,255,255,0.45)' }}>
                     {item.leader}
                   </td>
                 </tr>
@@ -710,20 +1096,39 @@ function SearchTab() {
   );
 }
 
-const TABS = [
-  { key: 'bible', label: '성경', Icon: BookOpen },
-  { key: 'hymns', label: '찬송가', Icon: Music },
-  { key: 'bulletin', label: '주보', Icon: FileText },
-  { key: 'search', label: '검색', Icon: Search }
-];
+export default function LivePlayerTabs({ db, liveTitle = '', liveUrl = '', onSelectVideo, customTracks }) {
+  // 방송 제목에 CCM 또는 찬양이 포함되어 있으면 기본 탭을 'ccm'으로 활성화!
+  const isCCM = Boolean(liveTitle && (liveTitle.includes('CCM') || liveTitle.includes('찬양')));
+  const [activeTab, setActiveTab] = useState(isCCM ? 'ccm' : 'bible');
 
-export default function LivePlayerTabs({ db }) {
-  const [activeTab, setActiveTab] = useState('bible');
+  useEffect(() => {
+    if (isCCM) {
+      setActiveTab('ccm');
+    }
+  }, [isCCM]);
+
+  // CCM 방송 중일 때와 예배 생중계 중일 때 탭 구성
+  const tabs = isCCM
+    ? [
+        { key: 'ccm',      label: '찬양곡',   Icon: Music },
+        { key: 'hymns',    label: '찬송가',   Icon: BookOpen },
+        { key: 'bible',    label: '성경',     Icon: BookOpen },
+        { key: 'bulletin', label: '주보',     Icon: FileText },
+        { key: 'search',   label: '검색',     Icon: Search },
+      ]
+    : [
+        { key: 'bible',    label: '성경',     Icon: BookOpen },
+        { key: 'hymns',    label: '찬송가',   Icon: Music },
+        { key: 'bulletin', label: '주보',     Icon: FileText },
+        { key: 'search',   label: '검색',     Icon: Search },
+        { key: 'ccm',      label: 'CCM찬양',  Icon: Sparkles },
+      ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: '#0f0f11' }}>
+      {/* 탭 네비게이션 바 */}
       <div style={{ display: 'flex', background: '#161618', borderTop: '1px solid rgba(255,255,255,0.1)', flexShrink: 0 }}>
-        {TABS.map(({ key, label, Icon }) => {
+        {tabs.map(({ key, label, Icon }) => {
           const active = activeTab === key;
           return (
             <button
@@ -736,7 +1141,7 @@ export default function LivePlayerTabs({ db }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '3px',
-                padding: '9px 4px',
+                padding: '9px 2px',
                 background: 'transparent',
                 border: 'none',
                 borderBottom: active ? '2px solid #d4af37' : '2px solid transparent',
@@ -753,11 +1158,14 @@ export default function LivePlayerTabs({ db }) {
           );
         })}
       </div>
+
+      {/* 탭 콘텐츠 영역 */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {activeTab === 'bible' && <BibleTab />}
-        {activeTab === 'hymns' && <HymnsTab />}
+        {activeTab === 'ccm'      && <CCMTab liveUrl={liveUrl} onSelectVideo={onSelectVideo} customTracks={customTracks} />}
+        {activeTab === 'bible'    && <BibleTab />}
+        {activeTab === 'hymns'    && <HymnsTab />}
         {activeTab === 'bulletin' && <BulletinTab db={db} />}
-        {activeTab === 'search' && <SearchTab />}
+        {activeTab === 'search'   && <SearchTab />}
       </div>
     </div>
   );

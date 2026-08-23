@@ -2,12 +2,13 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Tv, Play, Settings, X, Save, Radio, Check, Power, 
-  ExternalLink, Bell, BellRing, Image as ImageIcon, Eye, EyeOff, Upload, Sparkles 
+  ExternalLink, Bell, BellRing, Image as ImageIcon, Eye, EyeOff, Upload, Sparkles,
+  Plus, Trash2, Music
 } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
-import LivePlayerTabs from './LivePlayerTabs';
+import LivePlayerTabs, { DEFAULT_CCM_TRACKS } from './LivePlayerTabs';
 
 // 기본 벧엘교회(유정파파) 유튜브 채널 고정 라이브 URL
 const DEFAULT_YOUTUBE_LIVE_URL = 'https://www.youtube.com/@유정파파-n6e/live';
@@ -135,6 +136,13 @@ export default function LiveBanner() {
   const [showAdNotice, setShowAdNotice] = useState(true);
   const [isPeekVideo, setIsPeekVideo] = useState(false); // 커버 이미지 덮여있을 때 광고 스킵을 위한 임시 영상 보기 모드
 
+  // CCM 찬양곡 링크 리스트 관리 상태
+  const [ccmPlaylists, setCcmPlaylists] = useState(DEFAULT_CCM_TRACKS);
+  const [inputCcmPlaylists, setInputCcmPlaylists] = useState(DEFAULT_CCM_TRACKS);
+  const [newCcmTitle, setNewCcmTitle] = useState('');
+  const [newCcmUrl, setNewCcmUrl] = useState('');
+  const [newCcmCategory, setNewCcmCategory] = useState('은혜/워십');
+
   const fileInputRef = useRef(null);
 
   // 플레이어를 열었을 때 상태 초기화 및 광고 안내 문구 12초 후 자동 숨김 (초반 안내 후 빠르게 사라짐)
@@ -200,6 +208,12 @@ export default function LiveBanner() {
         if (data.coverNoticeText !== undefined) {
           setCoverNoticeText(data.coverNoticeText);
           setInputCoverNoticeText(data.coverNoticeText);
+        }
+
+        // CCM 찬양곡 리스트 설정
+        if (data.ccmPlaylists && Array.isArray(data.ccmPlaylists) && data.ccmPlaylists.length > 0) {
+          setCcmPlaylists(data.ccmPlaylists);
+          setInputCcmPlaylists(data.ccmPlaylists);
         }
       } else {
         setIsLive(false);
@@ -323,6 +337,30 @@ export default function LiveBanner() {
     }
   };
 
+  // CCM 찬양곡 추가 핸들러
+  const handleAddCcmTrack = () => {
+    if (!newCcmTitle.trim() || !newCcmUrl.trim()) {
+      if (showToast) showToast('찬양 제목과 유튜브 링크를 모두 입력해주세요.', 'warning');
+      return;
+    }
+    const newTrack = {
+      id: Date.now().toString(),
+      title: newCcmTitle.trim(),
+      url: newCcmUrl.trim(),
+      category: newCcmCategory.trim() || '은혜/워십',
+      artist: '벧엘 추천'
+    };
+    setInputCcmPlaylists(prev => [...prev, newTrack]);
+    setNewCcmTitle('');
+    setNewCcmUrl('');
+    if (showToast) showToast('곡이 목록에 추가되었습니다. 하단의 [설정 저장하기]를 눌러 완료하세요.');
+  };
+
+  // CCM 찬양곡 삭제 핸들러
+  const handleDeleteCcmTrack = (id) => {
+    setInputCcmPlaylists(prev => prev.filter(t => t.id !== id));
+  };
+
   // 관리자 설정 전체 저장 (Firestore)
   const handleSaveSettings = async (e) => {
     e.preventDefault();
@@ -338,6 +376,7 @@ export default function LiveBanner() {
         isCoverActive: inputCoverActive,
         coverImageUrl: inputCoverImageUrl,
         coverNoticeText: inputCoverNoticeText,
+        ccmPlaylists: inputCcmPlaylists,
         updatedBy: currentUser?.displayName || '관리자',
         updatedAt: new Date().toISOString()
       };
@@ -356,6 +395,7 @@ export default function LiveBanner() {
       setIsCoverActive(inputCoverActive);
       setCoverImageUrl(inputCoverImageUrl);
       setCoverNoticeText(inputCoverNoticeText);
+      setCcmPlaylists(inputCcmPlaylists);
       setIsSettingOpen(false);
       setSendNotificationCheck(false);
 
@@ -363,7 +403,7 @@ export default function LiveBanner() {
         if (inputIsLive && sendNotificationCheck) {
           showToast('✅ 설정 저장 완료 및 전교인 생방송 푸시 알림이 발송되었습니다!');
         } else {
-          showToast('✅ 실시간 방송 설정이 저장되었습니다!');
+          showToast('✅ 실시간 방송 및 찬양 목록 설정이 저장되었습니다!');
         }
       }
     } catch (err) {
@@ -1002,8 +1042,17 @@ export default function LiveBanner() {
                 )}
               </AnimatePresence>
 
-              {/* 5. 분할 하단 탭 콘텐츠 패널 (성경 / 찬송가 / 주보 / 검색) */}
-              <LivePlayerTabs db={db} />
+              {/* 5. 분할 하단 탭 콘텐츠 패널 (성경 / 찬송가 / 주보 / 검색 / CCM찬양) */}
+              <LivePlayerTabs 
+                db={db} 
+                liveTitle={liveTitle} 
+                liveUrl={liveUrl} 
+                onSelectVideo={(url, title) => {
+                  setLiveUrl(url);
+                  if (title) setLiveTitle(title);
+                }} 
+                customTracks={ccmPlaylists} 
+              />
             </motion.div>
           </motion.div>
         )}
@@ -1296,6 +1345,84 @@ export default function LiveBanner() {
                   <p style={{ margin: '4px 0 0', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                     💡 <code>https://www.youtube.com/@유정파파-n6e/live</code> 고정 주소를 사용하시면 매번 바꾸지 않아도 방송 시 자동 연결됩니다.
                   </p>
+                </div>
+
+                {/* 8. CCM 찬양곡 링크 리스트 관리 (추가/삭제) */}
+                <div style={{
+                  padding: '14px', borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                  display: 'flex', flexDirection: 'column', gap: '12px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <p style={{ margin: 0, fontSize: '13px', fontWeight: 800, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Music size={16} /> 🎵 CCM 찬양곡/플레이리스트 링크 목록 ({inputCcmPlaylists.length}곡)
+                    </p>
+                  </div>
+
+                  <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    성도님들이 CCM 찬양 모드에서 자유롭게 선택하여 들을 수 있는 찬양곡 리스트입니다.
+                  </p>
+
+                  {/* 새 찬양곡 추가 입력 폼 */}
+                  <div style={{ background: 'rgba(0,0,0,0.25)', padding: '10px 12px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#fff' }}>+ 새로운 찬양곡 추가</span>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <input
+                        type="text"
+                        placeholder="찬양 제목 (예: 은혜 - 손경민)"
+                        value={newCcmTitle}
+                        onChange={(e) => setNewCcmTitle(e.target.value)}
+                        style={{ flex: '1 1 180px', padding: '7px 10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: '#fff', fontSize: '12px' }}
+                      />
+                      <select
+                        value={newCcmCategory}
+                        onChange={(e) => setNewCcmCategory(e.target.value)}
+                        style={{ padding: '7px 10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: '#fff', fontSize: '12px' }}
+                      >
+                        <option value="은혜/워십">은혜/워십</option>
+                        <option value="기도/묵상">기도/묵상</option>
+                        <option value="위로/평안">위로/평안</option>
+                        <option value="베스트">베스트</option>
+                        <option value="아침/새벽">아침/새벽</option>
+                        <option value="수면/평안">수면/평안</option>
+                      </select>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <input
+                        type="url"
+                        placeholder="유튜브 링크 (https://www.youtube.com/watch?v=...)"
+                        value={newCcmUrl}
+                        onChange={(e) => setNewCcmUrl(e.target.value)}
+                        style={{ flex: 1, padding: '7px 10px', borderRadius: '6px', background: 'var(--bg-primary)', border: '1px solid var(--glass-border)', color: '#fff', fontSize: '12px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddCcmTrack}
+                        style={{ padding: '7px 14px', borderRadius: '6px', background: 'var(--accent-gold)', border: 'none', color: '#111', fontWeight: 700, fontSize: '12px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      >
+                        <Plus size={14} /> 추가
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 등록된 찬양곡 목록 */}
+                  <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px', paddingRight: '4px' }}>
+                    {inputCcmPlaylists.map((track, i) => (
+                      <div key={track.id || i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', fontSize: '12px', gap: '8px' }}>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <span style={{ fontSize: '10px', color: 'var(--accent-gold)', marginRight: '6px', fontWeight: 700 }}>[{track.category || '찬양'}]</span>
+                          <span style={{ color: '#fff', fontWeight: 600 }}>{track.title}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCcmTrack(track.id)}
+                          style={{ background: 'transparent', border: 'none', color: '#f87171', cursor: 'pointer', padding: '4px' }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
