@@ -9,18 +9,31 @@ import { fetchChapter } from '../services/bibleService';
 import { TONGL_HYMNS } from '../data/hymnsData';
 
 export const DEFAULT_CCM_TRACKS = [
+  // ─── 🏆 인기 찬양팀 베스트 모음 ───
   { id: '1', title: '마커스워십 (Markers Worship) 묵상 & 워십 찬양 베스트 모음', category: '워십/찬양팀', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=gQ2X2m7BwTY' },
-  { id: '2', title: '손경민 작곡 찬양 베스트 29곡 모음 (2시간 연속재생/무광고)', category: '은혜/베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=DgtY1F99BA4' },
+  { id: '2', title: '손경민 작곡 찬양 베스트 29곡 모음 (2시간 연속재생/무광고)', category: '워십/찬양팀', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=DgtY1F99BA4' },
   { id: '3', title: '위러브 (WELOVE) 대표 워십 찬양 베스트 모음집', category: '워십/찬양팀', artist: 'WELOVE', url: 'https://www.youtube.com/watch?v=yH-yV4qJKI0' },
   { id: '4', title: '어노인팅 (Anointing) BEST 예배 찬양 20곡 연속듣기', category: '워십/찬양팀', artist: '어노인팅', url: 'https://www.youtube.com/watch?v=FK2YHK0UQ4M' },
   { id: '5', title: '제이어스 (J-US) 은혜의 워십 찬양 베스트 연속듣기', category: '워십/찬양팀', artist: '제이어스', url: 'https://www.youtube.com/watch?v=QTMRxWVFO1A' },
-  { id: '6', title: '히즈윌 (HisWill) 은혜와 위로의 찬양 모음집', category: '위로/평안', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=beMKqQn0iZw' },
-  { id: '7', title: '깊은 기도로 인도하는 피아노 묵상 찬양 (2시간)', category: '기도/묵상', artist: '피아노 묵상', url: 'https://www.youtube.com/watch?v=f742p7mQ0Ic' },
-  { id: '8', title: '손경민 작사/작곡 아침을 여는 은혜의 찬양 모음집', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=BrbImlcplw8' },
-  { id: '9', title: '산뜻한 하루를 시작할 때 듣는 아침 찬양 플레이리스트', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=crrfujNlEL8' },
-  { id: '10', title: '마음이 지치고 힘들 때 힘이 되는 위로와 회복의 찬양 모음', category: '위로/평안', artist: '위로와 회복', url: 'https://www.youtube.com/watch?v=D9b_SBEv_XY' },
-  { id: '11', title: '은혜의 찬송가 피아노 연주 베스트 모음 (묵상/기도/일할 때)', category: '찬송가', artist: '찬송가 연주', url: 'https://www.youtube.com/watch?v=BeoPMcAS3JA' },
-  { id: '12', title: '잠들기 전 듣는 클래식 기타 찬송가 3시간 (수면/평안/묵상)', category: '수면/평안', artist: '수면 묵상', url: 'https://www.youtube.com/watch?v=dNntR1kU6ec' }
+  { id: '6', title: '히즈윌 (HisWill) 은혜와 위로의 찬양 모음집', category: '워십/찬양팀', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=beMKqQn0iZw' },
+  { id: '7', title: '피아워십 (FIA Worship) 대표 찬양 20곡 연속듣기', category: '워십/찬양팀', artist: '피아워십', url: 'https://www.youtube.com/watch?v=PLIicL24-6s' },
+  { id: '8', title: '예람워십 (Yeram Worship) 대표 찬양 33곡 베스트 모음', category: '워십/찬양팀', artist: '예람워십', url: 'https://www.youtube.com/watch?v=EtW9xPOShaQ' },
+  // ─── 📅 2026년 월별 CCM 차트 베스트 ───
+  { id: '9', title: '🗓️ 2026년 8월 KOREA CCM BEST 40 — 이 달의 인기 찬양 총망라', category: '2026 월별베스트', artist: '2026.08 차트', url: 'https://www.youtube.com/watch?v=EqWVU_J7O2g' },
+  { id: '10', title: '📊 2026년 8월 멜론·유튜브 CCM 차트 TOP 25 (피아워십·히즈윌·위러브)', category: '2026 월별베스트', artist: '2026.08 차트', url: 'https://www.youtube.com/watch?v=ru9J6-eSORw' },
+  { id: '11', title: '🗓️ 2026년 7월 KOREA CCM BEST 40 — 여름 은혜 워십 베스트', category: '2026 월별베스트', artist: '2026.07 차트', url: 'https://www.youtube.com/watch?v=quCXotqhaaw' },
+  { id: '12', title: '🗓️ 2026년 6월 KOREA CCM BEST 40 — 상반기 결산 워십 베스트', category: '2026 월별베스트', artist: '2026.06 차트', url: 'https://www.youtube.com/watch?v=iXAOZ8P63cs' },
+  { id: '13', title: '📊 2026년 5월 멜론 CCM 차트 TOP 20 — 가정의 달 은혜 찬양', category: '2026 월별베스트', artist: '2026.05 차트', url: 'https://www.youtube.com/watch?v=WwetWEKtic8' },
+  { id: '14', title: '🗓️ 2026년 4월 CCM 차트 BEST 40 — 봄·부활의 계절 은혜 찬양', category: '2026 월별베스트', artist: '2026.04 차트', url: 'https://www.youtube.com/watch?v=pUFzQEZpvy8' },
+  { id: '15', title: '🗓️ 2026년 3월 CCM 차트 BEST 40 — 봄을 여는 은혜의 찬양', category: '2026 월별베스트', artist: '2026.03 차트', url: 'https://www.youtube.com/watch?v=FmqACCA374I' },
+  { id: '16', title: '🗓️ 2026년 2월 CCM 차트 BEST 40 — 평안과 회복의 겨울 찬양', category: '2026 월별베스트', artist: '2026.02 차트', url: 'https://www.youtube.com/watch?v=-KMr3VbZdQI' },
+  { id: '17', title: '🗓️ 2026년 1월 KOREA CCM BEST 40 — 신년 감사·결단의 찬양', category: '2026 월별베스트', artist: '2026.01 차트', url: 'https://www.youtube.com/watch?v=nOTRLwHlms4' },
+  // ─── 🎹 상황별 모음 ───
+  { id: '18', title: '깊은 기도로 인도하는 피아노 묵상 찬양 (2시간)', category: '기도/묵상', artist: '피아노 묵상', url: 'https://www.youtube.com/watch?v=f742p7mQ0Ic' },
+  { id: '19', title: '산뜻한 하루를 시작할 때 듣는 아침 찬양 플레이리스트', category: '아침/새벽', artist: '아침 찬양', url: 'https://www.youtube.com/watch?v=crrfujNlEL8' },
+  { id: '20', title: '마음이 지치고 힘들 때 힘이 되는 위로와 회복의 찬양 모음', category: '위로/평안', artist: '위로와 회복', url: 'https://www.youtube.com/watch?v=D9b_SBEv_XY' },
+  { id: '21', title: '은혜의 찬송가 피아노 연주 베스트 모음 (묵상/기도/일할 때)', category: '찬송가', artist: '찬송가 연주', url: 'https://www.youtube.com/watch?v=BeoPMcAS3JA' },
+  { id: '22', title: '잠들기 전 듣는 클래식 기타 찬송가 3시간 (수면/평안/묵상)', category: '수면/평안', artist: '수면 묵상', url: 'https://www.youtube.com/watch?v=dNntR1kU6ec' }
 ];
 
 const STATIC_INFO = {
