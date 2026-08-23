@@ -9,18 +9,18 @@ import { fetchChapter } from '../services/bibleService';
 import { TONGL_HYMNS } from '../data/hymnsData';
 
 export const DEFAULT_CCM_TRACKS = [
-  { id: '1', title: '은혜 (손경민 with 동역자들) - Official MV', category: '은혜/워십', artist: '손경민', url: 'https://www.youtube.com/watch?v=R9V4P3e1o_c' },
-  { id: '2', title: '꽃들도 (Flowers) - 마커스워십 (소진영 인도)', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=F0f54tQ1v34' },
-  { id: '3', title: '손경민 찬양 2시간 연속듣기 (은혜, 감사, 행복, 충만)', category: '베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=JmU8T12qNqg' },
-  { id: '4', title: '오직 예수 뿐이네 (Only Jesus) - 마커스워십', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=sB1YtL_wWq8' },
-  { id: '5', title: '요게벳의 노래 (Feat. 조찬미) - 염평안 Official', category: '위로/평안', artist: '염평안', url: 'https://www.youtube.com/watch?v=gT8Yn_9d9tA' },
-  { id: '6', title: '주가 일하시네 (Official) - 김브라이언 (이혁진 곡)', category: '은혜/워십', artist: '김브라이언', url: 'https://www.youtube.com/watch?v=kwFW0zE80UU' },
-  { id: '7', title: '주의 은혜라 - 손경민 & 김정희', category: '은혜/워십', artist: '손경민', url: 'https://www.youtube.com/watch?v=kYJ5b6vG42k' },
-  { id: '8', title: '광야를 지나며 (가사 자막) - 히즈윌 (HisWill)', category: '위로/평안', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=0hQf2c253_o' },
-  { id: '9', title: '시간을 뚫고 - WELOVE (위러브) Official', category: '베스트', artist: 'WELOVE', url: 'https://www.youtube.com/watch?v=A0FUMbDKmLA' },
-  { id: '10', title: '기도할 때 듣는 잔잔한 피아노 찬양 2시간 모음', category: '기도/묵상', artist: '마음의 평안', url: 'https://www.youtube.com/watch?v=R2_1c7K6o9o' },
-  { id: '11', title: '꽃들도 (Acoustic Ver.) - 마커스워십', category: '기도/묵상', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=3n-vY5vJ-L0' },
-  { id: '12', title: '은혜 - 피아스트링 감성 피아노 묵상 찬양 연주', category: '기도/묵상', artist: '피아스트링', url: 'https://www.youtube.com/watch?v=48n29i83l88' }
+  { id: '1', title: '은혜 (손경민) - 햇살콩 캘리/음원', category: '은혜/워십', artist: '손경민', url: 'https://www.youtube.com/watch?v=pZuW2CV0mXY' },
+  { id: '2', title: '꽃들도 (Flowers) - 마커스워십 (소진영 인도)', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=0Eq3R4P_NdQ' },
+  { id: '3', title: '손경민 작곡 찬양 29곡 (2시간 연속재생)', category: '베스트', artist: '손경민 워십', url: 'https://www.youtube.com/watch?v=DgtY1F99BA4' },
+  { id: '4', title: '오직 예수 뿐이네 - 마커스워십 Official', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=gfNH21Q9tOk' },
+  { id: '5', title: '요게벳의 노래 (Feat. 조찬미) - 염평안 2집', category: '위로/평안', artist: '염평안', url: 'https://www.youtube.com/watch?v=cAmq9LH46Xg' },
+  { id: '6', title: '주가 일하시네 (Official) - 브라이언킴', category: '은혜/워십', artist: '김브라이언', url: 'https://www.youtube.com/watch?v=kwFW0zE80UU' },
+  { id: '7', title: '시간을 뚫고 - WELOVE (위러브) Official', category: '베스트', artist: 'WELOVE', url: 'https://www.youtube.com/watch?v=A0FUMbDKmLA' },
+  { id: '8', title: '광야를 지나며 (가사 자막) - 히즈윌 (HisWill)', category: '위로/평안', artist: '히즈윌', url: 'https://www.youtube.com/watch?v=1UBsTYjh91Y' },
+  { id: '9', title: '기도할 때 듣는 잔잔한 피아노 찬양 2시간', category: '기도/묵상', artist: '마음의 평안', url: 'https://www.youtube.com/watch?v=r5qkYQ8hI6Q' },
+  { id: '10', title: '내 모습 이대로 (Just as I Am) - 제이어스 Live', category: '은혜/워십', artist: '제이어스', url: 'https://www.youtube.com/watch?v=FV5nMb93UwY' },
+  { id: '11', title: '소원 (삶의 작은 일에도) - 꿈이있는자유/한웅재', category: '위로/평안', artist: '한웅재', url: 'https://www.youtube.com/watch?v=JGqENiEQ3l4' },
+  { id: '12', title: '감사함으로 - 마커스워십 Live', category: '은혜/워십', artist: '마커스워십', url: 'https://www.youtube.com/watch?v=8r-_4flpZOo' }
 ];
 
 const STATIC_INFO = {

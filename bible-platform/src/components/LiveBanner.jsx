@@ -845,7 +845,7 @@ export default function LiveBanner() {
                 {/* 1. 유튜브 실시간 스트림 영상 (광고 최소화 및 엉뚱한 곡 재생 방지 playlist lock) */}
                 {activeVideoId && (
                   <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=${activeVideoId}`}
+                    src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&playsinline=1&rel=0`}
                     title="실시간 예배 방송"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
