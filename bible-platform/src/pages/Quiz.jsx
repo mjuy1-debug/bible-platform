@@ -369,7 +369,7 @@ export default function Quiz() {
             <Trophy color="var(--accent-gold)" /> 말씀 골든벨 & 성경 퀴즈
           </h1>
           <p style={{ fontSize: 'clamp(0.8rem, 2.4vw, 0.85rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.5, wordBreak: 'keep-all', margin: '4px 0 0 0' }}>
-            총 {quizzes.length}세트 2,000여 문제 완비! 52주 통독 범위 안내와 성경 66권, 90대 성경 인물 열전으로 말씀을 마스터하세요.
+            총 {quizzes.length}세트 4,000여 문제 완비! 52주 통독 15제 심층 퀴즈와 성경 66권 전권, 90대 인물 열전 본문 읽기 연동으로 말씀을 마스터하세요.
           </p>
         </div>
 
@@ -586,31 +586,39 @@ export default function Quiz() {
                       {q.description}
                     </p>
 
-                    {/* 52주 통독 범위 배너 & 본문 먼저 읽기 버튼 */}
-                    {weeklyPlan && (
-                      <div style={{
-                        marginTop: '10px', padding: '8px 10px', borderRadius: '10px',
-                        background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.22)',
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px'
-                      }}>
-                        <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <BookOpen size={13} /> {weeklyPlan.range}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate('/read', { state: { bookName: weeklyPlan.bookName, chapter: weeklyPlan.startChapter } });
-                          }}
-                          style={{
-                            fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
-                            background: 'var(--accent-gold)', color: '#111', border: 'none', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '3px'
-                          }}
-                        >
-                          📖 본문 먼저 읽기
-                        </button>
-                      </div>
-                    )}
+                    {/* 성경 본문 읽기 연동 배너 & 버튼 (모든 카테고리 지원) */}
+                    {(() => {
+                      const readBookName = q.bookName || weeklyPlan?.bookName;
+                      const readChapter = q.startChapter || weeklyPlan?.startChapter || 1;
+                      const readRange = q.range || weeklyPlan?.range || (readBookName ? `${readBookName} ${readChapter}장~` : null);
+
+                      if (!readBookName && !readRange) return null;
+
+                      return (
+                        <div style={{
+                          marginTop: '10px', padding: '8px 10px', borderRadius: '10px',
+                          background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.22)',
+                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px'
+                        }}>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <BookOpen size={13} /> {readRange}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/read', { state: { bookName: readBookName, chapter: readChapter } });
+                            }}
+                            style={{
+                              fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
+                              background: 'var(--accent-gold)', color: '#111', border: 'none', cursor: 'pointer',
+                              display: 'flex', alignItems: 'center', gap: '3px'
+                            }}
+                          >
+                            📖 본문 먼저 읽기
+                          </button>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* 하단 도전 버튼 & 점수 */}
@@ -648,20 +656,25 @@ export default function Quiz() {
               <ArrowLeft size={14} /> 퀴즈 목록으로
             </button>
 
-            {/* 통독 본문 읽기 바로가기 */}
-            {activeWeeklyPlan && (
-              <button
-                onClick={() => navigate('/read', { state: { bookName: activeWeeklyPlan.bookName, chapter: activeWeeklyPlan.startChapter } })}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '4px',
-                  padding: '6px 12px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)',
-                  border: '1px solid rgba(212,175,55,0.4)', color: 'var(--accent-gold)',
-                  fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
-                }}
-              >
-                <BookOpen size={14} /> 본문 읽으러 가기
-              </button>
-            )}
+            {/* 성경 본문 읽기 바로가기 (모든 카테고리 지원) */}
+            {(() => {
+              const activeBookName = activeQuiz?.bookName || activeWeeklyPlan?.bookName;
+              const activeChapter = activeQuiz?.startChapter || activeWeeklyPlan?.startChapter || 1;
+              if (!activeBookName) return null;
+              return (
+                <button
+                  onClick={() => navigate('/read', { state: { bookName: activeBookName, chapter: activeChapter } })}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '4px',
+                    padding: '6px 12px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)',
+                    border: '1px solid rgba(212,175,55,0.4)', color: 'var(--accent-gold)',
+                    fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
+                  }}
+                >
+                  <BookOpen size={14} /> 본문 읽으러 가기 ({activeBookName})
+                </button>
+              );
+            })()}
           </div>
 
           {/* 52주차 통독 묵상 브리핑 가이드 (퀴즈 상단에 접기/펼치기 가능) */}
