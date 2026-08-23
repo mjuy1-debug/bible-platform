@@ -319,9 +319,10 @@ export default function Quiz() {
 
       // 점수 저장
       if (activeQuiz.id && !activeQuiz.id.startsWith('survival_')) {
+        const cappedScore = Math.min(score, activeQuiz.questions.length);
         const prevBest = completedScores[activeQuiz.id] || 0;
-        if (score > prevBest) {
-          const updated = { ...completedScores, [activeQuiz.id]: score };
+        if (cappedScore > prevBest) {
+          const updated = { ...completedScores, [activeQuiz.id]: cappedScore };
           setCompletedScores(updated);
           localStorage.setItem('quiz_completed_scores', JSON.stringify(updated));
         }
@@ -518,8 +519,9 @@ export default function Quiz() {
             gap: '12px'
           }}>
             {filteredQuizzes.map((q) => {
-              const bestScore = completedScores[q.id];
-              const isPerfect = bestScore === q.questions.length;
+              const rawBestScore = completedScores[q.id];
+              const bestScore = rawBestScore !== undefined ? Math.min(rawBestScore, q.questions.length) : undefined;
+              const isPerfect = bestScore !== undefined && bestScore === q.questions.length;
               
               // 52주 통독 플랜 매핑
               const isWeekly = q.category === "🌟 주간 골든벨 (52주)";
