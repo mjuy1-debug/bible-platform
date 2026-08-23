@@ -998,16 +998,21 @@ function BulletinTab({ db }) {
 
           {/* 5. 예배 시간 안내 */}
           <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
+            <h5 style={{ margin: '0 0 10px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
               🕒 정기 예배 시간 안내
             </h5>
-            <table style={{ width: '100%', fontSize: '11.5px', borderCollapse: 'collapse', textAlign: 'center' }}>
+            <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '11.5px', borderCollapse: 'collapse' }}>
+              <colgroup>
+                <col style={{ width: '38%' }} />
+                <col style={{ width: '38%' }} />
+                <col style={{ width: '24%' }} />
+              </colgroup>
               <tbody>
                 {STATIC_INFO.schedule.map((item, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: '6px 4px', color: 'rgba(255,255,255,0.6)' }}>{item.time}</td>
-                    <td style={{ padding: '6px 4px', fontWeight: 700, color: 'var(--accent-gold, #d4af37)' }}>{item.name}</td>
-                    <td style={{ padding: '6px 4px', color: 'rgba(255,255,255,0.7)' }}>{item.place}</td>
+                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <td style={{ padding: '8px 4px', color: 'rgba(255,255,255,0.65)', textAlign: 'left', wordBreak: 'keep-all' }}>{item.time}</td>
+                    <td style={{ padding: '8px 4px', fontWeight: 700, color: 'var(--accent-gold, #d4af37)', textAlign: 'center', wordBreak: 'keep-all' }}>{item.name}</td>
+                    <td style={{ padding: '8px 4px', color: 'rgba(255,255,255,0.75)', textAlign: 'right' }}>{item.place}</td>
                   </tr>
                 ))}
               </tbody>
