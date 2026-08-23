@@ -60,9 +60,30 @@ export default function Quiz() {
     return quizzes.filter(q => q.category === selectedCategory);
   }, [selectedCategory, quizzes]);
 
+  // 퀴즈 시작 시 4지선다 보기를 무작위로 섞어서 정답 번호(1~4번)를 항상 골고루 랜덤 배치하는 헬퍼
+  const prepareQuiz = (quiz) => {
+    if (!quiz || !quiz.questions) return quiz;
+    const shuffledQuestions = quiz.questions.map(q => {
+      const correctText = q.options[q.correct];
+      const shuffledOptions = [...q.options];
+      for (let i = shuffledOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+      }
+      const newCorrect = shuffledOptions.indexOf(correctText);
+      return {
+        ...q,
+        options: shuffledOptions,
+        correct: newCorrect >= 0 ? newCorrect : 0
+      };
+    });
+    return { ...quiz, questions: shuffledQuestions };
+  };
+
   // 퀴즈 시작하기
   const handleStartQuiz = (quiz) => {
-    setActiveQuiz(quiz);
+    const readyQuiz = prepareQuiz(quiz);
+    setActiveQuiz(readyQuiz);
     setCurrentIdx(0);
     setSelectedOption(null);
     setIsAnswered(false);
@@ -120,8 +141,11 @@ export default function Quiz() {
     }
   };
 
-  // 퀴즈 다시 시작
+  // 퀴즈 다시 시작 (다시 풀 때도 보기 순서 랜덤 재배치)
   const handleRestart = () => {
+    if (activeQuiz) {
+      setActiveQuiz(prepareQuiz(activeQuiz));
+    }
     setCurrentIdx(0);
     setSelectedOption(null);
     setIsAnswered(false);
