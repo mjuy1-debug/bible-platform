@@ -1,6 +1,7 @@
+// src/components/YouTubeModal.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Play, ExternalLink, Sparkles, BookOpen } from 'lucide-react';
+import { X, Play, ExternalLink, Sparkles, BookOpen, CheckCircle2 } from 'lucide-react';
 
 function YouTubeIcon({ size = 20, color = 'currentColor' }) {
   return (
@@ -14,22 +15,17 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
   if (!isOpen || !videoInfo) return null;
 
   const {
-    title = '바이블프로젝트 말씀 영상',
+    title = '성경 말씀 & 스토리 가이드',
     characterName = '',
     relationReason = '',
-    videoId = 'n_2HzBuoMWM',
-    channelTitle = '바이블프로젝트 공식 영상',
-    description = '성경 인물과 말씀의 핵심을 시각적으로 깊이 있게 이해할 수 있는 고품질 애니메이션 영상입니다.',
-    duration = '약 7~9분',
-    channel = '바이블프로젝트 (BibleProject - Korean)',
+    channelTitle = '바이블프로젝트 & 성경 말씀 스토리',
+    description = '',
+    duration = '약 7~10분',
     officialHome = 'https://bibleproject.com/korean/',
-    searchUrl = `https://www.youtube.com/@BibleProjectKorean/search?query=${encodeURIComponent(characterName || '바이블프로젝트')}`
+    searchUrl = 'https://www.youtube.com/@BibleProjectKorean'
   } = videoInfo;
 
-  // 검증된 바이블프로젝트 영상 인앱 임베드
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
-
-  const handleOpenChannelSearch = () => {
+  const handleOpenYouTube = () => {
     window.open(searchUrl, '_blank', 'noopener,noreferrer');
   };
 
@@ -45,8 +41,8 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.90)',
-        backdropFilter: 'blur(12px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.92)',
+        backdropFilter: 'blur(14px)',
         zIndex: 9999,
         display: 'flex',
         alignItems: 'center',
@@ -61,16 +57,16 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
         exit={{ opacity: 0, scale: 0.94, y: 20 }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
         style={{
-          background: 'linear-gradient(145deg, #1c1c24 0%, #121218 100%)',
-          border: '1px solid rgba(212, 175, 55, 0.4)',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.2)',
+          background: 'linear-gradient(145deg, #1d1d26 0%, #121218 100%)',
+          border: '1px solid rgba(212, 175, 55, 0.45)',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(212, 175, 55, 0.25)',
           borderRadius: '24px',
           width: '100%',
-          maxWidth: '640px',
+          maxWidth: '620px',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          maxHeight: '94vh'
+          maxHeight: '92vh'
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -85,31 +81,31 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: '10px',
               background: 'linear-gradient(135deg, #ff0000 0%, #cc0000 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#fff',
-              boxShadow: '0 4px 12px rgba(255, 0, 0, 0.35)'
+              boxShadow: '0 4px 14px rgba(255, 0, 0, 0.4)'
             }}>
-              <YouTubeIcon size={20} color="#fff" />
+              <YouTubeIcon size={22} color="#fff" />
             </div>
             <div>
               <h3 style={{
                 margin: 0,
-                fontSize: '1.02rem',
+                fontSize: '1.05rem',
                 fontWeight: 800,
                 color: 'var(--text-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                {characterName ? `👑 ${characterName} 연계 말씀 영상` : title}
+                {title}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
                 {channelTitle} • {duration}
               </span>
             </div>
@@ -127,121 +123,117 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'background 0.2s'
             }}
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* 인앱 영상 재생 영역 (16:9) */}
+        {/* 메인 비디오 액션 배너 */}
         <div style={{
-          position: 'relative',
-          width: '100%',
-          paddingBottom: '56.25%',
-          backgroundColor: '#000',
-          overflow: 'hidden'
+          padding: '20px',
+          background: 'radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15) 0%, rgba(15, 15, 20, 0.8) 100%)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          gap: '14px'
         }}>
-          <iframe
-            src={embedUrl}
-            title={title}
+          <div style={{
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            color: 'var(--accent-gold)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <BookOpen size={18} />
+            {relationReason}
+          </div>
+
+          {/* 대형 유튜브 직접 재생 버튼 */}
+          <button
+            onClick={handleOpenYouTube}
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
               width: '100%',
-              height: '100%',
-              border: 'none'
+              maxWidth: '460px',
+              padding: '14px 20px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #ff0000 0%, #b30000 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              boxShadow: '0 8px 24px rgba(255, 0, 0, 0.45)',
+              transition: 'transform 0.15s, box-shadow 0.15s'
             }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'translateY(-2px)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
+          >
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Play size={18} fill="#fff" style={{ marginLeft: '2px' }} />
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '0.96rem', fontWeight: 900 }}>
+                ▶️ YouTube에서 직결 말씀 영상 시청하기
+              </div>
+              <div style={{ fontSize: '0.74rem', color: 'rgba(255, 255, 255, 0.85)' }}>
+                {characterName ? `"${characterName}" 관련 핵심 영상 보기` : '관련 성경 강해 & 애니메이션 영상 보기'}
+              </div>
+            </div>
+            <ExternalLink size={18} style={{ marginLeft: 'auto', opacity: 0.9 }} />
+          </button>
         </div>
 
-        {/* 본문 영역: 연계 묵상 포인트 및 공식 채널 바로가기 */}
+        {/* 본문 영역: 퀴즈 100점 대비 족보 & 핵심 묵상 포인트 */}
         <div style={{
-          padding: '16px 20px',
+          padding: '18px 20px',
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
-          background: 'rgba(20, 20, 26, 0.98)',
-          overflowY: 'auto'
+          background: 'rgba(18, 18, 24, 0.98)',
+          overflowY: 'auto',
+          flex: 1
         }}>
-          {/* 인물/주제 연계 설명 배너 */}
-          {relationReason && (
+          <div style={{
+            padding: '16px',
+            borderRadius: '16px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '10px 14px',
-              borderRadius: '12px',
-              background: 'rgba(212, 175, 55, 0.12)',
-              border: '1px solid rgba(212, 175, 55, 0.3)',
-              fontSize: '0.82rem',
+              gap: '6px',
               color: 'var(--accent-gold)',
-              fontWeight: 700
+              fontWeight: 800,
+              fontSize: '0.88rem'
             }}>
-              <BookOpen size={16} />
-              <span>{relationReason}</span>
+              <Sparkles size={16} /> 퀴즈 만점 족보 & 핵심 묵상 가이드
             </div>
-          )}
 
-          {/* 유튜브 공식 채널에서 해당 인물 영상 전체 보기 */}
-          <div
-            onClick={handleOpenChannelSearch}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '12px 16px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, rgba(255, 0, 0, 0.15) 0%, rgba(255, 0, 0, 0.05) 100%)',
-              border: '1px solid rgba(255, 0, 0, 0.3)',
-              cursor: 'pointer',
-              transition: 'all 0.15s'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: '#ff0000',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                boxShadow: '0 2px 8px rgba(255, 0, 0, 0.4)'
-              }}>
-                <Play size={16} fill="#fff" style={{ marginLeft: '2px' }} />
-              </div>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.86rem', fontWeight: 800, color: '#fff' }}>
-                  ▶️ YouTube 바이블프로젝트 공식 채널에서 보기
-                </div>
-                <div style={{ fontSize: '0.74rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                  공식 채널(@BibleProjectKorean)의 "{characterName || title}" 관련 영상들 보기
-                </div>
-              </div>
-            </div>
-            <ExternalLink size={16} color="#ff6b6b" />
-          </div>
-
-          {/* 영상 상세 설명 & 묵상 가이드 */}
-          <div style={{
-            padding: '12px 14px',
-            borderRadius: '12px',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid var(--glass-border)'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.82rem', marginBottom: '4px' }}>
-              <Sparkles size={14} /> 묵상 가이드
-            </div>
             <p style={{
               margin: 0,
-              fontSize: '0.82rem',
+              fontSize: '0.84rem',
               color: 'var(--text-secondary)',
-              lineHeight: 1.55,
+              lineHeight: 1.65,
               wordBreak: 'keep-all',
               whiteSpace: 'pre-line'
             }}>
@@ -254,14 +246,13 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
         <div style={{
           padding: '14px 20px',
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'rgba(15, 15, 20, 0.98)',
+          background: 'rgba(12, 12, 16, 0.98)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '10px'
         }}>
-          {/* 바이블프로젝트 한국어 공식 홈페이지 */}
           <button
             onClick={handleOpenBpHome}
             style={{
@@ -281,7 +272,6 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
             <ExternalLink size={12} /> 바이블프로젝트 공식 홈
           </button>
 
-          {/* 닫기 & 퀴즈 풀기 버튼 */}
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={onClose}
@@ -310,16 +300,16 @@ export default function YouTubeModal({ isOpen, onClose, videoInfo, onStartQuiz }
                   background: 'var(--accent-gold)',
                   border: 'none',
                   color: '#111',
-                  fontSize: '0.82rem',
+                  fontSize: '0.84rem',
                   fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px',
-                  boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
+                  gap: '6px',
+                  boxShadow: '0 4px 14px rgba(212, 175, 55, 0.35)'
                 }}
               >
-                ✏️ 바로 퀴즈 풀기
+                <CheckCircle2 size={16} /> ✏️ 바로 퀴즈 풀기
               </button>
             )}
           </div>
