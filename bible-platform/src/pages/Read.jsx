@@ -30,8 +30,11 @@ const Read = () => {
   let initBook = BIBLE_BOOKS[0];
   let initChapter = 1;
 
-  if (location.state?.bookId) {
-    initBook = BIBLE_BOOKS.find(b => b.id === location.state.bookId) || BIBLE_BOOKS[0];
+  if (location.state?.bookId || location.state?.bookName) {
+    initBook = BIBLE_BOOKS.find(b => 
+      (location.state.bookId && b.id === location.state.bookId) || 
+      (location.state.bookName && (b.name === location.state.bookName || b.shortName === location.state.bookName))
+    ) || BIBLE_BOOKS[0];
     initChapter = location.state?.chapter || 1;
   } else if (location.state?.verseRef) {
     const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);

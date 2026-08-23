@@ -180,6 +180,35 @@ const Plan = () => {
         </div>
       </div>
 
+      {/* 52주 말씀 퀴즈 바로가기 배너 */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(20,20,24,0.85) 100%)',
+        border: '1px solid rgba(212,175,55,0.35)', borderRadius: '16px',
+        padding: '14px 18px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Trophy size={20} color="var(--accent-gold)" />
+          <div>
+            <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+              오늘 통독을 마치셨나요? 52주 말씀 퀴즈에 도전해보세요!
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              읽은 성경 말씀을 퀴즈로 풀고 말씀 달란트와 칭호를 획득하세요.
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={() => navigate('/quiz', { state: { category: '🌟 주간 골든벨 (52주)' } })}
+          style={{
+            padding: '8px 14px', borderRadius: '10px', background: 'var(--accent-gold)',
+            color: '#111', fontWeight: 800, fontSize: '0.82rem', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '4px'
+          }}
+        >
+          🎯 말씀 퀴즈 풀기 ➔
+        </button>
+      </div>
+
       {/* Settings Panel */}
       <AnimatePresence>
         {showSettings && (

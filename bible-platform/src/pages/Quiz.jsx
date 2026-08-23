@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useContext, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, CheckCircle2, XCircle, Sparkles, Trophy, RotateCcw, Share2, HelpCircle, Plus, Edit, Trash2, ChevronRight, X, ArrowLeft, BookOpen, Star, Flame, Sun, AlertCircle, Timer, BookmarkCheck, Check } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Award, CheckCircle2, XCircle, Sparkles, Trophy, RotateCcw, Share2, HelpCircle, Plus, Edit, Trash2, ChevronRight, X, ArrowLeft, BookOpen, Star, Flame, Sun, AlertCircle, Timer, BookmarkCheck, Check, ExternalLink } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { QUIZ_CATEGORIES, BIBLE_QUIZ_LIST } from '../data/quizData';
+import { WEEKLY_READING_PLAN } from '../data/weeklyReadingPlanData';
 import { db } from '../services/firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 
 export default function Quiz() {
   const { currentUser, showToast } = useContext(UserContext);
+  const navigate = useNavigate();
+  const location = useLocation();
   
   // 메인 모드: 'category' (주제별 골든벨), 'daily' (오늘의 퀴즈), 'survival' (무한 서바이벌), 'wrongNotes' (오답노트)
   const [activeMode, setActiveMode] = useState('category');
@@ -25,6 +29,7 @@ export default function Quiz() {
   
   // 힌트 모달 상태
   const [showHintModal, setShowHintModal] = useState(false);
+  const [showReadingBriefing, setShowReadingBriefing] = useState(true);
 
   // 서바이벌 모드 상태 (15초 타이머 & 콤보)
   const [survivalTimer, setSurvivalTimer] = useState(15);
@@ -59,6 +64,13 @@ export default function Quiz() {
 
   const todayStr = new Date().toISOString().split('T')[0];
   const isDailyDoneToday = dailyCompletedDate === todayStr;
+
+  // Plan 페이지 등에서 navigate로 넘어온 경우 카테고리 자동 선택
+  useEffect(() => {
+    if (location.state?.category) {
+      setSelectedCategory(location.state.category);
+    }
+  }, [location.state]);
 
   // 칭호 계산 함수
   const getRankTitle = (t) => {
@@ -153,6 +165,7 @@ export default function Quiz() {
     setShowResult(false);
     setUserAnswers([]);
     setShowHintModal(false);
+    setShowReadingBriefing(true);
     setIsSurvivalOver(false);
     if (mode === 'survival') {
       setSurvivalCombo(0);
@@ -179,57 +192,54 @@ export default function Quiz() {
       difficulty: '초급',
       questions: [q1, q2, q3]
     };
-
     handleStartQuiz(dailyQuizObj, 'daily');
   };
 
-  // 3. 무한 서바이벌 골든벨 시작 (전체 문제 중 무작위 50문제 세트 생성)
-  const handleStartSurvival = () => {
+  // 3. 무한 서바이벌 골든벨 시작 (전체 문제 무작위 무한 출제)
+  const handleStartSurvivalQuiz = () => {
     const allQuestions = [];
     BIBLE_QUIZ_LIST.forEach(set => {
       set.questions.forEach(q => allQuestions.push({ ...q, roundTitle: set.roundTitle }));
     });
-    const shuffledPool = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 50);
-
+    // Shuffle all questions
+    const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
     const survivalQuizObj = {
-      id: 'survival_challenge',
+      id: `survival_${Date.now()}`,
       category: '무한 서바이벌',
       roundTitle: '🔥 무한 서바이벌 골든벨',
-      description: '1문제당 15초 제한! 틀릴 때까지 연속 콤보에 도전하세요.',
+      description: '1문제당 15초 카운트다운! 틀릴 때까지 연속 콤보에 도전하세요.',
       difficulty: '고급',
-      questions: shuffledPool
+      questions: shuffled.slice(0, 100)
     };
-
     handleStartQuiz(survivalQuizObj, 'survival');
   };
 
   // 4. 오답노트 복습 퀴즈 시작
   const handleStartWrongNotesQuiz = () => {
     if (wrongNotes.length === 0) {
-      if (showToast) showToast('오답노트에 저장된 문제가 없습니다! 👏');
+      if (showToast) showToast('복습할 오답이 없습니다! 🎉');
       return;
     }
     const wrongQuizObj = {
-      id: 'wrong_notes_quiz',
-      category: '오답노트 복습',
-      roundTitle: `📝 오답노트 완벽 복습 (${wrongNotes.length}문제)`,
-      description: '틀렸던 문제들을 다시 풀며 확실하게 내 말씀으로 마스터하세요!',
-      difficulty: '중급',
-      questions: wrongNotes.slice(0, 20)
+      id: `wrong_${Date.now()}`,
+      category: '오답노트',
+      roundTitle: `📝 나의 약점 집중 복습 (${wrongNotes.length}문제)`,
+      description: '틀렸던 문제를 다시 풀고 완전히 내 말씀으로 만드세요!',
+      difficulty: '맞춤',
+      questions: wrongNotes
     };
-
     handleStartQuiz(wrongQuizObj, 'wrongNotes');
   };
 
-  const currentQ = activeQuiz?.questions?.[currentIdx];
-
-  // 보기 선택 처리
+  // 보기 선택 시 채점 & 달란트 및 오답노트 처리
   const handleSelectOption = (idx) => {
     if (isAnswered) return;
-    if (timerRef.current) clearInterval(timerRef.current);
-    setSelectedOption(idx);
     setIsAnswered(true);
+    setSelectedOption(idx);
 
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    const currentQ = activeQuiz.questions[currentIdx];
     const isCorrect = idx === currentQ.correct;
 
     if (isCorrect) {
@@ -301,38 +311,25 @@ export default function Quiz() {
         setDailyCompletedDate(todayStr);
         localStorage.setItem('daily_quiz_completed_date', todayStr);
       }
-      const updatedTalents = talents + earnedTalents;
-      setTalents(updatedTalents);
-      localStorage.setItem('user_talents', String(updatedTalents));
+      if (earnedTalents > 0) {
+        const nextTalents = talents + earnedTalents;
+        setTalents(nextTalents);
+        localStorage.setItem('user_talents', String(nextTalents));
+      }
 
-      if (activeMode === 'category') {
-        const updatedScores = {
-          ...completedScores,
-          [activeQuiz.id]: Math.max(completedScores[activeQuiz.id] || 0, score + (selectedOption === currentQ.correct ? 1 : 0))
-        };
-        setCompletedScores(updatedScores);
-        localStorage.setItem('quiz_completed_scores', JSON.stringify(updatedScores));
+      // 점수 저장
+      if (activeQuiz.id && !activeQuiz.id.startsWith('survival_')) {
+        const prevBest = completedScores[activeQuiz.id] || 0;
+        if (score > prevBest) {
+          const updated = { ...completedScores, [activeQuiz.id]: score };
+          setCompletedScores(updated);
+          localStorage.setItem('quiz_completed_scores', JSON.stringify(updated));
+        }
       }
     }
   };
 
-  // 퀴즈 다시 시작
-  const handleRestart = () => {
-    if (activeQuiz) {
-      setActiveQuiz(prepareQuiz(activeQuiz));
-    }
-    setCurrentIdx(0);
-    setSelectedOption(null);
-    setIsAnswered(false);
-    setScore(0);
-    setShowResult(false);
-    setUserAnswers([]);
-    setShowHintModal(false);
-    setIsSurvivalOver(false);
-    if (activeMode === 'survival') setSurvivalCombo(0);
-  };
-
-  // 퀴즈 결과 카톡 공유
+  // 결과 공유하기
   const handleShareResult = () => {
     const total = activeQuiz.questions.length;
     let shareText = '';
@@ -353,6 +350,15 @@ export default function Quiz() {
     }
   };
 
+  const currentQ = activeQuiz?.questions[currentIdx];
+
+  // 활성 퀴즈가 52주 통독인지 확인
+  const activeWeeklyPlan = useMemo(() => {
+    if (!activeQuiz || !activeQuiz.id || !activeQuiz.id.startsWith('week_')) return null;
+    const weekNum = parseInt(activeQuiz.id.replace('week_', ''), 10);
+    return WEEKLY_READING_PLAN.find(w => w.week === weekNum);
+  }, [activeQuiz]);
+
   return (
     <div style={{ paddingBottom: '3rem', maxWidth: '840px', margin: '0 auto' }}>
       {/* 1. 상단 타이틀 & 칭호 & 달란트 정보 */}
@@ -362,7 +368,7 @@ export default function Quiz() {
             <Trophy color="var(--accent-gold)" /> 말씀 골든벨 & 성경 퀴즈
           </h1>
           <p style={{ fontSize: 'clamp(0.8rem, 2.4vw, 0.85rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.5, wordBreak: 'keep-all', margin: '4px 0 0 0' }}>
-            총 {quizzes.length}세트 2,000여 문제 완비! 90대 성경 인물과 성경 66권, 매일 1분 퀴즈, 무한 서바이벌로 말씀을 마스터하세요.
+            총 {quizzes.length}세트 2,000여 문제 완비! 52주 통독 범위 안내와 성경 66권, 90대 성경 인물 열전으로 말씀을 마스터하세요.
           </p>
         </div>
 
@@ -376,118 +382,101 @@ export default function Quiz() {
             {rankInfo.title}
           </div>
           <div style={{
-            background: 'rgba(212, 175, 55, 0.12)', border: '1px solid rgba(212, 175, 55, 0.35)',
+            background: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.4)',
             padding: '5px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px',
-            color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.82rem', flexShrink: 0
+            color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.8rem', flexShrink: 0
           }}>
-            🪙 달란트: {talents}개
+            💰 {talents} 달란트
           </div>
         </div>
       </div>
 
-      {/* 2. 문제 풀이 화면이 아닐 때: 4대 모드 탭 & 브라우저 */}
+      {/* 2. 메인 모드 선택 탭 (주제별 골든벨, 오늘의 퀴즈, 무한 서바이벌, 오답노트) */}
+      {!activeQuiz && (
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+          gap: '8px', marginBottom: '1.5rem'
+        }}>
+          {/* 오늘의 1분 퀴즈 */}
+          <button
+            onClick={handleStartDailyQuiz}
+            style={{
+              padding: '12px 10px', borderRadius: '14px',
+              background: isDailyDoneToday ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, rgba(234,179,8,0.2) 0%, rgba(20,20,24,0.8) 100%)',
+              border: isDailyDoneToday ? '1px solid var(--glass-border)' : '1px solid rgba(234,179,8,0.5)',
+              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#eab308', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Sun size={14} /> 오늘의 퀴즈
+              </span>
+              {isDailyDoneToday && <span style={{ fontSize: '10px', color: '#4ade80', fontWeight: 800 }}>완료됨 ✓</span>}
+            </div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>매일 3문제 챌린지</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>+50 달란트 보너스</span>
+          </button>
+
+          {/* 무한 서바이벌 */}
+          <button
+            onClick={handleStartSurvivalQuiz}
+            style={{
+              padding: '12px 10px', borderRadius: '14px',
+              background: 'linear-gradient(135deg, rgba(239,68,68,0.18) 0%, rgba(20,20,24,0.8) 100%)',
+              border: '1px solid rgba(239,68,68,0.4)',
+              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#f87171', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Flame size={14} /> 무한 서바이벌
+              </span>
+              <span style={{ fontSize: '10px', color: 'var(--accent-gold)', fontWeight: 800 }}>최고 {bestSurvival}콤보</span>
+            </div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>15초 타임어택</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>틀릴 때까지 무한 도전</span>
+          </button>
+
+          {/* 오답노트 복습 */}
+          <button
+            onClick={handleStartWrongNotesQuiz}
+            style={{
+              padding: '12px 10px', borderRadius: '14px',
+              background: wrongNotes.length > 0 ? 'linear-gradient(135deg, rgba(59,130,246,0.18) 0%, rgba(20,20,24,0.8) 100%)' : 'rgba(255,255,255,0.04)',
+              border: wrongNotes.length > 0 ? '1px solid rgba(59,130,246,0.4)' : '1px solid var(--glass-border)',
+              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <BookmarkCheck size={14} /> 오답노트 복습
+              </span>
+              <span style={{ fontSize: '10px', color: '#60a5fa', fontWeight: 800 }}>{wrongNotes.length}개</span>
+            </div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>틀린 문제 마스터</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>정답 시 자동 삭제</span>
+          </button>
+        </div>
+      )}
+
+      {/* 3. 메인 화면 / 카테고리 탭 & 퀴즈 카드 목록 */}
       {!activeQuiz ? (
         <div>
-          {/* 4대 주요 학습 모드 배너 카드 (오늘의 퀴즈 / 서바이벌 / 오답노트) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginBottom: '20px' }}>
-            {/* ① 오늘의 1분 퀴즈 */}
-            <motion.div
-              whileHover={{ y: -3 }}
-              onClick={handleStartDailyQuiz}
-              style={{
-                background: isDailyDoneToday ? 'rgba(34, 197, 94, 0.08)' : 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.05) 100%)',
-                border: isDailyDoneToday ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(234, 179, 8, 0.4)',
-                borderRadius: '16px', padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
-              }}
-            >
-              <div style={{
-                width: '42px', height: '42px', borderRadius: '12px',
-                background: isDailyDoneToday ? '#22c55e22' : '#eab30822',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
-              }}>
-                <Sun size={22} color={isDailyDoneToday ? '#22c55e' : '#eab308'} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                    ☀️ 오늘의 1분 퀴즈
-                  </h3>
-                  {isDailyDoneToday && (
-                    <span style={{ fontSize: '10px', background: '#22c55e', color: '#111', padding: '2px 6px', borderRadius: '10px', fontWeight: 800 }}>완료</span>
-                  )}
-                </div>
-                <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  {isDailyDoneToday ? '오늘 미션 완료 (+50 달란트 획득)' : '매일 3문제 풀고 +50 보너스 달란트!'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* ② 무한 서바이벌 골든벨 */}
-            <motion.div
-              whileHover={{ y: -3 }}
-              onClick={handleStartSurvival}
-              style={{
-                background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(185, 28, 28, 0.05) 100%)',
-                border: '1px solid rgba(239, 68, 68, 0.35)',
-                borderRadius: '16px', padding: '14px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
-              }}
-            >
-              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#ef444422', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Flame size={22} color="#ef4444" />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  🔥 무한 서바이벌 골든벨
-                </h3>
-                <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  15초 타임어택! 최고 기록: {bestSurvival}연속 콤보
-                </p>
-              </div>
-            </motion.div>
-
-            {/* ③ 오답노트 & 약점 복습 */}
-            <motion.div
-              whileHover={{ y: -3 }}
-              onClick={handleStartWrongNotesQuiz}
-              style={{
-                background: wrongNotes.length > 0 ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(29, 78, 216, 0.05) 100%)' : 'rgba(255,255,255,0.03)',
-                border: wrongNotes.length > 0 ? '1px solid rgba(59, 130, 246, 0.35)' : '1px solid var(--glass-border)',
-                borderRadius: '16px', padding: '14px 16px', cursor: wrongNotes.length > 0 ? 'pointer' : 'default', display: 'flex', alignItems: 'center', gap: '12px'
-              }}
-            >
-              <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#3b82f622', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <BookmarkCheck size={22} color="#3b82f6" />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  📝 오답노트 복습 ({wrongNotes.length}문제)
-                </h3>
-                <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  {wrongNotes.length > 0 ? '틀린 문제만 모아서 완벽 마스터하기' : '틀린 문제가 아직 없습니다.'}
-                </p>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* 주제별 카테고리 탭 바 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
-              📚 성경 전권 & 주제별 골든벨 ({filteredQuizzes.length}개 세트)
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '16px' }}>
+          {/* 카테고리 수평 스크롤 칩 */}
+          <div style={{
+            display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '8px',
+            marginBottom: '1rem', scrollbarWidth: 'none'
+          }}>
             {QUIZ_CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 style={{
-                  padding: '7px 14px', borderRadius: '18px', border: 'none', cursor: 'pointer',
+                  padding: '7px 14px', borderRadius: '20px', border: 'none',
                   background: selectedCategory === cat ? 'var(--accent-gold)' : 'rgba(255,255,255,0.06)',
                   color: selectedCategory === cat ? '#111' : 'var(--text-secondary)',
-                  fontWeight: 700, fontSize: '0.82rem', whiteSpace: 'nowrap',
-                  boxShadow: selectedCategory === cat ? '0 2px 8px rgba(212, 175, 55, 0.3)' : 'none',
-                  transition: 'all 0.2s'
+                  fontWeight: selectedCategory === cat ? 800 : 500, fontSize: '0.82rem',
+                  cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.15s'
                 }}
               >
                 {cat}
@@ -495,30 +484,59 @@ export default function Quiz() {
             ))}
           </div>
 
-          {/* 퀴즈 팩 그리드 목록 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
+          {/* 52주 통독 안내 배너 (해당 카테고리 선택 시) */}
+          {selectedCategory === "🌟 주간 골든벨 (52주)" && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(20,20,24,0.85) 100%)',
+              border: '1px solid rgba(212,175,55,0.35)', borderRadius: '16px',
+              padding: '14px 18px', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px'
+            }}>
+              <div>
+                <h4 style={{ margin: 0, color: 'var(--accent-gold)', fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <BookOpen size={16} /> 52주 성경 통독 연계 퀴즈 시스템
+                </h4>
+                <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45, wordBreak: 'keep-all' }}>
+                  각 주차별 성경 본문을 먼저 읽고 묵상하신 후 퀴즈를 푸시면 말씀이 마음에 더욱 깊이 새겨집니다.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/plan')}
+                style={{
+                  padding: '6px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid var(--glass-border)', color: '#fff', fontSize: '0.78rem', fontWeight: 700,
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+                }}
+              >
+                📅 전체 통독표 보기
+              </button>
+            </div>
+          )}
+
+          {/* 퀴즈 세트 그리드 */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: '12px'
+          }}>
             {filteredQuizzes.map((q) => {
               const bestScore = completedScores[q.id];
               const isPerfect = bestScore === q.questions.length;
+              
+              // 52주 통독 플랜 매핑
+              const isWeekly = q.category === "🌟 주간 골든벨 (52주)";
+              const weekNum = isWeekly ? parseInt(q.id.replace('week_', ''), 10) : null;
+              const weeklyPlan = isWeekly ? WEEKLY_READING_PLAN.find(w => w.week === weekNum) : null;
 
               return (
                 <motion.div
                   key={q.id}
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => handleStartQuiz(q, 'category')}
+                  whileHover={{ y: -2 }}
+                  className="glass-card"
+                  onClick={() => handleStartQuiz(q)}
                   style={{
-                    background: 'var(--glass-bg)',
-                    border: isPerfect ? '1px solid rgba(212, 175, 55, 0.5)' : '1px solid var(--glass-border)',
-                    borderRadius: '16px',
-                    padding: '16px 18px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    gap: '12px',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'border-color 0.2s'
+                    padding: '14px 16px', borderRadius: '16px', cursor: 'pointer',
+                    display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                    gap: '10px', border: isPerfect ? '1px solid var(--accent-gold)' : '1px solid var(--glass-border)',
+                    position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s'
                   }}
                 >
                   {isPerfect && (
@@ -534,7 +552,7 @@ export default function Quiz() {
 
                   <div>
                     {/* 상단 태그 */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
                       <span style={{
                         fontSize: '11px', fontWeight: 700,
                         background: 'rgba(255,255,255,0.08)', color: 'var(--text-secondary)',
@@ -560,11 +578,37 @@ export default function Quiz() {
                       {q.roundTitle}
                     </h3>
                     <p style={{
-                      margin: '6px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)',
+                      margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)',
                       lineHeight: 1.45, wordBreak: 'keep-all'
                     }}>
                       {q.description}
                     </p>
+
+                    {/* 52주 통독 범위 배너 & 본문 먼저 읽기 버튼 */}
+                    {weeklyPlan && (
+                      <div style={{
+                        marginTop: '10px', padding: '8px 10px', borderRadius: '10px',
+                        background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.22)',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px'
+                      }}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <BookOpen size={13} /> {weeklyPlan.range}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/read', { state: { bookName: weeklyPlan.bookName, chapter: weeklyPlan.startChapter } });
+                          }}
+                          style={{
+                            fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
+                            background: 'var(--accent-gold)', color: '#111', border: 'none', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '3px'
+                          }}
+                        >
+                          📖 본문 먼저 읽기
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* 하단 도전 버튼 & 점수 */}
@@ -577,7 +621,7 @@ export default function Quiz() {
                       fontSize: '0.82rem', fontWeight: 800, color: 'var(--accent-gold)',
                       display: 'flex', alignItems: 'center', gap: '2px'
                     }}>
-                      도전하기 <ChevronRight size={14} />
+                      퀴즈 도전 <ChevronRight size={14} />
                     </span>
                   </div>
                 </motion.div>
@@ -586,20 +630,92 @@ export default function Quiz() {
           </div>
         </div>
       ) : (
-        /* 3. 퀴즈 진행 / 결과 화면 */
+        /* 4. 퀴즈 진행 / 결과 화면 */
         <div>
           {/* 상단 뒤로가기 바 */}
-          <button
-            onClick={() => setActiveQuiz(null)}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              padding: '6px 12px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)',
-              border: '1px solid var(--glass-border)', color: 'var(--text-secondary)',
-              fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', marginBottom: '16px'
-            }}
-          >
-            <ArrowLeft size={14} /> 퀴즈 목록으로 돌아가기
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <button
+              onClick={() => setActiveQuiz(null)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                padding: '6px 12px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)',
+                border: '1px solid var(--glass-border)', color: 'var(--text-secondary)',
+                fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer'
+              }}
+            >
+              <ArrowLeft size={14} /> 퀴즈 목록으로
+            </button>
+
+            {/* 통독 본문 읽기 바로가기 */}
+            {activeWeeklyPlan && (
+              <button
+                onClick={() => navigate('/read', { state: { bookName: activeWeeklyPlan.bookName, chapter: activeWeeklyPlan.startChapter } })}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  padding: '6px 12px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)',
+                  border: '1px solid rgba(212,175,55,0.4)', color: 'var(--accent-gold)',
+                  fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
+                }}
+              >
+                <BookOpen size={14} /> 본문 읽으러 가기
+              </button>
+            )}
+          </div>
+
+          {/* 52주차 통독 묵상 브리핑 가이드 (퀴즈 상단에 접기/펼치기 가능) */}
+          {activeWeeklyPlan && showReadingBriefing && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(20,20,24,0.95) 100%)',
+                border: '1px solid rgba(212,175,55,0.35)', borderRadius: '16px',
+                padding: '16px', marginBottom: '16px', position: 'relative'
+              }}
+            >
+              <button
+                onClick={() => setShowReadingBriefing(false)}
+                style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}
+              >
+                <X size={16} />
+              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '6px' }}>
+                <BookOpen size={16} /> 📖 이번 주 통독 범위: {activeWeeklyPlan.range}
+              </div>
+              <p style={{ margin: '0 0 10px 0', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+                💡 <strong>핵심 묵상 포인트:</strong> {activeWeeklyPlan.theme}
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+                {activeWeeklyPlan.keyPoints.map((pt, pIdx) => (
+                  <div key={pIdx} style={{ fontSize: '0.78rem', color: '#e5e7eb', display: 'flex', alignItems: 'flex-start', gap: '6px', lineHeight: 1.45 }}>
+                    <span style={{ color: 'var(--accent-gold)' }}>•</span>
+                    <span>{pt}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => navigate('/read', { state: { bookName: activeWeeklyPlan.bookName, chapter: activeWeeklyPlan.startChapter } })}
+                  style={{
+                    padding: '6px 12px', borderRadius: '8px', background: 'var(--accent-gold)',
+                    color: '#111', fontWeight: 800, fontSize: '0.78rem', border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '4px'
+                  }}
+                >
+                  <BookOpen size={13} /> 본문 먼저 읽기 ({activeWeeklyPlan.bookName} {activeWeeklyPlan.startChapter}장~)
+                </button>
+                <button
+                  onClick={() => setShowReadingBriefing(false)}
+                  style={{
+                    padding: '6px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.08)',
+                    color: '#fff', fontWeight: 700, fontSize: '0.78rem', border: '1px solid var(--glass-border)', cursor: 'pointer'
+                  }}
+                >
+                  🔥 준비완료! 퀴즈 풀기
+                </button>
+              </div>
+            </motion.div>
+          )}
 
           {!showResult ? (
             <motion.div
@@ -748,147 +864,114 @@ export default function Quiz() {
                   >
                     <p style={{
                       margin: 0, fontWeight: 800, fontSize: '0.95rem',
-                      color: selectedOption === currentQ.correct ? '#22c55e' : '#ef4444',
-                      display: 'flex', alignItems: 'center', gap: '6px'
+                      color: selectedOption === currentQ.correct ? '#4ade80' : '#f87171',
+                      display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px'
                     }}>
-                      {selectedOption === currentQ.correct ? '🎉 정답입니다! (+10 달란트)' : (activeMode === 'survival' ? '💥 아쉽습니다! 서바이벌 도전 종료' : '😢 오답입니다! (오답노트에 자동 저장됨)')}
+                      {selectedOption === currentQ.correct ? '🎉 정답입니다!' : '💧 아쉽습니다! 오답입니다.'}
                     </p>
-                    <p style={{ margin: '8px 0 0', fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5, wordBreak: 'keep-all' }}>
-                      📖 <strong>말씀 해설</strong>: {currentQ.explanation}
+                    <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+                      💡 {currentQ.explanation}
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* 다음 문제 버튼 */}
+              {/* 다음 버튼 */}
               {isAnswered && (
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <button
-                    onClick={handleNext}
-                    style={{
-                      padding: '12px 24px', borderRadius: '24px', background: 'var(--accent-gold)',
-                      border: 'none', color: '#111', fontWeight: 800, fontSize: '0.95rem',
-                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
-                      boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)'
-                    }}
-                  >
-                    {activeMode === 'survival' && isSurvivalOver ? '서바이벌 결과 확인 🏆' : currentIdx + 1 < activeQuiz.questions.length ? '다음 문제로 ▶' : '결과 확인하기 🏆'}
-                  </button>
-                </div>
+                <button
+                  onClick={handleNext}
+                  style={{
+                    width: '100%', padding: '15px', borderRadius: '14px',
+                    background: 'var(--accent-gold)', color: '#111',
+                    fontSize: '1rem', fontWeight: 800, border: 'none', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px'
+                  }}
+                >
+                  {currentIdx + 1 < activeQuiz.questions.length ? '다음 문제 풀기 ➔' : '결과 확인하기 🏆'}
+                </button>
               )}
             </motion.div>
           ) : (
-            /* 4. 퀴즈 결과 화면 */
+            /* 5. 퀴즈 최종 결과 화면 */
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="glass-card"
-              style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)', borderRadius: '24px', textAlign: 'center' }}
+              style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)', borderRadius: '20px', textAlign: 'center' }}
             >
-              <div style={{
-                width: '70px', height: '70px', borderRadius: '50%',
-                background: score === activeQuiz.questions.length ? 'rgba(34, 197, 94, 0.15)' : 'rgba(212, 175, 55, 0.15)',
-                border: score === activeQuiz.questions.length ? '2px solid #22c55e' : '2px solid var(--accent-gold)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
-                boxShadow: '0 0 25px rgba(212, 175, 55, 0.3)'
-              }}>
-                <Trophy size={36} color={score === activeQuiz.questions.length ? '#22c55e' : 'var(--accent-gold)'} />
+              <div style={{ fontSize: '3.5rem', marginBottom: '10px' }}>
+                {activeMode === 'survival' ? '🔥' : (score === activeQuiz.questions.length ? '👑' : (score >= activeQuiz.questions.length / 2 ? '🎉' : '📖'))}
               </div>
 
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                {activeMode === 'survival' ? `🔥 서바이벌 콤보: ${survivalCombo}문제 연속 돌파!` : score === activeQuiz.questions.length ? '🎉 골든벨 만점 달성!' : '수고하셨습니다! 👏'}
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                {activeMode === 'survival' ? '서바이벌 도전 완료!' : '말씀 퀴즈 완료!'}
               </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginTop: '6px' }}>
+
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '8px 0 20px' }}>
                 {activeQuiz.roundTitle}
               </p>
 
-              {/* 점수 & 달란트 카드 */}
+              {/* 점수 & 보상 카드 */}
               <div style={{
-                display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px',
-                maxWidth: '360px', margin: '20px auto', padding: '16px',
-                background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid var(--glass-border)'
+                background: 'rgba(255,255,255,0.04)', border: '1px solid var(--glass-border)',
+                borderRadius: '16px', padding: '18px', display: 'flex', justifyContent: 'space-around',
+                alignItems: 'center', marginBottom: '24px'
               }}>
                 <div>
-                  <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>맞힌 문제</p>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.5rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
-                    {score} / {activeQuiz.questions.length}
-                  </h3>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                    {activeMode === 'survival' ? '연속 콤보' : '최종 점수'}
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                    {activeMode === 'survival' ? `${survivalCombo}문제` : `${score} / ${activeQuiz.questions.length}`}
+                  </div>
                 </div>
+
+                <div style={{ width: '1px', height: '36px', background: 'rgba(255,255,255,0.1)' }} />
+
                 <div>
-                  <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)' }}>획득 달란트</p>
-                  <h3 style={{ margin: '4px 0 0', fontSize: '1.5rem', color: '#4ade80', fontWeight: 800 }}>
-                    +{score * 10 + (activeMode === 'daily' ? 50 : 0)} 🪙
-                  </h3>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>획득 달란트</div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#4ade80' }}>
+                    +{activeMode === 'daily' && !isDailyDoneToday ? score * 10 + 50 : score * 10} 💰
+                  </div>
                 </div>
               </div>
 
-              {/* 문제별 복습 리스트 */}
-              <div style={{ textAlign: 'left', marginTop: '24px', marginBottom: '24px' }}>
-                <h4 style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>
-                  ✦ 말씀 복습 노트
-                </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {userAnswers.map((ans, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        padding: '12px 14px', borderRadius: '12px',
-                        background: ans.isCorrect ? 'rgba(34, 197, 94, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-                        border: ans.isCorrect ? '1px solid rgba(34, 197, 94, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)'
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        {ans.isCorrect ? <CheckCircle2 size={16} color="#22c55e" /> : <XCircle size={16} color="#ef4444" />}
-                        <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                          Q{idx + 1}. {ans.question}
-                        </span>
-                      </div>
-                      <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4, paddingLeft: '22px' }}>
-                        정답: <strong style={{ color: '#4ade80' }}>{ans.options[ans.correct]}</strong> • {ans.explanation}
-                      </p>
-                      {ans.hintText && (
-                        <p style={{ margin: '4px 0 0', fontSize: '0.74rem', color: 'var(--accent-gold)', paddingLeft: '22px' }}>
-                          📖 {ans.hintRef}: "{ans.hintText}"
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 하단 버튼 */}
+              {/* 하단 액션 버튼들 */}
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <button
-                  onClick={handleRestart}
+                  onClick={() => handleStartQuiz(activeQuiz, activeMode)}
                   style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '6px',
-                    padding: '10px 18px', borderRadius: '20px', background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid var(--glass-border)', color: 'var(--text-primary)', fontWeight: 700,
-                    cursor: 'pointer', fontSize: '0.86rem'
+                    flex: '1 1 140px', padding: '12px 18px', borderRadius: '12px',
+                    background: 'rgba(255,255,255,0.08)', border: '1px solid var(--glass-border)',
+                    color: '#fff', fontSize: '0.88rem', fontWeight: 700, cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px'
                   }}
                 >
-                  <RotateCcw size={15} /> 다시 풀기
+                  <RotateCcw size={16} /> 다시 풀기
                 </button>
-                <button
-                  onClick={() => setActiveQuiz(null)}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '6px',
-                    padding: '10px 18px', borderRadius: '20px', background: 'rgba(212, 175, 55, 0.15)',
-                    border: '1px solid rgba(212, 175, 55, 0.3)', color: 'var(--accent-gold)', fontWeight: 700,
-                    cursor: 'pointer', fontSize: '0.86rem'
-                  }}
-                >
-                  <BookOpen size={15} /> 다른 퀴즈 풀기
-                </button>
+
                 <button
                   onClick={handleShareResult}
                   style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '6px',
-                    padding: '10px 20px', borderRadius: '20px', background: 'var(--accent-gold)',
-                    border: 'none', color: '#111', fontWeight: 800, cursor: 'pointer', fontSize: '0.86rem'
+                    flex: '1 1 140px', padding: '12px 18px', borderRadius: '12px',
+                    background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.4)',
+                    color: 'var(--accent-gold)', fontSize: '0.88rem', fontWeight: 800, cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px'
                   }}
                 >
-                  <Share2 size={15} /> 카톡 공유 💬
+                  <Share2 size={16} /> 결과 공유
+                </button>
+
+                <button
+                  onClick={() => setActiveQuiz(null)}
+                  style={{
+                    flex: '1 1 100%', padding: '12px 18px', borderRadius: '12px',
+                    background: 'var(--accent-gold)', border: 'none',
+                    color: '#111', fontSize: '0.92rem', fontWeight: 800, cursor: 'pointer',
+                    marginTop: '4px'
+                  }}
+                >
+                  다른 퀴즈 세트 도전하기 ➔
                 </button>
               </div>
             </motion.div>
