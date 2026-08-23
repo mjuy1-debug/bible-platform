@@ -51,12 +51,23 @@ const STATIC_INFO = {
     "④ 교회부흥과 영,혼의 성장을 위해 기도하자",
     "⑤ 세계선교 및 나라와 민족을 위해 기도하자"
   ],
+  branches: [
+    { name: "비난고난벧엘교회", pastor: "June Pastor" },
+    { name: "팔라완벧엘교회", pastor: "Kenniel Pastor" },
+    { name: "나보타스벧엘교회", pastor: "Predley Pastor" }
+  ],
   schedule: [
-    { time: "주일 오전 11:00", name: "주일 대예배", place: "본당" },
-    { time: "주일 오후 02:00", name: "주일 오후 찬양예배", place: "본당" },
-    { time: "수요일 저녁 07:30", name: "수요 저녁예배", place: "본당" },
-    { time: "금요일 밤 08:30", name: "금요 심야기도회", place: "본당" },
-    { time: "매일 새벽 05:30", name: "새벽 기도회", place: "본당" }
+    { type: "예배", time: "매일오전 5시", name: "새벽 기도회", place: "본당 예배실" },
+    { type: "예배", time: "주일오전 9/30", name: "유치부 예배", place: "주일학교 기관실" },
+    { type: "예배", time: "주일오전 9, 1시", name: "유,초등부예배", place: "주일학교 기관실" },
+    { type: "예배", time: "주일오전 11시", name: "주일 낮 예배", place: "본당 예배실" },
+    { type: "예배", time: "주일오후 1시", name: "주일 오후 예배", place: "본당 예배실" },
+    { type: "예배", time: "화요일오후 2시", name: "여호와닛시기도회", place: "김남숙권사님가정" },
+    { type: "모임", time: "수요일오전11시", name: "수요 기도회", place: "본당 예배실" },
+    { type: "모임", time: "셋째주오전예배후", name: "권사특별기도회", place: "4층 친교실" },
+    { type: "모임", time: "금요일오후 9시", name: "철야 기도회", place: "본당 예배실" },
+    { type: "모임", time: "주일오전예배후", name: "요셉청년부 예배", place: "요셉 기관실" },
+    { type: "모임", time: "주일오전에 예배후", name: "에스겔학생부 예배", place: "에스겔 기관실" }
   ]
 };
 
@@ -966,7 +977,7 @@ function BulletinTab({ db }) {
             </div>
           )}
 
-          {/* 4. 성도의 기본생활 & 기도제목 */}
+          {/* 4. 성도의 기본생활 & 기도제목 & 필리핀 지교회 (3열 카드) */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
@@ -974,10 +985,10 @@ function BulletinTab({ db }) {
             marginBottom: '16px'
           }}>
             <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800 }}>
-                ✿ 성도의 기본생활
+              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
+                ✿ 성도의 기본생활 ✿
               </h5>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11.5px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
                 {STATIC_INFO.basicLife.map((life, i) => (
                   <div key={i}>• {life}</div>
                 ))}
@@ -985,38 +996,63 @@ function BulletinTab({ db }) {
             </div>
 
             <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800 }}>
+              <h5 style={{ margin: '0 0 8px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
                 🙏 벧엘교회 기도 제목
               </h5>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '11.5px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
                 {STATIC_INFO.prayers.map((prayer, i) => (
                   <div key={i}>{prayer}</div>
                 ))}
               </div>
             </div>
+
+            <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <h5 style={{ margin: '0 0 8px 0', color: '#f59e0b', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
+                ♥ 필리핀 지교회 ♥
+              </h5>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.45 }}>
+                {STATIC_INFO.branches.map((branch, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>👤</span> <span>{branch.name}</span> : <span style={{ color: '#f59e0b', fontWeight: 700 }}>{branch.pastor}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* 5. 예배 시간 안내 */}
-          <div style={{ background: '#161618', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h5 style={{ margin: '0 0 10px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '12px', fontWeight: 800, textAlign: 'center' }}>
-              🕒 정기 예배 시간 안내
+          {/* 5. 예배 시간 안내 (스마트주보와 100% 동일한 11개 항목 및 헤더) */}
+          <div style={{ background: '#161618', padding: '14px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '16px' }}>
+            <h5 style={{ margin: '0 0 10px 0', color: 'var(--accent-gold, #d4af37)', fontSize: '13px', fontWeight: 800, textAlign: 'center' }}>
+              🕒 예배 시간 안내
             </h5>
-            <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '11.5px', borderCollapse: 'collapse' }}>
-              <colgroup>
-                <col style={{ width: '38%' }} />
-                <col style={{ width: '38%' }} />
-                <col style={{ width: '24%' }} />
-              </colgroup>
-              <tbody>
-                {STATIC_INFO.schedule.map((item, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    <td style={{ padding: '8px 4px', color: 'rgba(255,255,255,0.65)', textAlign: 'left', wordBreak: 'keep-all' }}>{item.time}</td>
-                    <td style={{ padding: '8px 4px', fontWeight: 700, color: 'var(--accent-gold, #d4af37)', textAlign: 'center', wordBreak: 'keep-all' }}>{item.name}</td>
-                    <td style={{ padding: '8px 4px', color: 'rgba(255,255,255,0.75)', textAlign: 'right' }}>{item.place}</td>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '11.5px', borderCollapse: 'collapse', textAlign: 'center' }}>
+                <colgroup>
+                  <col style={{ width: '36%' }} />
+                  <col style={{ width: '36%' }} />
+                  <col style={{ width: '28%' }} />
+                </colgroup>
+                <thead>
+                  <tr style={{ background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold, #d4af37)' }}>
+                    <th style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 700, wordBreak: 'keep-all' }}>일시</th>
+                    <th style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 700, wordBreak: 'keep-all' }}>예배종류</th>
+                    <th style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 700, wordBreak: 'keep-all' }}>장소</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {STATIC_INFO.schedule.map((item, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
+                      <td style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)', wordBreak: 'keep-all', lineHeight: 1.4 }}>{item.time}</td>
+                      <td style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.06)', fontWeight: 700, color: 'var(--accent-gold, #d4af37)', wordBreak: 'keep-all', lineHeight: 1.4 }}>{item.name}</td>
+                      <td style={{ padding: '7px 4px', border: '1px solid rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.85)', wordBreak: 'keep-all', lineHeight: 1.4 }}>{item.place}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ textAlign: 'center', background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.25)', color: '#d4af37', padding: '9px 12px', borderRadius: '8px', marginTop: '12px', fontSize: '11px', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+              날마다 마음을 같이하여 성전에 모이기를 힘쓰고... (행 2:46)
+            </div>
           </div>
         </div>
       ) : (
