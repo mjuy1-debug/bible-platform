@@ -362,7 +362,7 @@ export default function Quiz() {
             <Trophy color="var(--accent-gold)" /> 말씀 골든벨 & 성경 퀴즈
           </h1>
           <p style={{ fontSize: 'clamp(0.8rem, 2.4vw, 0.85rem)', color: 'var(--text-secondary)', marginTop: '0.4rem', lineHeight: 1.5, wordBreak: 'keep-all', margin: '4px 0 0 0' }}>
-            총 346세트 1,730문제 완비! 성경 66권 전체와 매일 1분 퀴즈, 무한 서바이벌로 성경을 마스터하세요.
+            총 {quizzes.length}세트 2,000여 문제 완비! 90대 성경 인물과 성경 66권, 매일 1분 퀴즈, 무한 서바이벌로 말씀을 마스터하세요.
           </p>
         </div>
 
