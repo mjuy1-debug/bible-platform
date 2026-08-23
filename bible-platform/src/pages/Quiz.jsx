@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useContext, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Award, CheckCircle2, XCircle, Sparkles, Trophy, RotateCcw, Share2, HelpCircle, Plus, Edit, Trash2, ChevronRight, X, ArrowLeft, BookOpen, Star, Flame, Sun, AlertCircle, Timer, BookmarkCheck, Check, ExternalLink } from 'lucide-react';
+import { Award, CheckCircle2, XCircle, Sparkles, Trophy, RotateCcw, Share2, HelpCircle, Plus, Edit, Trash2, ChevronRight, X, ArrowLeft, BookOpen, Star, Flame, Sun, AlertCircle, Timer, BookmarkCheck, Check, ExternalLink, Play, Video } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { QUIZ_CATEGORIES, BIBLE_QUIZ_LIST } from '../data/quizData';
 import { WEEKLY_READING_PLAN } from '../data/weeklyReadingPlanData';
+import { getBibleProjectVideo } from '../data/bibleProjectVideos';
+import YouTubeModal from '../components/YouTubeModal';
 import { db } from '../services/firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+
+function YouTubeIcon({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+  );
+}
 
 export default function Quiz() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -30,6 +40,7 @@ export default function Quiz() {
   // 힌트 모달 상태
   const [showHintModal, setShowHintModal] = useState(false);
   const [showReadingBriefing, setShowReadingBriefing] = useState(true);
+  const [activeVideoModal, setActiveVideoModal] = useState(null);
 
   // 서바이벌 모드 상태 (15초 타이머 & 콤보)
   const [survivalTimer, setSurvivalTimer] = useState(15);
@@ -586,36 +597,66 @@ export default function Quiz() {
                       {q.description}
                     </p>
 
-                    {/* 성경 본문 읽기 연동 배너 & 버튼 (모든 카테고리 지원) */}
+                    {/* 성경 본문 읽기 & 바이블프로젝트 영상 연동 배너 & 버튼 */}
                     {(() => {
                       const readBookName = q.bookName || weeklyPlan?.bookName;
                       const readChapter = q.startChapter || weeklyPlan?.startChapter || 1;
                       const readRange = q.range || weeklyPlan?.range || (readBookName ? `${readBookName} ${readChapter}장~` : null);
+                      const videoInfo = getBibleProjectVideo(q);
 
-                      if (!readBookName && !readRange) return null;
+                      if (!readBookName && !readRange && !videoInfo) return null;
 
                       return (
                         <div style={{
                           marginTop: '10px', padding: '8px 10px', borderRadius: '10px',
                           background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.22)',
-                          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px'
+                          display: 'flex', flexDirection: 'column', gap: '6px'
                         }}>
-                          <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <BookOpen size={13} /> {readRange}
-                          </span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate('/read', { state: { bookName: readBookName, chapter: readChapter } });
-                            }}
-                            style={{
-                              fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
-                              background: 'var(--accent-gold)', color: '#111', border: 'none', cursor: 'pointer',
-                              display: 'flex', alignItems: 'center', gap: '3px'
-                            }}
-                          >
-                            📖 본문 먼저 읽기
-                          </button>
+                          {readRange && (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                              <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <BookOpen size={13} /> {readRange}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate('/read', { state: { bookName: readBookName, chapter: readChapter } });
+                                }}
+                                style={{
+                                  fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
+                                  background: 'var(--accent-gold)', color: '#111', border: 'none', cursor: 'pointer',
+                                  display: 'flex', alignItems: 'center', gap: '3px'
+                                }}
+                              >
+                                📖 본문 읽기
+                              </button>
+                            </div>
+                          )}
+
+                          {videoInfo && (
+                            <div style={{
+                              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                              paddingTop: readRange ? '4px' : '0',
+                              borderTop: readRange ? '1px dashed rgba(212,175,55,0.2)' : 'none'
+                            }}>
+                              <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <YouTubeIcon size={13} color="#ef4444" /> {videoInfo.characterName ? `${videoInfo.characterName} 영상` : '개요 영상'}
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveVideoModal({ ...videoInfo, targetQuiz: q });
+                                }}
+                                style={{
+                                  fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '6px',
+                                  background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)',
+                                  color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px'
+                                }}
+                              >
+                                📺 영상 보기
+                              </button>
+                            </div>
+                          )}
                         </div>
                       );
                     })()}
@@ -656,25 +697,45 @@ export default function Quiz() {
               <ArrowLeft size={14} /> 퀴즈 목록으로
             </button>
 
-            {/* 성경 본문 읽기 바로가기 (모든 카테고리 지원) */}
-            {(() => {
-              const activeBookName = activeQuiz?.bookName || activeWeeklyPlan?.bookName;
-              const activeChapter = activeQuiz?.startChapter || activeWeeklyPlan?.startChapter || 1;
-              if (!activeBookName) return null;
-              return (
-                <button
-                  onClick={() => navigate('/read', { state: { bookName: activeBookName, chapter: activeChapter } })}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '4px',
-                    padding: '6px 12px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)',
-                    border: '1px solid rgba(212,175,55,0.4)', color: 'var(--accent-gold)',
-                    fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
-                  }}
-                >
-                  <BookOpen size={14} /> 본문 읽으러 가기 ({activeBookName})
-                </button>
-              );
-            })()}
+            {/* 성경 본문 읽기 & 바이블프로젝트 영상 바로가기 */}
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {(() => {
+                const activeVideo = getBibleProjectVideo(activeQuiz);
+                if (!activeVideo) return null;
+                return (
+                  <button
+                    onClick={() => setActiveVideoModal({ ...activeVideo, targetQuiz: null })}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                      padding: '6px 12px', borderRadius: '12px', background: 'rgba(239,68,68,0.15)',
+                      border: '1px solid rgba(239,68,68,0.4)', color: '#f87171',
+                      fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
+                    }}
+                  >
+                    <YouTubeIcon size={14} color="#ef4444" /> 영상 보기
+                  </button>
+                );
+              })()}
+
+              {(() => {
+                const activeBookName = activeQuiz?.bookName || activeWeeklyPlan?.bookName;
+                const activeChapter = activeQuiz?.startChapter || activeWeeklyPlan?.startChapter || 1;
+                if (!activeBookName) return null;
+                return (
+                  <button
+                    onClick={() => navigate('/read', { state: { bookName: activeBookName, chapter: activeChapter } })}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '4px',
+                      padding: '6px 12px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)',
+                      border: '1px solid rgba(212,175,55,0.4)', color: 'var(--accent-gold)',
+                      fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
+                    }}
+                  >
+                    <BookOpen size={14} /> 본문 ({activeBookName})
+                  </button>
+                );
+              })()}
+            </div>
           </div>
 
           {/* 52주차 통독 묵상 브리핑 가이드 (퀴즈 상단에 접기/펼치기 가능) */}
@@ -993,6 +1054,14 @@ export default function Quiz() {
           )}
         </div>
       )}
+
+      {/* 5. 바이블프로젝트 YouTube 영상 모달 */}
+      <YouTubeModal
+        isOpen={!!activeVideoModal}
+        onClose={() => setActiveVideoModal(null)}
+        videoInfo={activeVideoModal}
+        onStartQuiz={activeVideoModal?.targetQuiz ? () => handleStartQuiz(activeVideoModal.targetQuiz) : null}
+      />
     </div>
   );
 }
