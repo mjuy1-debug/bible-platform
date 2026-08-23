@@ -15,7 +15,7 @@ const MAIN_LINKS = [
   { to: '/hymns',      icon: Music,        title: '찬송가',      color: '#e5a93b' },
   { to: '/devotion',   icon: BookHeart,    title: '묵상 노트',   color: '#c4a484' },
   { to: '/plan',       icon: CalendarDays, title: '통독 플랜',   color: '#5bbf6e' },
-  { to: '/ai',         icon: Sparkles,     title: 'AI 도우미',   color: '#9b7de8' },
+  { to: '/quiz',       icon: Trophy,        title: '말씀 퀴즈',   color: '#f59e0b' },
   { to: '/memorize',   icon: Brain,        title: '말씀 암송',   color: '#64b5f6' },
   { to: '/favorites',  icon: Heart,        title: '즐겨찾기',    color: '#e85b72' },
 ];
@@ -23,7 +23,7 @@ const MAIN_LINKS = [
 // 커뮤니티 & 기타
 const COMMUNITY_LINKS = [
   { to: '/announce',   icon: Megaphone,     title: '교회 공지',   color: '#fbbf24' },
-  { to: '/quiz',       icon: Trophy,        title: '말씀 퀴즈',   color: '#f59e0b' },
+  { to: '/ai',         icon: Sparkles,     title: 'AI 도우미',   color: '#9b7de8' },
   { to: '/schedule',   icon: CalendarClock, title: '일정 & 계획',  color: '#e8a73d' },
   { to: '/bulletin',   icon: FileText,      title: '교회 주보',   color: '#ff8a65' },
   { to: '/prayer-wall',icon: Handshake,     title: '중보 기도',   color: '#81c784' },

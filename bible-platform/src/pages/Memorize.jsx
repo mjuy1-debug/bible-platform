@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Brain, RefreshCw, Star, BookOpen, Trophy, Trash2, Lightbulb, 
   Volume2, VolumeX, Sparkles, CheckCircle2, ChevronRight, BookMarked,
-  Layers, Key, Eye, EyeOff, RotateCcw, Share2, Copy, Check, Award
+  Layers, Key, Eye, EyeOff, RotateCcw, Share2, Copy, Check, Award, ArrowRight
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -35,13 +35,12 @@ export default function Memorize() {
 
   // 암송 훈련 모드 (1: 낭독/듣기, 2: 초성힌트, 3: 단어퍼즐, 4: 블라인드 마스터)
   const [trainingStage, setTrainingStage] = useState(1);
-  const [trainingActive, setTrainingActive] = useState(false);
+  const [trainingActive, setTrainingActive] = useState(true);
 
   // Step 1: TTS 오디오 상태
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [loopCount, setLoopCount] = useState(3);
   const [currentLoop, setCurrentLoop] = useState(0);
-  const synthRef = useRef(window.speechSynthesis);
 
   // Step 2 & 3: 단어 / 빈칸 / 퍼즐 상태
   const [words, setWords] = useState([]);
@@ -71,7 +70,7 @@ export default function Memorize() {
         ref: location.state.reference || '선택한 말씀',
         topic: '직접 선택'
       });
-      setTrainingActive(false);
+      setTrainingActive(true);
       setSuccess(false);
     }
   }, [location]);
@@ -82,13 +81,14 @@ export default function Memorize() {
     setSelectedVerse(v);
     setCustomVerse(v.text);
     setCustomRef(v.ref);
-    setTrainingActive(false);
+    setTrainingActive(true);
+    setTrainingStage(1);
     setSuccess(false);
     setBlindInput('');
     setActiveTab('train');
   };
 
-  // 훈련 시작
+  // 훈련 단계 전환
   const startStage = (stageNum) => {
     stopTTS();
     setTrainingStage(stageNum);
@@ -147,8 +147,8 @@ export default function Memorize() {
 
   // 블라인드 입력 제출 (4단계)
   const handleBlindCheck = () => {
-    const cleanOrig = customVerse.replace(/\s+/g, '').replace(/[.,!?;:~]/g, '');
-    const cleanInput = blindInput.replace(/\s+/g, '').replace(/[.,!?;:~]/g, '');
+    const cleanOrig = customVerse.replace(/\s+/g, '').replace(/[.,!?;:~"']/g, '');
+    const cleanInput = blindInput.replace(/\s+/g, '').replace(/[.,!?;:~"']/g, '');
 
     if (cleanInput === cleanOrig) {
       setSuccess(true);
@@ -248,39 +248,40 @@ export default function Memorize() {
     : MEMORIZE_VERSES.filter(v => v.category === activeCategory);
 
   return (
-    <div style={{ maxWidth: '840px', margin: '0 auto', paddingBottom: '3rem', color: 'var(--text-primary)' }}>
+    <div style={{ maxWidth: '860px', margin: '0 auto', paddingBottom: '3.5rem', color: 'var(--text-primary)', boxSizing: 'border-box' }}>
       {/* 헤더 */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1rem',
-        marginBottom: '1.5rem',
-        padding: '1.2rem 1.5rem',
+        gap: '10px',
+        marginBottom: '1.2rem',
+        padding: 'clamp(1rem, 3vw, 1.4rem)',
         borderRadius: '20px',
         background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(20, 20, 28, 0.8) 100%)',
         border: '1px solid rgba(212, 175, 55, 0.3)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '44px',
-            height: '44px',
+            width: '42px',
+            height: '42px',
             borderRadius: '12px',
             background: 'var(--accent-gold)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#111',
-            boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)'
+            boxShadow: '0 4px 14px rgba(212, 175, 55, 0.4)',
+            flexShrink: 0
           }}>
-            <Brain size={26} />
+            <Brain size={24} />
           </div>
           <div>
-            <h1 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+            <h1 style={{ margin: 0, fontSize: 'clamp(1.15rem, 3.5vw, 1.35rem)', fontWeight: 800, color: 'var(--text-primary)' }}>
               말씀 암송 마스터
             </h1>
-            <span style={{ fontSize: '0.8rem', color: 'var(--accent-gold)', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', fontWeight: 700 }}>
               {currentLevel.title} • {records.length}구절 암송 완료 🏆
             </span>
           </div>
@@ -292,12 +293,12 @@ export default function Memorize() {
             handleSelectVerse(randomV);
           }}
           style={{
-            padding: '8px 16px',
+            padding: '8px 14px',
             borderRadius: '10px',
             background: 'rgba(255, 255, 255, 0.08)',
             border: '1px solid var(--glass-border)',
             color: 'var(--text-primary)',
-            fontSize: '0.84rem',
+            fontSize: '0.82rem',
             fontWeight: 700,
             cursor: 'pointer',
             display: 'flex',
@@ -305,25 +306,27 @@ export default function Memorize() {
             gap: '6px'
           }}
         >
-          <RefreshCw size={15} /> 추천 구절
+          <RefreshCw size={14} /> 추천 구절
         </button>
       </div>
 
-      {/* 탭 네비게이션 */}
+      {/* 탭 네비게이션 (모바일 최적화) */}
       <div style={{
         display: 'flex',
         gap: '4px',
-        marginBottom: '1.5rem',
+        marginBottom: '1.2rem',
         background: 'var(--bg-secondary)',
-        padding: '6px',
+        padding: '5px',
         borderRadius: '14px',
-        border: '1px solid var(--glass-border)'
+        border: '1px solid var(--glass-border)',
+        overflowX: 'auto',
+        scrollbarWidth: 'none'
       }}>
         {[
-          { key: 'train', label: '🎯 4단계 암송 훈련', icon: <Brain size={16} /> },
-          { key: 'library', label: `📚 암송 구절집 (100구절)`, icon: <BookOpen size={16} /> },
-          { key: 'records', label: `🏆 나의 기록 (${records.length})`, icon: <Trophy size={16} /> },
-          { key: 'tips', label: '💡 암송 비법', icon: <Lightbulb size={16} /> }
+          { key: 'train', label: '🎯 4단계 암송', icon: <Brain size={15} /> },
+          { key: 'library', label: `📚 구절집 (100)`, icon: <BookOpen size={15} /> },
+          { key: 'records', label: `🏆 기록 (${records.length})`, icon: <Trophy size={15} /> },
+          { key: 'tips', label: '💡 팁', icon: <Lightbulb size={15} /> }
         ].map(tab => (
           <button
             key={tab.key}
@@ -333,19 +336,21 @@ export default function Memorize() {
             }}
             style={{
               flex: 1,
-              padding: '10px 8px',
+              minWidth: '78px',
+              padding: '9px 6px',
               borderRadius: '10px',
               border: 'none',
               background: activeTab === tab.key ? 'var(--accent-gold)' : 'transparent',
               color: activeTab === tab.key ? '#111' : 'var(--text-secondary)',
               fontWeight: 800,
-              fontSize: '0.86rem',
+              fontSize: 'clamp(0.78rem, 2.2vw, 0.86rem)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
-              transition: 'all 0.2s'
+              gap: '4px',
+              transition: 'all 0.2s',
+              whiteSpace: 'nowrap'
             }}
           >
             {tab.icon} {tab.label}
@@ -355,18 +360,18 @@ export default function Memorize() {
 
       {/* ── 1. 암송 훈련 탭 (4단계 시스템) ── */}
       {activeTab === 'train' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           {/* 현재 선택된 암송 구절 카드 */}
           <div style={{
             background: 'var(--bg-secondary)',
             borderRadius: '20px',
-            padding: '20px',
+            padding: 'clamp(1rem, 3vw, 1.5rem)',
             border: '1px solid var(--glass-border)',
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
               <span style={{
-                fontSize: '0.78rem',
+                fontSize: '0.8rem',
                 fontWeight: 800,
                 color: 'var(--accent-gold)',
                 background: 'rgba(212, 175, 55, 0.12)',
@@ -394,32 +399,32 @@ export default function Memorize() {
             </div>
 
             {/* 4단계 스테이지 선택 버튼들 */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px', marginBottom: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginBottom: '16px' }}>
               {[
-                { stage: 1, title: '1단계 🎧 낭독/듣기', desc: '음성 반복 묵상' },
-                { stage: 2, title: '2단계 💡 초성 힌트', desc: '초성 연상 훈련' },
-                { stage: 3, title: '3단계 🧩 단어 퍼즐', desc: '블록 조립 훈련' },
-                { stage: 4, title: '4단계 👑 마스터 체크', desc: '블라인드 완성' }
+                { stage: 1, title: '1단계', sub: '🎧 낭독' },
+                { stage: 2, title: '2단계', sub: '💡 초성' },
+                { stage: 3, title: '3단계', sub: '🧩 퍼즐' },
+                { stage: 4, title: '4단계', sub: '👑 마스터' }
               ].map(s => (
                 <button
                   key={s.stage}
                   onClick={() => startStage(s.stage)}
                   style={{
-                    padding: '12px 10px',
+                    padding: '10px 4px',
                     borderRadius: '12px',
-                    border: `1.5px solid ${trainingStage === s.stage && trainingActive ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
-                    background: trainingStage === s.stage && trainingActive ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                    color: trainingStage === s.stage && trainingActive ? 'var(--accent-gold)' : 'var(--text-primary)',
+                    border: `1.5px solid ${trainingStage === s.stage ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
+                    background: trainingStage === s.stage ? 'rgba(212, 175, 55, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                    color: trainingStage === s.stage ? 'var(--accent-gold)' : 'var(--text-primary)',
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '4px',
+                    gap: '2px',
                     transition: 'all 0.15s'
                   }}
                 >
-                  <span style={{ fontSize: '0.88rem', fontWeight: 800 }}>{s.title}</span>
-                  <span style={{ fontSize: '0.72rem', opacity: 0.75 }}>{s.desc}</span>
+                  <span style={{ fontSize: 'clamp(0.72rem, 2vw, 0.82rem)', fontWeight: 800 }}>{s.title}</span>
+                  <span style={{ fontSize: 'clamp(0.68rem, 1.8vw, 0.75rem)', opacity: 0.85, fontWeight: 700 }}>{s.sub}</span>
                 </button>
               ))}
             </div>
@@ -427,7 +432,7 @@ export default function Memorize() {
             {/* ── STAGE 1: 낭독 및 오디오 루프 모드 ── */}
             {trainingStage === 1 && (
               <div style={{
-                padding: '24px',
+                padding: 'clamp(1.2rem, 3vw, 1.8rem)',
                 borderRadius: '16px',
                 background: 'rgba(255, 255, 255, 0.02)',
                 border: '1px solid var(--glass-border)',
@@ -437,12 +442,13 @@ export default function Memorize() {
                 gap: '16px'
               }}>
                 <p style={{
-                  fontSize: '1.25rem',
-                  lineHeight: '2.0',
+                  fontSize: 'clamp(1.1rem, 3.2vw, 1.3rem)',
+                  lineHeight: '1.9',
                   fontWeight: 700,
                   margin: 0,
                   color: isSpeaking ? 'var(--accent-gold)' : 'var(--text-primary)',
-                  wordBreak: 'keep-all'
+                  wordBreak: 'keep-all',
+                  overflowWrap: 'break-word'
                 }}>
                   "{customVerse}"
                 </p>
@@ -451,12 +457,12 @@ export default function Memorize() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '12px',
+                  gap: '10px',
                   flexWrap: 'wrap',
                   marginTop: '8px'
                 }}>
                   {/* 반복 횟수 선택 */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                     <span>반복:</span>
                     {[1, 3, 5, 10].map(cnt => (
                       <button
@@ -468,7 +474,7 @@ export default function Memorize() {
                           border: `1px solid ${loopCount === cnt ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
                           background: loopCount === cnt ? 'var(--accent-gold)' : 'transparent',
                           color: loopCount === cnt ? '#111' : 'var(--text-secondary)',
-                          fontSize: '0.75rem',
+                          fontSize: '0.74rem',
                           fontWeight: 700,
                           cursor: 'pointer'
                         }}
@@ -485,37 +491,40 @@ export default function Memorize() {
                       else playTTS(customVerse);
                     }}
                     style={{
-                      padding: '10px 22px',
+                      padding: '10px 18px',
                       borderRadius: '12px',
                       background: isSpeaking ? '#ef4444' : 'var(--accent-gold)',
                       border: 'none',
                       color: isSpeaking ? '#fff' : '#111',
-                      fontSize: '0.92rem',
+                      fontSize: '0.88rem',
                       fontWeight: 800,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      gap: '6px',
                       boxShadow: '0 4px 14px rgba(212, 175, 55, 0.3)'
                     }}
                   >
-                    {isSpeaking ? <><VolumeX size={18} /> 낭독 중지 ({currentLoop}/{loopCount})</> : <><Volume2 size={18} /> 🎧 {loopCount}회 반복 듣기</>}
+                    {isSpeaking ? <><VolumeX size={16} /> 낭독 중지 ({currentLoop}/{loopCount})</> : <><Volume2 size={16} /> 🎧 {loopCount}회 반복 듣기</>}
                   </button>
 
                   <button
                     onClick={() => startStage(2)}
                     style={{
-                      padding: '10px 18px',
+                      padding: '10px 16px',
                       borderRadius: '12px',
                       background: 'rgba(255, 255, 255, 0.08)',
                       border: '1px solid var(--glass-border)',
                       color: 'var(--text-primary)',
-                      fontSize: '0.88rem',
+                      fontSize: '0.86rem',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
                     }}
                   >
-                    다음 단계 (초성 힌트) 👉
+                    다음 단계 (초성 힌트) <ArrowRight size={15} />
                   </button>
                 </div>
               </div>
@@ -524,16 +533,16 @@ export default function Memorize() {
             {/* ── STAGE 2: 초성 힌트 모드 ── */}
             {trainingStage === 2 && (
               <div style={{
-                padding: '24px',
+                padding: 'clamp(1.2rem, 3vw, 1.8rem)',
                 borderRadius: '16px',
                 background: 'rgba(255, 255, 255, 0.02)',
                 border: '1px solid var(--glass-border)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px'
+                gap: '14px'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.84rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
                     💡 초성을 보고 소리 내어 말씀을 외워보세요!
                   </span>
                   <button
@@ -542,54 +551,55 @@ export default function Memorize() {
                       background: 'none',
                       border: 'none',
                       color: 'var(--text-secondary)',
-                      fontSize: '0.8rem',
+                      fontSize: '0.78rem',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px'
                     }}
                   >
-                    {blindShowHint ? <EyeOff size={15} /> : <Eye size={15} />}
+                    {blindShowHint ? <EyeOff size={14} /> : <Eye size={14} />}
                     {blindShowHint ? '정답 숨기기' : '정답 슬쩍보기'}
                   </button>
                 </div>
 
-                {/* 초성 변환 텍스트 */}
+                {/* 초성 변환 텍스트 (글자 잘림 없이 반응형) */}
                 <div style={{
-                  padding: '20px',
+                  padding: '18px 14px',
                   borderRadius: '14px',
-                  background: 'rgba(0, 0, 0, 0.3)',
+                  background: 'rgba(0, 0, 0, 0.35)',
                   border: '1px solid rgba(212, 175, 55, 0.3)',
-                  fontSize: '1.35rem',
-                  lineHeight: '2.2',
+                  fontSize: 'clamp(1.1rem, 3.8vw, 1.35rem)',
+                  lineHeight: '2.0',
                   fontWeight: 800,
-                  letterSpacing: '0.12em',
+                  letterSpacing: '0.08em',
                   color: 'var(--accent-gold)',
                   textAlign: 'center',
-                  wordBreak: 'keep-all'
+                  wordBreak: 'keep-all',
+                  overflowWrap: 'break-word'
                 }}>
                   {getInitialConsonants(customVerse)}
                 </div>
 
                 {blindShowHint && (
-                  <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', textAlign: 'center', margin: 0 }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', textAlign: 'center', margin: 0, lineHeight: 1.5, wordBreak: 'keep-all' }}>
                     원문: {customVerse}
                   </p>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
                   <button
                     onClick={() => {
                       triggerSuccess();
                       setSuccess(true);
                     }}
                     style={{
-                      padding: '10px 20px',
+                      padding: '10px 18px',
                       borderRadius: '12px',
                       background: 'var(--accent-gold)',
                       border: 'none',
                       color: '#111',
-                      fontSize: '0.9rem',
+                      fontSize: '0.86rem',
                       fontWeight: 800,
                       cursor: 'pointer'
                     }}
@@ -599,17 +609,20 @@ export default function Memorize() {
                   <button
                     onClick={() => startStage(3)}
                     style={{
-                      padding: '10px 18px',
+                      padding: '10px 16px',
                       borderRadius: '12px',
                       background: 'rgba(255, 255, 255, 0.08)',
                       border: '1px solid var(--glass-border)',
                       color: 'var(--text-primary)',
-                      fontSize: '0.88rem',
+                      fontSize: '0.86rem',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
                     }}
                   >
-                    다음 단계 (단어 퍼즐) 👉
+                    다음 단계 (단어 퍼즐) <ArrowRight size={15} />
                   </button>
                 </div>
               </div>
@@ -617,22 +630,50 @@ export default function Memorize() {
 
             {/* ── STAGE 3: 단어 조각 퍼즐 모드 ── */}
             {trainingStage === 3 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                  <span style={{ fontSize: '0.82rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
+                    🧩 빈칸에 들어갈 단어를 순서대로 탭하세요!
+                  </span>
+
+                  {/* 3단계에서 4단계로 바로 넘어갈 수 있는 상단 버튼 */}
+                  <button
+                    onClick={() => startStage(4)}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: '8px',
+                      background: 'rgba(212, 175, 55, 0.15)',
+                      border: '1px solid rgba(212, 175, 55, 0.35)',
+                      color: 'var(--accent-gold)',
+                      fontSize: '0.78rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    4단계 (블라인드 마스터) 건너뛰기 <ArrowRight size={13} />
+                  </button>
+                </div>
+
+                {/* 퍼즐 본문 텍스트 (글자 짤림 방지) */}
                 <motion.div
                   animate={shake ? { x: [-8, 8, -8, 8, 0] } : {}}
                   transition={{ duration: 0.4 }}
                   style={{
-                    padding: '24px',
+                    padding: 'clamp(1.2rem, 3vw, 1.8rem)',
                     borderRadius: '16px',
                     background: 'rgba(255, 255, 255, 0.02)',
                     border: shake ? '2px solid #ef4444' : '1px solid var(--glass-border)',
-                    fontSize: '1.18rem',
-                    lineHeight: '2.6',
+                    fontSize: 'clamp(1.05rem, 3vw, 1.18rem)',
+                    lineHeight: '2.4',
                     display: 'flex',
                     flexWrap: 'wrap',
                     alignItems: 'baseline',
-                    gap: '0.3rem 0.4rem',
-                    wordBreak: 'keep-all'
+                    gap: '0.2rem 0.4rem',
+                    wordBreak: 'keep-all',
+                    overflowWrap: 'break-word'
                   }}
                 >
                   {words.map((word, i) => {
@@ -655,8 +696,9 @@ export default function Memorize() {
                     return (
                       <span key={i} style={{
                         display: 'inline-block',
-                        minWidth: `${word.length * 0.9 + 1.2}rem`,
-                        height: '1.8rem',
+                        minWidth: `${word.length * 0.8 + 1.0}rem`,
+                        maxWidth: '100%',
+                        height: '1.6rem',
                         borderBottom: `2.5px solid ${isCurrent ? 'var(--accent-gold)' : 'rgba(255,255,255,0.3)'}`,
                         backgroundColor: isCurrent ? 'rgba(212,175,55,0.18)' : 'transparent',
                         verticalAlign: 'middle',
@@ -668,17 +710,17 @@ export default function Memorize() {
                 </motion.div>
 
                 {/* 흩어진 단어 뱅크 */}
-                {!success && (
+                {!success ? (
                   <div style={{
-                    padding: '16px 20px',
+                    padding: '14px 16px',
                     borderRadius: '16px',
                     background: 'rgba(0, 0, 0, 0.25)',
                     border: '1px solid var(--glass-border)'
                   }}>
-                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-                      🧩 알맞은 단어를 순서대로 탭하세요:
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                      📝 알맞은 단어를 순서대로 선택하세요:
                     </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                       <AnimatePresence>
                         {wordBank.map((word, idx) => (
                           <motion.button
@@ -688,24 +730,82 @@ export default function Memorize() {
                             exit={{ opacity: 0, scale: 0.8 }}
                             onClick={() => handleBankClick(word, idx)}
                             style={{
-                              padding: '8px 16px',
+                              padding: '8px 14px',
                               borderRadius: '10px',
                               background: 'var(--bg-primary)',
                               border: '1px solid rgba(212, 175, 55, 0.4)',
                               color: 'var(--text-primary)',
-                              fontSize: '1rem',
+                              fontSize: 'clamp(0.88rem, 2.4vw, 0.98rem)',
                               fontWeight: 700,
                               cursor: 'pointer',
-                              boxShadow: '0 4px 10px rgba(0,0,0,0.2)'
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                              wordBreak: 'keep-all'
                             }}
-                            whileHover={{ scale: 1.05, borderColor: 'var(--accent-gold)' }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ scale: 1.04, borderColor: 'var(--accent-gold)' }}
+                            whileTap={{ scale: 0.96 }}
                           >
                             {word}
                           </motion.button>
                         ))}
                       </AnimatePresence>
                     </div>
+
+                    {/* 하단 4단계 이동 버튼 */}
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+                      <button
+                        onClick={() => startStage(4)}
+                        style={{
+                          padding: '8px 16px',
+                          borderRadius: '10px',
+                          background: 'rgba(255, 255, 255, 0.06)',
+                          border: '1px solid var(--glass-border)',
+                          color: 'var(--text-secondary)',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        다음 단계 (4단계 블라인드 마스터) <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* 3단계 완료 시 4단계로 바로 넘어갈 수 있는 배너 버튼 */
+                  <div style={{
+                    padding: '14px 18px',
+                    borderRadius: '14px',
+                    background: 'rgba(212, 175, 55, 0.12)',
+                    border: '1px solid var(--accent-gold)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '10px'
+                  }}>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                      🎉 3단계 퍼즐 완성! 최종 4단계에 도전해보세요!
+                    </span>
+                    <button
+                      onClick={() => startStage(4)}
+                      style={{
+                        padding: '9px 18px',
+                        borderRadius: '10px',
+                        background: 'var(--accent-gold)',
+                        border: 'none',
+                        color: '#111',
+                        fontSize: '0.88rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      👑 4단계 블라인드 마스터 도전 <ArrowRight size={15} />
+                    </button>
                   </div>
                 )}
               </div>
@@ -714,20 +814,20 @@ export default function Memorize() {
             {/* ── STAGE 4: 블라인드 마스터 체크 모드 ── */}
             {trainingStage === 4 && (
               <div style={{
-                padding: '24px',
+                padding: 'clamp(1.2rem, 3vw, 1.8rem)',
                 borderRadius: '16px',
                 background: 'rgba(255, 255, 255, 0.02)',
                 border: '1px solid var(--glass-border)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px'
+                gap: '14px'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.88rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
-                    👑 블라인드 마스터 챌린지 (전체 문장을 타이핑해보세요)
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
+                    👑 블라인드 마스터 챌린지 (전체 문장 타이핑)
                   </span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                    띄어쓰기나 부호는 자유롭게 입력하셔도 됩니다
+                  <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                    띄어쓰기나 기호는 자유롭게 입력하셔도 됩니다
                   </span>
                 </div>
 
@@ -739,16 +839,17 @@ export default function Memorize() {
                     style={{
                       width: '100%',
                       minHeight: '120px',
-                      padding: '16px',
+                      padding: '14px',
                       borderRadius: '12px',
                       background: 'rgba(0, 0, 0, 0.4)',
                       border: shake ? '2px solid #ef4444' : '1px solid rgba(212, 175, 55, 0.4)',
                       color: 'var(--text-primary)',
-                      fontSize: '1.05rem',
+                      fontSize: 'clamp(0.95rem, 2.8vw, 1.05rem)',
                       lineHeight: '1.8',
                       boxSizing: 'border-box',
                       resize: 'none',
-                      wordBreak: 'keep-all'
+                      wordBreak: 'keep-all',
+                      overflowWrap: 'break-word'
                     }}
                   />
                 </motion.div>
@@ -760,7 +861,7 @@ export default function Memorize() {
                       background: 'none',
                       border: 'none',
                       color: 'var(--accent-gold)',
-                      fontSize: '0.82rem',
+                      fontSize: '0.8rem',
                       cursor: 'pointer'
                     }}
                   >
@@ -771,31 +872,33 @@ export default function Memorize() {
                     onClick={handleBlindCheck}
                     disabled={!blindInput.trim()}
                     style={{
-                      padding: '10px 24px',
+                      padding: '10px 22px',
                       borderRadius: '12px',
                       background: 'var(--accent-gold)',
                       border: 'none',
                       color: '#111',
-                      fontSize: '0.92rem',
+                      fontSize: '0.9rem',
                       fontWeight: 800,
                       cursor: blindInput.trim() ? 'pointer' : 'not-allowed',
                       opacity: blindInput.trim() ? 1 : 0.5,
                       boxShadow: '0 4px 14px rgba(212, 175, 55, 0.35)'
                     }}
                   >
-                    ✅ 암송 검증하기
+                    ✅ 암송 완벽 검증하기
                   </button>
                 </div>
 
                 {blindShowHint && (
                   <div style={{
-                    padding: '12px 16px',
+                    padding: '12px 14px',
                     borderRadius: '10px',
                     background: 'rgba(212, 175, 55, 0.08)',
                     border: '1px solid rgba(212, 175, 55, 0.2)',
-                    fontSize: '0.9rem',
+                    fontSize: '0.88rem',
                     color: 'var(--accent-gold)',
-                    letterSpacing: '0.08em'
+                    letterSpacing: '0.06em',
+                    wordBreak: 'keep-all',
+                    overflowWrap: 'break-word'
                   }}>
                     {getInitialConsonants(customVerse)}
                   </div>
@@ -809,7 +912,7 @@ export default function Memorize() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 style={{
-                  padding: '28px 20px',
+                  padding: 'clamp(1.2rem, 3vw, 1.8rem) 16px',
                   borderRadius: '20px',
                   background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(20, 20, 28, 0.95) 100%)',
                   border: '2px solid var(--accent-gold)',
@@ -818,32 +921,33 @@ export default function Memorize() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '14px',
+                  gap: '12px',
                   marginTop: '16px'
                 }}
               >
-                <div style={{ fontSize: '3.5rem' }}>🎉 🏆 ✨</div>
-                <h3 style={{ margin: 0, fontSize: '1.45rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                <div style={{ fontSize: '3rem' }}>🎉 🏆 ✨</div>
+                <h3 style={{ margin: 0, fontSize: 'clamp(1.2rem, 3.5vw, 1.45rem)', fontWeight: 800, color: 'var(--accent-gold)' }}>
                   말씀 암송 완벽 달성!
                 </h3>
-                <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-secondary)', maxWidth: '420px' }}>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)', maxWidth: '420px', lineHeight: 1.5, wordBreak: 'keep-all' }}>
                   거룩한 생명의 말씀이 마음에 깊이 새겨졌습니다.
                 </p>
 
                 {/* 말씀 카드 프리뷰 */}
                 <div style={{
-                  padding: '16px 20px',
+                  padding: '14px 16px',
                   borderRadius: '14px',
                   background: 'rgba(0, 0, 0, 0.4)',
                   border: '1px solid rgba(212, 175, 55, 0.35)',
                   maxWidth: '460px',
                   width: '100%',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  boxSizing: 'border-box'
                 }}>
-                  <p style={{ fontSize: '1.05rem', lineHeight: '1.7', fontWeight: 700, margin: '0 0 8px 0', color: '#fff' }}>
+                  <p style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.05rem)', lineHeight: '1.7', fontWeight: 700, margin: '0 0 8px 0', color: '#fff', wordBreak: 'keep-all' }}>
                     "{customVerse}"
                   </p>
-                  <span style={{ fontSize: '0.82rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
                     - {customRef} -
                   </span>
                 </div>
@@ -852,12 +956,12 @@ export default function Memorize() {
                   <button
                     onClick={handleCopy}
                     style={{
-                      padding: '10px 18px',
+                      padding: '9px 16px',
                       borderRadius: '10px',
                       background: 'rgba(255, 255, 255, 0.1)',
                       border: '1px solid var(--glass-border)',
                       color: 'var(--text-primary)',
-                      fontSize: '0.86rem',
+                      fontSize: '0.84rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       display: 'flex',
@@ -865,9 +969,30 @@ export default function Memorize() {
                       gap: '6px'
                     }}
                   >
-                    {copied ? <Check size={16} color="var(--accent-gold)" /> : <Copy size={16} />}
+                    {copied ? <Check size={15} color="var(--accent-gold)" /> : <Copy size={15} />}
                     {copied ? '복사 완료!' : '말씀 카드 복사'}
                   </button>
+
+                  {trainingStage < 4 && (
+                    <button
+                      onClick={() => startStage(trainingStage + 1)}
+                      style={{
+                        padding: '9px 16px',
+                        borderRadius: '10px',
+                        background: 'rgba(212, 175, 55, 0.2)',
+                        border: '1px solid var(--accent-gold)',
+                        color: 'var(--accent-gold)',
+                        fontSize: '0.84rem',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      다음 {trainingStage + 1}단계 도전 <ArrowRight size={14} />
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {
@@ -875,12 +1000,12 @@ export default function Memorize() {
                       handleSelectVerse(randomV);
                     }}
                     style={{
-                      padding: '10px 20px',
+                      padding: '9px 18px',
                       borderRadius: '10px',
                       background: 'var(--accent-gold)',
                       border: 'none',
                       color: '#111',
-                      fontSize: '0.88rem',
+                      fontSize: '0.86rem',
                       fontWeight: 800,
                       cursor: 'pointer'
                     }}
@@ -894,22 +1019,22 @@ export default function Memorize() {
         </div>
       )}
 
-      {/* ── 2. 암송 구절집 탭 (60개 마스터팩) ── */}
+      {/* ── 2. 암송 구절집 탭 (100개 마스터팩) ── */}
       {activeTab === 'library' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* 카테고리 필터 바 */}
-          <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px' }}>
+          <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '6px', scrollbarWidth: 'none' }}>
             {MEMORIZE_CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 style={{
-                  padding: '8px 14px',
+                  padding: '7px 12px',
                   borderRadius: '10px',
                   border: `1px solid ${activeCategory === cat.id ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
                   background: activeCategory === cat.id ? 'var(--accent-gold)' : 'var(--bg-secondary)',
                   color: activeCategory === cat.id ? '#111' : 'var(--text-secondary)',
-                  fontSize: '0.82rem',
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap'
@@ -962,7 +1087,8 @@ export default function Memorize() {
                       display: '-webkit-box',
                       WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
+                      overflow: 'hidden',
+                      wordBreak: 'keep-all'
                     }}>
                       {v.text}
                     </p>
@@ -983,7 +1109,7 @@ export default function Memorize() {
       {activeTab === 'records' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{
-            padding: '16px 20px',
+            padding: '14px 18px',
             borderRadius: '16px',
             background: 'var(--bg-secondary)',
             border: '1px solid var(--glass-border)',
@@ -992,17 +1118,17 @@ export default function Memorize() {
             alignItems: 'center'
           }}>
             <div>
-              <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
                 {currentLevel.title}
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
                 총 {records.length}개의 말씀 암송 완료 기록
               </div>
             </div>
             <span style={{
-              fontSize: '0.82rem',
+              fontSize: '0.8rem',
               fontWeight: 800,
-              padding: '6px 12px',
+              padding: '5px 10px',
               borderRadius: '20px',
               background: 'rgba(212, 175, 55, 0.15)',
               color: 'var(--accent-gold)'
@@ -1013,12 +1139,12 @@ export default function Memorize() {
 
           {records.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-secondary)' }}>
-              <Trophy size={40} style={{ opacity: 0.3, marginBottom: '8px' }} />
-              <p>아직 암송 완료 기록이 없습니다.</p>
+              <Trophy size={36} style={{ opacity: 0.3, marginBottom: '8px' }} />
+              <p style={{ margin: 0, fontSize: '0.9rem' }}>아직 암송 완료 기록이 없습니다.</p>
               <button
                 onClick={() => setActiveTab('train')}
                 style={{
-                  marginTop: '10px',
+                  marginTop: '12px',
                   padding: '8px 18px',
                   borderRadius: '10px',
                   background: 'var(--accent-gold)',
@@ -1038,29 +1164,29 @@ export default function Memorize() {
                 <div
                   key={r.id}
                   style={{
-                    padding: '14px 16px',
+                    padding: '12px 14px',
                     borderRadius: '12px',
                     background: 'var(--bg-secondary)',
                     border: '1px solid var(--glass-border)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: '12px'
+                    gap: '10px'
                   }}
                 >
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
                         {r.ref}
                       </span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
                         {r.stage}
                       </span>
                     </div>
-                    <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                      {r.text.length > 55 ? r.text.slice(0, 55) + '...' : r.text}
+                    <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: '1.45', wordBreak: 'keep-all' }}>
+                      {r.text.length > 50 ? r.text.slice(0, 50) + '...' : r.text}
                     </p>
-                    <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+                    <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.4)' }}>
                       {r.date} {r.time}
                     </span>
                   </div>
@@ -1076,10 +1202,11 @@ export default function Memorize() {
                       border: 'none',
                       color: 'var(--text-secondary)',
                       cursor: 'pointer',
-                      padding: '4px'
+                      padding: '4px',
+                      flexShrink: 0
                     }}
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 </div>
               ))}
@@ -1090,7 +1217,7 @@ export default function Memorize() {
 
       {/* ── 4. 암송 팁 탭 ── */}
       {activeTab === 'tips' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
             { emoji: '💡', title: '초성 암송법 (최고의 뇌 자극)', desc: '글자의 초성(예: ㅎㄴㄴㅇ ㅅㅅㅇ)만 보면서 단어를 입 밖으로 내뱉는 훈련은 뇌의 해마를 가장 강력하게 자극하여 3배 오래 기억됩니다.' },
             { emoji: '🔁', title: '에빙하우스 망각곡선 이기기', desc: '외운 직후 → 1일 후 → 3일 후 → 7일 후 1분씩만 복습하면 평생 잊혀지지 않는 장기 기억으로 저장됩니다.' },
@@ -1100,19 +1227,19 @@ export default function Memorize() {
             <div
               key={idx}
               style={{
-                padding: '16px 20px',
+                padding: '14px 16px',
                 borderRadius: '14px',
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--glass-border)',
                 display: 'flex',
-                gap: '14px',
+                gap: '12px',
                 alignItems: 'flex-start'
               }}
             >
-              <span style={{ fontSize: '1.8rem' }}>{t.emoji}</span>
+              <span style={{ fontSize: '1.6rem', flexShrink: 0 }}>{t.emoji}</span>
               <div>
-                <h4 style={{ margin: '0 0 6px 0', fontSize: '0.95rem', color: 'var(--accent-gold)' }}>{t.title}</h4>
-                <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{t.desc}</p>
+                <h4 style={{ margin: '0 0 4px 0', fontSize: '0.92rem', color: 'var(--accent-gold)' }}>{t.title}</h4>
+                <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: '1.55', wordBreak: 'keep-all' }}>{t.desc}</p>
               </div>
             </div>
           ))}

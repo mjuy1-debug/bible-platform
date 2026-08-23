@@ -885,7 +885,7 @@ export default function Quiz() {
               </AnimatePresence>
 
               {/* 보기 목록 */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                 {currentQ?.options?.map((opt, idx) => {
                   let btnBg = 'rgba(255, 255, 255, 0.04)';
                   let btnBorder = '1px solid var(--glass-border)';
@@ -897,12 +897,12 @@ export default function Quiz() {
                       btnBg = 'rgba(34, 197, 94, 0.18)';
                       btnBorder = '2px solid #22c55e';
                       textColor = '#4ade80';
-                      icon = <CheckCircle2 size={18} color="#22c55e" />;
+                      icon = <CheckCircle2 size={18} color="#22c55e" style={{ flexShrink: 0, marginLeft: '8px' }} />;
                     } else if (idx === selectedOption) {
                       btnBg = 'rgba(239, 68, 68, 0.18)';
                       btnBorder = '2px solid #ef4444';
                       textColor = '#f87171';
-                      icon = <XCircle size={18} color="#ef4444" />;
+                      icon = <XCircle size={18} color="#ef4444" style={{ flexShrink: 0, marginLeft: '8px' }} />;
                     }
                   }
 
@@ -912,14 +912,18 @@ export default function Quiz() {
                       onClick={() => handleSelectOption(idx)}
                       disabled={isAnswered}
                       style={{
-                        padding: '14px 18px', borderRadius: '14px', background: btnBg, border: btnBorder,
+                        padding: '14px 16px', borderRadius: '14px', background: btnBg, border: btnBorder,
                         color: textColor, textAlign: 'left', fontSize: 'clamp(0.88rem, 2.4vw, 0.98rem)',
                         fontWeight: 600, cursor: isAnswered ? 'default' : 'pointer',
                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                        transition: 'all 0.15s', outline: 'none', lineHeight: 1.4, wordBreak: 'keep-all'
+                        transition: 'all 0.15s', outline: 'none', lineHeight: 1.5,
+                        wordBreak: 'keep-all', overflowWrap: 'break-word', whiteSpace: 'normal',
+                        width: '100%', boxSizing: 'border-box'
                       }}
                     >
-                      <span>{idx + 1}. {opt}</span>
+                      <span style={{ flex: 1, minWidth: 0, wordBreak: 'keep-all', overflowWrap: 'break-word' }}>
+                        {idx + 1}. {opt}
+                      </span>
                       {icon}
                     </button>
                   );
