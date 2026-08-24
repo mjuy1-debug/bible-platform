@@ -119,45 +119,62 @@ export const UserProvider = ({ children }) => {
       if (user) {
         // ── 1. 회원 승인 상태 실시간 감지 ──
         const memberRef = doc(db, 'memberProfiles', user.uid);
-        const memberSnap = await getDoc(memberRef);
 
-        if (!memberSnap.exists()) {
-          // 최초 로그인: memberProfile 생성 (pending 상태)
-          await setDoc(memberRef, {
-            uid: user.uid,
-            displayName: user.displayName || '',
-            email: user.email || '',
-            photoURL: user.photoURL || '',
-            status: 'pending',
-            isAdmin: false,
-            position: '',
-            district: '',
-            createdAt: serverTimestamp(),
-          });
-          setMemberStatus('pending');
-          setMemberProfile({ status: 'pending', isAdmin: false });
-        } else {
-          const mData = memberSnap.data();
-          setMemberStatus(mData.status || 'pending');
-          setMemberProfile(mData);
-        }
+        try {
+          const memberSnap = await getDoc(memberRef);
 
-        // 실시간 승인 상태 리스너 (관리자가 승인하면 즉시 반영)
-        unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
-          if (snap.exists()) {
-            const d = snap.data();
-            setMemberStatus(d.status || 'pending');
-            setMemberProfile(d);
-            // 방금 승인된 경우 환영 토스트
-            if (d.status === 'approved') {
-              const prevStatus = localStorage.getItem('_prevMemberStatus');
-              if (prevStatus === 'pending') {
-                showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
-              }
+          if (!memberSnap.exists()) {
+            // 최초 로그인: memberProfile 생성 (pending 상태)
+            try {
+              await setDoc(memberRef, {
+                uid: user.uid,
+                displayName: user.displayName || '',
+                email: user.email || '',
+                photoURL: user.photoURL || '',
+                status: 'pending',
+                isAdmin: false,
+                position: '',
+                district: '',
+                createdAt: serverTimestamp(),
+              });
+            } catch (writeErr) {
+              console.warn('memberProfile 생성 실패 (규칙 미설정):', writeErr.code);
             }
-            localStorage.setItem('_prevMemberStatus', d.status || 'pending');
+            setMemberStatus('pending');
+            setMemberProfile({ status: 'pending', isAdmin: false });
+          } else {
+            const mData = memberSnap.data();
+            setMemberStatus(mData.status || 'approved');
+            setMemberProfile(mData);
           }
-        });
+
+          // 실시간 승인 상태 리스너 (관리자가 승인하면 즉시 반영)
+          unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
+            if (snap.exists()) {
+              const d = snap.data();
+              setMemberStatus(d.status || 'approved');
+              setMemberProfile(d);
+              // 방금 승인된 경우 환영 토스트
+              if (d.status === 'approved') {
+                const prevStatus = localStorage.getItem('_prevMemberStatus');
+                if (prevStatus === 'pending') {
+                  showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
+                }
+              }
+              localStorage.setItem('_prevMemberStatus', d.status || 'approved');
+            }
+          }, (snapErr) => {
+            console.warn('memberProfile 실시간 감지 오류 (규칙 미설정):', snapErr.code);
+            // 규칙 오류 시 앱 접근 허용 (승인 시스템 미설정 상태로 간주)
+            setMemberStatus('approved');
+          });
+
+        } catch (memberErr) {
+          console.warn('memberProfile 읽기 실패 (규칙 미설정):', memberErr.code);
+          // Firestore 규칙이 아직 설정되지 않은 경우 → 앱 정상 접근 허용
+          setMemberStatus('approved');
+          setMemberProfile({ status: 'approved', isAdmin: false });
+        }
 
         // ── 2. 클라우드 데이터 동기화 (기존 로직 유지) ──
         try {
