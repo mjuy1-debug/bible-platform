@@ -640,7 +640,8 @@ export default function Quiz() {
                               borderTop: readRange ? '1px dashed rgba(212,175,55,0.2)' : 'none'
                             }}>
                               <span style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <YouTubeIcon size={13} color="#ef4444" /> {videoInfo.characterName ? `${videoInfo.characterName} 영상` : '개요 영상'}
+                                <YouTubeIcon size={13} color="#ef4444" />
+                                <span>{videoInfo.videos?.length > 1 ? `관련 직결 영상 (${videoInfo.videos.length}개)` : '관련 말씀 영상'}</span>
                               </span>
                               <button
                                 onClick={(e) => {
@@ -653,7 +654,7 @@ export default function Quiz() {
                                   color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px'
                                 }}
                               >
-                                📺 영상 보기
+                                📺 영상 {videoInfo.videos?.length > 1 ? `(${videoInfo.videos.length}개)` : '보기'}
                               </button>
                             </div>
                           )}
@@ -712,7 +713,8 @@ export default function Quiz() {
                       fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'
                     }}
                   >
-                    <YouTubeIcon size={14} color="#ef4444" /> 영상 보기
+                    <YouTubeIcon size={14} color="#ef4444" />
+                    <span>관련 영상 {activeVideo.videos?.length > 1 ? `(${activeVideo.videos.length}개)` : '보기'}</span>
                   </button>
                 );
               })()}
