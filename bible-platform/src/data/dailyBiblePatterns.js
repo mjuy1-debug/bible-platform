@@ -269,11 +269,22 @@ export function getPatternForVerse(ref, engText = '') {
     .replace(/\(.*?\)/g, '')
     .trim();
 
-  // 1) 정확히 매칭되는 패턴 검색 (ref 앞부분 일치)
-  const found = DAILY_BIBLE_PATTERNS.find(p => cleanRef && (cleanRef.startsWith(p.ref) || p.ref.startsWith(cleanRef)));
-  if (found) return found;
+  if (!cleanRef) return derivePatternFromVerse(cleanRef, engText);
 
-  // 2) 없으면 NIV 영어 문장에서 심층 자동 패턴 분석 추출
+  // 1) 완전 일치 우선 검색 (예: '전도서 12:1' ≠ '전도서 12:13' 이 되도록 정확 매칭)
+  const exactMatch = DAILY_BIBLE_PATTERNS.find(p => p.ref === cleanRef);
+  if (exactMatch) return exactMatch;
+
+  // 2) 포함 관계 매칭: cleanRef가 패턴 ref의 앞부분인 경우 (범위 참조 예: '시편 23:1-6')
+  //    단, 패턴 ref의 cleanRef 다음 문자가 콜론, 하이픈, 공백, 끝이어야 함 (숫자 연속 방지)
+  const prefixMatch = DAILY_BIBLE_PATTERNS.find(p => {
+    if (!p.ref.startsWith(cleanRef)) return false;
+    const nextChar = p.ref[cleanRef.length];
+    return nextChar === undefined || nextChar === '-' || nextChar === ' ';
+  });
+  if (prefixMatch) return prefixMatch;
+
+  // 3) 없으면 NIV 영어 문장에서 심층 자동 패턴 분석 추출
   return derivePatternFromVerse(cleanRef, engText);
 }
 
