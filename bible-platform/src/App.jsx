@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
@@ -24,13 +24,128 @@ import Hymns from './pages/Hymns';
 import Stats from './pages/Stats';
 import Quiz from './pages/Quiz';
 import Announce from './pages/Announce';
+import AdminDashboard from './pages/AdminDashboard';
+import ApprovalPending from './components/ApprovalPending';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
 import { collection, doc, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
 const AppInner = () => {
-  const { toast, showToast } = useContext(UserContext);
+  const { toast, showToast, currentUser, memberStatus, memberProfile, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [profileForm, setProfileForm] = useState({ position: '', district: '' });
+
+  // ── 직분/구역 수정 모달 ──
+  const ProfileEditModal = () => (
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem',
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
+        borderRadius: '20px', padding: '2rem', width: '100%', maxWidth: '380px',
+      }}>
+        <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem', textAlign: 'center' }}>✏️ 직분 / 구역 입력</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <select value={profileForm.position} onChange={e => setProfileForm(p => ({ ...p, position: e.target.value }))} style={{
+            background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+            borderRadius: '10px', padding: '0.7rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+          }}>
+            <option value="">직분 선택</option>
+            {['성도','집사','권사','장로','전도사','목사','사모','청년','어린이/청소년'].map(p => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+          <input
+            value={profileForm.district}
+            onChange={e => setProfileForm(p => ({ ...p, district: e.target.value }))}
+            placeholder="구역 입력 (예: 1구역, 청년부)"
+            style={{
+              background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+              borderRadius: '10px', padding: '0.7rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+            }}
+          />
+          <button onClick={async () => {
+            await updateMemberProfile(profileForm);
+            setShowProfileEdit(false);
+          }} style={{
+            background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)',
+            border: 'none', borderRadius: '12px', color: '#1a1400',
+            padding: '0.8rem', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+          }}>
+            저장하기
+          </button>
+          <button onClick={() => setShowProfileEdit(false)} style={{
+            background: 'transparent', border: '1px solid var(--glass-border)',
+            borderRadius: '12px', color: 'var(--text-secondary)', padding: '0.8rem', cursor: 'pointer',
+          }}>취소</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── 접근 게이트 ──
+
+  // 1. 로그인 안 된 상태: 로그인 화면
+  if (!currentUser) {
+    return (
+      <>
+        <div style={{
+          minHeight: '100vh', display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          background: 'var(--bg-primary)', padding: '2rem 1.5rem', textAlign: 'center',
+        }}>
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✝️</div>
+          <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--accent-gold)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>
+            벧엘교회 말씀 플랫폼
+          </h1>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            벧엘교회 성도 전용 앱입니다.<br />
+            로그인 후 관리자 승인 시 이용 가능합니다.
+          </p>
+          <button onClick={loginWithGoogle} style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            background: '#fff', color: '#333', borderRadius: '14px',
+            padding: '0.9rem 2rem', fontSize: '1rem', fontWeight: 600,
+            border: 'none', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+          }}>
+            <img src="https://www.google.com/favicon.ico" alt="Google" style={{ width: '20px', height: '20px' }} />
+            Google 계정으로 로그인
+          </button>
+          <p style={{ marginTop: '3rem', fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.5 }}>
+            문의: 교회 사무실 또는 담당 교역자
+          </p>
+        </div>
+        {toast && <div style={{ position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', background: '#333', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '999px', zIndex: 9999 }}>{toast.message}</div>}
+      </>
+    );
+  }
+
+  // 2. 승인 상태 로딩 중
+  if (memberStatus === null) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', color: 'var(--text-secondary)' }}>
+        ⏳ 승인 상태 확인 중...
+      </div>
+    );
+  }
+
+  // 3. 승인 대기 / 거부 상태
+  if (memberStatus === 'pending' || memberStatus === 'rejected') {
+    return (
+      <>
+        <ApprovalPending
+          userProfile={memberProfile}
+          onEditProfile={() => { setProfileForm({ position: memberProfile?.position || '', district: memberProfile?.district || '' }); setShowProfileEdit(true); }}
+        />
+        {showProfileEdit && <ProfileEditModal />}
+        {toast && <div style={{ position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', background: '#333', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '999px', zIndex: 9999 }}>{toast.message}</div>}
+      </>
+    );
+  }
+
+
 
   // 0. 브라우저 첫 터치 시 오디오 자동재생 잠금 해제 (알림 수신 시 즉시 소리 재생 가능하도록)
   useEffect(() => {
@@ -373,6 +488,7 @@ const AppInner = () => {
           <Route path="/stats" element={<Stats />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/announce" element={<Announce />} />
+          <Route path="/admin" element={memberProfile?.isAdmin ? <AdminDashboard currentUser={currentUser} /> : <Home />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

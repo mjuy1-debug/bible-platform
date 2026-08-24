@@ -5,7 +5,7 @@ import { auth, db, googleProvider } from '../services/firebase';
 import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import {
   collection, addDoc, serverTimestamp, doc, deleteDoc,
-  query, where, getDocs, setDoc, getDoc, onSnapshot
+  query, where, getDocs, setDoc, getDoc, onSnapshot, updateDoc
 } from 'firebase/firestore';
 
 export const UserContext = createContext();
@@ -60,7 +60,10 @@ export const UserProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [cloudSynced, setCloudSynced] = useState(false);
+  const [memberStatus, setMemberStatus] = useState(null); // null=loading, 'pending'|'approved'|'rejected'
+  const [memberProfile, setMemberProfile] = useState(null);
   const unsubCloudRef = useRef(null);
+  const unsubMemberRef = useRef(null);
   const savingToCloud = useRef(false);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -104,19 +107,59 @@ export const UserProvider = ({ children }) => {
     }, 500);
   }, []);
 
-  // ── 로그인 상태 감지 → 클라우드 데이터 실시간 동기화 ──
+  // ── 로그인 상태 감지 → 클라우드 데이터 실시간 동기화 + 회원 승인 상태 감지 ──
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
 
       // 이전 리스너 정리
-      if (unsubCloudRef.current) {
-        unsubCloudRef.current();
-        unsubCloudRef.current = null;
-      }
+      if (unsubCloudRef.current) { unsubCloudRef.current(); unsubCloudRef.current = null; }
+      if (unsubMemberRef.current) { unsubMemberRef.current(); unsubMemberRef.current = null; }
 
       if (user) {
-        // 로그인 시: Firestore에서 데이터 불러와서 병합
+        // ── 1. 회원 승인 상태 실시간 감지 ──
+        const memberRef = doc(db, 'memberProfiles', user.uid);
+        const memberSnap = await getDoc(memberRef);
+
+        if (!memberSnap.exists()) {
+          // 최초 로그인: memberProfile 생성 (pending 상태)
+          await setDoc(memberRef, {
+            uid: user.uid,
+            displayName: user.displayName || '',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            status: 'pending',
+            isAdmin: false,
+            position: '',
+            district: '',
+            createdAt: serverTimestamp(),
+          });
+          setMemberStatus('pending');
+          setMemberProfile({ status: 'pending', isAdmin: false });
+        } else {
+          const mData = memberSnap.data();
+          setMemberStatus(mData.status || 'pending');
+          setMemberProfile(mData);
+        }
+
+        // 실시간 승인 상태 리스너 (관리자가 승인하면 즉시 반영)
+        unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
+          if (snap.exists()) {
+            const d = snap.data();
+            setMemberStatus(d.status || 'pending');
+            setMemberProfile(d);
+            // 방금 승인된 경우 환영 토스트
+            if (d.status === 'approved') {
+              const prevStatus = localStorage.getItem('_prevMemberStatus');
+              if (prevStatus === 'pending') {
+                showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
+              }
+            }
+            localStorage.setItem('_prevMemberStatus', d.status || 'pending');
+          }
+        });
+
+        // ── 2. 클라우드 데이터 동기화 (기존 로직 유지) ──
         try {
           const snap = await getDoc(userDocRef(user.uid));
           if (snap.exists()) {
@@ -136,7 +179,6 @@ export const UserProvider = ({ children }) => {
             setCloudSynced(true);
             showToast('☁️ 클라우드 데이터가 복구되었습니다!');
           } else {
-            // 처음 로그인: 로컬 데이터를 클라우드에 업로드
             const local = loadLocalState();
             const payload = sanitize({
               favorites: local.favorites,
@@ -174,12 +216,15 @@ export const UserProvider = ({ children }) => {
         });
       } else {
         setCloudSynced(false);
+        setMemberStatus(null);
+        setMemberProfile(null);
       }
     });
 
     return () => {
       unsubAuth();
       if (unsubCloudRef.current) unsubCloudRef.current();
+      if (unsubMemberRef.current) unsubMemberRef.current();
     };
   }, [showToast]);
 
@@ -439,11 +484,26 @@ export const UserProvider = ({ children }) => {
     }
   }, [currentUser, showToast]);
 
+  // ── 회원 직분/구역 업데이트 ──
+  const updateMemberProfile = useCallback(async (updates) => {
+    if (!currentUser) return;
+    try {
+      const memberRef = doc(db, 'memberProfiles', currentUser.uid);
+      await updateDoc(memberRef, { ...updates, updatedAt: serverTimestamp() });
+      showToast('✅ 프로필이 업데이트되었습니다.');
+    } catch (err) {
+      showToast('프로필 업데이트 실패: ' + err.message, 'error');
+    }
+  }, [currentUser, showToast]);
+
   return (
     <UserContext.Provider value={{
       ...state,
       toast,
       cloudSynced,
+      memberStatus,
+      memberProfile,
+      updateMemberProfile,
       forceSync,
       toggleFavorite,
       isFavorite,

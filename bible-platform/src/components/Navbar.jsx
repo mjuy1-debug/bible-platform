@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper, Brain, Map, Music, Bell } from 'lucide-react';
+import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper, Brain, Map, Music, Bell, Shield } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
+import { UserContext } from '../context/UserContext';
 import NotificationModal from './NotificationModal';
 
 const NAV_ITEMS = [
@@ -26,10 +27,12 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { memberProfile } = useContext(UserContext);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
+  const isAdmin = memberProfile?.isAdmin === true;
   const isActive = (to) => location.pathname === to;
 
   return (
@@ -64,6 +67,21 @@ const Navbar = () => {
               <Icon size={15} /> {label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link to="/admin" style={{
+              display: 'flex', alignItems: 'center', gap: '0.35rem',
+              fontSize: '0.82rem', fontWeight: 600,
+              color: isActive('/admin') ? 'var(--accent-gold)' : 'rgba(212,175,55,0.7)',
+              textDecoration: 'none',
+              background: 'rgba(212,175,55,0.1)',
+              border: '1px solid rgba(212,175,55,0.3)',
+              borderRadius: '999px',
+              padding: '0.25rem 0.75rem',
+              whiteSpace: 'nowrap',
+            }}>
+              <Shield size={13} /> 관리자
+            </Link>
+          )}
           <button onClick={() => setShowNotificationModal(true)} title="말씀 알림 설정" style={{ color: 'var(--accent-gold)', display: 'flex', padding: '0.4rem', minWidth: '36px', minHeight: '36px', alignItems: 'center', justifyContent: 'center', background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%', cursor: 'pointer' }}>
             <Bell size={18} />
           </button>
