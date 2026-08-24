@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useCallback, useRef } from '
 import { DEFAULT_PLAN, generatePlan } from '../data/readingPlanData';
 import { SAMPLE_EVENTS } from '../data/scheduleData';
 import { auth, db, googleProvider } from '../services/firebase';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, signOut, onAuthStateChanged, updateProfile } from 'firebase/auth';
 import {
   collection, addDoc, serverTimestamp, doc, deleteDoc,
   query, where, getDocs, setDoc, getDoc, onSnapshot, updateDoc
@@ -544,14 +544,25 @@ export const UserProvider = ({ children }) => {
     }
   }, [currentUser, showToast]);
 
-  // ── 회원 직분/구역 업데이트 ──
+  // ── 회원 이름/직분/구역 프로필 업데이트 ──
   const updateMemberProfile = useCallback(async (updates) => {
     if (!currentUser) return;
     try {
+      // 1. Firebase Auth displayName 변경
+      if (updates.displayName && updates.displayName !== currentUser.displayName) {
+        await updateProfile(auth.currentUser, { displayName: updates.displayName });
+        setCurrentUser({ ...auth.currentUser, displayName: updates.displayName });
+      }
+
+      // 2. Firestore memberProfiles 문서 변경
       const memberRef = doc(db, 'memberProfiles', currentUser.uid);
-      await updateDoc(memberRef, { ...updates, updatedAt: serverTimestamp() });
-      showToast('✅ 프로필이 업데이트되었습니다.');
+      await setDoc(memberRef, { ...updates, updatedAt: serverTimestamp() }, { merge: true });
+
+      // 3. 로컬 상태 즉시 반영
+      setMemberProfile(prev => ({ ...prev, ...updates }));
+      showToast('✅ 프로필 정보가 성공적으로 수정되었습니다.');
     } catch (err) {
+      console.error('프로필 업데이트 오류:', err);
       showToast('프로필 업데이트 실패: ' + err.message, 'error');
     }
   }, [currentUser, showToast]);

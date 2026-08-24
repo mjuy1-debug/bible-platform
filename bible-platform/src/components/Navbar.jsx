@@ -107,42 +107,59 @@ const Navbar = () => {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div style={{
-          background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
+          background: 'var(--bg-primary)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderTop: '1px solid var(--glass-border)',
           display: 'flex', flexDirection: 'column',
-          padding: '0.75rem 1.5rem 1.25rem', gap: '0.25rem',
-        }} className="mobile-menu">
+          padding: '1rem 1.25rem calc(var(--bottomnav-height, 64px) + 2.5rem)',
+          gap: '0.35rem',
+          maxHeight: 'calc(100vh - var(--navbar-height))',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+        }} className="mobile-menu custom-scrollbar">
           {isAdmin && (
             <Link to="/admin"
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.85rem 1rem', borderRadius: '12px',
+                padding: '0.85rem 1rem', borderRadius: '14px',
                 color: '#ffd700',
-                fontSize: '1.05rem', fontWeight: 700,
-                background: 'rgba(212,175,55,0.18)',
-                border: '1px solid rgba(212,175,55,0.4)',
+                fontSize: '1rem', fontWeight: 700,
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(184,134,11,0.1))',
+                border: '1px solid rgba(212,175,55,0.45)',
                 marginBottom: '0.5rem',
-                transition: 'all 0.15s',
+                boxShadow: '0 4px 15px rgba(212,175,55,0.15)',
+                flexShrink: 0,
               }}
               onClick={() => setMenuOpen(false)}>
               <Shield size={22} color="#ffd700" /> 👑 성도 가입 승인 관리
             </Link>
           )}
-          {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
-            <Link key={to} to={to}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.75rem',
-                padding: '0.75rem 0.5rem', borderRadius: '10px',
-                color: isActive(to) ? 'var(--accent-gold)' : 'var(--text-primary)',
-                fontSize: '1rem', fontWeight: isActive(to) ? 700 : 400,
-                background: isActive(to) ? 'rgba(196,164,132,0.1)' : 'transparent',
-                transition: 'all 0.15s',
-                minHeight: '48px',
-              }}
-              onClick={() => setMenuOpen(false)}>
-              <Icon size={20} /> {label}
-            </Link>
-          ))}
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '0.5rem',
+          }}>
+            {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+              <Link key={to} to={to}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.65rem',
+                  padding: '0.8rem 0.85rem', borderRadius: '12px',
+                  color: isActive(to) ? 'var(--accent-gold)' : 'var(--text-primary)',
+                  fontSize: '0.92rem', fontWeight: isActive(to) ? 700 : 500,
+                  background: isActive(to) ? 'rgba(212,175,55,0.15)' : 'var(--glass-bg)',
+                  border: `1px solid ${isActive(to) ? 'rgba(212,175,55,0.35)' : 'var(--glass-border)'}`,
+                  transition: 'all 0.15s',
+                  minHeight: '46px',
+                }}
+                onClick={() => setMenuOpen(false)}>
+                <Icon size={18} color={isActive(to) ? 'var(--accent-gold)' : 'var(--text-secondary)'} />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 

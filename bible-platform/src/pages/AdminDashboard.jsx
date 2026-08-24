@@ -31,6 +31,8 @@ const AdminDashboard = ({ currentUser }) => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const q = query(collection(db, 'memberProfiles'), orderBy('createdAt', 'desc'));
@@ -57,16 +59,24 @@ const AdminDashboard = ({ currentUser }) => {
   };
 
   const reject = async (uid) => {
-    if (!window.confirm('이 사용자를 거부하시겠습니까?')) return;
+    if (!window.confirm('이 성도님의 가입을 거부(차단) 상태로 변경하시겠습니까?')) return;
     await updateDoc(doc(db, 'memberProfiles', uid), {
       status: 'rejected',
       rejectedAt: serverTimestamp(),
     });
   };
 
-  const deleteUser = async (uid) => {
-    if (!window.confirm('이 기록을 완전히 삭제하시겠습니까?')) return;
-    await deleteDoc(doc(db, 'memberProfiles', uid));
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+    try {
+      setIsDeleting(true);
+      await deleteDoc(doc(db, 'memberProfiles', userToDelete.id));
+      setUserToDelete(null);
+    } catch (err) {
+      alert('삭제 중 오류가 발생했습니다: ' + err.message);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const setAdmin = async (uid, isAdmin) => {
@@ -201,15 +211,115 @@ const AdminDashboard = ({ currentUser }) => {
                   }}>
                     {user.isAdmin ? '👑 관리자 해제' : '👑 관리자 지정'}
                   </button>
-                  <button onClick={() => deleteUser(user.id)} style={{
-                    background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'var(--text-secondary)', borderRadius: '8px', padding: '0.4rem 0.6rem',
-                    fontSize: '0.78rem', cursor: 'pointer',
-                  }}>🗑️</button>
+                  <button
+                    onClick={() => setUserToDelete(user)}
+                    title="기록 영구 삭제"
+                    style={{
+                      background: 'rgba(244,67,54,0.08)',
+                      border: '1px solid rgba(244,67,54,0.25)',
+                      color: '#f44336', borderRadius: '8px', padding: '0.4rem 0.65rem',
+                      fontSize: '0.82rem', cursor: 'pointer',
+                    }}
+                  >
+                    🗑️ 삭제
+                  </button>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
+        </div>
+      )}
+
+      {/* ⚠️ 2중 안전 삭제 확인 모달 */}
+      {userToDelete && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            style={{
+              background: 'var(--bg-secondary)',
+              border: '1px solid rgba(244,67,54,0.4)',
+              borderRadius: '20px',
+              padding: '2rem 1.75rem',
+              width: '100%',
+              maxWidth: '420px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
+              textAlign: 'center',
+            }}
+          >
+            <div style={{
+              width: '56px', height: '56px', borderRadius: '50%',
+              background: 'rgba(244,67,54,0.15)', border: '1px solid rgba(244,67,54,0.4)',
+              color: '#f44336', fontSize: '1.8rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 1.25rem',
+            }}>
+              ⚠️
+            </div>
+
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
+              성도 가입 기록 영구 삭제
+            </h3>
+
+            <div style={{
+              background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+              borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', textAlign: 'left',
+            }}>
+              <div style={{ fontWeight: 700, color: 'var(--accent-gold)', fontSize: '1rem', marginBottom: '0.25rem' }}>
+                {userToDelete.displayName || '이름 없음'} ({userToDelete.position || '직분 미설정'})
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                {userToDelete.email}
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.9rem', color: '#ff8a80', lineHeight: 1.6, marginBottom: '1.75rem' }}>
+              정말로 이 성도님의 가입 기록을 완전히 삭제하시겠습니까?<br />
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                ※ 삭제 시 해당 성도님은 앱을 다시 이용하기 위해 재가입 신청을 해야 합니다.
+              </span>
+            </p>
+
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, #d32f2f, #b71c1c)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  color: '#fff',
+                  padding: '0.85rem',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  opacity: isDeleting ? 0.6 : 1,
+                }}
+              >
+                {isDeleting ? '삭제 진행 중...' : '🗑️ 네, 영구 삭제합니다'}
+              </button>
+              <button
+                onClick={() => setUserToDelete(null)}
+                disabled={isDeleting}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: '12px',
+                  color: 'var(--text-primary)',
+                  padding: '0.85rem 1.25rem',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                }}
+              >
+                취소
+              </button>
+            </div>
+          </motion.div>
         </div>
       )}
     </motion.div>

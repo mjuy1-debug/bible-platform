@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bookmark, History, Trash2, User, Bell, RefreshCw, Shield, ChevronRight } from 'lucide-react';
+import { Bookmark, History, Trash2, User, Bell, RefreshCw, Shield, ChevronRight, Edit3, X, Check } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { messaging, getToken, VAPID_KEY } from '../services/firebase';
 import { db } from '../services/firebase';
@@ -9,14 +9,141 @@ import { doc, setDoc } from 'firebase/firestore';
 
 import Stats from './Stats';
 
+// ── 프로필 정보 (이름, 직분, 구역) 수정 모달 ──
+const EditProfileModal = ({ initialName, initialPosition, initialDistrict, onSave, onClose }) => {
+  const [name, setName] = useState(initialName || '');
+  const [position, setPosition] = useState(initialPosition || '');
+  const [district, setDistrict] = useState(initialDistrict || '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    setSaving(true);
+    await onSave({ displayName: name.trim(), position, district });
+    setSaving(false);
+    onClose();
+  };
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem',
+      backdropFilter: 'blur(8px)',
+    }}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        style={{
+          background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
+          borderRadius: '20px', padding: '1.75rem', width: '100%', maxWidth: '400px',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h3 style={{ color: 'var(--accent-gold)', fontSize: '1.2rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Edit3 size={18} /> 프로필 정보 수정
+          </h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem' }}>
+            <X size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+              성도 이름 / 닉네임 *
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="이름을 입력해주세요"
+              required
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '12px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+              교회 직분
+            </label>
+            <select
+              value={position}
+              onChange={e => setPosition(e.target.value)}
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '12px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            >
+              <option value="">직분을 선택해주세요</option>
+              {['성도', '집사', '권사', '장로', '전도사', '목사', '사모', '청년', '어린이/청소년'].map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+              소속 구역 / 부서
+            </label>
+            <input
+              type="text"
+              value={district}
+              onChange={e => setDistrict(e.target.value)}
+              placeholder="예: 1구역, 남선교회, 청년1부"
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '12px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <button
+              type="submit"
+              disabled={saving || !name.trim()}
+              style={{
+                flex: 1, background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)',
+                border: 'none', borderRadius: '12px', color: '#1a1400',
+                padding: '0.85rem', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem',
+                opacity: saving ? 0.7 : 1,
+              }}
+            >
+              <Check size={18} /> {saving ? '저장 중...' : '변경사항 저장'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                background: 'transparent', border: '1px solid var(--glass-border)',
+                borderRadius: '12px', color: 'var(--text-secondary)', padding: '0.85rem 1.25rem',
+                cursor: 'pointer', fontSize: '0.9rem',
+              }}
+            >
+              취소
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  );
+};
+
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, updateMemberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
   // 프로필 정보 설정
-  const displayName = currentUser ? currentUser.displayName : '로그인되지 않음';
+  const displayName = currentUser ? (memberProfile?.displayName || currentUser.displayName) : '로그인되지 않음';
   const photoUrl = currentUser ? currentUser.photoURL : null;
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const [pushEnabled, setPushEnabled] = useState(() => localStorage.getItem('push_enabled') === 'true');
   const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '8', 10));
@@ -124,14 +251,32 @@ const Profile = () => {
         </div>
         <div style={{ flex: 1, minWidth: 0, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-            <h2 className="serif-font" style={{ fontSize: '1.8rem' }}>{displayName}</h2>
+            <h2 className="serif-font" style={{ fontSize: '1.8rem', margin: 0 }}>{displayName}</h2>
             {currentUser && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {memberProfile?.position && (
+                  <span style={{
+                    fontSize: '0.78rem', fontWeight: 700, padding: '0.2rem 0.75rem', borderRadius: '20px',
+                    background: 'rgba(212,175,55,0.18)', color: 'var(--accent-gold)',
+                    border: '1px solid rgba(212,175,55,0.4)',
+                  }}>
+                    {memberProfile.position}
+                  </span>
+                )}
+                {memberProfile?.district && (
+                  <span style={{
+                    fontSize: '0.78rem', fontWeight: 600, padding: '0.2rem 0.75rem', borderRadius: '20px',
+                    background: 'rgba(255,255,255,0.08)', color: 'var(--text-secondary)',
+                    border: '1px solid var(--glass-border)',
+                  }}>
+                    {memberProfile.district}
+                  </span>
+                )}
                 <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.7rem', borderRadius: '20px',
                   background: cloudSynced ? 'rgba(76,175,80,0.15)' : 'rgba(255,152,0,0.15)',
                   color: cloudSynced ? '#81c784' : '#ffb74d',
                   border: `1px solid ${cloudSynced ? '#81c784' : '#ffb74d'}` }}>
-                  {cloudSynced ? '☁️ 클라우드 연동됨' : '⚠️ 동기화 안됨 (Firebase 규칙 확인 필요)'}
+                  {cloudSynced ? '☁️ 동기화됨' : '⚠️ 동기화 대기'}
                 </span>
                 {!cloudSynced && (
                   <button
@@ -152,7 +297,7 @@ const Profile = () => {
               </div>
             )}
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '0.65rem' }}>
             즐겨찾기 {favorites.length}개 · 묵상 {devotions.length}편 · 통독 진행률 {pct}%
           </p>
           {!currentUser ? (
@@ -166,9 +311,29 @@ const Profile = () => {
               </button>
             </div>
           ) : (
-            <button onClick={logout} style={{ padding: '0.4rem 1rem', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-secondary)', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem' }}>
-              로그아웃
-            </button>
+            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                style={{
+                  padding: '0.45rem 1.1rem',
+                  background: 'rgba(212,175,55,0.15)',
+                  color: 'var(--accent-gold)',
+                  border: '1px solid rgba(212,175,55,0.4)',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                <Edit3 size={14} /> 이름·직분 수정
+              </button>
+              <button onClick={logout} style={{ padding: '0.45rem 1rem', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-secondary)', borderRadius: '20px', cursor: 'pointer', fontSize: '0.85rem' }}>
+                로그아웃
+              </button>
+            </div>
           )}
           <div style={{ width: '200px', height: '6px', background: 'var(--bg-secondary)', borderRadius: '3px', marginTop: '1rem', overflow: 'hidden' }}>
             <motion.div style={{ height: '100%', background: 'var(--accent-gold)', borderRadius: '3px' }}
@@ -176,6 +341,17 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* 이름/직분 수정 모달 */}
+      {isEditModalOpen && (
+        <EditProfileModal
+          initialName={displayName}
+          initialPosition={memberProfile?.position || ''}
+          initialDistrict={memberProfile?.district || ''}
+          onSave={updateMemberProfile}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
 
       {/* 관리자 전용 바로가기 배너 */}
       {memberProfile?.isAdmin && (
