@@ -22,8 +22,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || '오늘의 말씀 묵상 ✨';
   const notificationOptions = {
     body: payload.notification?.body || '오늘의 말씀을 읽고 하루를 시작해보세요. 🙏',
-    icon: payload.notification?.icon || '/favicon.svg',
-    badge: '/favicon.svg',
+    icon: payload.notification?.icon || 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+    badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
     tag: 'daily-devotion',
     data: payload.data,
     actions: [
