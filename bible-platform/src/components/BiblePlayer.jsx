@@ -6,10 +6,13 @@ import { X, Minus, ChevronUp, PlayCircle } from 'lucide-react';
  * 화면 우측 하단에 고정되는 유튜브 임베드 플레이어
  * videoId가 있으면 직접 재생, 없으면 검색 링크 안내
  */
-const BiblePlayer = ({ embedUrl, title, onClose }) => {
+const BiblePlayer = ({ embedUrl, title, video, onClose, bookName, chapter }) => {
   const [minimized, setMinimized] = useState(false);
 
-  if (!embedUrl) return null;
+  const actualUrl = embedUrl || video?.embedUrl;
+  const actualTitle = title || video?.label || (bookName && chapter ? `${bookName} ${chapter}장 듣기` : '공동체성경읽기');
+
+  if (!actualUrl) return null;
 
   return (
     <AnimatePresence>
@@ -21,13 +24,13 @@ const BiblePlayer = ({ embedUrl, title, onClose }) => {
         className="bible-player-float"
         style={{
           position: 'fixed',
-          bottom: '1.5rem',
-          right: '1.5rem',
+          bottom: 'calc(var(--bottomnav-height, 64px) + 1rem)',
+          right: '1rem',
           zIndex: 9000,
-          width: minimized ? '300px' : '340px',
+          width: minimized ? '260px' : 'min(360px, calc(100vw - 2rem))',
           borderRadius: '16px',
           overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
           border: '1px solid var(--glass-border)',
           background: 'var(--bg-secondary)',
         }}
@@ -45,7 +48,7 @@ const BiblePlayer = ({ embedUrl, title, onClose }) => {
               color: '#fff', fontSize: '0.82rem', fontWeight: 600,
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
             }}>
-              {title}
+              {actualTitle}
             </span>
           </div>
           <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
@@ -69,9 +72,9 @@ const BiblePlayer = ({ embedUrl, title, onClose }) => {
         {/* YouTube IFrame */}
         {!minimized && (
           <iframe
-            key={embedUrl}
-            src={embedUrl}
-            title={title}
+            key={actualUrl}
+            src={actualUrl}
+            title={actualTitle}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{

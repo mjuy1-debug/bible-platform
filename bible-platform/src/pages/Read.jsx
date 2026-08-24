@@ -178,6 +178,7 @@ const Read = () => {
     setEnglishVerses([]);
     setPlayingVideo(null);
     stopSpeaking();
+    stopChapterTTS();
 
     try {
       const [korData, engData] = await Promise.all([
@@ -197,7 +198,11 @@ const Read = () => {
     loadChapter(selectedBook.id, selectedChapter, englishTranslation);
   }, [selectedBook.id, selectedChapter, englishTranslation]);
 
-  // 영어 원어민 음성 낭독 (TTS)
+  const [isReadingChapter, setIsReadingChapter] = useState(false);
+  const [readingVerseNum, setReadingVerseNum] = useState(null);
+  const isSpeakingRef = useRef(false);
+
+  // 영어 단일 구절 원어민 음성 낭독 (TTS)
   const speakEnglishVerse = (text, verseNum) => {
     if (!window.speechSynthesis) {
       if (showToast) showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
@@ -209,6 +214,7 @@ const Read = () => {
       return;
     }
 
+    stopChapterTTS();
     stopSpeaking();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
@@ -228,6 +234,86 @@ const Read = () => {
     }
     setSpeakingVerse(null);
   };
+
+  // 📖 장 전체 연속 음성 낭독 (한글 / 영어)
+  const startChapterTTS = (lang = 'ko') => {
+    if (!window.speechSynthesis) {
+      if (showToast) showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+      return;
+    }
+
+    if (isReadingChapter) {
+      stopChapterTTS();
+      return;
+    }
+
+    setPlayingVideo(null);
+    stopSpeaking();
+
+    const targetList = lang === 'en'
+      ? englishVerses.map(v => ({ verse: v.verse, text: v.text }))
+      : verses.map(v => ({ verse: v.verse, text: v.text }));
+
+    if (targetList.length === 0) {
+      if (showToast) showToast('낭독할 말씀 구절이 없습니다.');
+      return;
+    }
+
+    setIsReadingChapter(true);
+    isSpeakingRef.current = true;
+
+    let index = 0;
+
+    const speakNext = () => {
+      if (!isSpeakingRef.current || index >= targetList.length) {
+        setIsReadingChapter(false);
+        setReadingVerseNum(null);
+        isSpeakingRef.current = false;
+        return;
+      }
+
+      const item = targetList[index];
+      setReadingVerseNum(item.verse);
+
+      const cleanText = item.text.replace(/^\[.*?\]\s*/, '');
+      const speechText = lang === 'en'
+        ? `Verse ${item.verse}. ${cleanText}`
+        : `${item.verse}절. ${cleanText}`;
+
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = lang === 'en' ? 'en-US' : 'ko-KR';
+      utterance.rate = lang === 'en' ? 0.88 : 0.92;
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => {
+        if (isSpeakingRef.current) {
+          index++;
+          speakNext();
+        }
+      };
+
+      utterance.onerror = () => {
+        if (isSpeakingRef.current) {
+          index++;
+          speakNext();
+        }
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakNext();
+  };
+
+  const stopChapterTTS = () => {
+    isSpeakingRef.current = false;
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsReadingChapter(false);
+    setReadingVerseNum(null);
+  };
+
 
   // 영어 단어 클릭 시 사전 조회 (오프라인 1,000+ 핵심 단어 즉시 조회 + 스마트 사전 폴백)
   const handleWordClick = async (e, rawWord) => {
@@ -553,43 +639,77 @@ const Read = () => {
             {selectedBook.name} {selectedChapter}장
           </h2>
 
-          {/* 공동체성경읽기 유튜브 듣기 버튼 */}
-          {(() => {
-            const yt = getYouTubeUrl(selectedBook.id, selectedBook.name, selectedChapter);
-            const isEmbeddable = yt.type === 'video' || yt.type === 'playlist';
-            const isActive = playingVideo?.embedId === yt.embedId;
+          {/* 🎧 성경 듣기 컨트롤 영역 (유튜브 PRS 통독 + AI 연속 낭독) */}
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '1rem' }}>
+            {/* 1. 공동체성경읽기(PRS) 유튜브 듣기 */}
+            {(() => {
+              const yt = getYouTubeUrl(selectedBook.id, selectedBook.name, selectedChapter);
+              const isEmbeddable = yt.type === 'video' || yt.type === 'playlist';
+              const isActive = playingVideo?.embedId === yt.embedId;
 
-            return isEmbeddable ? (
-              <button
-                onClick={() => setPlayingVideo(isActive ? null : yt)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '0.8rem',
-                  background: isActive ? '#cc0000' : '#FF0000',
-                  color: '#fff',
-                  border: 'none', cursor: 'pointer',
-                  fontSize: '0.85rem', fontWeight: 700,
-                  transition: 'background 0.2s',
-                }}
-              >
-                <PlayCircle size={16} />
-                {isActive ? '플레이어 닫기' : yt.label}
-              </button>
-            ) : (
-              <a href={yt.url} target="_blank" rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '0.8rem',
-                  background: 'rgba(255,0,0,0.12)',
-                  color: '#FF4444',
-                  border: '1px solid rgba(255,0,0,0.3)',
-                  fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none',
-                }}
-              >
-                <PlayCircle size={16} /> {yt.label}
-              </a>
-            );
-          })()}
+              return isEmbeddable ? (
+                <button
+                  onClick={() => {
+                    stopChapterTTS();
+                    setPlayingVideo(isActive ? null : yt);
+                  }}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.45rem 1rem', borderRadius: '20px',
+                    background: isActive ? '#cc0000' : 'linear-gradient(135deg, #FF0000, #cc0000)',
+                    color: '#fff',
+                    border: 'none', cursor: 'pointer',
+                    fontSize: '0.82rem', fontWeight: 700,
+                    boxShadow: isActive ? '0 0 12px rgba(255,0,0,0.5)' : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <PlayCircle size={15} />
+                  {isActive ? '플레이어 닫기' : `🔴 PRS 통독 오디오`}
+                </button>
+              ) : (
+                <a href={yt.url} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.45rem 1rem', borderRadius: '20px',
+                    background: 'rgba(255,0,0,0.12)',
+                    color: '#FF4444',
+                    border: '1px solid rgba(255,0,0,0.3)',
+                    fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none',
+                  }}
+                >
+                  <PlayCircle size={15} /> PRS 영상 검색
+                </a>
+              );
+            })()}
+
+            {/* 2. AI 전체 장 연속 낭독 (한글 / 영어) */}
+            <button
+              onClick={() => startChapterTTS(languageMode === 'english' ? 'en' : 'ko')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.45rem 1rem', borderRadius: '20px',
+                background: isReadingChapter 
+                  ? 'rgba(239, 68, 68, 0.2)' 
+                  : 'rgba(212, 175, 55, 0.15)',
+                color: isReadingChapter ? '#ef4444' : 'var(--accent-gold)',
+                border: isReadingChapter ? '1px solid #ef4444' : '1px solid rgba(212, 175, 55, 0.4)',
+                cursor: 'pointer',
+                fontSize: '0.82rem', fontWeight: 800,
+                transition: 'all 0.2s'
+              }}
+            >
+              {isReadingChapter ? (
+                <>
+                  <VolumeX size={15} /> 낭독 중지 ({readingVerseNum ? `${readingVerseNum}절` : '재생 중'})
+                </>
+              ) : (
+                <>
+                  <Volume2 size={15} /> 🔊 {languageMode === 'english' ? '영어 낭독' : '전체 낭독'}
+                </>
+              )}
+            </button>
+          </div>
 
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0 }}>
             {loading ? '말씀을 불러오는 중...' : verses.length > 0 
@@ -631,7 +751,7 @@ const Read = () => {
               const isSelected = !!selectedVerses[ref];
               const memorizedKey = memorized && (memorized[ref] ? ref : memorized[fullRef] ? fullRef : null);
               const engItem = englishVerses.find(ev => ev.verse === v.verse);
-              const engText = engItem?.text || '';
+              const isCurrentReading = readingVerseNum === v.verse;
 
               return (
                 <div
@@ -646,9 +766,14 @@ const Read = () => {
                     padding: languageMode === 'parallel' ? '0.65rem 0.25rem' : '0.45rem 0.2rem',
                     borderRadius: '10px',
                     cursor: 'pointer',
-                    background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
-                    border: `1px solid ${isSelected ? 'var(--accent-gold)' : 'transparent'}`,
-                    transition: 'background 0.2s, border-color 0.15s',
+                    background: isCurrentReading
+                      ? 'rgba(212, 175, 55, 0.22)'
+                      : highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
+                    border: isCurrentReading
+                      ? '1px solid var(--accent-gold)'
+                      : `1px solid ${isSelected ? 'var(--accent-gold)' : 'transparent'}`,
+                    boxShadow: isCurrentReading ? '0 0 12px rgba(212, 175, 55, 0.25)' : 'none',
+                    transition: 'all 0.25s ease',
                   }}>
                   {/* 절 번호 */}
                   <span style={{
