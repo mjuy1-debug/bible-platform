@@ -31,15 +31,7 @@ function timeAgo(ts) {
 }
 
 export default function Announce() {
-  const { currentUser, showToast } = useContext(UserContext);
-
-  const isAdmin = Boolean(
-    currentUser && (
-      currentUser.email?.includes('admin') ||
-      currentUser.displayName?.includes('유정파파') ||
-      currentUser.displayName?.includes('관리자')
-    )
-  );
+  const { currentUser, isAdmin, showToast } = useContext(UserContext);
 
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -84,7 +84,7 @@ const DEFAULT_AFTERNOON_ORDER = [
 ];
 
 export default function Bulletin() {
-  const { currentUser, showToast } = useContext(UserContext);
+  const { currentUser, isAdmin, showToast } = useContext(UserContext);
   const [bulletins, setBulletins] = useState([]);
   
   // UI State
@@ -104,12 +104,6 @@ export default function Bulletin() {
   const [afternoonOrder, setAfternoonOrder] = useState([...DEFAULT_AFTERNOON_ORDER]); // 주일 오후 예배 순서
   const [isUploading, setIsUploading] = useState(false);
   const [editingBulletin, setEditingBulletin] = useState(null); // 수정 중인 주보 ID
-
-  const isAdmin = currentUser && (
-    currentUser.email?.includes('admin') || 
-    currentUser.displayName?.includes('관리자') || 
-    currentUser.displayName?.includes('유정파파')
-  );
 
   // 주보 실제 날짜(date) 파싱 헬퍼 함수
   const parseBulletinDate = (bulletin) => {

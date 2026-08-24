@@ -10,12 +10,8 @@ import SermonNotesPanel from '../components/SermonNotesPanel';
 import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 
 export default function Sermons() {
-  const { currentUser, showToast } = useContext(UserContext);
-  const isAdmin = import.meta.env.DEV || (currentUser && (
-    currentUser.email?.includes('admin') ||
-    currentUser.displayName?.includes('관리자') ||
-    currentUser.displayName?.includes('유정파파')
-  ));
+  const { currentUser, isAdmin: contextIsAdmin, showToast } = useContext(UserContext);
+  const isAdmin = import.meta.env.DEV || contextIsAdmin;
 
   const [sermons, setSermons] = useState([...SERMONS].sort((a, b) => new Date(b.date) - new Date(a.date)));
   

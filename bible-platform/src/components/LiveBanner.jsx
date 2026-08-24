@@ -108,7 +108,7 @@ async function compressImageToSafeDataUrl(file, maxWidth = 1200, maxHeight = 675
 }
 
 export default function LiveBanner() {
-  const { currentUser, showToast } = useContext(UserContext);
+  const { currentUser, isAdmin, showToast } = useContext(UserContext);
   const [isLive, setIsLive] = useState(false);
   const [liveTitle, setLiveTitle] = useState('🔴 실시간 예배 생방송 중');
   const [liveSubtitle, setLiveSubtitle] = useState('지금 실시간 예배가 방송되고 있습니다.');
@@ -166,14 +166,6 @@ export default function LiveBanner() {
       return () => clearTimeout(peekTimer);
     }
   }, [isPeekVideo]);
-
-  const isAdmin = Boolean(
-    currentUser && (
-      currentUser.email?.includes('admin') || 
-      currentUser.displayName?.includes('유정파파') ||
-      currentUser.displayName?.includes('관리자')
-    )
-  );
 
   // Firestore에서 실시간 라이브 설정 동기화 (수동 제어)
   useEffect(() => {
