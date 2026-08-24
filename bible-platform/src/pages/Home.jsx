@@ -146,7 +146,7 @@ const Home = () => {
               transition: 'all 0.2s'
             }}
           >
-            🇺🇸 하루 1 영어패턴
+            🇺🇸 영어로 읽기
           </button>
         </div>
 
@@ -170,11 +170,11 @@ const Home = () => {
             {/* 상단 뱃지 & 발음 듣기 버튼 헤더 행 (양쪽 정렬) */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
               <span style={{ fontSize: '0.74rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '3px 10px', borderRadius: '6px', fontWeight: 800 }}>
-                NIV 영문 구절
+                📖 NIV · {todayVerse.ref}
               </span>
 
               <button
-                onClick={() => speakEngVerse(todayPattern.engVerse)}
+                onClick={() => speakEngVerse(todayVerse.engText || '')}
                 style={{
                   background: isSpeakingEng ? '#ef4444' : 'var(--accent-gold)',
                   border: 'none',
@@ -198,30 +198,37 @@ const Home = () => {
               </button>
             </div>
 
-            {/* 영문 구절 본문 (100% 온전한 가로 너비로 2줄 단정 렌더링) */}
+            {/* 영문 구절 본문 — 오늘의 말씀과 동일한 구절 NIV */}
             <div style={{ width: '100%', marginBottom: '8px' }}>
-              <p style={{ margin: '0 0 6px', fontSize: 'clamp(1.02rem, 2.5vw, 1.15rem)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.65, wordBreak: 'keep-all' }}>
-                &ldquo;{todayPattern.engVerse}&rdquo;
-              </p>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                — {todayPattern.ref} ({todayPattern.korVerse})
-              </span>
+              {todayVerse.engText ? (
+                <p style={{ margin: '0 0 10px', fontSize: 'clamp(1.02rem, 2.5vw, 1.15rem)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.7 }}>
+                  &ldquo;{todayVerse.engText}&rdquo;
+                </p>
+              ) : (
+                <p style={{ margin: '0 0 10px', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  (영어 번역을 준비 중입니다)
+                </p>
+              )}
+              {/* 한글 대조 */}
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500, lineHeight: 1.55, borderLeft: '2px solid rgba(212,175,55,0.35)', paddingLeft: '8px' }}>
+                🇰🇷 {todayVerse.text.replace(/^\[.*?\]\s*/, '')}
+              </div>
             </div>
 
-            {/* 핵심 문법 패턴 박스 */}
+            {/* 핵심 문법 패턴 박스 (todayPattern 활용) */}
             <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-              <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>
-                💡 오늘의 핵심 패턴: <span style={{ color: '#fff' }}>{todayPattern.pattern}</span>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>
+                💡 오늘의 영어 패턴: <span style={{ color: '#fff' }}>{todayPattern.pattern}</span>
               </div>
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 700, marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 700, marginBottom: '6px' }}>
                 👉 뜻: {todayPattern.meaning}
               </div>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '0 0 8px', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: '0 0 8px', lineHeight: 1.5 }}>
                 {todayPattern.explanation}
               </p>
-              <div style={{ fontSize: '0.78rem', background: 'rgba(255,255,255,0.04)', padding: '6px 10px', borderRadius: '8px', borderLeft: '3px solid var(--accent-gold)' }}>
-                <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>✨ 적용 예문:</span> {todayPattern.exampleSentence}<br />
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.74rem' }}>({todayPattern.exampleMeaning})</span>
+              <div style={{ fontSize: '0.76rem', background: 'rgba(255,255,255,0.04)', padding: '6px 10px', borderRadius: '8px', borderLeft: '3px solid var(--accent-gold)' }}>
+                <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>✨ 예문:</span> {todayPattern.exampleSentence}<br />
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.73rem' }}>({todayPattern.exampleMeaning})</span>
               </div>
             </div>
 
