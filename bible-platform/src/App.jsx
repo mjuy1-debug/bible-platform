@@ -32,25 +32,47 @@ import { messaging, onMessage, db } from './services/firebase';
 import { collection, doc, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
 // ── 독립 직분/구역 수정 모달 (입력 포커스 유지) ──
-const ProfileEditModal = ({ initialPosition = '', initialDistrict = '', onSave, onClose }) => {
+const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistrict = '', onSave, onClose }) => {
+  const [name, setName] = useState(initialName);
   const [position, setPosition] = useState(initialPosition);
   const [district, setDistrict] = useState(initialDistrict);
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem',
+      backdropFilter: 'blur(8px)',
     }}>
       <div style={{
         background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
         borderRadius: '20px', padding: '2rem', width: '100%', maxWidth: '380px',
+        boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
       }}>
-        <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem', textAlign: 'center', fontFamily: 'var(--font-serif)' }}>
-          ✏️ 직분 / 구역 입력
+        <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1.25rem', textAlign: 'center', fontFamily: 'var(--font-serif)', fontSize: '1.3rem' }}>
+          ✏️ 실명 및 직분 / 구역 입력
         </h3>
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', textAlign: 'center', lineHeight: 1.5 }}>
+          교회 성도 확인 및 빠른 승인을 위해<br />
+          <strong style={{ color: '#ffd700' }}>실명(본명)</strong>과 <strong style={{ color: '#ffd700' }}>직분</strong>을 정확하게 입력해주세요.
+        </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 600 }}>
+              성도 실명 (본명) *
+            </label>
+            <input
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="예: 홍길동"
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '10px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 600 }}>
               교회 직분
             </label>
             <select
@@ -69,7 +91,7 @@ const ProfileEditModal = ({ initialPosition = '', initialDistrict = '', onSave, 
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 600 }}>
               소속 구역 / 부서
             </label>
             <input
@@ -84,7 +106,7 @@ const ProfileEditModal = ({ initialPosition = '', initialDistrict = '', onSave, 
           </div>
 
           <button
-            onClick={() => onSave({ position, district })}
+            onClick={() => onSave({ displayName: name.trim() || undefined, position, district })}
             style={{
               background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)',
               border: 'none', borderRadius: '12px', color: '#1a1400',
@@ -265,6 +287,98 @@ const AppInner = () => {
     return () => unsubLive();
   }, [showToast]);
 
+  // ── 5. 관리자 전용: 신규 성도 가입 신청 실시간 감시 (알림 + 차임벨 + 푸시) ──
+  useEffect(() => {
+    if (!memberProfile?.isAdmin) return;
+
+    let isInitial = true;
+    const q = query(
+      collection(db, 'memberProfiles'),
+      where('status', '==', 'pending'),
+      orderBy('createdAt', 'desc'),
+      limit(5)
+    );
+
+    const playChime = () => {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          const ctx = new AudioContext();
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);       // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.15); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.3);  // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.45); // C6
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.2);
+        }
+      } catch (e) {}
+    };
+
+    const triggerSystemNotification = (title, body, docId) => {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notifOptions = {
+          body,
+          icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+          badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+          tag: `pending-member-${docId}`,
+          vibrate: [200, 100, 200, 100, 300],
+          renotify: true,
+          requireInteraction: true,
+          data: { url: '/#/admin' }
+        };
+
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.ready.then(reg => reg.showNotification(title, notifOptions)).catch(() => {
+            try { new Notification(title, notifOptions); } catch (e) {}
+          });
+        } else {
+          try { new Notification(title, notifOptions); } catch (e) {}
+        }
+      }
+    };
+
+    const unsubPending = onSnapshot(q, (snapshot) => {
+      if (isInitial) {
+        isInitial = false;
+        // 초기 로드 시 미승인 대기자가 있으면 관리자에게 1회 알림
+        const count = snapshot.docs.length;
+        if (count > 0) {
+          const lastNotified = localStorage.getItem('last_notified_pending_count');
+          if (lastNotified !== String(count)) {
+            localStorage.setItem('last_notified_pending_count', String(count));
+            showToast(`👑 [가입 승인 대기] ${count}명의 성도님이 승인을 기다리고 있습니다.`);
+          }
+        }
+        return;
+      }
+
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          const m = change.doc.data();
+          const name = m.displayName || '새 성도';
+          const pos = m.position ? `(${m.position})` : '';
+          const title = `👑 [새 성도 가입 신청] ${name} ${pos}`;
+          const body = `${m.email || ''} 성도님이 가입 승인을 요청했습니다. 지금 확인해주세요!`;
+
+          showToast(title);
+          playChime();
+          if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 300]);
+          triggerSystemNotification(title, body, change.doc.id);
+        }
+      });
+    }, (err) => console.warn('가입 신청 감시 오류:', err));
+
+    return () => unsubPending();
+  }, [memberProfile?.isAdmin, showToast]);
+
   // ── 로그인 안 된 상태 ──
   if (!currentUser) {
     return (
@@ -303,6 +417,7 @@ const AppInner = () => {
         />
         {showProfileEdit && (
           <ProfileEditModal
+            initialName={memberProfile?.displayName || currentUser?.displayName || ''}
             initialPosition={memberProfile?.position || ''}
             initialDistrict={memberProfile?.district || ''}
             onSave={async (data) => {
@@ -351,6 +466,7 @@ const AppInner = () => {
       <BottomNav />
       {showProfileEdit && (
         <ProfileEditModal
+          initialName={memberProfile?.displayName || currentUser?.displayName || ''}
           initialPosition={memberProfile?.position || ''}
           initialDistrict={memberProfile?.district || ''}
           onSave={async (data) => {
