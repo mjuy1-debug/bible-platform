@@ -27,12 +27,11 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { memberProfile } = useContext(UserContext);
+  const { memberProfile, isAdmin } = useContext(UserContext);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
-  const isAdmin = memberProfile?.isAdmin === true;
   const isActive = (to) => location.pathname === to;
 
   return (

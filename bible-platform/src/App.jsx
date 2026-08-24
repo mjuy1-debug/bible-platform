@@ -132,7 +132,7 @@ const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistr
 };
 
 const AppInner = () => {
-  const { toast, showToast, currentUser, memberStatus, memberProfile, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
+  const { toast, showToast, currentUser, memberStatus, memberProfile, isAdmin, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   // ── 0. 오디오 잠금 해제 ──
@@ -289,7 +289,7 @@ const AppInner = () => {
 
   // ── 5. 관리자 전용: 신규 성도 가입 신청 실시간 감시 (인덱스 에러 방지 + 즉시 알림 + 소리/진동/푸시) ──
   useEffect(() => {
-    if (!memberProfile?.isAdmin) return;
+    if (!isAdmin) return;
 
     let isInitial = true;
     // 복합 인덱스 없이도 100% 동작하도록 컬렉션 전체 구독 후 클라이언트 필터링
@@ -519,7 +519,7 @@ const AppInner = () => {
           <Route path="/stats" element={<Stats />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/announce" element={<Announce />} />
-          <Route path="/admin" element={memberProfile?.isAdmin ? <AdminDashboard currentUser={currentUser} /> : <Home />} />
+          <Route path="/admin" element={isAdmin ? <AdminDashboard currentUser={currentUser} /> : <Home />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>

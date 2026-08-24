@@ -135,7 +135,7 @@ const EditProfileModal = ({ initialName, initialPosition, initialDistrict, onSav
 };
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, updateMemberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, isAdmin, updateMemberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -354,7 +354,7 @@ const Profile = () => {
       )}
 
       {/* 관리자 전용 바로가기 배너 */}
-      {memberProfile?.isAdmin && (
+      {isAdmin && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

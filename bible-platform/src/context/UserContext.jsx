@@ -548,24 +548,42 @@ export const UserProvider = ({ children }) => {
   const updateMemberProfile = useCallback(async (updates) => {
     if (!currentUser) return;
     try {
+      const ADMIN_EMAILS = ['mjuy1@naver.com'];
+      const isAdminEmail = ADMIN_EMAILS.includes((currentUser.email || '').toLowerCase());
+
       // 1. Firebase Auth displayName 변경
       if (updates.displayName && updates.displayName !== currentUser.displayName) {
         await updateProfile(auth.currentUser, { displayName: updates.displayName });
         setCurrentUser({ ...auth.currentUser, displayName: updates.displayName });
       }
 
-      // 2. Firestore memberProfiles 문서 변경
+      // 2. Firestore memberProfiles 문서 변경 (관리자 계정은 항상 isAdmin: true 유지)
       const memberRef = doc(db, 'memberProfiles', currentUser.uid);
-      await setDoc(memberRef, { ...updates, updatedAt: serverTimestamp() }, { merge: true });
+      const payload = {
+        ...updates,
+        ...(isAdminEmail ? { isAdmin: true, status: 'approved' } : {}),
+        updatedAt: serverTimestamp(),
+      };
+      await setDoc(memberRef, payload, { merge: true });
 
       // 3. 로컬 상태 즉시 반영
-      setMemberProfile(prev => ({ ...prev, ...updates }));
+      setMemberProfile(prev => ({
+        ...prev,
+        ...updates,
+        ...(isAdminEmail ? { isAdmin: true, status: 'approved' } : {}),
+      }));
       showToast('✅ 프로필 정보가 성공적으로 수정되었습니다.');
     } catch (err) {
       console.error('프로필 업데이트 오류:', err);
       showToast('프로필 업데이트 실패: ' + err.message, 'error');
     }
   }, [currentUser, showToast]);
+
+  const ADMIN_EMAILS = ['mjuy1@naver.com'];
+  const isAdmin = Boolean(
+    (currentUser?.email && ADMIN_EMAILS.includes(currentUser.email.toLowerCase())) ||
+    memberProfile?.isAdmin === true
+  );
 
   return (
     <UserContext.Provider value={{
@@ -574,6 +592,7 @@ export const UserProvider = ({ children }) => {
       cloudSynced,
       memberStatus,
       memberProfile,
+      isAdmin,
       updateMemberProfile,
       forceSync,
       toggleFavorite,
