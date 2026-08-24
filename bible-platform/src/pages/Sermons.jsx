@@ -7,6 +7,7 @@ import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import SermonNotesPanel from '../components/SermonNotesPanel';
+import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 
 export default function Sermons() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -20,7 +21,8 @@ export default function Sermons() {
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [videoStartTime, setVideoStartTime] = useState(0);
+  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
+  const playerInstanceRef = useRef(null);
   const [linkViewerUrl, setLinkViewerUrl] = useState(null);
   const [copiedId, setCopiedId] = useState(null); // share badge feedback
   const [searchParams] = useSearchParams();
@@ -609,18 +611,27 @@ export default function Sermons() {
                 <X size={20} />
               </button>
 
-              {/* Video Player */}
+              {/* Video Player (실시간 재생시간 동기화 플레이어) */}
               <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', flexShrink: 0 }}>
-                <iframe
-                  key={videoStartTime}
-                  width="100%"
-                  height="100%"
-                  src={getEmbedUrl(selectedVideo.videoUrl, videoStartTime)}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={selectedVideo.title}
-                />
+                {extractId(selectedVideo.videoUrl) ? (
+                  <YouTubeSyncPlayer
+                    videoId={extractId(selectedVideo.videoUrl)}
+                    playerRef={playerInstanceRef}
+                    onTimeUpdate={(currentTime) => {
+                      setVideoCurrentTime(currentTime);
+                    }}
+                  />
+                ) : (
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={getEmbedUrl(selectedVideo.videoUrl)}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={selectedVideo.title}
+                  />
+                )}
               </div>
               
               {/* Sermon Details — 모바일에서 패딩 최소화 */}
@@ -638,9 +649,19 @@ export default function Sermons() {
                 {/* 실시간 설교 묵상 노트 & 타임스탬프 패널 */}
                 <SermonNotesPanel
                   sermon={selectedVideo}
-                  currentVideoTime={videoStartTime}
+                  currentVideoTime={videoCurrentTime}
                   onSeekTo={(sec) => {
-                    setVideoStartTime(sec);
+                    if (playerInstanceRef.current && typeof playerInstanceRef.current.seekTo === 'function') {
+                      try {
+                        playerInstanceRef.current.seekTo(sec, true);
+                        if (typeof playerInstanceRef.current.playVideo === 'function') {
+                          playerInstanceRef.current.playVideo();
+                        }
+                      } catch (e) {
+                        console.warn('Player seek error:', e);
+                      }
+                    }
+                    setVideoCurrentTime(sec);
                     if (showToast) showToast(`[${Math.floor(sec/60)}분 ${Math.floor(sec%60)}초]로 이동합니다 🎬`);
                   }}
                 />
