@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText, Save } from 'lucide-react';
+import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText, Save, Bookmark } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import SermonNotesPanel from '../components/SermonNotesPanel';
 
 export default function Sermons() {
   const { currentUser, showToast } = useContext(UserContext);
@@ -19,6 +20,7 @@ export default function Sermons() {
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videoStartTime, setVideoStartTime] = useState(0);
   const [linkViewerUrl, setLinkViewerUrl] = useState(null);
   const [copiedId, setCopiedId] = useState(null); // share badge feedback
   const [searchParams] = useSearchParams();
@@ -80,9 +82,10 @@ export default function Sermons() {
     return (m && m[2].length === 11) ? m[2] : "";
   };
 
-  const getEmbedUrl = (url) => {
+  const getEmbedUrl = (url, start = 0) => {
     const id = extractId(url);
-    return id ? `https://www.youtube.com/embed/${id}?autoplay=1` : "";
+    const startParam = start > 0 ? `&start=${Math.floor(start)}` : '';
+    return id ? `https://www.youtube.com/embed/${id}?autoplay=1${startParam}` : "";
   };
 
   const getThumbnail = (url) => {
@@ -608,23 +611,43 @@ export default function Sermons() {
 
               {/* Video Player */}
               <div style={{ width: '100%', aspectRatio: '16/9', background: '#000', flexShrink: 0 }}>
-                <iframe width="100%" height="100%" src={getEmbedUrl(selectedVideo.videoUrl)} frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={selectedVideo.title}></iframe>
+                <iframe
+                  key={videoStartTime}
+                  width="100%"
+                  height="100%"
+                  src={getEmbedUrl(selectedVideo.videoUrl, videoStartTime)}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={selectedVideo.title}
+                />
               </div>
               
               {/* Sermon Details — 모바일에서 패딩 최소화 */}
               <div style={{ padding: 'clamp(0.75rem, 4vw, 1.5rem)', overflowY: 'auto', flex: 1, color: 'var(--text-primary)', WebkitOverflowScrolling: 'touch' }}>
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--accent-gold)' }}>{selectedVideo.title}</h3>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.2rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
                 
                 {selectedVideo.externalLink && (
                   <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
-                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.5rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
+                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.2rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
                     <ExternalLink size={16} /> 관련 링크 열기
                   </a>
                 )}
                 
+                {/* 실시간 설교 묵상 노트 & 타임스탬프 패널 */}
+                <SermonNotesPanel
+                  sermon={selectedVideo}
+                  currentVideoTime={videoStartTime}
+                  onSeekTo={(sec) => {
+                    setVideoStartTime(sec);
+                    if (showToast) showToast(`[${Math.floor(sec/60)}분 ${Math.floor(sec%60)}초]로 이동합니다 🎬`);
+                  }}
+                />
+
                 {selectedVideo.summary && (
-                  <div style={{ marginBottom: '2rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,0.02)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                  <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem', lineHeight: 1.7, whiteSpace: 'pre-wrap', background: 'rgba(255,255,255,0.02)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                    <h4 style={{ margin: '0 0 8px 0', fontSize: '0.95rem', color: 'var(--accent-gold)' }}>📖 설교 요약</h4>
                     {selectedVideo.summary}
                   </div>
                 )}

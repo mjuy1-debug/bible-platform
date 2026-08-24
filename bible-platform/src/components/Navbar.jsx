@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper, Brain, Map, Music } from 'lucide-react';
+import { Moon, Sun, BookHeart, User, BookOpen, Sparkles, CalendarDays, CalendarClock, Search as SearchIcon, Heart, Menu, X, MonitorPlay, HandHeart, BarChart2, Users, MessageSquare, Newspaper, Brain, Map, Music, Bell } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
+import NotificationModal from './NotificationModal';
 
 const NAV_ITEMS = [
   { to: '/schedule',  icon: CalendarClock, label: '일정' },
@@ -27,10 +28,12 @@ const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const isActive = (to) => location.pathname === to;
 
   return (
+    <>
     <nav style={{
       position: 'fixed', top: 0, width: '100%', zIndex: 1000,
       background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
@@ -61,13 +64,19 @@ const Navbar = () => {
               <Icon size={15} /> {label}
             </Link>
           ))}
+          <button onClick={() => setShowNotificationModal(true)} title="말씀 알림 설정" style={{ color: 'var(--accent-gold)', display: 'flex', padding: '0.4rem', minWidth: '36px', minHeight: '36px', alignItems: 'center', justifyContent: 'center', background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%', cursor: 'pointer' }}>
+            <Bell size={18} />
+          </button>
           <button onClick={toggleTheme} style={{ color: 'var(--text-secondary)', display: 'flex', marginLeft: '0.3rem', padding: '0.4rem', minWidth: '36px', minHeight: '36px', alignItems: 'center', justifyContent: 'center' }}>
             {theme === 'light' ? <Moon size={19} /> : <Sun size={19} />}
           </button>
         </div>
 
-        {/* Mobile: theme + hamburger */}
+        {/* Mobile: notification + theme + hamburger */}
         <div style={{ display: 'none' }} className="mobile-nav">
+          <button onClick={() => setShowNotificationModal(true)} style={{ color: 'var(--accent-gold)', marginRight: '0.4rem', display: 'flex', padding: '0.4rem', background: 'none', border: 'none', cursor: 'pointer' }}>
+            <Bell size={20} />
+          </button>
           <button onClick={toggleTheme} style={{ color: 'var(--text-secondary)', marginRight: '0.8rem', display: 'flex', padding: '0.4rem' }}>
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
@@ -110,6 +119,11 @@ const Navbar = () => {
         }
       `}</style>
     </nav>
+    <NotificationModal 
+      isOpen={showNotificationModal} 
+      onClose={() => setShowNotificationModal(false)} 
+    />
+    </>
   );
 };
 
