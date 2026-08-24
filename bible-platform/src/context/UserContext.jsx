@@ -129,6 +129,7 @@ export const UserProvider = ({ children }) => {
 
           // 관리자 이메일이면 Firestore 문서 상태와 무관하게 즉시 approved + isAdmin 처리
           if (isAdminEmail) {
+            const existingData = memberSnap.exists() ? memberSnap.data() : {};
             const adminProfile = {
               uid: user.uid,
               displayName: user.displayName || '',
@@ -136,8 +137,8 @@ export const UserProvider = ({ children }) => {
               photoURL: user.photoURL || '',
               status: 'approved',
               isAdmin: true,
-              position: memberSnap.exists() ? (memberSnap.data().position || '관리자') : '관리자',
-              district: memberSnap.exists() ? (memberSnap.data().district || '') : '',
+              position: existingData.position || '관리자',
+              district: existingData.district || '',
             };
             // Firestore 문서도 자동으로 approved+isAdmin으로 동기화
             try {
@@ -145,13 +146,14 @@ export const UserProvider = ({ children }) => {
             } catch (e) { /* 규칙 문제여도 로컬 처리 */ }
             setMemberStatus('approved');
             setMemberProfile(adminProfile);
-            // 실시간 리스너도 달아두기
+            // 실시간 리스너 등록 (관리자는 항상 approved 강제 유지)
             unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
               if (snap.exists()) {
                 const d = snap.data();
                 setMemberProfile({ ...d, status: 'approved', isAdmin: true });
               }
             }, () => {});
+
           } else if (!memberSnap.exists()) {
             // 최초 로그인: memberProfile 생성 (pending 상태)
             try {
@@ -171,38 +173,50 @@ export const UserProvider = ({ children }) => {
             }
             setMemberStatus('pending');
             setMemberProfile({ status: 'pending', isAdmin: false });
+            // 실시간 리스너 (관리자가 승인하면 즉시 반영)
+            unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
+              if (snap.exists()) {
+                const d = snap.data();
+                setMemberStatus(d.status || 'pending');
+                setMemberProfile(d);
+                if (d.status === 'approved') {
+                  const prevStatus = localStorage.getItem('_prevMemberStatus');
+                  if (prevStatus === 'pending') showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
+                }
+                localStorage.setItem('_prevMemberStatus', d.status || 'pending');
+              }
+            }, (snapErr) => {
+              console.warn('memberProfile 실시간 감지 오류:', snapErr.code);
+              setMemberStatus('approved');
+            });
+
           } else {
             const mData = memberSnap.data();
             setMemberStatus(mData.status || 'approved');
             setMemberProfile(mData);
-          }
-
-          // 실시간 승인 상태 리스너 (관리자가 승인하면 즉시 반영)
-          unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
-            if (snap.exists()) {
-              const d = snap.data();
-              setMemberStatus(d.status || 'approved');
-              setMemberProfile(d);
-              // 방금 승인된 경우 환영 토스트
-              if (d.status === 'approved') {
-                const prevStatus = localStorage.getItem('_prevMemberStatus');
-                if (prevStatus === 'pending') {
-                  showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
+            // 실시간 리스너 (승인 상태 변경 감지)
+            unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
+              if (snap.exists()) {
+                const d = snap.data();
+                setMemberStatus(d.status || 'approved');
+                setMemberProfile(d);
+                if (d.status === 'approved') {
+                  const prevStatus = localStorage.getItem('_prevMemberStatus');
+                  if (prevStatus === 'pending') showToast('🎉 관리자가 승인했습니다! 앱을 이용해 주세요.');
                 }
+                localStorage.setItem('_prevMemberStatus', d.status || 'approved');
               }
-              localStorage.setItem('_prevMemberStatus', d.status || 'approved');
-            }
-          }, (snapErr) => {
-            console.warn('memberProfile 실시간 감지 오류 (규칙 미설정):', snapErr.code);
-            // 규칙 오류 시 앱 접근 허용 (승인 시스템 미설정 상태로 간주)
-            setMemberStatus('approved');
-          });
+            }, (snapErr) => {
+              console.warn('memberProfile 실시간 감지 오류:', snapErr.code);
+              setMemberStatus('approved');
+            });
+          }
 
         } catch (memberErr) {
           console.warn('memberProfile 읽기 실패 (규칙 미설정):', memberErr.code);
           // Firestore 규칙이 아직 설정되지 않은 경우 → 앱 정상 접근 허용
           setMemberStatus('approved');
-          setMemberProfile({ status: 'approved', isAdmin: false });
+          setMemberProfile({ status: 'approved', isAdmin: isAdminEmail });
         }
 
         // ── 2. 클라우드 데이터 동기화 (기존 로직 유지) ──
