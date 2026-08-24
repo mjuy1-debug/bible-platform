@@ -132,7 +132,7 @@ const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistr
 };
 
 const AppInner = () => {
-  const { toast, showToast, currentUser, memberStatus, memberProfile, isAdmin, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
+  const { toast, showToast, currentUser, memberStatus, memberProfile, isAdmin, isOpenAccessMode, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   // ── 0. 오디오 잠금 해제 ──
@@ -414,8 +414,17 @@ const AppInner = () => {
               lineHeight: 1.6,
               wordBreak: 'keep-all',
             }}>
-              벧엘교회 성도 전용 말씀 묵상 앱입니다.<br />
-              로그인 후 관리자 승인 시 모든 기능을 이용하실 수 있습니다.
+              {isOpenAccessMode ? (
+                <span style={{ color: '#4ade80', fontWeight: 600 }}>
+                  🌐 현재 [전체 공개 모드] 운영 중입니다.<br />
+                  로그인 즉시 관리자 승인 없이 모든 기능을 이용하실 수 있습니다.
+                </span>
+              ) : (
+                <>
+                  벧엘교회 성도 전용 말씀 묵상 앱입니다.<br />
+                  로그인 후 관리자 승인 시 모든 기능을 이용하실 수 있습니다.
+                </>
+              )}
             </p>
             <button
               onClick={loginWithGoogle}
@@ -459,7 +468,7 @@ const AppInner = () => {
   }
 
   // ── 승인 상태 로딩 중 ──
-  if (memberStatus === null) {
+  if (memberStatus === null && !isOpenAccessMode) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', color: 'var(--text-secondary)' }}>
         ⏳ 승인 상태 확인 중...
@@ -467,8 +476,8 @@ const AppInner = () => {
     );
   }
 
-  // ── 승인 대기 / 거부 상태 ──
-  if (memberStatus === 'pending' || memberStatus === 'rejected') {
+  // ── 승인 대기 / 거부 상태 (전체 공개 모드에서는 자유 입장) ──
+  if ((memberStatus === 'pending' || memberStatus === 'rejected') && !isOpenAccessMode) {
     return (
       <>
         <ApprovalPending
@@ -492,10 +501,21 @@ const AppInner = () => {
     );
   }
 
-  // ── 승인된 사용자: 앱 전체 렌더 ──
+  // ── 승인된 사용자 (또는 전체 공개 모드): 앱 전체 렌더 ──
   return (
     <>
       <Navbar />
+      {isOpenAccessMode && (
+        <div style={{
+          background: 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+          color: '#fff', padding: '6px 12px', textAlign: 'center', fontSize: '0.78rem', fontWeight: 700,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+          position: 'sticky', top: 'var(--navbar-height)', zIndex: 990,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+        }}>
+          <span>🌐 현재 누구나 접속 가능한 [전체 공개 모드]가 가동 중입니다.</span>
+        </div>
+      )}
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: 'calc(var(--navbar-height) + 1.5rem) clamp(1rem, 3vw, 1.5rem) calc(var(--bottomnav-height) + env(safe-area-inset-bottom, 1rem))' }}>
         <Routes>
           <Route path="/" element={<Home />} />

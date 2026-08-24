@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../services/firebase';
+import { UserContext } from '../context/UserContext';
+import { Globe, Lock, ShieldCheck } from 'lucide-react';
 import {
   collection, query, orderBy, onSnapshot,
   doc, updateDoc, deleteDoc, getDoc, setDoc, serverTimestamp,
@@ -26,6 +28,7 @@ const StatusBadge = ({ status }) => {
 };
 
 const AdminDashboard = ({ currentUser }) => {
+  const { isOpenAccessMode, toggleOpenAccessMode } = useContext(UserContext);
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState('pending');
   const [search, setSearch] = useState('');
@@ -102,6 +105,59 @@ const AdminDashboard = ({ currentUser }) => {
           <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--accent-gold)', margin: 0 }}>성도 가입 승인 관리</h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>관리자 전용 대시보드</p>
         </div>
+      </div>
+
+      {/* 🌐 전체 공개(자유 입장) / 교인 승인제 모드 원터치 전환 카드 */}
+      <div style={{
+        background: isOpenAccessMode
+          ? 'linear-gradient(135deg, rgba(76,175,80,0.15) 0%, rgba(20,40,20,0.4) 100%)'
+          : 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(30,30,20,0.4) 100%)',
+        border: isOpenAccessMode ? '1px solid rgba(76,175,80,0.5)' : '1px solid rgba(212,175,55,0.35)',
+        borderRadius: '16px', padding: '1.2rem 1.4rem', marginBottom: '1.5rem',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem',
+        boxShadow: isOpenAccessMode ? '0 4px 20px rgba(76,175,80,0.15)' : '0 4px 20px rgba(0,0,0,0.2)'
+      }}>
+        <div style={{ flex: '1 1 300px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '1.3rem' }}>{isOpenAccessMode ? '🌐' : '🔒'}</span>
+            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: isOpenAccessMode ? '#4ade80' : 'var(--accent-gold)' }}>
+              {isOpenAccessMode ? '전체 공개(자유 입장) 모드 ON' : '교인 승인제 모드 운영 중'}
+            </h3>
+            <span style={{
+              fontSize: '0.72rem', fontWeight: 800, padding: '3px 8px', borderRadius: '12px',
+              background: isOpenAccessMode ? '#4caf50' : 'rgba(255,255,255,0.1)',
+              color: isOpenAccessMode ? '#fff' : 'var(--text-secondary)'
+            }}>
+              {isOpenAccessMode ? '누구나 즉시 접속 가능' : '승인된 교인만 접속'}
+            </span>
+          </div>
+          <p style={{ margin: 0, fontSize: '0.83rem', color: '#d1d5db', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+            {isOpenAccessMode
+              ? '✨ 현재 새신자 초청/전도 축제 등 관리자 승인 없이 누구나 자유롭게 모든 기능을 이용할 수 있는 상태입니다.'
+              : '🛡️ 현재 승인제 상태입니다. 신규 가입자는 관리자가 승인하기 전까지 승인 대기 화면이 표시됩니다.'}
+          </p>
+        </div>
+
+        <button
+          onClick={() => toggleOpenAccessMode(!isOpenAccessMode)}
+          style={{
+            padding: '10px 18px', borderRadius: '12px', fontWeight: 800, fontSize: '0.88rem',
+            background: isOpenAccessMode ? '#ef4444' : '#10b981',
+            color: '#fff', border: 'none', cursor: 'pointer',
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.3)', transition: 'all 0.2s', flexShrink: 0
+          }}
+        >
+          {isOpenAccessMode ? (
+            <>
+              <Lock size={15} /> 🔒 승인제로 원위치 (OFF)
+            </>
+          ) : (
+            <>
+              <Globe size={15} /> 🌐 전체 공개 모드 켜기 (ON)
+            </>
+          )}
+        </button>
       </div>
 
       {/* 통계 카드 */}

@@ -62,6 +62,7 @@ export const UserProvider = ({ children }) => {
   const [cloudSynced, setCloudSynced] = useState(false);
   const [memberStatus, setMemberStatus] = useState(null); // null=loading, 'pending'|'approved'|'rejected'
   const [memberProfile, setMemberProfile] = useState(null);
+  const [isOpenAccessMode, setIsOpenAccessMode] = useState(false);
   const unsubCloudRef = useRef(null);
   const unsubMemberRef = useRef(null);
   const savingToCloud = useRef(false);
@@ -70,6 +71,39 @@ export const UserProvider = ({ children }) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   }, []);
+
+  // ── 전체 공개(자유 입장) 모드 시스템 설정 실시간 감지 ──
+  useEffect(() => {
+    try {
+      const unsub = onSnapshot(doc(db, 'systemSettings', 'accessControl'), (snap) => {
+        if (snap.exists()) {
+          setIsOpenAccessMode(snap.data().openAccessMode === true);
+        } else {
+          setIsOpenAccessMode(false);
+        }
+      }, (err) => {
+        console.warn('accessControl 실시간 감지 오류:', err.code);
+      });
+      return () => unsub();
+    } catch (e) {
+      console.warn('accessControl 리스너 초기화 실패:', e);
+    }
+  }, []);
+
+  const toggleOpenAccessMode = useCallback(async (enabled) => {
+    try {
+      await setDoc(doc(db, 'systemSettings', 'accessControl'), {
+        openAccessMode: enabled,
+        updatedAt: serverTimestamp(),
+        updatedBy: currentUser?.email || 'admin',
+      }, { merge: true });
+      setIsOpenAccessMode(enabled);
+      showToast(enabled ? '🌐 전체 공개(자유 입장) 모드가 활성화되었습니다!' : '🔒 교인 승인제 모드로 전환되었습니다.');
+    } catch (err) {
+      console.error('접근 제어 설정 저장 실패:', err);
+      showToast('설정 저장 중 오류가 발생했습니다: ' + err.message, 'error');
+    }
+  }, [currentUser, showToast]);
 
   // ── 로컬 스토리지 자동 저장 ──
   useEffect(() => {
@@ -593,6 +627,8 @@ export const UserProvider = ({ children }) => {
       memberStatus,
       memberProfile,
       isAdmin,
+      isOpenAccessMode,
+      toggleOpenAccessMode,
       updateMemberProfile,
       forceSync,
       toggleFavorite,
