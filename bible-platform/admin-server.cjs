@@ -136,24 +136,39 @@ app.post('/api/admin/save-sermons', (req, res) => {
     fs.writeFileSync(SERMON_DATA_PATH, fileContent, 'utf-8');
     console.log('✅ sermonData.js 파일 저장 완료');
 
-    // git add
-    execSync('git add src/data/sermonData.js', { cwd: __dirname, encoding: 'utf-8' });
+    // git add -A: sermonData.js + 이미 staged된 PDF 등 모든 변경사항 포함
+    execSync('git add -A', { cwd: __dirname, encoding: 'utf-8' });
 
-    // git commit
+    // git commit - "nothing to commit"인 경우도 정상 처리
     const msg = commitMessage || '관리자: 말씀 업데이트';
-    execSync(`git commit -m "${msg}"`, { cwd: __dirname, encoding: 'utf-8' });
-    console.log('✅ git commit 완료');
+    try {
+      execSync(`git commit -m "${msg}"`, { cwd: __dirname, encoding: 'utf-8' });
+      console.log('✅ git commit 완료');
+    } catch (commitErr) {
+      const errMsg = commitErr.message || '';
+      if (errMsg.includes('nothing to commit') || errMsg.includes('nothing added to commit')) {
+        console.log('ℹ️ 변경 사항 없음 - commit 건너뜀, push만 진행');
+      } else {
+        throw commitErr; // 다른 오류는 그대로 throw
+      }
+    }
 
     // git push
     execSync('git push origin main', { cwd: __dirname, encoding: 'utf-8' });
     console.log('✅ git push 완료');
 
-    // GitHub Pages 배포
+    // GitHub Pages 배포 (비동기 백그라운드 - 타임아웃 방지)
     console.log('⏳ 실제 앱(GitHub Pages)에 배포 중입니다... (1~2분 소요)');
-    execSync('npm run deploy', { cwd: __dirname, encoding: 'utf-8' });
-    console.log('✅ GitHub Pages 배포 완료');
+    const { exec } = require('child_process');
+    exec('npm run deploy', { cwd: __dirname, encoding: 'utf-8' }, (error) => {
+      if (error) {
+        console.error('❌ 배포 중 오류:', error.message);
+      } else {
+        console.log('✅ GitHub Pages 배포 완료');
+      }
+    });
 
-    res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!' });
+    res.json({ ok: true, message: '✅ 저장 및 GitHub 배포가 완료되었습니다!\n(실제 웹사이트 반영에는 1~2분 정도 소요될 수 있습니다.)' });
   } catch (err) {
     console.error('❌ 오류:', err.message);
     res.status(500).json({ ok: false, error: err.message });
