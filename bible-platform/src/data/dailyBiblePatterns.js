@@ -221,6 +221,17 @@ export const DAILY_BIBLE_PATTERNS = [
     explanation: '"In the beginning"은 성경 전체의 문을 여는 시공간의 기원 구문이며, 하나님(God)이 모든 존재하는 것들의 유일한 시작이자 절대 창조주이심을 선포하는 장엄한 패턴입니다.',
     exampleSentence: 'In the beginning of every single day, dedicate your thoughts to God.',
     exampleMeaning: '매일의 시작마다 네 모든 생각을 하나님께 구별하여 올려드리라.'
+  },
+  {
+    id: 'pat_ecc_01213',
+    ref: '전도서 12:13',
+    korVerse: '일의 결국을 다 들었으니 하나님을 경외하고 그의 명령들을 지킬지어다 이것이 모든 사람의 본분이니라',
+    engVerse: 'Fear God and keep his commandments, for this is the duty of all mankind.',
+    pattern: 'Fear [A] and keep [B], for this is [C] (인생 본분 선포)',
+    meaning: 'A를 경외하고 B를 지키라, 왜냐하면 이것이 C이기 때문이다',
+    explanation: '전도서 전체의 최종 결론으로, 명령문 뒤에 "for(왜냐하면)" 이유 부사절이 결합되어 하나님을 경외하고 순종하는 삶이야말로 인간 존재의 가장 본질적인 사명이자 마땅한 도리임을 선포하는 장엄한 패턴입니다.',
+    exampleSentence: 'Love the Lord and walk in His truth, for this is the true joy of believers.',
+    exampleMeaning: '주님을 사랑하고 그분의 진리 안에서 걸으라, 왜냐하면 이것이 성도의 참된 기쁨이기 때문이다.'
   }
 ];
 
@@ -238,11 +249,14 @@ export function getTodayBiblePattern(date = new Date()) {
 /**
  * 특정 구절 ref에 맞는 패턴을 찾아 반환.
  * 없으면 NIV 영어 문장에서 지능적으로 고급 문법 패턴과 예문을 자동 추출.
- * @param {string} ref - 예: '시편 23:1', '호세아 6:6'
+ * @param {string} ref - 예: '시편 23:1', '전도서 12:13 (묵상)'
  * @param {string} engText - 해당 구절의 NIV 영어 텍스트
  */
 export function getPatternForVerse(ref, engText = '') {
-  const cleanRef = (ref || '').replace(/\[.*?\]\s*/g, '').trim();
+  const cleanRef = (ref || '')
+    .replace(/\[.*?\]/g, '')
+    .replace(/\(.*?\)/g, '')
+    .trim();
 
   // 1) 정확히 매칭되는 패턴 검색 (ref 앞부분 일치)
   const found = DAILY_BIBLE_PATTERNS.find(p => cleanRef && (cleanRef.startsWith(p.ref) || p.ref.startsWith(cleanRef)));

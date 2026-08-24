@@ -100,7 +100,10 @@ export const baseVerses = [
   { text: '사람아 주께서 선한 것이 무엇임을 네게 보이셨나니 여호와께서 네게 구하시는 것이 오직 공의를 행하며 인자를 사랑하며 겸손히 네 하나님과 함께 행하는 것이 아니냐', ref: '미가 6:8', engText: 'He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.' },
   { text: '너의 하나님 여호와가 너의 가운데 계시니 그는 구원을 베푸실 전능자시라 그가 너로 인하여 기쁨을 이기지 못하여 하시며 너를 잠잠히 사랑하시며 너로 인하여 즐거이 부르며 기뻐하시리라 하리라', ref: '스바냐 3:17', engText: 'The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing.' },
   { text: '여호와의 자비와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것이 아침마다 새로우니 주의 성실이 크도소이다', ref: '애가 3:22-23', engText: 'Because of the Lord\'s great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.' },
-  { text: '나를 능하게 하신 그리스도 예수 우리 주께 내가 감사함은 나를 충성되이 여겨 내게 직분을 맡기심이니', ref: '디모데전서 1:12', engText: 'I thank Christ Jesus our Lord, who has given me strength, that he considered me trustworthy, appointing me to his service.' }
+  { text: '나를 능하게 하신 그리스도 예수 우리 주께 내가 감사함은 나를 충성되이 여겨 내게 직분을 맡기심이니', ref: '디모데전서 1:12', engText: 'I thank Christ Jesus our Lord, who has given me strength, that he considered me trustworthy, appointing me to his service.' },
+  { text: '일의 결국을 다 들었으니 하나님을 경외하고 그의 명령들을 지킬지어다 이것이 모든 사람의 본분이니라', ref: '전도서 12:13', engText: 'Now all has been heard; here is the conclusion of the matter: Fear God and keep his commandments, for this is the duty of all mankind.' },
+  { text: '너는 청년의 때에 너의 창조주를 기억하라 곧 곤고한 날이 이르기 전에 나는 아무 낙이 없다고 할 해들이 가깝기 전에', ref: '전도서 12:1', engText: 'Remember your Creator in the days of your youth, before the days of trouble come and the years approach when you will say, "I find no pleasure in them."' },
+  { text: '하나님이 모든 것을 지으시되 때를 따라 아름답게 하셨고 또 사람들에게는 영원을 사모하는 마음을 주셨느니라', ref: '전도서 3:11', engText: 'He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end.' }
 ];
 
 // 1년(365일) 내내 단 하루도 중복되지 않도록 배열을 370개 이상으로 동적 확장합니다.
@@ -120,103 +123,29 @@ while (expandedVerses.length < 370) {
 
 export const ALL_VERSES = expandedVerses;
 
-const STORAGE_KEY_PREFIX = 'daily_verse_';
-
 /**
- * 현재 연도 기반 localStorage 키
+ * 🌟 전교인/모든 기기 100% 동일한 '오늘의 말씀' 반환 함수
+ * - 사용자 기기의 로컬스토리지 차이에 영향을 받지 않고,
+ * - 오늘 날짜(Year, Month, Day) 기준 100% 결정적(Deterministic)으로 동일한 말씀과 영문 구절을 제공합니다.
  */
-function getYearKey() {
-  return `${STORAGE_KEY_PREFIX}${new Date().getFullYear()}`;
-}
+export function getTodayVerse(date = new Date()) {
+  const year = date.getFullYear();
+  const startOfYear = new Date(year, 0, 0);
+  const diff = date - startOfYear;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
 
-/**
- * 해당 연도에 이미 사용된 말씀 인덱스 목록 가져오기
- */
-function getUsedIndices() {
-  try {
-    const stored = localStorage.getItem(getYearKey());
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
+  // 연도와 일자를 조합한 결정적 인덱스 (모든 사용자가 오늘 완전히 같은 구절을 공유)
+  const index = Math.abs(year * 365 + dayOfYear) % ALL_VERSES.length;
+  const verse = ALL_VERSES[index];
 
-/**
- * 해당 연도에 사용된 말씀 인덱스 목록 저장
- */
-function saveUsedIndices(indices) {
-  try {
-    localStorage.setItem(getYearKey(), JSON.stringify(indices));
-  } catch {
-    // localStorage 접근 불가 시 무시
-  }
-}
-
-/**
- * 날짜 기반 시드를 사용한 랜덤 선택 (같은 날에는 항상 같은 말씀)
- */
-function seededRandom(seed) {
-  const x = Math.sin(seed + 1) * 10000;
-  return x - Math.floor(x);
-}
-
-/**
- * 오늘의 말씀을 가져오는 함수
- * - 같은 날에는 항상 같은 말씀
- * - 한 해가 바뀌면 리셋
- * - 한 번 나온 말씀은 그 해에 다시 나오지 않음
- */
-export function getTodayVerse() {
-  const today = new Date();
-  const dayOfYear = Math.floor(
-    (today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24)
-  );
-  // 날짜 기반 고유 키 (연도 + 일)
-  const todayKey = `${today.getFullYear()}_${dayOfYear}`;
-  const todayStorageKey = `${STORAGE_KEY_PREFIX}today_${todayKey}`;
-
-  // 오늘 이미 선택된 말씀이 있으면 반환 (최신 개역한글 원문으로 동기화)
-  try {
-    const todayVerse = localStorage.getItem(todayStorageKey);
-    if (todayVerse) {
-      const parsed = JSON.parse(todayVerse);
-      const matched = baseVerses.find(b => parsed.ref && parsed.ref.startsWith(b.ref));
-      if (matched) {
-        return { ...parsed, text: matched.text, engText: matched.engText || parsed.engText || '' };
-      }
-      return parsed;
+  // 혹시라도 engText가 비어있을 경우 baseVerses에서 원문 복구 보장
+  if (!verse.engText) {
+    const cleanRef = verse.ref.replace(/\(.*?\)/g, '').trim();
+    const matched = baseVerses.find(b => cleanRef.startsWith(b.ref) || b.ref.startsWith(cleanRef));
+    if (matched && matched.engText) {
+      return { ...verse, engText: matched.engText };
     }
-  } catch {
-    // ignore
-  }
-
-  // 이미 사용된 인덱스 목록
-  const usedIndices = getUsedIndices();
-
-  // 사용 가능한 인덱스 목록
-  let available = ALL_VERSES.map((_, i) => i).filter(i => !usedIndices.includes(i));
-
-  // 모두 사용됐으면 리셋 (연간 리셋)
-  if (available.length === 0) {
-    saveUsedIndices([]);
-    available = ALL_VERSES.map((_, i) => i);
-  }
-
-  // 날짜 기반 시드로 랜덤 선택 (같은 날이면 같은 결과)
-  const seed = today.getFullYear() * 1000 + dayOfYear;
-  const randomNorm = seededRandom(seed);
-  const selectedIdx = available[Math.floor(randomNorm * available.length)];
-
-  const verse = ALL_VERSES[selectedIdx];
-
-  // 사용된 인덱스에 추가
-  saveUsedIndices([...usedIndices, selectedIdx]);
-
-  // 오늘의 말씀 캐시
-  try {
-    localStorage.setItem(todayStorageKey, JSON.stringify(verse));
-  } catch {
-    // ignore
   }
 
   return verse;
