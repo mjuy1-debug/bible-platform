@@ -117,13 +117,42 @@ export const UserProvider = ({ children }) => {
       if (unsubMemberRef.current) { unsubMemberRef.current(); unsubMemberRef.current = null; }
 
       if (user) {
+        // ── 관리자 이메일 화이트리스트 (항상 approved + isAdmin) ──
+        const ADMIN_EMAILS = ['mjuy1@naver.com'];
+        const isAdminEmail = ADMIN_EMAILS.includes((user.email || '').toLowerCase());
+
         // ── 1. 회원 승인 상태 실시간 감지 ──
         const memberRef = doc(db, 'memberProfiles', user.uid);
 
         try {
           const memberSnap = await getDoc(memberRef);
 
-          if (!memberSnap.exists()) {
+          // 관리자 이메일이면 Firestore 문서 상태와 무관하게 즉시 approved + isAdmin 처리
+          if (isAdminEmail) {
+            const adminProfile = {
+              uid: user.uid,
+              displayName: user.displayName || '',
+              email: user.email || '',
+              photoURL: user.photoURL || '',
+              status: 'approved',
+              isAdmin: true,
+              position: memberSnap.exists() ? (memberSnap.data().position || '관리자') : '관리자',
+              district: memberSnap.exists() ? (memberSnap.data().district || '') : '',
+            };
+            // Firestore 문서도 자동으로 approved+isAdmin으로 동기화
+            try {
+              await setDoc(memberRef, { ...adminProfile, updatedAt: serverTimestamp() }, { merge: true });
+            } catch (e) { /* 규칙 문제여도 로컬 처리 */ }
+            setMemberStatus('approved');
+            setMemberProfile(adminProfile);
+            // 실시간 리스너도 달아두기
+            unsubMemberRef.current = onSnapshot(memberRef, (snap) => {
+              if (snap.exists()) {
+                const d = snap.data();
+                setMemberProfile({ ...d, status: 'approved', isAdmin: true });
+              }
+            }, () => {});
+          } else if (!memberSnap.exists()) {
             // 최초 로그인: memberProfile 생성 (pending 상태)
             try {
               await setDoc(memberRef, {
