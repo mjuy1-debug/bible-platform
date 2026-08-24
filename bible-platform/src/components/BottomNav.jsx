@@ -6,11 +6,11 @@ const TABS = [
   { to: '/',            icon: HomeIcon,      label: '홈' },
   { to: '/sermon',      icon: MonitorPlay,   label: '말씀' },
   { to: '/read',        icon: BookOpen,      label: '읽기' },
-  { to: '/devotion',    icon: BookHeart,     label: '묵상' },
-  { to: '/schedule',    icon: CalendarClock, label: '일정' },
-  { to: '/bulletin',    icon: Newspaper,     label: '주보' },
-  { to: '/prayer-wall', icon: HandHeart,     label: '중보' },
   { to: '/hymns',       icon: Music,         label: '찬송' },
+  { to: '/devotion',    icon: BookHeart,     label: '묵상' },
+  { to: '/prayer-wall', icon: HandHeart,     label: '중보' },
+  { to: '/bulletin',    icon: Newspaper,     label: '주보' },
+  { to: '/schedule',    icon: CalendarClock, label: '일정' },
   { to: '/profile',     icon: User,          label: '프로필' },
 ];
 
