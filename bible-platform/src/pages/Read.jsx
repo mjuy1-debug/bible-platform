@@ -309,17 +309,43 @@ const Read = () => {
     opacity: disabled ? 0.3 : 1, transition: 'opacity 0.2s',
   });
 
-  // 영어 구절을 단어 단위로 분리하여 클릭 가능하게 렌더링
+  // 영어 구절을 단어 단위로 분리하여 클릭 가능하게 렌더링 (단정하고 눈이 편안한 서적 타이포그래피)
   const renderEnglishText = (engText, verseNum) => {
     if (!engText) return null;
     const tokens = engText.split(/(\s+)/);
 
     return (
-      <span style={{ fontSize: `${fontSize * 0.9}rem`, color: 'var(--text-secondary)', lineHeight: 1.8, fontFamily: 'var(--font-sans)' }}>
+      <span style={{ fontSize: `${fontSize * 0.88}rem`, color: 'var(--text-secondary)', lineHeight: 1.85, fontFamily: 'var(--font-sans)' }}>
+        {/* 인라인 미니멀 오디오 스피커 아이콘 */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            speakEnglishVerse(engText, verseNum);
+          }}
+          style={{
+            background: speakingVerse === verseNum ? '#ef4444' : 'rgba(212, 175, 55, 0.12)',
+            border: 'none',
+            borderRadius: '5px',
+            color: speakingVerse === verseNum ? '#fff' : 'var(--accent-gold)',
+            padding: '2px 5px',
+            marginRight: '6px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            verticalAlign: 'middle',
+            fontSize: '0.7rem',
+            fontWeight: 700,
+            transition: 'all 0.15s'
+          }}
+          title="원어민 발음 듣기"
+        >
+          {speakingVerse === verseNum ? <VolumeX size={12} /> : <Volume2 size={12} />}
+        </button>
+
         {tokens.map((token, idx) => {
           if (/^\s+$/.test(token)) return token;
           const clean = token.replace(/[^a-zA-Z]/g, '');
-          const isKeyVocab = !!lookupBibleWord(clean);
 
           return (
             <span
@@ -328,11 +354,17 @@ const Read = () => {
               style={{
                 cursor: 'pointer',
                 borderRadius: '3px',
-                padding: '0 2px',
-                color: isKeyVocab ? 'var(--accent-gold)' : 'inherit',
-                fontWeight: isKeyVocab ? 700 : 400,
-                textDecoration: isKeyVocab ? 'underline dotted' : 'none',
-                transition: 'background 0.15s'
+                padding: '0 1px',
+                color: 'inherit',
+                transition: 'color 0.15s, background 0.15s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--accent-gold)';
+                e.currentTarget.style.textDecoration = 'underline';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'inherit';
+                e.currentTarget.style.textDecoration = 'none';
               }}
               title="클릭하여 단어 뜻 보기"
             >
@@ -589,10 +621,10 @@ const Read = () => {
                   onClick={() => handleVerseClick(v)}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'clamp(1.7rem, 4.5vw, 2.1rem) 1fr auto',
+                    gridTemplateColumns: 'clamp(1.6rem, 4vw, 2.0rem) 1fr',
                     alignItems: 'baseline',
                     gap: '0',
-                    padding: languageMode === 'parallel' ? '0.65rem 0.35rem' : '0.45rem 0.25rem',
+                    padding: languageMode === 'parallel' ? '0.65rem 0.25rem' : '0.45rem 0.2rem',
                     borderRadius: '10px',
                     cursor: 'pointer',
                     background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
@@ -606,7 +638,7 @@ const Read = () => {
                     fontSize: `${fontSize * 0.75}rem`,
                     lineHeight: `${fontSize * 2.1}rem`,
                     textAlign: 'right',
-                    paddingRight: '0.4rem',
+                    paddingRight: '0.45rem',
                     fontStyle: 'normal',
                     userSelect: 'none',
                     flexShrink: 0,
@@ -614,8 +646,8 @@ const Read = () => {
                     {v.verse}
                   </span>
 
-                  {/* 본문 (한글 / 영어 / 한영 대조) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
+                  {/* 본문 (한글 & 영어가 화면 우측 끝까지 100% 가로폭을 시원하게 채움) */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0, width: '100%' }}>
                     {/* 한글 본문 */}
                     {languageMode !== 'english' && (
                       <span
@@ -630,73 +662,32 @@ const Read = () => {
                           userSelect: 'text',
                         }}>
                         {v.text}
+                        {memorizedKey && (
+                          <span style={{
+                            fontSize: '0.68rem',
+                            background: 'rgba(212,175,55,0.15)',
+                            color: 'var(--accent-gold)',
+                            borderRadius: '4px',
+                            padding: '1px 5px',
+                            marginLeft: '6px',
+                            fontWeight: 700,
+                            verticalAlign: 'middle'
+                          }}>
+                            ✓ 암송
+                          </span>
+                        )}
                       </span>
                     )}
 
-                    {/* 영어 본문 (100% 온전한 가로 너비로 텍스트 잘림/줄바꿈 간섭 없음) */}
+                    {/* 영어 본문 (100% 온전한 가로폭 + 인라인 미니멀 스피커) */}
                     {languageMode !== 'korean' && engText && (
                       <div style={{
                         width: '100%',
-                        marginTop: languageMode === 'parallel' ? '3px' : '0',
+                        marginTop: languageMode === 'parallel' ? '2px' : '0',
                         lineHeight: 1.85,
                       }}>
                         {renderEnglishText(engText, v.verse)}
                       </div>
-                    )}
-                  </div>
-
-                  {/* 우측 전용 액션 영역 (오디오 듣기 + 암송 배지) */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '0.4rem', alignSelf: 'flex-start', paddingTop: '2px' }}>
-                    {/* 원어민 TTS 듣기 버튼 */}
-                    {languageMode !== 'korean' && engText && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          speakEnglishVerse(engText, v.verse);
-                        }}
-                        style={{
-                          background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.12)',
-                          border: `1px solid ${speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.35)'}`,
-                          borderRadius: '6px',
-                          color: speakingVerse === v.verse ? '#fff' : 'var(--accent-gold)',
-                          padding: '3px 6px',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '2px',
-                          fontSize: '0.7rem',
-                          fontWeight: 800,
-                          flexShrink: 0,
-                          transition: 'all 0.15s'
-                        }}
-                        title="원어민 영어 발음 듣기"
-                      >
-                        {speakingVerse === v.verse ? <VolumeX size={12} /> : <Volume2 size={12} />}
-                        <span style={{ fontSize: '0.66rem' }}>{speakingVerse === v.verse ? '중지' : '듣기'}</span>
-                      </button>
-                    )}
-
-                    {/* 암송 완료 배지 */}
-                    {memorizedKey && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
-                        title="클릭하면 암송 표시 해제"
-                        style={{
-                          fontSize: '0.7rem',
-                          background: 'rgba(212,175,55,0.15)',
-                          color: 'var(--accent-gold)',
-                          borderRadius: '6px',
-                          padding: '3px 6px',
-                          fontWeight: 700,
-                          border: '1px solid rgba(212,175,55,0.3)',
-                          cursor: 'pointer',
-                          whiteSpace: 'nowrap',
-                          flexShrink: 0
-                        }}
-                      >
-                        ✓ 암송
-                      </button>
                     )}
                   </div>
                 </div>

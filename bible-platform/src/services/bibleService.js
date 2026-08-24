@@ -138,8 +138,7 @@ export const fetchEnglishChapter = async (bookId, chapter, translation = 'NIV') 
     const verses = raw.map((v) => {
       let cleanText = v.text
         .replace(/<h\d?[^>]*>.*?<\/h\d?>/gi, ' ') // 소제목 태그 제거
-        .replace(/<b[^>]*>The Beginning<\/b>/gi, '') // NIV 창세기 1장 헤딩 잔여 제거
-        .replace(/The BeginningIn the beginning/gi, 'In the beginning')
+        .replace(/<b[^>]*>.*?<\/b>/gi, ' ') // 굵은 소제목 태그 제거
         .replace(/<[^>]+>/g, ' ') // 모든 HTML 태그를 공백으로 치환
         .replace(/&nbsp;/g, ' ')
         .replace(/&amp;/g, '&')
@@ -148,6 +147,13 @@ export const fetchEnglishChapter = async (bookId, chapter, translation = 'NIV') 
         .replace(/&#39;/g, "'")
         .replace(/&quot;/g, '"')
         .replace(/\s+/g, ' ')
+        .trim();
+
+      // 문장 맨 앞의 소제목 헤딩 제거 (예: The Beginning In the beginning -> In the beginning)
+      cleanText = cleanText
+        .replace(/^The\s+Beginning\s+(In\s+the\s+beginning)/i, '$1')
+        .replace(/^The\s+Beginning\s+/i, '')
+        .replace(/^The\s+Creation\s+/i, '')
         .trim();
 
       return {
