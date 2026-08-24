@@ -633,72 +633,72 @@ const Read = () => {
                       </span>
                     )}
 
-                    {/* 영어 본문 (한글 바로 아래 또는 단독으로 정돈) */}
+                    {/* 영어 본문 (100% 온전한 가로 너비로 텍스트 잘림/줄바꿈 간섭 없음) */}
                     {languageMode !== 'korean' && engText && (
                       <div style={{
-                        display: 'flex',
-                        alignItems: 'baseline',
-                        flexWrap: 'wrap',
-                        gap: '6px',
-                        marginTop: languageMode === 'parallel' ? '2px' : '0',
+                        width: '100%',
+                        marginTop: languageMode === 'parallel' ? '3px' : '0',
+                        lineHeight: 1.85,
                       }}>
-                        {/* 클릭 가능한 영어 본문 */}
-                        <div style={{ flex: '1 1 180px', minWidth: 0 }}>
-                          {renderEnglishText(engText, v.verse)}
-                        </div>
-
-                        {/* 깔끔한 인라인 원어민 듣기 아이콘 */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            speakEnglishVerse(engText, v.verse);
-                          }}
-                          style={{
-                            background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.12)',
-                            border: `1px solid ${speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.35)'}`,
-                            borderRadius: '6px',
-                            color: speakingVerse === v.verse ? '#fff' : 'var(--accent-gold)',
-                            padding: '2px 6px',
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '3px',
-                            fontSize: '0.72rem',
-                            fontWeight: 700,
-                            flexShrink: 0,
-                            alignSelf: 'center',
-                            transition: 'all 0.15s'
-                          }}
-                          title="원어민 영어 발음 듣기"
-                        >
-                          {speakingVerse === v.verse ? <VolumeX size={12} /> : <Volume2 size={12} />}
-                          <span style={{ fontSize: '0.68rem' }}>{speakingVerse === v.verse ? '중지' : '듣기'}</span>
-                        </button>
+                        {renderEnglishText(engText, v.verse)}
                       </div>
                     )}
                   </div>
 
-                  {/* 암송 완료 배지 */}
-                  {memorizedKey && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
-                      title="클릭하면 암송 표시 해제"
-                      style={{
-                        fontSize: '0.7rem',
-                        background: 'rgba(212,175,55,0.15)',
-                        color: 'var(--accent-gold)',
-                        borderRadius: '8px',
-                        padding: '0.15rem 0.5rem',
-                        fontWeight: 700,
-                        marginLeft: '0.4rem',
-                        alignSelf: 'center',
-                        flexShrink: 0
-                      }}
-                    >
-                      ✓ 암송완료
-                    </button>
-                  )}
+                  {/* 우측 전용 액션 영역 (오디오 듣기 + 암송 배지) */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '0.4rem', alignSelf: 'flex-start', paddingTop: '2px' }}>
+                    {/* 원어민 TTS 듣기 버튼 */}
+                    {languageMode !== 'korean' && engText && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          speakEnglishVerse(engText, v.verse);
+                        }}
+                        style={{
+                          background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.12)',
+                          border: `1px solid ${speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.35)'}`,
+                          borderRadius: '6px',
+                          color: speakingVerse === v.verse ? '#fff' : 'var(--accent-gold)',
+                          padding: '3px 6px',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          fontSize: '0.7rem',
+                          fontWeight: 800,
+                          flexShrink: 0,
+                          transition: 'all 0.15s'
+                        }}
+                        title="원어민 영어 발음 듣기"
+                      >
+                        {speakingVerse === v.verse ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                        <span style={{ fontSize: '0.66rem' }}>{speakingVerse === v.verse ? '중지' : '듣기'}</span>
+                      </button>
+                    )}
+
+                    {/* 암송 완료 배지 */}
+                    {memorizedKey && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
+                        title="클릭하면 암송 표시 해제"
+                        style={{
+                          fontSize: '0.7rem',
+                          background: 'rgba(212,175,55,0.15)',
+                          color: 'var(--accent-gold)',
+                          borderRadius: '6px',
+                          padding: '3px 6px',
+                          fontWeight: 700,
+                          border: '1px solid rgba(212,175,55,0.3)',
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                          flexShrink: 0
+                        }}
+                      >
+                        ✓ 암송
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
