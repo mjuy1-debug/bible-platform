@@ -337,7 +337,7 @@ const Read = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '840px', margin: '0 auto', paddingBottom: '3rem' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '3rem' }}>
 
       {/* ── Top Nav Bar ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -488,9 +488,9 @@ const Read = () => {
       </AnimatePresence>
 
       {/* ── Bible Text Area ── */}
-      <div className="glass-card" style={{ padding: 'clamp(0.8rem, 3vw, 2.5rem)', minHeight: '400px', borderRadius: '24px' }}>
+      <div className="glass-card" style={{ padding: 'clamp(1rem, 4vw, 3rem)', minHeight: '400px', borderRadius: '24px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', marginBottom: '0.6rem' }}>
+          <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.4rem, 3.5vw, 2rem)', marginBottom: '0.6rem' }}>
             {selectedBook.name} {selectedChapter}장
           </h2>
 
@@ -532,7 +532,7 @@ const Read = () => {
             );
           })()}
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', margin: 0 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', margin: 0 }}>
             {loading ? '말씀을 불러오는 중...' : verses.length > 0 
               ? `총 ${verses.length}절 · ${languageMode === 'korean' ? '개역한글판' : `${englishTranslation} 대조`} · 구절 클릭 시 하이라이트/즐겨찾기` 
               : ''}
@@ -565,8 +565,8 @@ const Read = () => {
 
         {/* Verses 목록 */}
         {!loading && !error && verses.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: languageMode === 'parallel' ? '0.6rem' : '0.1rem' }}>
-            {verses.map((v, idx) => {
+          <div style={{ display: 'flex', flexDirection: 'column', gap: languageMode === 'parallel' ? '0.8rem' : '0.15rem' }}>
+            {verses.map((v) => {
               const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
               const fullRef = `${selectedBook.name} ${selectedChapter}:${v.verse}`;
               const isSelected = !!selectedVerses[ref];
@@ -581,10 +581,10 @@ const Read = () => {
                   onClick={() => handleVerseClick(v)}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '2.2rem 1fr auto',
+                    gridTemplateColumns: '2.4rem 1fr auto',
                     alignItems: 'baseline',
                     gap: '0',
-                    padding: languageMode === 'parallel' ? '0.7rem 0.5rem' : '0.5rem 0.3rem',
+                    padding: languageMode === 'parallel' ? '0.75rem 0.6rem' : '0.5rem 0.4rem',
                     borderRadius: '12px',
                     cursor: 'pointer',
                     background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
@@ -595,10 +595,10 @@ const Read = () => {
                   <span style={{
                     color: 'rgba(196,164,132,0.85)',
                     fontWeight: 800,
-                    fontSize: `${fontSize * 0.72}rem`,
+                    fontSize: `${fontSize * 0.75}rem`,
                     lineHeight: `${fontSize * 2.1}rem`,
                     textAlign: 'right',
-                    paddingRight: '0.5rem',
+                    paddingRight: '0.6rem',
                     fontStyle: 'normal',
                     userSelect: 'none',
                     flexShrink: 0,
@@ -607,7 +607,7 @@ const Read = () => {
                   </span>
 
                   {/* 본문 (한글 / 영어 / 한영 대조) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
                     {/* 한글 본문 */}
                     {languageMode !== 'english' && (
                       <span
@@ -625,17 +625,21 @@ const Read = () => {
                       </span>
                     )}
 
-                    {/* 영어 본문 + 오디오 듣기 */}
+                    {/* 영어 본문 (한글 바로 아래 또는 단독으로 정돈) */}
                     {languageMode !== 'korean' && engText && (
                       <div style={{
                         display: 'flex',
-                        alignItems: 'flex-start',
+                        alignItems: 'baseline',
+                        flexWrap: 'wrap',
                         gap: '6px',
-                        marginTop: languageMode === 'parallel' ? '4px' : '0',
-                        paddingLeft: languageMode === 'parallel' ? '8px' : '0',
-                        borderLeft: languageMode === 'parallel' ? '2.5px solid var(--accent-gold)' : 'none'
+                        marginTop: languageMode === 'parallel' ? '2px' : '0',
                       }}>
-                        {/* 원어민 TTS 듣기 버튼 */}
+                        {/* 클릭 가능한 영어 본문 */}
+                        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+                          {renderEnglishText(engText, v.verse)}
+                        </div>
+
+                        {/* 깔끔한 인라인 원어민 듣기 아이콘 */}
                         <button
                           type="button"
                           onClick={(e) => {
@@ -643,30 +647,26 @@ const Read = () => {
                             speakEnglishVerse(engText, v.verse);
                           }}
                           style={{
-                            background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.15)',
-                            border: '1px solid rgba(212, 175, 55, 0.3)',
+                            background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.12)',
+                            border: `1px solid ${speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.35)'}`,
                             borderRadius: '6px',
                             color: speakingVerse === v.verse ? '#fff' : 'var(--accent-gold)',
-                            padding: '3px 6px',
+                            padding: '2px 6px',
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '2px',
+                            gap: '3px',
                             fontSize: '0.72rem',
                             fontWeight: 700,
                             flexShrink: 0,
-                            marginTop: '4px'
+                            alignSelf: 'center',
+                            transition: 'all 0.15s'
                           }}
                           title="원어민 영어 발음 듣기"
                         >
-                          {speakingVerse === v.verse ? <VolumeX size={13} /> : <Volume2 size={13} />}
+                          {speakingVerse === v.verse ? <VolumeX size={12} /> : <Volume2 size={12} />}
                           <span style={{ fontSize: '0.68rem' }}>{speakingVerse === v.verse ? '중지' : '듣기'}</span>
                         </button>
-
-                        {/* 클릭 가능한 영어 텍스트 */}
-                        <div style={{ flex: 1 }}>
-                          {renderEnglishText(engText, v.verse)}
-                        </div>
                       </div>
                     )}
                   </div>
