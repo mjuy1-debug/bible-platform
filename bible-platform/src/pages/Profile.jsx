@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bookmark, History, Trash2, User, Bell, RefreshCw } from 'lucide-react';
+import { Bookmark, History, Trash2, User, Bell, RefreshCw, Shield, ChevronRight } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { messaging, getToken, VAPID_KEY } from '../services/firebase';
 import { db } from '../services/firebase';
@@ -9,7 +10,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import Stats from './Stats';
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -175,6 +176,64 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* 관리자 전용 바로가기 배너 */}
+      {memberProfile?.isAdmin && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: 'linear-gradient(135deg, rgba(212,175,55,0.15), rgba(184,134,11,0.05))',
+            border: '1px solid rgba(212,175,55,0.4)',
+            borderRadius: '16px',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '2rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
+            <div style={{
+              width: '44px', height: '44px', borderRadius: '12px',
+              background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.4rem', flexShrink: 0,
+            }}>
+              👑
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, color: 'var(--accent-gold)', fontSize: '1.05rem', marginBottom: '0.2rem' }}>
+                성도 가입 승인 관리 센터
+              </div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                새로 가입 신청한 성도님들을 확인하고 원클릭으로 승인/관리할 수 있습니다.
+              </div>
+            </div>
+          </div>
+          <Link
+            to="/admin"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)',
+              color: '#1a1400',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              padding: '0.65rem 1.25rem',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              boxShadow: '0 4px 15px rgba(212,175,55,0.25)',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            대시보드 열기 <ChevronRight size={16} />
+          </Link>
+        </motion.div>
+      )}
 
       {/* Embed Stats Component Here */}
       <div style={{ marginBottom: '2rem' }}>

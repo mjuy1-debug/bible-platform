@@ -112,6 +112,22 @@ const Navbar = () => {
           display: 'flex', flexDirection: 'column',
           padding: '0.75rem 1.5rem 1.25rem', gap: '0.25rem',
         }} className="mobile-menu">
+          {isAdmin && (
+            <Link to="/admin"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                padding: '0.85rem 1rem', borderRadius: '12px',
+                color: '#ffd700',
+                fontSize: '1.05rem', fontWeight: 700,
+                background: 'rgba(212,175,55,0.18)',
+                border: '1px solid rgba(212,175,55,0.4)',
+                marginBottom: '0.5rem',
+                transition: 'all 0.15s',
+              }}
+              onClick={() => setMenuOpen(false)}>
+              <Shield size={22} color="#ffd700" /> 👑 성도 가입 승인 관리
+            </Link>
+          )}
           {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
             <Link key={to} to={to}
               style={{
