@@ -287,39 +287,38 @@ const AppInner = () => {
     return () => unsubLive();
   }, [showToast]);
 
-  // ── 5. 관리자 전용: 신규 성도 가입 신청 실시간 감시 (알림 + 차임벨 + 푸시) ──
+  // ── 5. 관리자 전용: 신규 성도 가입 신청 실시간 감시 (인덱스 에러 방지 + 즉시 알림 + 소리/진동/푸시) ──
   useEffect(() => {
     if (!memberProfile?.isAdmin) return;
 
     let isInitial = true;
-    const q = query(
-      collection(db, 'memberProfiles'),
-      where('status', '==', 'pending'),
-      orderBy('createdAt', 'desc'),
-      limit(5)
-    );
+    // 복합 인덱스 없이도 100% 동작하도록 컬렉션 전체 구독 후 클라이언트 필터링
+    const q = collection(db, 'memberProfiles');
 
     const playChime = () => {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) {
-          const ctx = new AudioContext();
-          const now = ctx.currentTime;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now);       // C5
-          osc.frequency.setValueAtTime(659.25, now + 0.15); // E5
-          osc.frequency.setValueAtTime(783.99, now + 0.3);  // G5
-          osc.frequency.setValueAtTime(1046.50, now + 0.45); // C6
-          gain.gain.setValueAtTime(0.35, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now);
-          osc.stop(now + 1.2);
-        }
-      } catch (e) {}
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = window.__globalAudioCtx || new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);        // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.12); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.24); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.36); // C6
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 1.2);
+      } catch (e) {
+        console.log('Chime sound play error:', e);
+      }
     };
 
     const triggerSystemNotification = (title, body, docId) => {
@@ -348,27 +347,27 @@ const AppInner = () => {
     const unsubPending = onSnapshot(q, (snapshot) => {
       if (isInitial) {
         isInitial = false;
-        // 초기 로드 시 미승인 대기자가 있으면 관리자에게 1회 알림
-        const count = snapshot.docs.length;
-        if (count > 0) {
-          const lastNotified = localStorage.getItem('last_notified_pending_count');
-          if (lastNotified !== String(count)) {
-            localStorage.setItem('last_notified_pending_count', String(count));
-            showToast(`👑 [가입 승인 대기] ${count}명의 성도님이 승인을 기다리고 있습니다.`);
+        const pendingDocs = snapshot.docs.filter(d => d.data().status === 'pending');
+        if (pendingDocs.length > 0) {
+          const lastSeenCount = localStorage.getItem('last_notified_pending_count');
+          if (lastSeenCount !== String(pendingDocs.length)) {
+            localStorage.setItem('last_notified_pending_count', String(pendingDocs.length));
+            showToast(`👑 [가입 승인 대기] ${pendingDocs.length}명의 성도님이 승인을 기다리고 있습니다.`);
           }
         }
         return;
       }
 
       snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          const m = change.doc.data();
-          const name = m.displayName || '새 성도';
+        const m = change.doc.data();
+        // 신규 가입(added) 또는 가입 정보 수정(modified)인데 status가 pending인 경우
+        if ((change.type === 'added' || change.type === 'modified') && m.status === 'pending') {
+          const name = m.displayName || '성도';
           const pos = m.position ? `(${m.position})` : '';
           const title = `👑 [새 성도 가입 신청] ${name} ${pos}`;
-          const body = `${m.email || ''} 성도님이 가입 승인을 요청했습니다. 지금 확인해주세요!`;
+          const body = `${m.email || ''} 성도님이 가입 승인을 요청했습니다. 클릭하여 승인해주세요!`;
 
-          showToast(title);
+          showToast(`${title} — ${body}`);
           playChime();
           if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 300]);
           triggerSystemNotification(title, body, change.doc.id);
