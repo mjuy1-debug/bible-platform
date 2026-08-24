@@ -31,10 +31,87 @@ import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
 import { collection, doc, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
 
+// ── 독립 직분/구역 수정 모달 (입력 포커스 유지) ──
+const ProfileEditModal = ({ initialPosition = '', initialDistrict = '', onSave, onClose }) => {
+  const [position, setPosition] = useState(initialPosition);
+  const [district, setDistrict] = useState(initialDistrict);
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem',
+    }}>
+      <div style={{
+        background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)',
+        borderRadius: '20px', padding: '2rem', width: '100%', maxWidth: '380px',
+      }}>
+        <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem', textAlign: 'center', fontFamily: 'var(--font-serif)' }}>
+          ✏️ 직분 / 구역 입력
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              교회 직분
+            </label>
+            <select
+              value={position}
+              onChange={e => setPosition(e.target.value)}
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '10px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            >
+              <option value="">직분을 선택해주세요</option>
+              {['성도', '집사', '권사', '장로', '전도사', '목사', '사모', '청년', '어린이/청소년'].map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              소속 구역 / 부서
+            </label>
+            <input
+              value={district}
+              onChange={e => setDistrict(e.target.value)}
+              placeholder="예: 1구역, 남선교회, 청년1부"
+              style={{
+                width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                borderRadius: '10px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
+              }}
+            />
+          </div>
+
+          <button
+            onClick={() => onSave({ position, district })}
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)',
+              border: 'none', borderRadius: '12px', color: '#1a1400',
+              padding: '0.85rem', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
+              marginTop: '0.5rem',
+            }}
+          >
+            저장하기
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'transparent', border: '1px solid var(--glass-border)',
+              borderRadius: '12px', color: 'var(--text-secondary)', padding: '0.75rem', cursor: 'pointer',
+            }}
+          >
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AppInner = () => {
   const { toast, showToast, currentUser, memberStatus, memberProfile, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
-  const [profileForm, setProfileForm] = useState({ position: '', district: '' });
 
   // ── 0. 오디오 잠금 해제 ──
   useEffect(() => {
@@ -188,24 +265,6 @@ const AppInner = () => {
     return () => unsubLive();
   }, [showToast]);
 
-  // ── 직분/구역 수정 모달 ──
-  const ProfileEditModal = () => (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1.5rem' }}>
-      <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '2rem', width: '100%', maxWidth: '380px' }}>
-        <h3 style={{ color: 'var(--accent-gold)', marginBottom: '1.5rem', textAlign: 'center' }}>✏️ 직분 / 구역 입력</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <select value={profileForm.position} onChange={e => setProfileForm(p => ({ ...p, position: e.target.value }))} style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.7rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem' }}>
-            <option value="">직분 선택</option>
-            {['성도','집사','권사','장로','전도사','목사','사모','청년','어린이/청소년'].map(p => <option key={p} value={p}>{p}</option>)}
-          </select>
-          <input value={profileForm.district} onChange={e => setProfileForm(p => ({ ...p, district: e.target.value }))} placeholder="구역 입력 (예: 1구역, 청년부)" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.7rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem' }} />
-          <button onClick={async () => { await updateMemberProfile(profileForm); setShowProfileEdit(false); }} style={{ background: 'linear-gradient(135deg, var(--accent-gold), #b8860b)', border: 'none', borderRadius: '12px', color: '#1a1400', padding: '0.8rem', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer' }}>저장하기</button>
-          <button onClick={() => setShowProfileEdit(false)} style={{ background: 'transparent', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-secondary)', padding: '0.8rem', cursor: 'pointer' }}>취소</button>
-        </div>
-      </div>
-    </div>
-  );
-
   // ── 로그인 안 된 상태 ──
   if (!currentUser) {
     return (
@@ -240,9 +299,19 @@ const AppInner = () => {
       <>
         <ApprovalPending
           userProfile={memberProfile}
-          onEditProfile={() => { setProfileForm({ position: memberProfile?.position || '', district: memberProfile?.district || '' }); setShowProfileEdit(true); }}
+          onEditProfile={() => setShowProfileEdit(true)}
         />
-        {showProfileEdit && <ProfileEditModal />}
+        {showProfileEdit && (
+          <ProfileEditModal
+            initialPosition={memberProfile?.position || ''}
+            initialDistrict={memberProfile?.district || ''}
+            onSave={async (data) => {
+              await updateMemberProfile(data);
+              setShowProfileEdit(false);
+            }}
+            onClose={() => setShowProfileEdit(false)}
+          />
+        )}
         {toast && <Toast message={toast.message} type={toast.type} />}
       </>
     );
@@ -280,7 +349,17 @@ const AppInner = () => {
         </Routes>
       </main>
       <BottomNav />
-      {showProfileEdit && <ProfileEditModal />}
+      {showProfileEdit && (
+        <ProfileEditModal
+          initialPosition={memberProfile?.position || ''}
+          initialDistrict={memberProfile?.district || ''}
+          onSave={async (data) => {
+            await updateMemberProfile(data);
+            setShowProfileEdit(false);
+          }}
+          onClose={() => setShowProfileEdit(false)}
+        />
+      )}
       {toast && <Toast message={toast.message} type={toast.type} />}
     </>
   );
