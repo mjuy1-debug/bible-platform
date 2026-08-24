@@ -160,6 +160,118 @@ const AdminDashboard = ({ currentUser }) => {
         </button>
       </div>
 
+      {/* 🔔 관리자 실시간 알림 상태 & 즉시 테스트 패널 */}
+      <div style={{
+        background: 'var(--glass-bg)',
+        border: '1px solid var(--glass-border)',
+        borderRadius: '16px',
+        padding: '1.1rem 1.3rem',
+        marginBottom: '1.5rem',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '1.2rem' }}>🔔</span>
+            <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
+              가입 승인 실시간 알림 & 백그라운드 푸시 설정
+            </h4>
+          </div>
+          <span style={{
+            fontSize: '0.75rem',
+            padding: '3px 9px',
+            borderRadius: '10px',
+            background: typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted'
+              ? 'rgba(76,175,80,0.15)'
+              : 'rgba(239,68,68,0.15)',
+            color: typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted'
+              ? '#4caf50'
+              : '#ef4444',
+            fontWeight: 700,
+            border: typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted'
+              ? '1px solid rgba(76,175,80,0.3)'
+              : '1px solid rgba(239,68,68,0.3)'
+          }}>
+            {typeof window !== 'undefined' && 'Notification' in window
+              ? (Notification.permission === 'granted' ? '✅ 브라우저 알림 허용됨' : '⚠️ 알림 권한 필요')
+              : '❌ 알림 미지원 브라우저'}
+          </span>
+        </div>
+
+        <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 0.85rem 0', wordBreak: 'keep-all' }}>
+          새 성도님이 가입을 신청하면 즉시 <strong>‘딩동’ 차임벨 소리</strong>와 <strong>시스템 팝업 알림</strong>이 전송됩니다.<br />
+          스마트폰에서 <strong>[홈 화면에 추가]</strong>(PWA 앱 설치)를 해두시면 브라우저가 백그라운드에 있어도 더 안정적으로 알림을 수신할 수 있습니다.
+        </p>
+
+        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+          {typeof window !== 'undefined' && 'Notification' in window && Notification.permission !== 'granted' && (
+            <button
+              onClick={async () => {
+                const res = await Notification.requestPermission();
+                if (res === 'granted') alert('✅ 알림 권한이 정상적으로 허용되었습니다!');
+                else alert('알림 권한이 허용되지 않았습니다. 브라우저 주소창 왼쪽 자물쇠 아이콘에서 알림을 허용해주세요.');
+              }}
+              style={{
+                padding: '8px 14px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: 700,
+                background: 'var(--accent-gold)', color: '#000', border: 'none', cursor: 'pointer'
+              }}
+            >
+              🔔 알림 권한 허용하기
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              // 1. 소리 재생
+              try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                  const ctx = new AudioCtx();
+                  const now = ctx.currentTime;
+                  const osc = ctx.createOscillator();
+                  const gain = ctx.createGain();
+                  osc.type = 'sine';
+                  osc.frequency.setValueAtTime(523.25, now);
+                  osc.frequency.setValueAtTime(659.25, now + 0.12);
+                  osc.frequency.setValueAtTime(783.99, now + 0.24);
+                  osc.frequency.setValueAtTime(1046.50, now + 0.36);
+                  gain.gain.setValueAtTime(0.4, now);
+                  gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+                  osc.connect(gain);
+                  gain.connect(ctx.destination);
+                  osc.start(now);
+                  osc.stop(now + 1.2);
+                }
+              } catch (e) {}
+
+              // 2. 알림 발송
+              if ('Notification' in window && Notification.permission === 'granted') {
+                const opt = {
+                  body: '홍길동 성도님이 가입 승인을 요청했습니다. (테스트 알림)',
+                  icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                  badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                  vibrate: [300, 150, 300, 150, 400],
+                  tag: 'test-admin-notif',
+                  requireInteraction: true
+                };
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.ready.then(reg => reg.showNotification('👑 [새 성도 가입 신청] 홍길동 (성도)', opt));
+                } else {
+                  new Notification('👑 [새 성도 가입 신청] 홍길동 (성도)', opt);
+                }
+              } else {
+                alert('⚠️ 브라우저 알림 권한이 허용되어 있지 않습니다. 먼저 [알림 권한 허용하기]를 눌러주세요.');
+              }
+            }}
+            style={{
+              padding: '8px 14px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: 600,
+              background: 'rgba(255,255,255,0.08)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', cursor: 'pointer'
+            }}
+          >
+            🔊 알림 & 차임벨 즉시 테스트
+          </button>
+        </div>
+      </div>
+
       {/* 통계 카드 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
         {[

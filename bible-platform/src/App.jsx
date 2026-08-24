@@ -321,21 +321,30 @@ const AppInner = () => {
       }
     };
 
-    const triggerSystemNotification = (title, body, docId) => {
-      if ('Notification' in window && Notification.permission === 'granted') {
+    const triggerSystemNotification = async (title, body, docId) => {
+      let perm = typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'denied';
+      if (perm === 'default') {
+        try {
+          perm = await Notification.requestPermission();
+        } catch (e) {}
+      }
+
+      if (perm === 'granted') {
         const notifOptions = {
           body,
           icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
           badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
-          tag: `pending-member-${docId}`,
-          vibrate: [200, 100, 200, 100, 300],
+          tag: `pending-member-${docId || Date.now()}`,
+          vibrate: [300, 150, 300, 150, 400],
           renotify: true,
           requireInteraction: true,
-          data: { url: '/#/admin' }
+          data: { url: '/bible-platform/#/admin' }
         };
 
         if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.ready.then(reg => reg.showNotification(title, notifOptions)).catch(() => {
+          navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification(title, notifOptions);
+          }).catch(() => {
             try { new Notification(title, notifOptions); } catch (e) {}
           });
         } else {
