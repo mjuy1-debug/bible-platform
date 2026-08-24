@@ -100,6 +100,85 @@ export const fetchChapter = async (bookId, chapter) => {
   return verses;
 };
 
+// 영어 성경 번역본 옵션
+export const ENGLISH_TRANSLATIONS = [
+  { id: 'NIV', name: 'NIV (표준 영어)', desc: '가장 널리 읽히는 현대 표준 번역본' },
+  { id: 'NLT', name: 'NLT (쉬운 현대 영어)', desc: '자연스럽고 쉬운 일상 구어체' },
+  { id: 'ESV', name: 'ESV (정밀 직역)', desc: '원어에 가까운 정밀하고 품격 있는 문체' },
+  { id: 'KJV', name: 'KJV (고전 흠정역)', desc: '역사적인 고전 영어 성경' }
+];
+
+/**
+ * 특정 책/장의 영어 성경 구절 배열을 반환 (bolls.life API)
+ * @param {string} bookId - 책 코드 (예: 'joh', 'gen')
+ * @param {number} chapter - 장 번호
+ * @param {string} translation - 'NIV' | 'NLT' | 'ESV' | 'KJV'
+ * @returns {Promise<Array<{verse: number, text: string}>>}
+ */
+export const fetchEnglishChapter = async (bookId, chapter, translation = 'NIV') => {
+  const cacheKey = `eng-${translation}-${bookId}-${chapter}`;
+  if (cache[cacheKey]) return cache[cacheKey];
+
+  const bookNum = BOOK_NUMBER_MAP[bookId];
+  if (!bookNum) throw new Error(`알 수 없는 책 ID: ${bookId}`);
+
+  try {
+    const url = `${BASE_URL}/get-chapter/${translation}/${bookNum}/${chapter}/`;
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+
+    if (!res.ok) {
+      // NLT 실패 시 NIV 폴백
+      if (translation !== 'NIV') {
+        return await fetchEnglishChapter(bookId, chapter, 'NIV');
+      }
+      throw new Error(`API 오류 ${res.status}: ${bookId} ${chapter}장 (${translation})`);
+    }
+
+    const raw = await res.json();
+    const verses = raw.map((v) => ({
+      verse: v.verse,
+      text: v.text
+        .replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    }));
+
+    cache[cacheKey] = verses;
+    return verses;
+  } catch (err) {
+    console.warn(`영어 성경 로드 오류 (${translation}):`, err.message);
+    // 실패 시 빈 배열 반환
+    return [];
+  }
+};
+
+/**
+ * 한글(개역한글)과 영어 성경을 1:1 절 단위로 결합하여 반환
+ */
+export const fetchParallelChapter = async (bookId, chapter, engTranslation = 'NIV') => {
+  const [koreanVerses, englishVerses] = await Promise.all([
+    fetchChapter(bookId, chapter),
+    fetchEnglishChapter(bookId, chapter, engTranslation)
+  ]);
+
+  const engMap = {};
+  englishVerses.forEach(v => {
+    engMap[v.verse] = v.text;
+  });
+
+  return koreanVerses.map(kv => ({
+    verse: kv.verse,
+    korean: kv.text,
+    english: engMap[kv.verse] || ''
+  }));
+};
+
 export const clearCache = () => {
   Object.keys(cache).forEach((k) => delete cache[k]);
   Object.keys(bookCache).forEach((k) => delete bookCache[k]);

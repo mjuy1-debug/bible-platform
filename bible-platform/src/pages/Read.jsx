@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Search, X,
-  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image, Brain, Map as MapIcon
+  AlertTriangle, RefreshCw, PlayCircle, Share2, Heart, Eraser, Edit3, Image, Brain, Map as MapIcon,
+  Globe, Volume2, VolumeX, BookMarked, Sparkles, HelpCircle
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { BIBLE_BOOKS } from '../data/bibleData';
-import { fetchChapter } from '../services/bibleService';
+import { fetchChapter, fetchEnglishChapter, ENGLISH_TRANSLATIONS } from '../services/bibleService';
+import { lookupBibleWord } from '../data/bibleDictionary';
 import { getYouTubeUrl, PRS_CHANNEL } from '../data/youtubeLinks';
 import BiblePlayer from '../components/BiblePlayer';
 
@@ -22,7 +24,7 @@ const OLD_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'old');
 const NEW_BOOKS = BIBLE_BOOKS.filter((b) => b.testament === 'new');
 
 const Read = () => {
-  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite, memorized, toggleMemorized } = useContext(UserContext);
+  const { highlights, toggleHighlight, removeHighlight, toggleFavorite, isFavorite, memorized, toggleMemorized, showToast } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -52,10 +54,20 @@ const Read = () => {
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [bookSearch, setBookSearch] = useState('');
   const [activeTestament, setActiveTestament] = useState('old');
+  
+  // 성경 데이터 상태
   const [verses, setVerses] = useState([]);
+  const [englishVerses, setEnglishVerses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [playingVideo, setPlayingVideo] = useState(null);
+
+  // 🌐 영어 성경 학습 모드 상태
+  // 'korean' (한글만), 'parallel' (한/영 나란히 대조), 'english' (영어만)
+  const [languageMode, setLanguageMode] = useState('korean');
+  const [englishTranslation, setEnglishTranslation] = useState('NIV');
+  const [activeWordData, setActiveWordData] = useState(null);
+  const [speakingVerse, setSpeakingVerse] = useState(null);
 
   const handleWriteDevotion = () => {
     const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
@@ -126,7 +138,6 @@ const Read = () => {
 
   const handleSearchMap = () => {
     const textStr = Object.values(selectedVerses).map(v => v.text).join(' ');
-    // 간단한 주요 지명 매칭 (본문에 지명이 있으면 해당 지명으로 지도 검색)
     const knownLocations = ["예루살렘", "베들레헴", "가버나움", "나사렛", "갈릴리", "요단", "여리고", "사마리아", "안디옥", "에베소", "고린도", "로마", "애굽", "다메섹", "시내"];
     let foundLoc = "";
     for (const loc of knownLocations) {
@@ -139,25 +150,85 @@ const Read = () => {
     setSelectedVerses({});
   };
 
-  const loadChapter = useCallback(async (bookId, chapter) => {
+  // 성경 데이터 로드 (한글 + 영어)
+  const loadChapter = useCallback(async (bookId, chapter, engTrans = englishTranslation) => {
     setLoading(true);
     setError(null);
     setSelectedVerses({});
     setVerses([]);
-    setPlayingVideo(null); // 장 넘기면 플레이어 닫기
+    setEnglishVerses([]);
+    setPlayingVideo(null);
+    stopSpeaking();
+
     try {
-      const data = await fetchChapter(bookId, chapter);
-      setVerses(data);
+      const [korData, engData] = await Promise.all([
+        fetchChapter(bookId, chapter),
+        fetchEnglishChapter(bookId, chapter, engTrans)
+      ]);
+      setVerses(korData || []);
+      setEnglishVerses(engData || []);
     } catch (err) {
       setError(err.message || '성경 데이터를 불러올 수 없습니다.');
     } finally {
       setLoading(false);
     }
-  }, []);  // eslint-disable-line
+  }, [englishTranslation]);
 
   useEffect(() => {
-    loadChapter(selectedBook.id, selectedChapter);
-  }, [selectedBook.id, selectedChapter]); // eslint-disable-line
+    loadChapter(selectedBook.id, selectedChapter, englishTranslation);
+  }, [selectedBook.id, selectedChapter, englishTranslation]);
+
+  // 영어 원어민 음성 낭독 (TTS)
+  const speakEnglishVerse = (text, verseNum) => {
+    if (!window.speechSynthesis) {
+      if (showToast) showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
+      return;
+    }
+
+    if (speakingVerse === verseNum) {
+      stopSpeaking();
+      return;
+    }
+
+    stopSpeaking();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.88; // 또박또박한 영어 속도
+    utterance.pitch = 1.0;
+
+    utterance.onend = () => setSpeakingVerse(null);
+    utterance.onerror = () => setSpeakingVerse(null);
+
+    setSpeakingVerse(verseNum);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setSpeakingVerse(null);
+  };
+
+  // 영어 단어 클릭 시 사전 조회
+  const handleWordClick = (e, rawWord) => {
+    e.stopPropagation();
+    const wordInfo = lookupBibleWord(rawWord);
+    if (wordInfo) {
+      setActiveWordData(wordInfo);
+    } else {
+      const clean = rawWord.replace(/[^a-zA-Z]/g, '');
+      if (clean) {
+        setActiveWordData({
+          word: clean,
+          mean: '성경 본문 단어',
+          pos: '어휘',
+          phon: '',
+          desc: `영어 성경 (${englishTranslation}) 본문에 등장하는 표현입니다.`
+        });
+      }
+    }
+  };
 
   // Map에서 특정 구절 클릭시 스크롤 및 하이라이트 효과
   useEffect(() => {
@@ -175,9 +246,8 @@ const Read = () => {
               el.style.backgroundColor = 'transparent';
             }, 2000);
           }
-        }, 300); // 렌더링 대기
+        }, 300);
       }
-      // 처리 후 state 지우기
       window.history.replaceState({}, document.title);
     }
   }, [verses, location.state]);
@@ -190,76 +260,40 @@ const Read = () => {
   };
 
   const handleVerseClick = (v) => {
-    // If the user has selected text (e.g., drag or double click), ignore the click
-    // to prevent the menu from toggling off immediately.
     if (window.getSelection && window.getSelection().toString().trim().length > 0) {
       return;
     }
 
     const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
-    setSelectedVerses((prev) => {
+    setSelectedVerses(prev => {
       const next = { ...prev };
       if (next[ref]) {
         delete next[ref];
       } else {
-        next[ref] = { ...v, ref, book: selectedBook.name, chapter: selectedChapter };
+        next[ref] = {
+          ...v,
+          ref,
+          book: selectedBook.name,
+          chapter: selectedChapter
+        };
       }
       return next;
     });
   };
 
-  const handleShare = useCallback(() => {
-    const verses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
-    if (verses.length === 0) return;
-
-    let refText = '';
-    const isSameChapter = new Set(verses.map(v => v.book + v.chapter)).size === 1;
-    if (isSameChapter) {
-      const bookName = verses[0].book;
-      const chapter = verses[0].chapter;
-      const verseNumbers = verses.map(v => v.verse);
-      
-      let ranges = [];
-      let start = verseNumbers[0];
-      let prev = verseNumbers[0];
-      for (let i = 1; i < verseNumbers.length; i++) {
-        if (verseNumbers[i] === prev + 1) {
-          prev = verseNumbers[i];
-        } else {
-          ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
-          start = verseNumbers[i];
-          prev = verseNumbers[i];
-        }
-      }
-      ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
-      refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
-    } else {
-      refText = verses.map(v => v.ref).join(', ');
-    }
-    
-    // 포맷팅: 각 구절 앞에 [숫자] 추가
-    const textToShare = verses.map(v => `[${v.verse}] ${v.text}`).join('\n\n');
-    
-    // 은혜롭고 깔끔한 공유 템플릿
-    const shareText = `✨ 오늘의 말씀 ✨\n\n${textToShare}\n\n📖 ${refText}\n🕊 BethelChurch 말씀묵상`;
-
-    if (navigator.share) {
-      navigator.share({ title: '말씀 나눔', text: shareText }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(shareText).then(() => alert('클립보드에 복사됐습니다! ✅'));
-    }
-  }, [selectedVerses]);
-
   const goChapter = (dir) => {
     const next = selectedChapter + dir;
-    if (next >= 1 && next <= selectedBook.chapters) setSelectedChapter(next);
+    if (next >= 1 && next <= selectedBook.chapters) {
+      setSelectedChapter(next);
+    }
   };
 
   const filteredBooks = (activeTestament === 'old' ? OLD_BOOKS : NEW_BOOKS).filter(
     (b) => b.name.includes(bookSearch) || b.shortName.includes(bookSearch)
   );
 
-  // ── Styles ──
+  const selectedCount = Object.keys(selectedVerses).length;
+
   const navBtn = (disabled) => ({
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: '0.5rem', borderRadius: '50%', border: '1px solid var(--glass-border)',
@@ -267,25 +301,62 @@ const Read = () => {
     opacity: disabled ? 0.3 : 1, transition: 'opacity 0.2s',
   });
 
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '820px', margin: '0 auto' }}>
+  // 영어 구절을 단어 단위로 분리하여 클릭 가능하게 렌더링
+  const renderEnglishText = (engText, verseNum) => {
+    if (!engText) return null;
+    const tokens = engText.split(/(\s+)/);
 
-      {/* ── Top Nav ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+    return (
+      <span style={{ fontSize: `${fontSize * 0.9}rem`, color: 'var(--text-secondary)', lineHeight: 1.8, fontFamily: 'var(--font-sans)' }}>
+        {tokens.map((token, idx) => {
+          if (/^\s+$/.test(token)) return token;
+          const clean = token.replace(/[^a-zA-Z]/g, '');
+          const isKeyVocab = !!lookupBibleWord(clean);
+
+          return (
+            <span
+              key={idx}
+              onClick={(e) => handleWordClick(e, clean)}
+              style={{
+                cursor: 'pointer',
+                borderRadius: '3px',
+                padding: '0 2px',
+                color: isKeyVocab ? 'var(--accent-gold)' : 'inherit',
+                fontWeight: isKeyVocab ? 700 : 400,
+                textDecoration: isKeyVocab ? 'underline dotted' : 'none',
+                transition: 'background 0.15s'
+              }}
+              title="클릭하여 단어 뜻 보기"
+            >
+              {token}
+            </span>
+          );
+        })}
+      </span>
+    );
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '840px', margin: '0 auto', paddingBottom: '3rem' }}>
+
+      {/* ── Top Nav Bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+        {/* 책 선택 버튼 */}
         <button onClick={() => setShowBookSelector(!showBookSelector)}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1.3rem',
-            borderRadius: '30px', border: '1px solid var(--accent-gold)', background: 'var(--glass-bg)',
-            color: 'var(--accent-gold)', fontWeight: 700, fontSize: '1rem', cursor: 'pointer' }}>
-          {selectedBook.name} <span style={{ fontSize: '0.7rem', opacity: 0.7 }}>▼</span>
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem',
+            borderRadius: '24px', border: '1.5px solid var(--accent-gold)', background: 'var(--glass-bg)',
+            color: 'var(--accent-gold)', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer' }}>
+          {selectedBook.name} <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>▼</span>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        {/* 장 이동 컨트롤 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
           <button onClick={() => goChapter(-1)} disabled={selectedChapter === 1 || loading} style={navBtn(selectedChapter === 1 || loading)}>
             <ChevronLeft size={18} />
           </button>
           <select value={selectedChapter} onChange={(e) => setSelectedChapter(Number(e.target.value))} disabled={loading}
-            style={{ padding: '0.5rem 0.8rem', borderRadius: '20px', border: '1px solid var(--glass-border)',
-              background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
+            style={{ padding: '0.45rem 0.8rem', borderRadius: '18px', border: '1px solid var(--glass-border)',
+              background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: '0.92rem', fontWeight: 700, cursor: 'pointer', outline: 'none' }}>
             {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map((ch) => (
               <option key={ch} value={ch}>{ch}장</option>
             ))}
@@ -295,23 +366,90 @@ const Read = () => {
           </button>
         </div>
 
-        {/* Font size */}
-        <div style={{ display: 'flex', gap: '0.4rem' }}>
+        {/* 폰트 크기 */}
+        <div style={{ display: 'flex', gap: '0.3rem' }}>
           {['A-', 'A+'].map((lbl, i) => (
             <button key={lbl} onClick={() => setFontSize((f) => Math.max(0.85, Math.min(2.0, +(f + (i === 0 ? -0.1 : 0.1)).toFixed(2))))}
-              style={{ padding: '0.45rem 0.9rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
-                background: 'var(--glass-bg)', color: 'var(--text-secondary)', fontWeight: 700, cursor: 'pointer' }}>
+              style={{ padding: '0.4rem 0.8rem', borderRadius: '8px', border: '1px solid var(--glass-border)',
+                background: 'var(--glass-bg)', color: 'var(--text-secondary)', fontWeight: 800, cursor: 'pointer', fontSize: '0.82rem' }}>
               {lbl}
             </button>
           ))}
         </div>
       </div>
 
+      {/* ── 🌐 영어 성경 학습 툴바 (베스트 한/영 대조 모드) ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '8px',
+        marginBottom: '1.2rem',
+        padding: '10px 14px',
+        borderRadius: '16px',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--glass-border)'
+      }}>
+        {/* 언어 모드 탭 (한글 / 한·영 대조 / 영어만) */}
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {[
+            { mode: 'korean', label: '🇰🇷 한글' },
+            { mode: 'parallel', label: '🌐 한/영 대조' },
+            { mode: 'english', label: '🇺🇸 영어' }
+          ].map(tab => (
+            <button
+              key={tab.mode}
+              onClick={() => setLanguageMode(tab.mode)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '10px',
+                border: 'none',
+                background: languageMode === tab.mode ? 'var(--accent-gold)' : 'transparent',
+                color: languageMode === tab.mode ? '#1a1a2e' : 'var(--text-secondary)',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                cursor: 'pointer',
+                transition: 'all 0.15s'
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* 영어 번역본 선택기 (NIV / NLT / ESV / KJV) */}
+        {languageMode !== 'korean' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>버전:</span>
+            <select
+              value={englishTranslation}
+              onChange={(e) => setEnglishTranslation(e.target.value)}
+              style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--accent-gold)',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              {ENGLISH_TRANSLATIONS.map(t => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+
       {/* ── Book Selector ── */}
       <AnimatePresence>
         {showBookSelector && (
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
-            className="glass-card" style={{ marginBottom: '1.5rem', padding: '1.5rem' }}>
+            className="glass-card" style={{ marginBottom: '1.5rem', padding: '1.5rem', borderRadius: '20px' }}>
             <div style={{ position: 'relative', marginBottom: '1rem' }}>
               <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
               <input value={bookSearch} onChange={(e) => setBookSearch(e.target.value)} placeholder="책 이름 검색 (예: 창, 시편, 요한)"
@@ -324,8 +462,8 @@ const Read = () => {
                 <button key={val} onClick={() => setActiveTestament(val)}
                   style={{ padding: '0.4rem 1.2rem', borderRadius: '20px', border: '1px solid var(--glass-border)',
                     background: activeTestament === val ? 'var(--accent-gold)' : 'var(--glass-bg)',
-                    color: activeTestament === val ? '#fff' : 'var(--text-secondary)',
-                    fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem', transition: 'all 0.2s' }}>
+                    color: activeTestament === val ? '#1a1a2e' : 'var(--text-secondary)',
+                    fontWeight: 700, cursor: 'pointer', fontSize: '0.88rem', transition: 'all 0.2s' }}>
                   {lbl}
                 </button>
               ))}
@@ -338,7 +476,7 @@ const Read = () => {
                     border: selectedBook.id === book.id ? '1px solid var(--accent-gold)' : '1px solid var(--glass-border)',
                     background: selectedBook.id === book.id ? 'rgba(196,164,132,0.18)' : 'var(--glass-bg)',
                     color: selectedBook.id === book.id ? 'var(--accent-gold)' : 'var(--text-primary)',
-                    cursor: 'pointer', fontSize: '0.82rem', fontWeight: 500, textAlign: 'center',
+                    cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, textAlign: 'center',
                     transition: 'all 0.2s', fontFamily: 'var(--font-serif)', lineHeight: 1.3 }}>
                   {book.shortName}<br />
                   <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>{book.chapters}장</span>
@@ -349,16 +487,14 @@ const Read = () => {
         )}
       </AnimatePresence>
 
-
-
-      {/* ── Bible Text ── */}
-      <div className="glass-card" style={{ padding: 'clamp(0.5rem, 3vw, 3rem)', minHeight: '400px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', marginBottom: '0.8rem' }}>
+      {/* ── Bible Text Area ── */}
+      <div className="glass-card" style={{ padding: 'clamp(0.8rem, 3vw, 2.5rem)', minHeight: '400px', borderRadius: '24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.3rem, 3vw, 1.8rem)', marginBottom: '0.6rem' }}>
             {selectedBook.name} {selectedChapter}장
           </h2>
 
-          {/* ─ 공동체성경읽기 유튜브 듣기 버튼 ─ */}
+          {/* 공동체성경읽기 유튜브 듣기 버튼 */}
           {(() => {
             const yt = getYouTubeUrl(selectedBook.id, selectedBook.name, selectedChapter);
             const isEmbeddable = yt.type === 'video' || yt.type === 'playlist';
@@ -369,11 +505,11 @@ const Read = () => {
                 onClick={() => setPlayingVideo(isActive ? null : yt)}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '1rem',
+                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '0.8rem',
                   background: isActive ? '#cc0000' : '#FF0000',
                   color: '#fff',
                   border: 'none', cursor: 'pointer',
-                  fontSize: '0.85rem', fontWeight: 600,
+                  fontSize: '0.85rem', fontWeight: 700,
                   transition: 'background 0.2s',
                 }}
               >
@@ -384,22 +520,22 @@ const Read = () => {
               <a href={yt.url} target="_blank" rel="noopener noreferrer"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '1rem',
+                  padding: '0.45rem 1.2rem', borderRadius: '20px', marginBottom: '0.8rem',
                   background: 'rgba(255,0,0,0.12)',
                   color: '#FF4444',
                   border: '1px solid rgba(255,0,0,0.3)',
                   fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none',
-                  transition: 'opacity 0.2s',
                 }}
               >
-                <PlayCircle size={16} />
-                {yt.label}
-                <span style={{ opacity: 0.7, fontSize: '0.75rem' }}>（유튜브 검색）</span>
+                <PlayCircle size={16} /> {yt.label}
               </a>
             );
           })()}
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>
-            {loading ? '말씀을 불러오는 중...' : verses.length > 0 ? `총 ${verses.length}절 · 개역한글판 · 구절 클릭 시 하이라이트/즐겨찾기` : ''}
+
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', margin: 0 }}>
+            {loading ? '말씀을 불러오는 중...' : verses.length > 0 
+              ? `총 ${verses.length}절 · ${languageMode === 'korean' ? '개역한글판' : `${englishTranslation} 대조`} · 구절 클릭 시 하이라이트/즐겨찾기` 
+              : ''}
           </p>
         </div>
 
@@ -427,97 +563,134 @@ const Read = () => {
           </div>
         )}
 
-        {/* Verses — 절 번호 컬럼 + 본문 컬럼 */}
+        {/* Verses 목록 */}
         {!loading && !error && verses.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
-            {verses.map((v) => {
+          <div style={{ display: 'flex', flexDirection: 'column', gap: languageMode === 'parallel' ? '0.6rem' : '0.1rem' }}>
+            {verses.map((v, idx) => {
               const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
               const fullRef = `${selectedBook.name} ${selectedChapter}:${v.verse}`;
               const isSelected = !!selectedVerses[ref];
-              // Check both shortName and fullName formats for memorized match
               const memorizedKey = memorized && (memorized[ref] ? ref : memorized[fullRef] ? fullRef : null);
+              const engItem = englishVerses.find(ev => ev.verse === v.verse);
+              const engText = engItem?.text || '';
 
               return (
-                <div key={v.verse}>
-                  {/* 
-                    ★ 핵심 레이아웃 변경:
-                    display:grid, gridTemplateColumns: '2.5rem 1fr'
-                    → 절 번호는 항상 왼쪽 2.5rem 고정
-                    → 본문이 줄바꿈되어도 오른쪽 컬럼 경계에서 맞춰짐
-                  */}
-                  <div
-                    onClick={() => handleVerseClick(v)}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '2.2rem 1fr auto',
-                      alignItems: 'baseline',
-                      gap: '0',
-                      padding: '0.5rem 0.3rem',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
-                      border: `1px solid ${isSelected ? 'var(--accent-gold)' : 'transparent'}`,
-                      transition: 'background 0.2s, border-color 0.15s',
-                    }}>
-                    {/* 절 번호 — 오른쪽 정렬, 고정폭 */}
-                    <span style={{
-                      color: 'rgba(196,164,132,0.8)',
-                      fontWeight: 700,
-                      fontSize: `${fontSize * 0.72}rem`,
-                      lineHeight: `${fontSize * 2.1}rem`,
-                      textAlign: 'right',
-                      paddingRight: '0.5rem',
-                      fontStyle: 'normal',
-                      userSelect: 'none',
-                      flexShrink: 0,
-                    }}>
-                      {v.verse}
-                    </span>
-                    {/* 본문 — 줄바꿈 시 이 컬럼 안에서만 정렬됨 */}
-                    <span
-                      className="serif-font"
-                      style={{
-                        fontSize: `${fontSize}rem`,
-                        lineHeight: 2.1,
-                        wordBreak: 'keep-all',
-                        overflowWrap: 'break-word',
-                        letterSpacing: '0.015em',
-                        color: 'var(--text-primary)',
-                        userSelect: 'text',
-                      }}>
-                      {v.text}
-                    </span>
-                    {/* 암송 완료 배지 — 클릭하면 표시 해제 */}
-                    {memorizedKey && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
-                        title="클릭하면 암송 표시 해제"
+                <div
+                  key={v.verse}
+                  id={`verse-${v.verse}`}
+                  onClick={() => handleVerseClick(v)}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '2.2rem 1fr auto',
+                    alignItems: 'baseline',
+                    gap: '0',
+                    padding: languageMode === 'parallel' ? '0.7rem 0.5rem' : '0.5rem 0.3rem',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
+                    border: `1px solid ${isSelected ? 'var(--accent-gold)' : 'transparent'}`,
+                    transition: 'background 0.2s, border-color 0.15s',
+                  }}>
+                  {/* 절 번호 */}
+                  <span style={{
+                    color: 'rgba(196,164,132,0.85)',
+                    fontWeight: 800,
+                    fontSize: `${fontSize * 0.72}rem`,
+                    lineHeight: `${fontSize * 2.1}rem`,
+                    textAlign: 'right',
+                    paddingRight: '0.5rem',
+                    fontStyle: 'normal',
+                    userSelect: 'none',
+                    flexShrink: 0,
+                  }}>
+                    {v.verse}
+                  </span>
+
+                  {/* 본문 (한글 / 영어 / 한영 대조) */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {/* 한글 본문 */}
+                    {languageMode !== 'english' && (
+                      <span
+                        className="serif-font"
                         style={{
-                          fontSize: '0.7rem',
-                          background: 'rgba(212,175,55,0.15)',
-                          color: 'var(--accent-gold)',
-                          borderRadius: '8px',
-                          padding: '0.15rem 0.5rem',
-                          fontWeight: 'bold',
-                          alignSelf: 'center',
-                          marginLeft: '0.3rem',
-                          whiteSpace: 'nowrap',
-                          userSelect: 'none',
-                          border: '1px solid rgba(212,175,55,0.3)',
-                          cursor: 'pointer',
-                          lineHeight: 1.4,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.2rem',
-                          transition: 'background 0.2s',
-                        }}
-                      >
-                        🧠 <span style={{ fontSize: '0.6rem', opacity: 0.8 }}>✕</span>
-                      </button>
+                          fontSize: `${fontSize}rem`,
+                          lineHeight: 2.1,
+                          wordBreak: 'keep-all',
+                          overflowWrap: 'break-word',
+                          letterSpacing: '0.015em',
+                          color: 'var(--text-primary)',
+                          userSelect: 'text',
+                        }}>
+                        {v.text}
+                      </span>
+                    )}
+
+                    {/* 영어 본문 + 오디오 듣기 */}
+                    {languageMode !== 'korean' && engText && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '6px',
+                        marginTop: languageMode === 'parallel' ? '4px' : '0',
+                        paddingLeft: languageMode === 'parallel' ? '8px' : '0',
+                        borderLeft: languageMode === 'parallel' ? '2.5px solid var(--accent-gold)' : 'none'
+                      }}>
+                        {/* 원어민 TTS 듣기 버튼 */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            speakEnglishVerse(engText, v.verse);
+                          }}
+                          style={{
+                            background: speakingVerse === v.verse ? '#ef4444' : 'rgba(212, 175, 55, 0.15)',
+                            border: '1px solid rgba(212, 175, 55, 0.3)',
+                            borderRadius: '6px',
+                            color: speakingVerse === v.verse ? '#fff' : 'var(--accent-gold)',
+                            padding: '3px 6px',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '2px',
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            flexShrink: 0,
+                            marginTop: '4px'
+                          }}
+                          title="원어민 영어 발음 듣기"
+                        >
+                          {speakingVerse === v.verse ? <VolumeX size={13} /> : <Volume2 size={13} />}
+                          <span style={{ fontSize: '0.68rem' }}>{speakingVerse === v.verse ? '중지' : '듣기'}</span>
+                        </button>
+
+                        {/* 클릭 가능한 영어 텍스트 */}
+                        <div style={{ flex: 1 }}>
+                          {renderEnglishText(engText, v.verse)}
+                        </div>
+                      </div>
                     )}
                   </div>
 
-                  {/* Inline Action Toolbar removed for floating toolbar */}
+                  {/* 암송 완료 배지 */}
+                  {memorizedKey && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleMemorized(memorizedKey); }}
+                      title="클릭하면 암송 표시 해제"
+                      style={{
+                        fontSize: '0.7rem',
+                        background: 'rgba(212,175,55,0.15)',
+                        color: 'var(--accent-gold)',
+                        borderRadius: '8px',
+                        padding: '0.15rem 0.5rem',
+                        fontWeight: 700,
+                        marginLeft: '0.4rem',
+                        alignSelf: 'center',
+                        flexShrink: 0
+                      }}
+                    >
+                      ✓ 암송완료
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -525,151 +698,244 @@ const Read = () => {
         )}
       </div>
 
-      {/* ── Chapter Footer Nav ── */}
-      {!loading && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem' }}>
-          <button onClick={() => goChapter(-1)} disabled={selectedChapter === 1}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: 'clamp(0.6rem, 2vw, 0.8rem) clamp(0.8rem, 3vw, 1.5rem)',
-              borderRadius: '30px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)',
-              color: 'var(--text-secondary)', cursor: 'pointer', opacity: selectedChapter === 1 ? 0.3 : 1 }}>
-            <ChevronLeft size={18} /> <span className="hide-on-mobile">이전 장</span>
-          </button>
-          <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-            {selectedBook.name} {selectedChapter} / {selectedBook.chapters}장
-          </span>
-          <button onClick={() => goChapter(1)} disabled={selectedChapter === selectedBook.chapters}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: 'clamp(0.6rem, 2vw, 0.8rem) clamp(0.8rem, 3vw, 1.5rem)',
-              borderRadius: '30px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)',
-              color: 'var(--text-secondary)', cursor: 'pointer', opacity: selectedChapter === selectedBook.chapters ? 0.3 : 1 }}>
-            <span className="hide-on-mobile">다음 장</span> <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
-
-      {/* Floating Bible Player */}
-      <BiblePlayer
-        embedUrl={playingVideo?.embedUrl}
-        title={playingVideo?.label}
-        onClose={() => setPlayingVideo(null)}
-      />
-
-      {/* ── Floating Action Bar for Multiple Selection ── */}
+      {/* ── 영어 단어 사전 툴팁 팝업 모달 ── */}
       <AnimatePresence>
-        {Object.keys(selectedVerses).length > 0 && (
+        {activeWordData && (
           <motion.div
-            key="floating-bar"
-            initial={{ y: 100, x: '-50%', opacity: 0 }}
-            animate={{ y: 0, x: '-50%', opacity: 1 }}
-            exit={{ y: 100, x: '-50%', opacity: 0 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
             style={{
               position: 'fixed',
-              bottom: 'calc(var(--bottomnav-height, 60px) + env(safe-area-inset-bottom, 16px) + 16px)',
+              bottom: 'calc(var(--bottomnav-height, 64px) + 20px)',
               left: '50%',
-              zIndex: 50,
-              width: '90%',
-              maxWidth: 'max-content',
+              transform: 'translateX(-50%)',
+              zIndex: 9999,
+              maxWidth: '420px',
+              width: 'calc(100% - 32px)',
+              background: 'var(--bg-secondary)',
+              border: '1.5px solid var(--accent-gold)',
+              borderRadius: '18px',
+              padding: '14px 16px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+              color: 'var(--text-primary)'
             }}
           >
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem',
-              padding: '0.5rem 0.8rem', background: 'var(--bg-secondary)', borderRadius: '30px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.2)', border: '1px solid var(--glass-border)',
-              flexWrap: 'wrap'
-            }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
-                {Object.keys(selectedVerses).length}구절
-              </span>
-              <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
-              
-              <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                {HIGHLIGHT_COLORS.map(({ color, name }) => (
-                  <button key={name} title={name} onClick={() => {
-                    Object.values(selectedVerses).forEach(v => toggleHighlight(v.ref, color));
-                    setSelectedVerses({});
-                  }}
-                    style={{ width: '22px', height: '22px', borderRadius: '50%', background: color, cursor: 'pointer',
-                      border: '2px solid transparent', flexShrink: 0, transition: 'transform 0.15s', padding: 0 }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                  />
-                ))}
-                
-                {/* 지우개 (하이라이트 해제) 버튼 */}
-                <button title="하이라이트 지우기" onClick={() => {
-                  Object.values(selectedVerses).forEach(v => removeHighlight(v.ref));
-                  setSelectedVerses({});
-                }}
-                  style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--glass-bg)', cursor: 'pointer',
-                    border: '1px solid var(--glass-border)', flexShrink: 0, transition: 'transform 0.15s', padding: 0,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                  <Eraser size={12} />
-                </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+                  {activeWordData.word}
+                </span>
+                {activeWordData.phon && (
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                    {activeWordData.phon}
+                  </span>
+                )}
+                {activeWordData.pos && (
+                  <span style={{ fontSize: '0.7rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '1px 6px', borderRadius: '4px' }}>
+                    {activeWordData.pos}
+                  </span>
+                )}
               </div>
-              
-              <div style={{ width: '1px', height: '18px', background: 'var(--glass-border)', margin: '0 0.2rem' }} />
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                <button onClick={handleMakeCard}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: '#81c784', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <Image size={16} /> 카드
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                {/* 단어 발음 듣기 */}
+                <button
+                  onClick={() => speakEnglishVerse(activeWordData.word, 'word')}
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid var(--glass-border)',
+                    borderRadius: '6px',
+                    color: 'var(--text-primary)',
+                    padding: '4px 8px',
+                    fontSize: '0.74rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px'
+                  }}
+                >
+                  <Volume2 size={13} /> 발음
                 </button>
 
-                <button onClick={handleMemorize}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: '#64b5f6', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <Brain size={16} /> 암송
-                </button>
-
-                <button onClick={handleSearchMap}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: '#ba68c8', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <MapIcon size={16} /> 지도
-                </button>
-
-                <button onClick={handleWriteDevotion}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <Edit3 size={16} /> 묵상
-                </button>
-
-                <button onClick={() => {
-                  Object.values(selectedVerses).forEach(v => toggleFavorite({ text: v.text, ref: v.ref }));
-                  setSelectedVerses({});
-                }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <Bookmark size={16} /> 저장
-                </button>
-                
-                <button onClick={() => {
-                  handleShare();
-                  setSelectedVerses({});
-                }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.4rem',
-                    background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer',
-                    fontSize: '0.82rem', fontWeight: 600 }}>
-                  <Share2 size={16} /> 공유
-                </button>
-                
-                <button onClick={() => setSelectedVerses({})}
-                  style={{ marginLeft: '0.2rem', color: 'var(--text-secondary)', display: 'flex', cursor: 'pointer',
-                    padding: '0.4rem', background: 'transparent', border: 'none' }}>
-                  <X size={18} />
+                <button
+                  onClick={() => setActiveWordData(null)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}
+                >
+                  <X size={16} />
                 </button>
               </div>
             </div>
+
+            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+              💡 {activeWordData.mean}
+            </div>
+
+            {activeWordData.desc && (
+              <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+                {activeWordData.desc}
+              </p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Bottom Action Toolbar (선택된 구절 있을 때) ── */}
+      <AnimatePresence>
+        {selectedCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            style={{
+              position: 'fixed',
+              bottom: 'calc(var(--bottomnav-height, 64px) + 12px)',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--glass-border)',
+              borderRadius: '24px',
+              padding: '10px 16px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              maxWidth: '92vw',
+              flexWrap: 'wrap'
+            }}
+          >
+            <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+              {selectedCount}절 선택됨
+            </span>
+
+            {/* 하이라이트 색상들 */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {HIGHLIGHT_COLORS.map(hc => (
+                <button
+                  key={hc.name}
+                  onClick={() => {
+                    Object.keys(selectedVerses).forEach(r => toggleHighlight(r, hc.color));
+                    setSelectedVerses({});
+                  }}
+                  style={{
+                    width: '22px',
+                    height: '22px',
+                    borderRadius: '50%',
+                    background: hc.color,
+                    border: '1px solid var(--glass-border)',
+                    cursor: 'pointer'
+                  }}
+                  title={`${hc.name} 하이라이트`}
+                />
+              ))}
+              <button
+                onClick={() => {
+                  Object.keys(selectedVerses).forEach(r => removeHighlight(r));
+                  setSelectedVerses({});
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  padding: '2px'
+                }}
+                title="하이라이트 지우기"
+              >
+                <Eraser size={16} />
+              </button>
+            </div>
+
+            {/* 묵상 / 암송 / 카드 만들기 */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <button
+                onClick={handleWriteDevotion}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  background: 'var(--accent-gold)',
+                  color: '#1a1a2e',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                묵상 쓰기
+              </button>
+              <button
+                onClick={handleMakeCard}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  border: '1px solid var(--glass-border)',
+                  cursor: 'pointer'
+                }}
+              >
+                말씀 카드
+              </button>
+              <button
+                onClick={handleMemorize}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  border: '1px solid var(--glass-border)',
+                  cursor: 'pointer'
+                }}
+              >
+                암송 훈련
+              </button>
+              <button
+                onClick={handleSearchMap}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  border: '1px solid var(--glass-border)',
+                  cursor: 'pointer'
+                }}
+              >
+                지도 보기
+              </button>
+            </div>
+
+            <button
+              onClick={() => setSelectedVerses({})}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                padding: '4px'
+              }}
+            >
+              <X size={16} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── YouTube Player (PRS) ── */}
+      {playingVideo && (
+        <BiblePlayer
+          video={playingVideo}
+          onClose={() => setPlayingVideo(null)}
+          bookName={selectedBook.name}
+          chapter={selectedChapter}
+        />
+      )}
     </motion.div>
   );
 };
