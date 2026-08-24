@@ -249,7 +249,17 @@ const Read = () => {
     setSpeakingVerse(null);
   };
 
-  // 📖 장 전체 연속 음성 낭독 (한글 / 영어)
+  // 낭독 중인 절이 변경될 때 화면 중앙으로 부드럽게 자동 스크롤 추적
+  useEffect(() => {
+    if (readingVerseNum) {
+      const el = document.getElementById(`verse-${readingVerseNum}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [readingVerseNum]);
+
+  // 📖 장 전체 연속 음성 낭독 (한글 / 영어) - 절 번호 제외하고 순수 본문만 매끄럽게 낭독
   const startChapterTTS = (lang = 'ko') => {
     if (!window.speechSynthesis) {
       if (showToast) showToast('이 브라우저는 음성 낭독을 지원하지 않습니다.');
@@ -289,10 +299,9 @@ const Read = () => {
       const item = targetList[index];
       setReadingVerseNum(item.verse);
 
-      const cleanText = item.text.replace(/^\[.*?\]\s*/, '');
-      const speechText = lang === 'en'
-        ? `Verse ${item.verse}. ${cleanText}`
-        : `${item.verse}절. ${cleanText}`;
+      // 절 번호 없이 순수한 본문 말씀 텍스트만 추출하여 낭독
+      const cleanText = item.text.replace(/^\[.*?\]\s*/, '').replace(/^\d+[\s.:]*\s*/, '').trim();
+      const speechText = cleanText || item.text;
 
       const utterance = new SpeechSynthesisUtterance(speechText);
       utterance.lang = lang === 'en' ? 'en-US' : 'ko-KR';
