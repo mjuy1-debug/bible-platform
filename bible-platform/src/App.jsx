@@ -383,15 +383,76 @@ const AppInner = () => {
   if (!currentUser) {
     return (
       <>
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', padding: '2rem 1.5rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✝️</div>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--accent-gold)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>벧엘교회 말씀 플랫폼</h1>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', fontSize: '0.95rem', lineHeight: 1.6 }}>벧엘교회 성도 전용 앱입니다.<br />로그인 후 관리자 승인 시 이용 가능합니다.</p>
-          <button onClick={loginWithGoogle} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#fff', color: '#333', borderRadius: '14px', padding: '0.9rem 2rem', fontSize: '1rem', fontWeight: 600, border: 'none', cursor: 'pointer', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-            <img src="https://www.google.com/favicon.ico" alt="Google" style={{ width: '20px', height: '20px' }} />
-            Google 계정으로 로그인
-          </button>
-          <p style={{ marginTop: '3rem', fontSize: '0.78rem', color: 'var(--text-secondary)', opacity: 0.5 }}>문의: 교회 사무실 또는 담당 교역자</p>
+        <div style={{
+          minHeight: '100dvh',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--bg-primary)',
+          padding: 'calc(2rem + env(safe-area-inset-top, 0px)) clamp(1.25rem, 5vw, 2rem) calc(2.5rem + env(safe-area-inset-bottom, 0px))',
+          textAlign: 'center',
+          overflowY: 'auto',
+        }} className="custom-scrollbar">
+          <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: '0.75rem', lineHeight: 1 }}>✝️</div>
+            <h1 style={{
+              fontSize: 'clamp(1.5rem, 5vw, 1.9rem)',
+              fontWeight: 700,
+              color: 'var(--accent-gold)',
+              marginBottom: '0.5rem',
+              fontFamily: 'var(--font-serif)',
+              wordBreak: 'keep-all',
+              lineHeight: 1.3,
+            }}>
+              벧엘교회 말씀 플랫폼
+            </h1>
+            <p style={{
+              color: 'var(--text-secondary)',
+              marginBottom: '2rem',
+              fontSize: '0.95rem',
+              lineHeight: 1.6,
+              wordBreak: 'keep-all',
+            }}>
+              벧엘교회 성도 전용 말씀 묵상 앱입니다.<br />
+              로그인 후 관리자 승인 시 모든 기능을 이용하실 수 있습니다.
+            </p>
+            <button
+              onClick={loginWithGoogle}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                background: '#fff',
+                color: '#333',
+                borderRadius: '16px',
+                padding: '0.95rem 1.75rem',
+                fontSize: '1rem',
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 8px 25px rgba(0,0,0,0.3)',
+                width: '100%',
+                maxWidth: '320px',
+                wordBreak: 'keep-all',
+              }}
+            >
+              <img src="https://www.google.com/favicon.ico" alt="Google" style={{ width: '20px', height: '20px' }} />
+              Google 계정으로 로그인
+            </button>
+            <p style={{
+              marginTop: '2.5rem',
+              fontSize: '0.8rem',
+              color: 'var(--text-secondary)',
+              opacity: 0.6,
+              lineHeight: 1.5,
+              wordBreak: 'keep-all',
+            }}>
+              문의: 교회 사무실 또는 담당 교역자
+            </p>
+          </div>
         </div>
         {toast && <Toast message={toast.message} type={toast.type} />}
       </>
