@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { BIBLE_BOOKS } from '../data/bibleData';
 import { fetchChapter, fetchEnglishChapter, ENGLISH_TRANSLATIONS } from '../services/bibleService';
-import { lookupBibleWord } from '../data/bibleDictionary';
+import { lookupBibleWord, lookupWordSmart } from '../data/bibleDictionary';
 import { getYouTubeUrl, PRS_CHANNEL } from '../data/youtubeLinks';
 import BiblePlayer from '../components/BiblePlayer';
 
@@ -210,23 +210,31 @@ const Read = () => {
     setSpeakingVerse(null);
   };
 
-  // 영어 단어 클릭 시 사전 조회
-  const handleWordClick = (e, rawWord) => {
+  // 영어 단어 클릭 시 사전 조회 (오프라인 1,000+ 핵심 단어 즉시 조회 + 스마트 사전 폴백)
+  const handleWordClick = async (e, rawWord) => {
     e.stopPropagation();
-    const wordInfo = lookupBibleWord(rawWord);
-    if (wordInfo) {
-      setActiveWordData(wordInfo);
-    } else {
-      const clean = rawWord.replace(/[^a-zA-Z]/g, '');
-      if (clean) {
-        setActiveWordData({
-          word: clean,
-          mean: '성경 본문 단어',
-          pos: '어휘',
-          phon: '',
-          desc: `영어 성경 (${englishTranslation}) 본문에 등장하는 표현입니다.`
-        });
-      }
+    const clean = rawWord.replace(/[^a-zA-Z]/g, '');
+    if (!clean) return;
+
+    // 1. 오프라인 성경 어휘 사전에서 0초 즉시 조회
+    const instant = lookupBibleWord(clean);
+    if (instant) {
+      setActiveWordData(instant);
+      return;
+    }
+
+    // 2. 미등록 단어는 기본 껍데기 먼저 띄운 후 스마트 번역으로 실시간 완성
+    setActiveWordData({
+      word: clean,
+      mean: '단어 뜻 불러오는 중...',
+      pos: '어휘',
+      phon: `[${clean.toLowerCase()}]`,
+      desc: `영어 성경 (${englishTranslation}) 본문 어휘입니다.`
+    });
+
+    const smartData = await lookupWordSmart(clean);
+    if (smartData) {
+      setActiveWordData(smartData);
     }
   };
 
