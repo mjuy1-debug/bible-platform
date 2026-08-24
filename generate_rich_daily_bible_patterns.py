@@ -1,4 +1,7 @@
-// src/data/dailyBiblePatterns.js
+# -*- coding: utf-8 -*-
+# generate_rich_daily_bible_patterns.py
+
+code = '''// src/data/dailyBiblePatterns.js
 // '하루 1패턴' 영어 성경 묵상 데이터베이스 & 지능형 구문 분석 엔진
 
 export const DAILY_BIBLE_PATTERNS = [
@@ -259,7 +262,7 @@ function derivePatternFromVerse(ref, engText) {
   const text = (engText || '').trim();
 
   // 1. rather than (비교 및 본질 선택 구문)
-  if (/rather than/i.test(text)) {
+  if (/\brather than\b/i.test(text)) {
     return {
       pattern: `[주어] + [동사] + [A] rather than [B] (차라리 ~보다)`,
       meaning: 'B라기보다는 차라리 A를 선택하다 (더 가치 있는 본질 강조)',
@@ -271,7 +274,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 2. not A but B / not A, but B
-  if (/not.+but/i.test(text)) {
+  if (/\bnot\b.+\bbut\b/i.test(text)) {
     return {
       pattern: `not [A], but [B] (A가 아니라 B이다)`,
       meaning: 'A가 아니라 오직 B이다 (명확한 대조와 전환)',
@@ -283,7 +286,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 3. better than (비교급 우위 표현)
-  if (/better than/i.test(text)) {
+  if (/\bbetter than\b/i.test(text)) {
     return {
       pattern: `[A] is better than [B] (A가 B보다 훨씬 낫다)`,
       meaning: 'A가 B보다 영적으로 훨씬 더 귀하고 가치 있다',
@@ -295,7 +298,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 4. so that / in order that (목적을 나타내는 부사절)
-  if (/so that|in order that/i.test(text)) {
+  if (/\bso that\b|\bin order that\b/i.test(text)) {
     return {
       pattern: `[주절] + so that + [주어] + may/shall [목적절] (~하도록)`,
       meaning: '~로 하여금 ~하게 하려 하심이라 (하나님의 거룩한 목적)',
@@ -307,7 +310,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 5. whoever / everyone who (보편적 구원 및 축복 조건절)
-  if (/whoever|everyone who|those who/i.test(text)) {
+  if (/\bwhoever\b|\beveryone who\b|\bthose who\b/i.test(text)) {
     return {
       pattern: `Whoever [동사조건] shall [약속/결과] (~하는 자마다 누구나)`,
       meaning: '누구든지 ~하는 사람은 ~을 얻으리라 (차별 없는 은혜의 약속)',
@@ -319,7 +322,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 6. unless (조건과 절대적 필요성)
-  if (/who|unless/i.test(text) && /unless/i.test(text)) {
+  if (/\bwho\b|\bunless\b/i.test(text) && /\bunless\b/i.test(text)) {
     return {
       pattern: `Unless [주어] [동사], [결과절] (~하지 아니하면 ~할 수 없다)`,
       meaning: '만일 ~하지 아니하면, 결코 ~할 수 없다 (필수 조건 강조)',
@@ -368,7 +371,7 @@ function derivePatternFromVerse(ref, engText) {
   }
 
   // 10. will (하나님의 신실한 미래 언약/선포)
-  if (/will/i.test(text)) {
+  if (/\bwill\b/i.test(text)) {
     return {
       pattern: `[주어] + will + [동사원형] (변함없는 언약과 미래 축복)`,
       meaning: '~께서 반드시 ~하실 것이다 (확실한 성취의 약속)',
@@ -401,3 +404,9 @@ function derivePatternFromVerse(ref, engText) {
     ref, engVerse: text, korVerse: ''
   };
 }
+'''
+
+with open('c:/Users/mjuy1/Desktop/connectaillab/bible-platform/src/data/dailyBiblePatterns.js', 'w', encoding='utf-8') as f:
+    f.write(code)
+
+print("Successfully written rich dailyBiblePatterns.js")

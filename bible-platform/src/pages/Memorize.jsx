@@ -110,6 +110,7 @@ export default function Memorize() {
       setTrainingStage(1);
       setSuccess(false);
       setBlindInput('');
+      setActiveTab('train');
     }
   }, [location]);
 

@@ -234,7 +234,14 @@ const Home = () => {
             </div>
 
             <div style={{ textAlign: 'center', marginTop: '12px' }}>
-              <Link to="/memorize"
+              <Link
+                to="/memorize"
+                state={{
+                  verse: todayVerse.text,
+                  engVerse: todayVerse.engText || todayVerse.text,
+                  reference: todayVerse.ref,
+                  initialMode: 'en'
+                }}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
                   background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '0.45rem 1.1rem',
                   borderRadius: '20px', border: '1px solid var(--glass-border)', fontWeight: 700, fontSize: '0.82rem' }}>
