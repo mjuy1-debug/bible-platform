@@ -166,20 +166,12 @@ const Home = () => {
             </Link>
           </div>
         ) : (
-          <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.2)' }}>
-            {/* 영문 구절 */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-              <div>
-                <span style={{ fontSize: '0.74rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>
-                  NIV 영문 구절
-                </span>
-                <p style={{ margin: '6px 0 2px', fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.6 }}>
-                  &ldquo;{todayPattern.engVerse}&rdquo;
-                </p>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  — {todayPattern.ref} ({todayPattern.korVerse})
-                </span>
-              </div>
+          <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.2)', padding: 'clamp(14px, 3vw, 20px)', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.2)' }}>
+            {/* 상단 뱃지 & 발음 듣기 버튼 헤더 행 (양쪽 정렬) */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontSize: '0.74rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '3px 10px', borderRadius: '6px', fontWeight: 800 }}>
+                NIV 영문 구절
+              </span>
 
               <button
                 onClick={() => speakEngVerse(todayPattern.engVerse)}
@@ -188,18 +180,32 @@ const Home = () => {
                   border: 'none',
                   color: isSpeakingEng ? '#fff' : '#111',
                   borderRadius: '10px',
-                  padding: '6px 10px',
+                  padding: '5px 10px',
+                  minWidth: '82px',
+                  height: '30px',
                   fontSize: '0.74rem',
                   fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '4px',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  transition: 'background 0.2s'
                 }}
               >
-                {isSpeakingEng ? '중지' : '🔊 발음 듣기'}
+                {isSpeakingEng ? '⏹️ 중지' : '🔊 발음 듣기'}
               </button>
+            </div>
+
+            {/* 영문 구절 본문 (100% 온전한 가로 너비로 2줄 단정 렌더링) */}
+            <div style={{ width: '100%', marginBottom: '8px' }}>
+              <p style={{ margin: '0 0 6px', fontSize: 'clamp(1.02rem, 2.5vw, 1.15rem)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.65, wordBreak: 'keep-all' }}>
+                &ldquo;{todayPattern.engVerse}&rdquo;
+              </p>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                — {todayPattern.ref} ({todayPattern.korVerse})
+              </span>
             </div>
 
             {/* 핵심 문법 패턴 박스 */}
