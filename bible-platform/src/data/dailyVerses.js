@@ -102,7 +102,7 @@ export const baseVerses = [
   { text: '여호와의 자비와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것이 아침마다 새로우니 주의 성실이 크도소이다', ref: '애가 3:22-23', engText: 'Because of the Lord\'s great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.' },
   { text: '나를 능하게 하신 그리스도 예수 우리 주께 내가 감사함은 나를 충성되이 여겨 내게 직분을 맡기심이니', ref: '디모데전서 1:12', engText: 'I thank Christ Jesus our Lord, who has given me strength, that he considered me trustworthy, appointing me to his service.' },
   { text: '일의 결국을 다 들었으니 하나님을 경외하고 그의 명령들을 지킬지어다 이것이 모든 사람의 본분이니라', ref: '전도서 12:13', engText: 'Now all has been heard; here is the conclusion of the matter: Fear God and keep his commandments, for this is the duty of all mankind.' },
-  { text: '너는 청년의 때에 너의 창조주를 기억하라 곧 곤고한 날이 이르기 전에 나는 아무 낙이 없다고 할 해들이 가깝기 전에', ref: '전도서 12:1', engText: 'Remember your Creator in the days of your youth, before the days of trouble come and the years approach when you will say, "I find no pleasure in them."' },
+  { text: '너는 청년의 때 곧 곤고한 날이 이르기 전, 나는 아무 낙이 없다고 할 해가 가깝기 전에 너의 창조자를 기억하라', ref: '전도서 12:1', engText: 'Remember your Creator in the days of your youth, before the days of trouble come and the years approach when you will say, "I find no pleasure in them."' },
   { text: '하나님이 모든 것을 지으시되 때를 따라 아름답게 하셨고 또 사람들에게는 영원을 사모하는 마음을 주셨느니라', ref: '전도서 3:11', engText: 'He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end.' }
 ];
 

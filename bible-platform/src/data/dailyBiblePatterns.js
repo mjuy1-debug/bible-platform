@@ -232,6 +232,17 @@ export const DAILY_BIBLE_PATTERNS = [
     explanation: '전도서 전체의 최종 결론으로, 명령문 뒤에 "for(왜냐하면)" 이유 부사절이 결합되어 하나님을 경외하고 순종하는 삶이야말로 인간 존재의 가장 본질적인 사명이자 마땅한 도리임을 선포하는 장엄한 패턴입니다.',
     exampleSentence: 'Love the Lord and walk in His truth, for this is the true joy of believers.',
     exampleMeaning: '주님을 사랑하고 그분의 진리 안에서 걸으라, 왜냐하면 이것이 성도의 참된 기쁨이기 때문이다.'
+  },
+  {
+    id: 'pat_ecc_01201',
+    ref: '전도서 12:1',
+    korVerse: '너는 청년의 때 곧 곤고한 날이 이르기 전, 나는 아무 낙이 없다고 할 해가 가깝기 전에 너의 창조자를 기억하라',
+    engVerse: 'Remember your Creator in the days of your youth, before the days of trouble come.',
+    pattern: 'Remember [A] in [때/시절], before [환난/노년의 날] come (인생의 우선순위)',
+    meaning: '어려움과 곤고한 날이 이르기 전에, 가장 젊고 귀한 시절에 네 창조주를 기억하라',
+    explanation: '"Remember ~ before ..." 패턴은 세월이 흘러 힘을 잃고 후회하기 전, 인생의 가장 밝고 활동적인 시기에 하나님을 삶의 첫 자리에 모시라는 엄숙하고 따뜻한 지혜자의 권면입니다.',
+    exampleSentence: 'Remember the Lord in your daily youth, before the storms of life arrive.',
+    exampleMeaning: '인생의 거센 폭풍이 닥치기 전에, 매일의 젊음 속에서 주님을 기억하라.'
   }
 ];
 
