@@ -108,8 +108,28 @@ export const ENGLISH_TRANSLATIONS = [
   { id: 'KJV', name: 'KJV (고전 흠정역)', desc: '역사적인 고전 영어 성경' }
 ];
 
+// 영어 책 이름 매핑 (bible-api.com 및 폴백용)
+const ENGLISH_BOOK_NAMES = {
+  gen: 'genesis', exo: 'exodus', lev: 'leviticus', num: 'numbers', deu: 'deuteronomy',
+  jos: 'joshua', jdg: 'judges', rut: 'ruth', '1sa': '1samuel', '2sa': '2samuel',
+  '1ki': '1kings', '2ki': '2kings', '1ch': '1chronicles', '2ch': '2chronicles', ezr: 'ezra',
+  neh: 'nehemiah', est: 'esther', job: 'job', psa: 'psalms', pro: 'proverbs',
+  ecc: 'ecclesiastes', sng: 'songofsolomon', isa: 'isaiah', jer: 'jeremiah', lam: 'lamentations',
+  eze: 'ezekiel', dan: 'daniel', hos: 'hosea', joe: 'joel', amo: 'amos',
+  oba: 'obadiah', jon: 'jonah', mic: 'micah', nah: 'nahum', hab: 'habakkuk',
+  zep: 'zephaniah', hag: 'haggai', zec: 'zechariah', mal: 'malachi',
+  mat: 'matthew', mar: 'mark', luk: 'luke', joh: 'john', act: 'acts',
+  rom: 'romans', '1co': '1corinthians', '2co': '2corinthians', gal: 'galatians', eph: 'ephesians',
+  php: 'philippians', col: 'colossians', '1th': '1thessalonians', '2th': '2thessalonians', '1ti': '1timothy',
+  '2ti': '2timothy', tit: 'titus', phm: 'philemon', heb: 'hebrews', jam: 'james',
+  '1pe': '1peter', '2pe': '2peter', '1jo': '1john', '2jo': '2john', '3jo': '3john',
+  jud: 'jude', rev: 'revelation',
+};
+
 /**
- * 특정 책/장의 영어 성경 구절 배열을 반환 (bolls.life API)
+ * 특정 책/장의 영어 성경 구절 배열을 반환 (다단계 글로벌 API 폴백 지원)
+ * 1차: bolls.life (NIV, ESV, KJV, NLT)
+ * 2차: bible-api.com (KJV, WEB)
  * @param {string} bookId - 책 코드 (예: 'joh', 'gen')
  * @param {number} chapter - 장 번호
  * @param {string} translation - 'NIV' | 'NLT' | 'ESV' | 'KJV'
@@ -117,58 +137,98 @@ export const ENGLISH_TRANSLATIONS = [
  */
 export const fetchEnglishChapter = async (bookId, chapter, translation = 'NIV') => {
   const cacheKey = `eng-${translation}-${bookId}-${chapter}`;
-  if (cache[cacheKey]) return cache[cacheKey];
+  if (cache[cacheKey] && cache[cacheKey].length > 0) return cache[cacheKey];
 
   const bookNum = BOOK_NUMBER_MAP[bookId];
-  if (!bookNum) throw new Error(`알 수 없는 책 ID: ${bookId}`);
+  if (!bookNum) return [];
 
+  // 1차: bolls.life 시도
   try {
     const url = `${BASE_URL}/get-chapter/${translation}/${bookNum}/${chapter}/`;
     const res = await fetch(url, { headers: { Accept: 'application/json' } });
 
-    if (!res.ok) {
-      // NLT 실패 시 NIV 폴백
-      if (translation !== 'NIV') {
-        return await fetchEnglishChapter(bookId, chapter, 'NIV');
+    if (res.ok) {
+      const raw = await res.json();
+      if (Array.isArray(raw) && raw.length > 0) {
+        const verses = raw.map((v) => {
+          let cleanText = (v.text || '')
+            .replace(/<h\d?[^>]*>.*?<\/h\d?>/gi, ' ') // 소제목 헤딩 태그 제거
+            .replace(/<[^>]+>/g, ' ') // 모든 HTML 태그 공백 치환
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&#39;/g, "'")
+            .replace(/&quot;/g, '"')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          // 첫 부분 소제목 중복 정제
+          cleanText = cleanText
+            .replace(/^The\s+Beginning\s+(In\s+the\s+beginning)/i, '$1')
+            .replace(/^The\s+Beginning\s+/i, '')
+            .replace(/^The\s+Creation\s+/i, '')
+            .trim();
+
+          return {
+            verse: v.verse,
+            text: cleanText,
+          };
+        });
+
+        if (verses.length > 0) {
+          cache[cacheKey] = verses;
+          return verses;
+        }
       }
-      throw new Error(`API 오류 ${res.status}: ${bookId} ${chapter}장 (${translation})`);
     }
-
-    const raw = await res.json();
-    const verses = raw.map((v) => {
-      let cleanText = v.text
-        .replace(/<h\d?[^>]*>.*?<\/h\d?>/gi, ' ') // 소제목 태그 제거
-        .replace(/<b[^>]*>.*?<\/b>/gi, ' ') // 굵은 소제목 태그 제거
-        .replace(/<[^>]+>/g, ' ') // 모든 HTML 태그를 공백으로 치환
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&#39;/g, "'")
-        .replace(/&quot;/g, '"')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      // 문장 맨 앞의 소제목 헤딩 제거 (예: The Beginning In the beginning -> In the beginning)
-      cleanText = cleanText
-        .replace(/^The\s+Beginning\s+(In\s+the\s+beginning)/i, '$1')
-        .replace(/^The\s+Beginning\s+/i, '')
-        .replace(/^The\s+Creation\s+/i, '')
-        .trim();
-
-      return {
-        verse: v.verse,
-        text: cleanText,
-      };
-    });
-
-    cache[cacheKey] = verses;
-    return verses;
   } catch (err) {
-    console.warn(`영어 성경 로드 오류 (${translation}):`, err.message);
-    // 실패 시 빈 배열 반환
-    return [];
+    console.warn(`bolls.life (${translation}) 호출 실패, 폴백 시도:`, err.message);
   }
+
+  // 2차: bolls.life 내 KJV / ESV 시도
+  if (translation !== 'KJV') {
+    try {
+      const altTrans = translation === 'NIV' ? 'ESV' : 'KJV';
+      const altUrl = `${BASE_URL}/get-chapter/${altTrans}/${bookNum}/${chapter}/`;
+      const res = await fetch(altUrl, { headers: { Accept: 'application/json' } });
+      if (res.ok) {
+        const raw = await res.json();
+        if (Array.isArray(raw) && raw.length > 0) {
+          const verses = raw.map(v => ({
+            verse: v.verse,
+            text: (v.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+          }));
+          cache[cacheKey] = verses;
+          return verses;
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // 3차: bible-api.com 공개 고속 API 폴백
+  try {
+    const engBook = ENGLISH_BOOK_NAMES[bookId] || bookId;
+    const bibleApiUrl = `https://bible-api.com/${engBook}+${chapter}?translation=kjv`;
+    const res = await fetch(bibleApiUrl);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.verses && data.verses.length > 0) {
+        const verses = data.verses.map(v => ({
+          verse: v.verse,
+          text: (v.text || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+        }));
+        cache[cacheKey] = verses;
+        return verses;
+      }
+    }
+  } catch (err) {
+    console.warn(`bible-api.com 폴백 실패:`, err.message);
+  }
+
+  return [];
 };
 
 /**

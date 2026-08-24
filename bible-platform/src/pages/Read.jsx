@@ -198,6 +198,20 @@ const Read = () => {
     loadChapter(selectedBook.id, selectedChapter, englishTranslation);
   }, [selectedBook.id, selectedChapter, englishTranslation]);
 
+  // 언어 모드(한/영 대조, 영어) 전환 시 영어 성경이 비어있으면 즉시 자동 로드
+  useEffect(() => {
+    if (languageMode !== 'korean' && englishVerses.length === 0 && selectedBook?.id) {
+      fetchEnglishChapter(selectedBook.id, selectedChapter, englishTranslation)
+        .then(engData => {
+          if (engData && engData.length > 0) {
+            setEnglishVerses(engData);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [languageMode, englishTranslation, selectedBook?.id, selectedChapter, englishVerses.length]);
+
+
   const [isReadingChapter, setIsReadingChapter] = useState(false);
   const [readingVerseNum, setReadingVerseNum] = useState(null);
   const isSpeakingRef = useRef(false);
@@ -824,13 +838,26 @@ const Read = () => {
                     )}
 
                     {/* 영어 본문 (100% 온전한 가로폭 + 인라인 미니멀 스피커) */}
-                    {languageMode !== 'korean' && engText && (
+                    {languageMode !== 'korean' && (
                       <div style={{
                         width: '100%',
-                        marginTop: languageMode === 'parallel' ? '2px' : '0',
+                        marginTop: languageMode === 'parallel' ? '4px' : '0',
                         lineHeight: 1.85,
                       }}>
-                        {renderEnglishText(engText, v.verse)}
+                        {engText ? (
+                          renderEnglishText(engText, v.verse)
+                        ) : (
+                          <div style={{ fontSize: '0.82rem', color: 'rgba(212,175,55,0.7)', fontStyle: 'italic', padding: '2px 0' }}>
+                            {languageMode === 'english' ? (
+                              <>
+                                <span style={{ color: 'var(--text-secondary)', marginRight: '6px' }}>({v.text})</span>
+                                <span style={{ fontSize: '0.74rem' }}>[영어 번역 불러오는 중...]</span>
+                              </>
+                            ) : (
+                              <span>(영어 대역 번역 로딩 중...)</span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
