@@ -6,7 +6,7 @@ import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search,
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
-import { getTodayBiblePattern } from '../data/dailyBiblePatterns';
+import { getTodayBiblePattern, getPatternForVerse } from '../data/dailyBiblePatterns';
 import LiveBanner from '../components/LiveBanner';
 
 // 홈화면 퀵 링크 - 주요 기능
@@ -39,7 +39,8 @@ const Home = () => {
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
   const todayVerse = getTodayVerse();
-  const todayPattern = getTodayBiblePattern();
+  // 영어 탭 패턴: 오늘의 말씀 구절에 매칭된 패턴, 없으면 자동 추출
+  const todayPattern = getPatternForVerse(todayVerse.ref, todayVerse.engText || '');
 
   const [verseTab, setVerseTab] = useState('korean'); // 'korean' | 'english_pattern'
   const [isSpeakingEng, setIsSpeakingEng] = useState(false);
