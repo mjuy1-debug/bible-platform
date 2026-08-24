@@ -6,6 +6,7 @@ import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search,
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
+import { getTodayBiblePattern } from '../data/dailyBiblePatterns';
 import LiveBanner from '../components/LiveBanner';
 
 // 홈화면 퀵 링크 - 주요 기능
@@ -38,6 +39,26 @@ const Home = () => {
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
   const todayVerse = getTodayVerse();
+  const todayPattern = getTodayBiblePattern();
+
+  const [verseTab, setVerseTab] = useState('korean'); // 'korean' | 'english_pattern'
+  const [isSpeakingEng, setIsSpeakingEng] = useState(false);
+
+  const speakEngVerse = (text) => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (isSpeakingEng) {
+      setIsSpeakingEng(false);
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.85;
+    utterance.onend = () => setIsSpeakingEng(false);
+    utterance.onerror = () => setIsSpeakingEng(false);
+    setIsSpeakingEng(true);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const upcoming = useMemo(() => getUpcomingEvents(events, 3), [events]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -88,25 +109,126 @@ const Home = () => {
         </motion.p>
       </div>
 
-      {/* Today's Verse */}
+      {/* Today's Verse & Daily Pattern Card */}
       <motion.div className="glass-card"
-        style={{ maxWidth: '720px', margin: '0 auto 2.5rem', textAlign: 'center', padding: 'clamp(1.5rem, 4vw, 2.5rem)', position: 'relative' }}
+        style={{ maxWidth: '760px', margin: '0 auto 2.5rem', textAlign: 'center', padding: 'clamp(1.2rem, 4vw, 2.2rem)', position: 'relative', borderRadius: '24px' }}
         initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-        <p style={{ fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent-gold)', marginBottom: '1.5rem', fontWeight: 700 }}>
-          ✦ 오늘의 말씀 ✦
-        </p>
-        <p className="serif-font" style={{ fontSize: 'clamp(1.05rem, 2.8vw, 1.5rem)', lineHeight: 1.9, marginBottom: '1.2rem', color: 'var(--text-primary)', wordBreak: 'keep-all' }}>
-          &ldquo;{todayVerse.text}&rdquo;
-        </p>
-        <p style={{ color: 'var(--accent-gold)', fontStyle: 'italic', fontWeight: 600, fontSize: '0.9rem' }}>
-          — {todayVerse.ref} —
-        </p>
-        <Link to="/devotion" state={{ verse: todayVerse.ref, verseText: todayVerse.text }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '1.5rem',
-            background: 'rgba(196,164,132,0.15)', color: 'var(--accent-gold)', padding: '0.55rem 1.3rem',
-            borderRadius: '30px', border: '1px solid var(--glass-border)', fontWeight: 600, fontSize: '0.88rem' }}>
-          ✏️ 이 말씀으로 묵상 쓰기 →
-        </Link>
+        
+        {/* 상단 탭 전환: [오늘의 말씀] vs [하루 1 영어패턴] */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '1.2rem' }}>
+          <button
+            onClick={() => setVerseTab('korean')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '20px',
+              border: 'none',
+              background: verseTab === 'korean' ? 'var(--accent-gold)' : 'rgba(255,255,255,0.06)',
+              color: verseTab === 'korean' ? '#111' : 'var(--text-secondary)',
+              fontWeight: 800,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+          >
+            ✦ 오늘의 말씀
+          </button>
+          <button
+            onClick={() => setVerseTab('english_pattern')}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '20px',
+              border: 'none',
+              background: verseTab === 'english_pattern' ? 'var(--accent-gold)' : 'rgba(255,255,255,0.06)',
+              color: verseTab === 'english_pattern' ? '#111' : 'var(--text-secondary)',
+              fontWeight: 800,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+          >
+            🇺🇸 하루 1 영어패턴
+          </button>
+        </div>
+
+        {verseTab === 'korean' ? (
+          <div>
+            <p className="serif-font" style={{ fontSize: 'clamp(1.05rem, 2.8vw, 1.45rem)', lineHeight: 1.9, marginBottom: '1.2rem', color: 'var(--text-primary)', wordBreak: 'keep-all' }}>
+              &ldquo;{todayVerse.text}&rdquo;
+            </p>
+            <p style={{ color: 'var(--accent-gold)', fontStyle: 'italic', fontWeight: 600, fontSize: '0.9rem' }}>
+              — {todayVerse.ref} —
+            </p>
+            <Link to="/devotion" state={{ verse: todayVerse.ref, verseText: todayVerse.text }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '1.5rem',
+                background: 'rgba(196,164,132,0.15)', color: 'var(--accent-gold)', padding: '0.55rem 1.3rem',
+                borderRadius: '30px', border: '1px solid var(--glass-border)', fontWeight: 600, fontSize: '0.88rem' }}>
+              ✏️ 이 말씀으로 묵상 쓰기 →
+            </Link>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '16px', border: '1px solid rgba(212,175,55,0.2)' }}>
+            {/* 영문 구절 */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+              <div>
+                <span style={{ fontSize: '0.74rem', background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>
+                  NIV 영문 구절
+                </span>
+                <p style={{ margin: '6px 0 2px', fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.6 }}>
+                  &ldquo;{todayPattern.engVerse}&rdquo;
+                </p>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                  — {todayPattern.ref} ({todayPattern.korVerse})
+                </span>
+              </div>
+
+              <button
+                onClick={() => speakEngVerse(todayPattern.engVerse)}
+                style={{
+                  background: isSpeakingEng ? '#ef4444' : 'var(--accent-gold)',
+                  border: 'none',
+                  color: isSpeakingEng ? '#fff' : '#111',
+                  borderRadius: '10px',
+                  padding: '6px 10px',
+                  fontSize: '0.74rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  flexShrink: 0
+                }}
+              >
+                {isSpeakingEng ? '중지' : '🔊 발음 듣기'}
+              </button>
+            </div>
+
+            {/* 핵심 문법 패턴 박스 */}
+            <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+              <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '4px' }}>
+                💡 오늘의 핵심 패턴: <span style={{ color: '#fff' }}>{todayPattern.pattern}</span>
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 700, marginBottom: '6px' }}>
+                👉 뜻: {todayPattern.meaning}
+              </div>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '0 0 8px', lineHeight: 1.5 }}>
+                {todayPattern.explanation}
+              </p>
+              <div style={{ fontSize: '0.78rem', background: 'rgba(255,255,255,0.04)', padding: '6px 10px', borderRadius: '8px', borderLeft: '3px solid var(--accent-gold)' }}>
+                <span style={{ fontWeight: 700, color: 'var(--accent-gold)' }}>✨ 적용 예문:</span> {todayPattern.exampleSentence}<br />
+                <span style={{ color: 'var(--text-secondary)', fontSize: '0.74rem' }}>({todayPattern.exampleMeaning})</span>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '12px' }}>
+              <Link to="/memorize"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                  background: 'rgba(212,175,55,0.15)', color: 'var(--accent-gold)', padding: '0.45rem 1.1rem',
+                  borderRadius: '20px', border: '1px solid var(--glass-border)', fontWeight: 700, fontSize: '0.82rem' }}>
+                🧠 영어 말씀 4단계 암송하러 가기 →
+              </Link>
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* Stats */}

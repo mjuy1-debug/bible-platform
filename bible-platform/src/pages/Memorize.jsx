@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Brain, RefreshCw, Star, BookOpen, Trophy, Trash2, Lightbulb, 
   Volume2, VolumeX, Sparkles, CheckCircle2, ChevronRight, BookMarked,
-  Layers, Key, Eye, EyeOff, RotateCcw, Share2, Copy, Check, Award, ArrowRight
+  Layers, Key, Eye, EyeOff, RotateCcw, Share2, Copy, Check, Award, ArrowRight, Globe
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
@@ -22,9 +22,23 @@ function saveRecords(records) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 }
 
+// 영어 첫 글자 힌트 생성기 (예: For God so loved -> F__ G__ s_ l____)
+function getEnglishInitialHint(text) {
+  if (!text) return '';
+  return text.split(' ').map(word => {
+    if (!word) return '';
+    const firstChar = word[0];
+    const rest = word.slice(1).replace(/[a-zA-Z]/g, '_');
+    return firstChar + rest;
+  }).join(' ');
+}
+
 export default function Memorize() {
   const location = useLocation();
   const { memorized = {}, toggleMemorized, showToast } = useContext(UserContext);
+
+  // 언어 모드 ('kr': 개역한글, 'en': NIV 영어)
+  const [languageMode, setLanguageMode] = useState('kr');
 
   // 기본 상태
   const [selectedVerse, setSelectedVerse] = useState(MEMORIZE_VERSES[0]);
@@ -33,7 +47,7 @@ export default function Memorize() {
   const [activeCategory, setActiveCategory] = useState('essential');
   const [activeTab, setActiveTab] = useState('train'); // 'train' | 'library' | 'records' | 'tips'
 
-  // 암송 훈련 모드 (1: 낭독/듣기, 2: 초성힌트, 3: 단어퍼즐, 4: 블라인드 마스터)
+  // 암송 훈련 모드 (1: 낭독/듣기, 2: 초성/첫글자힌트, 3: 단어퍼즐, 4: 블라인드 마스터)
   const [trainingStage, setTrainingStage] = useState(1);
   const [trainingActive, setTrainingActive] = useState(true);
 
@@ -59,6 +73,17 @@ export default function Memorize() {
   const [records, setRecords] = useState(loadRecords);
   const [copied, setCopied] = useState(false);
 
+  // 언어 변경 시 텍스트 동기화
+  const handleLanguageToggle = (mode) => {
+    stopTTS();
+    setLanguageMode(mode);
+    const targetText = mode === 'en' ? (selectedVerse.engText || selectedVerse.text) : selectedVerse.text;
+    setCustomVerse(targetText);
+    setTrainingStage(1);
+    setSuccess(false);
+    setBlindInput('');
+  };
+
   // 외부(예: 성경 읽기)에서 넘어온 구절 처리
   useEffect(() => {
     if (location.state?.verse) {
@@ -67,6 +92,7 @@ export default function Memorize() {
       setSelectedVerse({
         id: 'custom_' + Date.now(),
         text: location.state.verse,
+        engText: location.state.engVerse || location.state.verse,
         ref: location.state.reference || '선택한 말씀',
         topic: '직접 선택'
       });
@@ -79,7 +105,8 @@ export default function Memorize() {
   const handleSelectVerse = (v) => {
     stopTTS();
     setSelectedVerse(v);
-    setCustomVerse(v.text);
+    const targetText = languageMode === 'en' ? (v.engText || v.text) : v.text;
+    setCustomVerse(targetText);
     setCustomRef(v.ref);
     setTrainingActive(true);
     setTrainingStage(1);
@@ -189,8 +216,8 @@ export default function Memorize() {
 
     stopTTS();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ko-KR';
-    utterance.rate = 0.88; // 또박또박한 낭독 속도
+    utterance.lang = languageMode === 'en' ? 'en-US' : 'ko-KR';
+    utterance.rate = languageMode === 'en' ? 0.85 : 0.88; // 또박또박한 낭독 속도
     utterance.pitch = 1.0;
 
     let loopCounter = 0;
@@ -369,17 +396,53 @@ export default function Memorize() {
             border: '1px solid var(--glass-border)',
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{
-                fontSize: '0.8rem',
-                fontWeight: 800,
-                color: 'var(--accent-gold)',
-                background: 'rgba(212, 175, 55, 0.12)',
-                padding: '4px 10px',
-                borderRadius: '8px'
-              }}>
-                📖 {customRef || '성경 암송 구절'}
-              </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: 'var(--accent-gold)',
+                  background: 'rgba(212, 175, 55, 0.12)',
+                  padding: '4px 10px',
+                  borderRadius: '8px'
+                }}>
+                  📖 {customRef || '성경 암송 구절'}
+                </span>
+
+                {/* 🇰🇷 한글 / 🇺🇸 영어 전환 버튼 */}
+                <div style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', borderRadius: '8px', padding: '2px', border: '1px solid var(--glass-border)' }}>
+                  <button
+                    onClick={() => handleLanguageToggle('kr')}
+                    style={{
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: languageMode === 'kr' ? 'var(--accent-gold)' : 'transparent',
+                      color: languageMode === 'kr' ? '#111' : 'var(--text-secondary)',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🇰🇷 한글
+                  </button>
+                  <button
+                    onClick={() => handleLanguageToggle('en')}
+                    style={{
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: languageMode === 'en' ? 'var(--accent-gold)' : 'transparent',
+                      color: languageMode === 'en' ? '#111' : 'var(--text-secondary)',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🇺🇸 English
+                  </button>
+                </div>
+              </div>
 
               <button
                 onClick={() => setActiveTab('library')}
@@ -578,7 +641,7 @@ export default function Memorize() {
                   wordBreak: 'keep-all',
                   overflowWrap: 'break-word'
                 }}>
-                  {getInitialConsonants(customVerse)}
+                  {languageMode === 'en' ? getEnglishInitialHint(customVerse) : getInitialConsonants(customVerse)}
                 </div>
 
                 {blindShowHint && (

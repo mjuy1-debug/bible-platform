@@ -702,23 +702,25 @@ const Read = () => {
       <AnimatePresence>
         {activeWordData && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            exit={{ opacity: 0, y: 30, scale: 0.95 }}
             style={{
               position: 'fixed',
-              bottom: 'calc(var(--bottomnav-height, 64px) + 20px)',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 9999,
-              maxWidth: '420px',
-              width: 'calc(100% - 32px)',
+              bottom: 'calc(var(--bottomnav-height, 64px) + 24px)',
+              left: '16px',
+              right: '16px',
+              margin: '0 auto',
+              zIndex: 99999,
+              maxWidth: '440px',
+              width: 'auto',
               background: 'var(--bg-secondary)',
-              border: '1.5px solid var(--accent-gold)',
-              borderRadius: '18px',
-              padding: '14px 16px',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
-              color: 'var(--text-primary)'
+              border: '2px solid var(--accent-gold)',
+              borderRadius: '20px',
+              padding: '16px 18px',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.6)',
+              color: 'var(--text-primary)',
+              boxSizing: 'border-box'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
