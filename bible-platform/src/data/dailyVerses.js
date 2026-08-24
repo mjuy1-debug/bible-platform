@@ -243,11 +243,16 @@ export function getTodayVerse() {
   const todayKey = `${today.getFullYear()}_${dayOfYear}`;
   const todayStorageKey = `${STORAGE_KEY_PREFIX}today_${todayKey}`;
 
-  // 오늘 이미 선택된 말씀이 있으면 반환
+  // 오늘 이미 선택된 말씀이 있으면 반환 (최신 개역한글 원문으로 동기화)
   try {
     const todayVerse = localStorage.getItem(todayStorageKey);
     if (todayVerse) {
-      return JSON.parse(todayVerse);
+      const parsed = JSON.parse(todayVerse);
+      const matched = baseVerses.find(b => parsed.ref && parsed.ref.startsWith(b.ref));
+      if (matched) {
+        return { ...parsed, text: matched.text };
+      }
+      return parsed;
     }
   } catch {
     // ignore
