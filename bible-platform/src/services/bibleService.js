@@ -152,8 +152,13 @@ export const fetchEnglishChapter = async (bookId, chapter, translation = 'NIV') 
       if (Array.isArray(raw) && raw.length > 0) {
         const verses = raw.map((v) => {
           let cleanText = (v.text || '')
+            .replace(/<S>\s*\d+\s*<\/S>/gi, '') // 스트롱 코드 원어 번호 태그 및 숫자 완전 제거 (<S>7225</S>)
+            .replace(/<s:[^>]+>.*?<\/s:[^>]+>/gi, '') // 네임스페이스 스트롱 태그 제거
+            .replace(/<sup[^>]*>.*?<\/sup>/gi, '') // 각주/절번호 상첨자 제거
             .replace(/<h\d?[^>]*>.*?<\/h\d?>/gi, ' ') // 소제목 헤딩 태그 제거
             .replace(/<[^>]+>/g, ' ') // 모든 HTML 태그 공백 치환
+            .replace(/\{[^\}]*\}/g, '') // 중괄호 각주 제거
+            .replace(/\[\d+\]/g, '') // 대괄호 숫자 각주 제거
             .replace(/&nbsp;/g, ' ')
             .replace(/&amp;/g, '&')
             .replace(/&lt;/g, '<')
