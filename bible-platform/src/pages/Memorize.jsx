@@ -87,17 +87,29 @@ export default function Memorize() {
   // 외부(예: 성경 읽기)에서 넘어온 구절 처리
   useEffect(() => {
     if (location.state?.verse) {
-      setCustomVerse(location.state.verse);
+      const incomingMode = location.state.initialMode || 'kr'; // 'en' or 'kr'
+      const verse = location.state.verse;
+      const engVerse = location.state.engVerse || verse;
+
+      // 언어 모드 먼저 세팅
+      setLanguageMode(incomingMode);
+
+      // 표시할 텍스트: 영어 모드면 영어 구절로
+      const displayText = incomingMode === 'en' ? engVerse : verse;
+
+      setCustomVerse(displayText);
       setCustomRef(location.state.reference || '성경 구절');
       setSelectedVerse({
         id: 'custom_' + Date.now(),
-        text: location.state.verse,
-        engText: location.state.engVerse || location.state.verse,
+        text: verse,
+        engText: engVerse,
         ref: location.state.reference || '선택한 말씀',
         topic: '직접 선택'
       });
       setTrainingActive(true);
+      setTrainingStage(1);
       setSuccess(false);
+      setBlindInput('');
     }
   }, [location]);
 

@@ -132,7 +132,26 @@ const Read = () => {
     const refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
     const textStr = sortedVerses.map(v => v.text).join(' ');
     
-    navigate('/memorize', { state: { verse: textStr, reference: refText } });
+    // 영어 구절 텍스트 추출
+    const engTextStr = sortedVerses
+      .map(v => {
+        const engItem = englishVerses.find(ev => ev.verse === v.verse);
+        return engItem?.text || '';
+      })
+      .filter(Boolean)
+      .join(' ');
+    
+    // 현재 읽기 화면이 영어 모드이면 암송도 영어 모드로 즉시 시작
+    const initialMode = languageMode === 'english' ? 'en' : 'kr';
+
+    navigate('/memorize', {
+      state: {
+        verse: textStr,
+        engVerse: engTextStr || textStr,
+        reference: refText,
+        initialMode: initialMode
+      }
+    });
     setSelectedVerses({});
   };
 
