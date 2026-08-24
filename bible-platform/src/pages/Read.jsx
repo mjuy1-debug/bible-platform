@@ -764,7 +764,8 @@ const Read = () => {
               const fullRef = `${selectedBook.name} ${selectedChapter}:${v.verse}`;
               const isSelected = !!selectedVerses[ref];
               const memorizedKey = memorized && (memorized[ref] ? ref : memorized[fullRef] ? fullRef : null);
-              const engItem = englishVerses.find(ev => ev.verse === v.verse);
+              const engItem = englishVerses.find(ev => Number(ev.verse) === Number(v.verse));
+              const engText = engItem?.text || '';
               const isCurrentReading = readingVerseNum === v.verse;
 
               return (
