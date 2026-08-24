@@ -144,11 +144,12 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
   return (
     <div style={{
       marginTop: '1.5rem',
-      background: 'rgba(20, 20, 28, 0.7)',
-      border: '1px solid rgba(212, 175, 55, 0.35)',
+      background: 'var(--bg-secondary)',
+      border: '1px solid var(--glass-border)',
       borderRadius: '16px',
       padding: 'clamp(1rem, 3.5vw, 1.4rem)',
-      color: 'var(--text-primary)'
+      color: 'var(--text-primary)',
+      boxShadow: 'var(--shadow-sm)'
     }}>
       {/* 헤더 바 */}
       <div style={{
@@ -158,7 +159,7 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
         flexWrap: 'wrap',
         gap: '8px',
         marginBottom: '1rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: '1px solid var(--glass-border)',
         paddingBottom: '10px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -193,7 +194,7 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
               gap: '4px',
               padding: '6px 12px',
               borderRadius: '8px',
-              background: 'rgba(255, 255, 255, 0.06)',
+              background: 'rgba(212, 175, 55, 0.12)',
               border: '1px solid var(--glass-border)',
               color: 'var(--text-primary)',
               fontSize: '0.78rem',
@@ -208,15 +209,15 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
       </div>
 
       {/* 노트 작성 입력 폼 */}
-      <form onSubmit={handleAddNote} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1.2rem' }}>
+      <form onSubmit={handleAddNote} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '1.2rem' }}>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
           {/* 타임스탬프 입력/버튼 */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            background: 'rgba(0, 0, 0, 0.4)',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
+            background: 'var(--bg-primary)',
+            border: '1.5px solid var(--accent-gold)',
             borderRadius: '8px',
             padding: '4px 8px'
           }}>
@@ -227,11 +228,11 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
               value={manualTime}
               onChange={e => setManualTime(e.target.value)}
               style={{
-                width: '50px',
+                width: '54px',
                 background: 'transparent',
                 border: 'none',
-                color: 'var(--accent-gold)',
-                fontSize: '0.85rem',
+                color: 'var(--text-primary)',
+                fontSize: '0.88rem',
                 fontWeight: 800,
                 outline: 'none',
                 textAlign: 'center'
@@ -243,21 +244,25 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
             type="button"
             onClick={() => setManualTime(formatSeconds(currentVideoTime || 0))}
             style={{
-              padding: '6px 10px',
+              padding: '6px 12px',
               borderRadius: '8px',
               background: 'rgba(212, 175, 55, 0.15)',
-              border: '1px solid rgba(212, 175, 55, 0.35)',
+              border: '1px solid var(--accent-gold)',
               color: 'var(--accent-gold)',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              cursor: 'pointer'
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
             }}
           >
             ⏱️ 현재 시각({formatSeconds(currentVideoTime || 0)}) 태그
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        {/* 텍스트 입력창 + 기록 버튼 (반응형 넘침 방지) */}
+        <div style={{ display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
           <input
             type="text"
             placeholder="은혜받은 말씀이나 깨달음을 기록하세요..."
@@ -265,31 +270,35 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
             onChange={e => setInputNote(e.target.value)}
             style={{
               flex: 1,
-              padding: '10px 14px',
+              minWidth: 0,
+              padding: '11px 14px',
               borderRadius: '10px',
-              background: 'rgba(0, 0, 0, 0.4)',
+              background: 'var(--bg-primary)',
               border: '1px solid var(--glass-border)',
               color: 'var(--text-primary)',
-              fontSize: '0.88rem',
-              outline: 'none'
+              fontSize: '0.9rem',
+              fontWeight: 500,
+              outline: 'none',
+              boxSizing: 'border-box'
             }}
           />
 
           <button
             type="submit"
             style={{
-              padding: '10px 18px',
+              padding: '10px 16px',
               borderRadius: '10px',
               background: 'var(--accent-gold)',
               border: 'none',
-              color: '#111',
-              fontSize: '0.85rem',
+              color: '#1a1a2e',
+              fontSize: '0.88rem',
               fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              flexShrink: 0
+              flexShrink: 0,
+              boxShadow: '0 2px 8px rgba(212, 175, 55, 0.25)'
             }}
           >
             {editingId ? <Check size={16} /> : <Plus size={16} />}
@@ -306,8 +315,9 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
             padding: '1.5rem',
             color: 'var(--text-secondary)',
             fontSize: '0.84rem',
-            background: 'rgba(255, 255, 255, 0.02)',
-            borderRadius: '12px'
+            background: 'var(--bg-primary)',
+            borderRadius: '12px',
+            border: '1px dashed var(--glass-border)'
           }}>
             ✍️ 설교를 들으시며 마음에 와닿는 순간을 메모해보세요.
           </div>
@@ -324,7 +334,7 @@ export default function SermonNotesPanel({ sermon, currentVideoTime = 0, onSeekT
                 gap: '10px',
                 padding: '10px 12px',
                 borderRadius: '10px',
-                background: 'rgba(255, 255, 255, 0.03)',
+                background: 'var(--bg-primary)',
                 border: '1px solid var(--glass-border)'
               }}
             >

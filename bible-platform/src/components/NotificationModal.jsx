@@ -207,12 +207,12 @@ export default function NotificationModal({ isOpen, onClose }) {
               alignItems: 'center',
               padding: '12px 14px',
               borderRadius: '12px',
-              background: 'rgba(255, 255, 255, 0.03)',
+              background: 'var(--bg-primary)',
               border: '1px solid var(--glass-border)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Clock size={16} color="var(--accent-gold)" />
-                <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>아침 말씀 알림 시간</span>
+                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-primary)' }}>아침 말씀 알림 시간</span>
               </div>
 
               <input
@@ -220,9 +220,9 @@ export default function NotificationModal({ isOpen, onClose }) {
                 value={settings.morningTime}
                 onChange={handleTimeChange}
                 style={{
-                  background: 'var(--bg-primary)',
+                  background: 'var(--bg-secondary)',
                   border: '1px solid var(--glass-border)',
-                  color: 'var(--accent-gold)',
+                  color: 'var(--text-primary)',
                   borderRadius: '8px',
                   padding: '4px 8px',
                   fontSize: '0.9rem',
@@ -247,13 +247,13 @@ export default function NotificationModal({ isOpen, onClose }) {
                   alignItems: 'center',
                   padding: '12px 14px',
                   borderRadius: '12px',
-                  background: 'rgba(255, 255, 255, 0.02)',
+                  background: 'var(--bg-primary)',
                   border: '1px solid var(--glass-border)',
                   cursor: 'pointer'
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.86rem', fontWeight: 700 }}>{item.label}</div>
+                  <div style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--text-primary)' }}>{item.label}</div>
                   <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>{item.desc}</div>
                 </div>
 
@@ -261,12 +261,12 @@ export default function NotificationModal({ isOpen, onClose }) {
                   width: '20px',
                   height: '20px',
                   borderRadius: '6px',
-                  border: `1.5px solid ${settings.topics[item.key] ? 'var(--accent-gold)' : 'rgba(255,255,255,0.3)'}`,
+                  border: `1.5px solid ${settings.topics[item.key] ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
                   background: settings.topics[item.key] ? 'var(--accent-gold)' : 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#111'
+                  color: '#1a1a2e'
                 }}>
                   {settings.topics[item.key] && <Check size={14} strokeWidth={3} />}
                 </div>
