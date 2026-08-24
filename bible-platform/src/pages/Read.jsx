@@ -345,7 +345,7 @@ const Read = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '3rem' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ maxWidth: '1040px', margin: '0 auto', paddingBottom: '3rem' }}>
 
       {/* ── Top Nav Bar ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -495,9 +495,9 @@ const Read = () => {
         )}
       </AnimatePresence>
 
-      {/* ── Bible Text Area ── */}
-      <div className="glass-card" style={{ padding: 'clamp(1rem, 4vw, 3rem)', minHeight: '400px', borderRadius: '24px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      {/* ── Bible Text Area (여백 최적화로 가로폭 넉넉하게 확장) ── */}
+      <div className="glass-card" style={{ padding: 'clamp(0.85rem, 2.5vw, 1.8rem) clamp(0.6rem, 2vw, 1.5rem)', minHeight: '400px', borderRadius: '20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
           <h2 className="serif-font" style={{ color: 'var(--accent-gold)', fontSize: 'clamp(1.4rem, 3.5vw, 2rem)', marginBottom: '0.6rem' }}>
             {selectedBook.name} {selectedChapter}장
           </h2>
@@ -573,7 +573,7 @@ const Read = () => {
 
         {/* Verses 목록 */}
         {!loading && !error && verses.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: languageMode === 'parallel' ? '0.8rem' : '0.15rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: languageMode === 'parallel' ? '0.6rem' : '0.1rem' }}>
             {verses.map((v) => {
               const ref = `${selectedBook.shortName} ${selectedChapter}:${v.verse}`;
               const fullRef = `${selectedBook.name} ${selectedChapter}:${v.verse}`;
@@ -589,11 +589,11 @@ const Read = () => {
                   onClick={() => handleVerseClick(v)}
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: '2.4rem 1fr auto',
+                    gridTemplateColumns: 'clamp(1.7rem, 4.5vw, 2.1rem) 1fr auto',
                     alignItems: 'baseline',
                     gap: '0',
-                    padding: languageMode === 'parallel' ? '0.75rem 0.6rem' : '0.5rem 0.4rem',
-                    borderRadius: '12px',
+                    padding: languageMode === 'parallel' ? '0.65rem 0.35rem' : '0.45rem 0.25rem',
+                    borderRadius: '10px',
                     cursor: 'pointer',
                     background: highlights[ref] || (isSelected ? 'rgba(196,164,132,0.12)' : 'transparent'),
                     border: `1px solid ${isSelected ? 'var(--accent-gold)' : 'transparent'}`,
@@ -606,7 +606,7 @@ const Read = () => {
                     fontSize: `${fontSize * 0.75}rem`,
                     lineHeight: `${fontSize * 2.1}rem`,
                     textAlign: 'right',
-                    paddingRight: '0.6rem',
+                    paddingRight: '0.4rem',
                     fontStyle: 'normal',
                     userSelect: 'none',
                     flexShrink: 0,
@@ -615,17 +615,17 @@ const Read = () => {
                   </span>
 
                   {/* 본문 (한글 / 영어 / 한영 대조) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
                     {/* 한글 본문 */}
                     {languageMode !== 'english' && (
                       <span
                         className="serif-font"
                         style={{
                           fontSize: `${fontSize}rem`,
-                          lineHeight: 2.1,
+                          lineHeight: 2.05,
                           wordBreak: 'keep-all',
                           overflowWrap: 'break-word',
-                          letterSpacing: '0.015em',
+                          letterSpacing: '0.01em',
                           color: 'var(--text-primary)',
                           userSelect: 'text',
                         }}>
@@ -643,7 +643,7 @@ const Read = () => {
                         marginTop: languageMode === 'parallel' ? '2px' : '0',
                       }}>
                         {/* 클릭 가능한 영어 본문 */}
-                        <div style={{ flex: '1 1 200px', minWidth: 0 }}>
+                        <div style={{ flex: '1 1 180px', minWidth: 0 }}>
                           {renderEnglishText(engText, v.verse)}
                         </div>
 
