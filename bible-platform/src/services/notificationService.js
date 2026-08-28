@@ -114,6 +114,9 @@ export function showLocalNotification(title, options = {}) {
     icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
     badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
     tag: 'bible-notification',
+    vibrate: [300, 150, 300],
+    renotify: true,
+    requireInteraction: true,
     ...options
   };
 
@@ -133,12 +136,76 @@ export function showLocalNotification(title, options = {}) {
 }
 
 /**
+ * 오늘의 말씀 알림 조건 검사 및 발송
+ * - 오늘 아직 알림을 받지 않았고, 설정된 시간이 되었거나 앱에 접속했을 때 발송
+ */
+export function checkAndTriggerDailyVerseNotification(force = false) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    return false;
+  }
+
+  const settings = getNotificationSettings();
+  if (!settings.enabled && !force) {
+    return false;
+  }
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const lastSentDate = localStorage.getItem('last_daily_verse_notif_date');
+
+  // 오늘 이미 발송되었고 강제 발송이 아니면 건너뜀
+  if (lastSentDate === todayStr && !force) {
+    return false;
+  }
+
+  const todayVerse = getTodayVerse();
+  const title = `☀️ [화도벧엘교회] 오늘의 은혜로운 말씀`;
+  const body = `"${todayVerse.text}"\n- ${todayVerse.ref} -`;
+
+  const success = showLocalNotification(title, {
+    body,
+    tag: `daily-verse-${todayStr}`,
+    data: { url: window.location.origin + window.location.pathname }
+  });
+
+  if (success) {
+    localStorage.setItem('last_daily_verse_notif_date', todayStr);
+  }
+
+  return success;
+}
+
+/**
  * 테스트 알림 발송
  */
 export function sendTestNotification() {
   const todayVerse = getTodayVerse();
-  return showLocalNotification('✨ [테스트 알림] 오늘의 은혜로운 말씀', {
+  return showLocalNotification('☀️ [화도벧엘교회] 오늘의 은혜로운 말씀', {
     body: `"${todayVerse.text}"\n- ${todayVerse.ref} -`,
-    tag: 'test-notification'
+    tag: 'test-daily-verse'
   });
+}
+
+/**
+ * 관리자: 전체 성도에게 오늘의 말씀 푸시 브로드캐스트 발송
+ */
+export async function broadcastDailyVerseToAll(currentUser) {
+  const todayVerse = getTodayVerse();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  const notifData = {
+    type: 'daily_verse',
+    title: '☀️ [화도벧엘교회] 오늘의 은혜로운 말씀',
+    body: `"${todayVerse.text}"\n- ${todayVerse.ref} -`,
+    verseText: todayVerse.text,
+    verseRef: todayVerse.ref,
+    senderUid: currentUser?.uid || 'admin',
+    senderName: currentUser?.displayName || '관리자',
+    createdAt: serverTimestamp(),
+    dateStr: todayStr
+  };
+
+  const { addDoc, collection } = await import('firebase/firestore');
+  return addDoc(collection(db, 'broadcastNotifications'), notifData);
 }

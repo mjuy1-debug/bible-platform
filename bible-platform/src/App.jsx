@@ -32,6 +32,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
 import { collection, doc, query, where, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { checkAndTriggerDailyVerseNotification } from './services/notificationService';
 
 // ── 독립 직분/구역 수정 모달 (입력 포커스 유지) ──
 const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistrict = '', onSave, onClose }) => {
@@ -291,6 +292,67 @@ const AppInner = () => {
       }
     }, err => console.warn('라이브 방송 알림 감시 오류:', err));
     return () => unsubLive();
+  }, [showToast]);
+
+  // ── 5. ☀️ 매일 아침 '오늘의 말씀' 자동 알림 스케줄러 & 실시간 말씀 푸시 감시 ──
+  useEffect(() => {
+    // 1) 초기 실행 및 1분 주기 스케줄러
+    const checkDailyVerse = () => {
+      try {
+        checkAndTriggerDailyVerseNotification(false);
+      } catch (e) {}
+    };
+
+    checkDailyVerse();
+    const interval = setInterval(checkDailyVerse, 60 * 1000);
+
+    // 2) 관리자가 전송한 실시간 '오늘의 말씀' 푸시 브로드캐스트 감시
+    let isInitialLoad = true;
+    const broadcastQuery = query(collection(db, 'broadcastNotifications'), orderBy('createdAt', 'desc'), limit(3));
+    const unsubBroadcast = onSnapshot(broadcastQuery, snapshot => {
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        return;
+      }
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          const data = change.doc.data();
+          const notifId = change.doc.id;
+          const lastSeenNotif = localStorage.getItem('last_seen_broadcast_id');
+          if (lastSeenNotif !== notifId) {
+            localStorage.setItem('last_seen_broadcast_id', notifId);
+            const title = data.title || '☀️ [화도벧엘교회] 오늘의 은혜로운 말씀';
+            const body = data.body || `"${data.verseText || ''}" - ${data.verseRef || ''}`;
+            
+            showToast(`${title}\n${body}`);
+            if ('vibrate' in navigator) navigator.vibrate([200, 100, 200, 100, 300]);
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const notifOptions = {
+                body,
+                icon: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                badge: 'https://mjuy1-debug.github.io/bible-platform/icon-192.png',
+                tag: `broadcast-${notifId}`,
+                vibrate: [200, 100, 200, 100, 300],
+                requireInteraction: true
+              };
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(reg => reg.showNotification(title, notifOptions)).catch(() => {
+                  try { new Notification(title, notifOptions); } catch (e) {}
+                });
+              } else {
+                try { new Notification(title, notifOptions); } catch (e) {}
+              }
+            }
+          }
+        }
+      });
+    }, err => console.warn('말씀 브로드캐스트 감시 오류:', err));
+
+    return () => {
+      clearInterval(interval);
+      unsubBroadcast();
+    };
   }, [showToast]);
 
   // ── 5. 관리자 전용: 신규 성도 가입 신청 실시간 감시 (인덱스 에러 방지 + 즉시 알림 + 소리/진동/푸시) ──

@@ -8,6 +8,9 @@ import {
   doc, updateDoc, deleteDoc, getDoc, setDoc, serverTimestamp, increment,
 } from 'firebase/firestore';
 import { CHURCH_DEPARTMENTS, CHURCH_DEPARTMENT_NAMES } from '../data/churchDepartments';
+import { getTodayVerse } from '../data/dailyVerses';
+import { broadcastDailyVerseToAll } from '../services/notificationService';
+import { Send, Sun, Sparkles } from 'lucide-react';
 
 // 관리자 UID 목록 (Firebase Console → Authentication에서 확인)
 const ADMIN_UIDS = ['mjuy1AdminUID']; // TODO: 실제 관리자 UID로 교체
@@ -37,6 +40,7 @@ const AdminDashboard = ({ currentUser }) => {
   const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, rejected: 0 });
   const [userToDelete, setUserToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSendingVerse, setIsSendingVerse] = useState(false);
 
   useEffect(() => {
     const q = query(collection(db, 'memberProfiles'), orderBy('createdAt', 'desc'));
@@ -305,6 +309,96 @@ const AdminDashboard = ({ currentUser }) => {
           </button>
         </div>
       </div>
+
+      {/* ☀️ 전교인 오늘의 말씀 실시간 푸시 알림 발송 카드 */}
+      {(() => {
+        const todayVerse = getTodayVerse();
+        const handleSendVerseBroadcast = async () => {
+          if (!window.confirm(`☀️ [오늘의 말씀 푸시 발송]\n\n"${todayVerse.text}"\n- ${todayVerse.ref} -\n\n위 성경 구절을 전체 성도님들에게 실시간 푸시 알림으로 전송하시겠습니까?`)) {
+            return;
+          }
+          setIsSendingVerse(true);
+          try {
+            await broadcastDailyVerseToAll(currentUser);
+            alert('✅ 전교인에게 오늘의 말씀 푸시 알림이 성공적으로 발송되었습니다!');
+          } catch (e) {
+            console.error('말씀 푸시 발송 실패:', e);
+            alert(`❌ 푸시 알림 발송 중 오류가 발생했습니다: ${e.message}`);
+          } finally {
+            setIsSendingVerse(false);
+          }
+        };
+
+        return (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(234,179,8,0.12) 0%, rgba(20,20,28,0.92) 100%)',
+            border: '1px solid rgba(234,179,8,0.45)',
+            borderRadius: '16px',
+            padding: '1.2rem 1.4rem',
+            marginBottom: '1.5rem',
+            boxShadow: '0 4px 20px rgba(234,179,8,0.15)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '0.8rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.3rem' }}>☀️</span>
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#fef08a', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Sparkles size={17} color="#eab308" /> 전교인 ‘오늘의 말씀’ 실시간 푸시 알림 발송
+                </h3>
+              </div>
+              <span style={{
+                fontSize: '0.74rem', fontWeight: 800, padding: '3px 9px', borderRadius: '10px',
+                background: 'rgba(234,179,8,0.2)', color: '#fef08a', border: '1px solid rgba(234,179,8,0.4)'
+              }}>
+                매일 아침 자동 전송 + 수동 즉시 발송
+              </span>
+            </div>
+
+            {/* 오늘의 말씀 미리보기 박스 */}
+            <div style={{
+              background: 'rgba(0,0,0,0.45)',
+              border: '1px dashed rgba(234,179,8,0.3)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              marginBottom: '1rem',
+              color: '#f3e5ab'
+            }}>
+              <div style={{ fontSize: '0.78rem', color: '#9ca3af', marginBottom: '4px', fontWeight: 600 }}>
+                📜 오늘 날짜 발송 예정 성경 구절 ({todayVerse.ref}):
+              </div>
+              <div style={{ fontSize: '0.92rem', lineHeight: 1.6, fontWeight: 600, color: '#fff' }}>
+                “{todayVerse.text}”
+              </div>
+            </div>
+
+            <p style={{ margin: '0 0 1rem 0', fontSize: '0.82rem', color: '#d1d5db', lineHeight: 1.5, wordBreak: 'keep-all' }}>
+              💡 모든 성도님들은 매일 아침 설정한 시간(기본 07:00)에 위 말씀 알림을 자동으로 수신합니다.<br />
+              목사님/관리자께서 <strong>지금 즉시 전교인에게 말씀을 전송</strong>하시려면 아래 발송 버튼을 누르시면 됩니다.
+            </p>
+
+            <button
+              onClick={handleSendVerseBroadcast}
+              disabled={isSendingVerse}
+              style={{
+                padding: '10px 20px',
+                borderRadius: '12px',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                background: isSendingVerse ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)',
+                color: isSendingVerse ? '#9ca3af' : '#111',
+                border: 'none',
+                cursor: isSendingVerse ? 'not-allowed' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: isSendingVerse ? 'none' : '0 4px 15px rgba(234,179,8,0.35)',
+                transition: 'all 0.2s'
+              }}
+            >
+              <Send size={16} /> {isSendingVerse ? '전교인에게 전송 중...' : '📢 전체 성도에게 오늘의 말씀 푸시 알림 발송'}
+            </button>
+          </div>
+        );
+      })()}
 
       {/* 🏛️ 화도벧엘교회 8대 기관 대항전 점수 관리 카드 */}
       <div style={{
