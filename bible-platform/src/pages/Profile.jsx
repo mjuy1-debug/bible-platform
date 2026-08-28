@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bookmark, History, Trash2, User, Bell, RefreshCw, Shield, ChevronRight, Edit3, X, Check } from 'lucide-react';
+import { Bookmark, History, Trash2, User, Bell, RefreshCw, Shield, ChevronRight, Edit3, X, Check, Award } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { messaging, getToken, VAPID_KEY } from '../services/firebase';
 import { db } from '../services/firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import CertificateModal from '../components/CertificateModal';
 
 import Stats from './Stats';
 
@@ -144,6 +145,7 @@ const Profile = () => {
   const photoUrl = currentUser ? currentUser.photoURL : null;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
   const [pushEnabled, setPushEnabled] = useState(() => localStorage.getItem('push_enabled') === 'true');
   const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '8', 10));
@@ -312,6 +314,25 @@ const Profile = () => {
             </div>
           ) : (
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <button
+                onClick={() => setIsCertModalOpen(true)}
+                style={{
+                  padding: '0.45rem 1.1rem',
+                  background: 'linear-gradient(135deg, rgba(212,175,55,0.3), rgba(168,85,247,0.25))',
+                  color: 'var(--accent-gold)',
+                  border: '1px solid rgba(212,175,55,0.5)',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  boxShadow: '0 2px 8px rgba(212,175,55,0.2)'
+                }}
+              >
+                <Award size={14} /> 🎓 52주 공인 수료증 발급
+              </button>
               <button
                 onClick={() => setIsEditModalOpen(true)}
                 style={{
@@ -528,6 +549,16 @@ const Profile = () => {
           )}
         </div>
       </div>
+
+      {/* 52주 완주 골든벨 공인 수료증 모달 */}
+      <CertificateModal
+        isOpen={isCertModalOpen}
+        onClose={() => setIsCertModalOpen(false)}
+        userProfile={memberProfile}
+        currentUser={currentUser}
+        completedWeeksCount={completedDays.length || 52}
+        totalScore={completedDays.length * 15 || 780}
+      />
     </motion.div>
   );
 };

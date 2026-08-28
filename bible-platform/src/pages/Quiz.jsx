@@ -7,8 +7,10 @@ import { QUIZ_CATEGORIES, BIBLE_QUIZ_LIST } from '../data/quizData';
 import { WEEKLY_READING_PLAN } from '../data/weeklyReadingPlanData';
 import { getBibleProjectVideo } from '../data/bibleProjectVideos';
 import YouTubeModal from '../components/YouTubeModal';
+import CertificateModal from '../components/CertificateModal';
+import DistrictLeaderboardModal from '../components/DistrictLeaderboardModal';
 import { db } from '../services/firebase';
-import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc, updateDoc, increment } from 'firebase/firestore';
 
 function YouTubeIcon({ size = 16, color = 'currentColor' }) {
   return (
@@ -19,7 +21,7 @@ function YouTubeIcon({ size = 16, color = 'currentColor' }) {
 }
 
 export default function Quiz() {
-  const { currentUser, showToast } = useContext(UserContext);
+  const { currentUser, memberProfile, showToast } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -37,10 +39,12 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
   
-  // 힌트 모달 상태
+  // 힌트 및 부가 모달 상태
   const [showHintModal, setShowHintModal] = useState(false);
   const [showReadingBriefing, setShowReadingBriefing] = useState(true);
   const [activeVideoModal, setActiveVideoModal] = useState(null);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [showDistrictModal, setShowDistrictModal] = useState(false);
 
   // 서바이벌 모드 상태 (15초 타이머 & 콤보)
   const [survivalTimer, setSurvivalTimer] = useState(15);
@@ -332,6 +336,33 @@ export default function Quiz() {
         const nextTalents = talents + earnedTalents;
         setTalents(nextTalents);
         localStorage.setItem('user_talents', String(nextTalents));
+
+        // Firestore 실시간 프로필 및 구역 점수 동기화
+        if (currentUser?.uid) {
+          try {
+            updateDoc(doc(db, 'memberProfiles', currentUser.uid), {
+              talents: nextTalents,
+              lastQuizAt: serverTimestamp(),
+              totalQuizSolved: increment(1)
+            }).catch(() => {});
+
+            const userDist = memberProfile?.district;
+            if (userDist) {
+              const distDocId = userDist.includes('청년') ? 'district_youth' : 
+                                userDist.includes('1') ? 'district_1' :
+                                userDist.includes('2') ? 'district_2' :
+                                userDist.includes('3') ? 'district_3' :
+                                userDist.includes('4') ? 'district_4' :
+                                userDist.includes('5') ? 'district_5' : 'district_1';
+              updateDoc(doc(db, 'districtScores', distDocId), {
+                totalTalents: increment(earnedTalents),
+                completedQuizzes: increment(1)
+              }).catch(() => {});
+            }
+          } catch (e) {
+            console.warn('Sync score error:', e);
+          }
+        }
       }
 
       // 점수 저장
@@ -415,7 +446,7 @@ export default function Quiz() {
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
           gap: '8px', marginBottom: '1.5rem'
         }}>
-          {/* 오늘의 1분 퀴즈 */}
+          {/* 1. 오늘의 1분 퀴즈 */}
           <button
             onClick={handleStartDailyQuiz}
             style={{
@@ -435,7 +466,49 @@ export default function Quiz() {
             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>+50 달란트 보너스</span>
           </button>
 
-          {/* 무한 서바이벌 */}
+          {/* 2. 🏆 구역·교구 대항전 (NEW) */}
+          <button
+            onClick={() => setShowDistrictModal(true)}
+            style={{
+              padding: '12px 10px', borderRadius: '14px',
+              background: 'linear-gradient(135deg, rgba(212,175,55,0.22) 0%, rgba(20,20,28,0.85) 100%)',
+              border: '1px solid rgba(212,175,55,0.55)',
+              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px',
+              boxShadow: '0 4px 15px rgba(212,175,55,0.12)'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Trophy size={14} /> 구역 대항전
+              </span>
+              <span style={{ fontSize: '9px', background: 'var(--accent-gold)', color: '#111', fontWeight: 900, padding: '1px 5px', borderRadius: '6px' }}>실시간</span>
+            </div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>공동체 리그 랭킹</span>
+            <span style={{ fontSize: '0.72rem', color: '#f3e5ab' }}>{memberProfile?.district || '우리 구역'} 순위 보기</span>
+          </button>
+
+          {/* 3. 🎓 52주 완주 수료증 (NEW) */}
+          <button
+            onClick={() => setShowCertificateModal(true)}
+            style={{
+              padding: '12px 10px', borderRadius: '14px',
+              background: 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(20,20,28,0.85) 100%)',
+              border: '1px solid rgba(168,85,247,0.5)',
+              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px',
+              boxShadow: '0 4px 15px rgba(168,85,247,0.12)'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Award size={14} /> 52주 수료증
+              </span>
+              <span style={{ fontSize: '9px', background: '#c084fc', color: '#111', fontWeight: 900, padding: '1px 5px', borderRadius: '6px' }}>공인</span>
+            </div>
+            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>골든벨 완주 증서</span>
+            <span style={{ fontSize: '0.72rem', color: '#e9d5ff' }}>이미지/PDF 즉시 발급</span>
+          </button>
+
+          {/* 4. 무한 서바이벌 */}
           <button
             onClick={handleStartSurvivalQuiz}
             style={{
@@ -455,7 +528,7 @@ export default function Quiz() {
             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>틀릴 때까지 무한 도전</span>
           </button>
 
-          {/* 오답노트 복습 */}
+          {/* 5. 오답노트 복습 */}
           <button
             onClick={handleStartWrongNotesQuiz}
             style={{
@@ -517,16 +590,31 @@ export default function Quiz() {
                   각 주차별 성경 본문을 먼저 읽고 묵상하신 후 퀴즈를 푸시면 말씀이 마음에 더욱 깊이 새겨집니다.
                 </p>
               </div>
-              <button
-                onClick={() => navigate('/plan')}
-                style={{
-                  padding: '6px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid var(--glass-border)', color: '#fff', fontSize: '0.78rem', fontWeight: 700,
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
-                }}
-              >
-                📅 전체 통독표 보기
-              </button>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <button
+                  onClick={() => setShowCertificateModal(true)}
+                  style={{
+                    padding: '6px 12px', borderRadius: '10px',
+                    background: 'linear-gradient(135deg, rgba(212,175,55,0.3), rgba(212,175,55,0.15))',
+                    border: '1px solid rgba(212,175,55,0.6)', color: 'var(--accent-gold)',
+                    fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '4px',
+                    boxShadow: '0 2px 8px rgba(212,175,55,0.2)'
+                  }}
+                >
+                  🎓 완주 수료증 발급
+                </button>
+                <button
+                  onClick={() => navigate('/plan')}
+                  style={{
+                    padding: '6px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid var(--glass-border)', color: '#fff', fontSize: '0.78rem', fontWeight: 700,
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+                  }}
+                >
+                  📅 전체 통독표 보기
+                </button>
+              </div>
             </div>
           )}
 
@@ -1050,6 +1138,21 @@ export default function Quiz() {
                   <Share2 size={16} /> 결과 공유
                 </button>
 
+                {/* 52주 통독 퀴즈 완료 시 공인 수료증 보기 버튼 */}
+                <button
+                  onClick={() => setShowCertificateModal(true)}
+                  style={{
+                    flex: '1 1 100%', padding: '12px 18px', borderRadius: '12px',
+                    background: 'linear-gradient(135deg, rgba(168,85,247,0.25) 0%, rgba(212,175,55,0.25) 100%)',
+                    border: '1px solid rgba(212,175,55,0.6)',
+                    color: 'var(--accent-gold)', fontSize: '0.92rem', fontWeight: 900, cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px',
+                    boxShadow: '0 4px 15px rgba(212,175,55,0.15)'
+                  }}
+                >
+                  🎓 52주 골든벨 공인 수료증 발급 / 보기
+                </button>
+
                 <button
                   onClick={() => setActiveQuiz(null)}
                   style={{
@@ -1073,6 +1176,24 @@ export default function Quiz() {
         onClose={() => setActiveVideoModal(null)}
         videoInfo={activeVideoModal}
         onStartQuiz={activeVideoModal?.targetQuiz ? () => handleStartQuiz(activeVideoModal.targetQuiz) : null}
+      />
+
+      {/* 6. 52주 완주 골든벨 공인 수료증 모달 */}
+      <CertificateModal
+        isOpen={showCertificateModal}
+        onClose={() => setShowCertificateModal(false)}
+        userProfile={memberProfile}
+        currentUser={currentUser}
+        completedWeeksCount={Object.keys(completedScores).filter(k => k.startsWith('week_')).length || 52}
+        totalScore={talents}
+      />
+
+      {/* 7. 구역·교구·소그룹 골든벨 대항전 랭킹 모달 */}
+      <DistrictLeaderboardModal
+        isOpen={showDistrictModal}
+        onClose={() => setShowDistrictModal(false)}
+        userDistrict={memberProfile?.district}
+        userTalents={talents}
       />
     </div>
   );
