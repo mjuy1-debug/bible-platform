@@ -76,12 +76,18 @@ export default function Quiz() {
   const todayStr = new Date().toISOString().split('T')[0];
   const isDailyDoneToday = dailyCompletedDate === todayStr;
 
-  // Plan 페이지 등에서 navigate로 넘어온 경우 카테고리 자동 선택
+  // Plan 페이지나 Sermons 페이지 등에서 navigate로 넘어온 경우 카테고리/퀴즈 자동 시작
   useEffect(() => {
     if (location.state?.category) {
       setSelectedCategory(location.state.category);
     }
-  }, [location.state]);
+    if (location.state?.quizId && quizzes.length > 0 && !activeQuiz) {
+      const target = quizzes.find(q => String(q.id) === String(location.state.quizId));
+      if (target) {
+        handleStartQuiz(target);
+      }
+    }
+  }, [location.state, quizzes]);
 
   // 칭호 계산 함수
   const getRankTitle = (t) => {

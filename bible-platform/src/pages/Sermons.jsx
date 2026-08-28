@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText, Save, Bookmark } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
@@ -12,6 +12,7 @@ import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 export default function Sermons() {
   const { currentUser, isAdmin: contextIsAdmin, showToast } = useContext(UserContext);
   const isAdmin = import.meta.env.DEV || contextIsAdmin;
+  const navigate = useNavigate();
 
   const [sermons, setSermons] = useState([...SERMONS].sort((a, b) => new Date(b.date) - new Date(a.date)));
   
@@ -542,9 +543,28 @@ export default function Sermons() {
                   </span>
                 )}
                 
-                <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                <div style={{ marginTop: 'auto', paddingTop: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/quiz', { state: { category: '🎤 주일 설교 퀴즈', quizId: `sermon_${sermon.id}` } });
+                    }}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '5px',
+                      padding: '6px 12px', borderRadius: '8px',
+                      background: 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.08))',
+                      border: '1px solid rgba(212,175,55,0.45)',
+                      color: 'var(--accent-gold)', fontSize: '0.8rem', fontWeight: 700,
+                      cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(212,175,55,0.35)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.08))'}
+                  >
+                    ✍️ 설교 퀴즈 풀기
+                  </button>
+
                   {isAdmin && (
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
                       <button onClick={(e) => handleEdit(sermon, e)} title="수정" style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }}><Edit2 size={16} /></button>
                       <button onClick={(e) => handleDelete(sermon.id, e)} title="삭제" style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}><Trash2 size={16} /></button>
                     </div>
@@ -635,12 +655,30 @@ export default function Sermons() {
                 <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '0.4rem', color: 'var(--accent-gold)' }}>{selectedVideo.title}</h3>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.2rem' }}>{selectedVideo.date} | {selectedVideo.scripture} | {selectedVideo.preacher}</p>
                 
-                {selectedVideo.externalLink && (
-                  <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
-                     style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', marginBottom: '1.2rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
-                    <ExternalLink size={16} /> 관련 링크 열기
-                  </a>
-                )}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1.2rem' }}>
+                  {selectedVideo.externalLink && (
+                    <a href={selectedVideo.externalLink.startsWith('http') ? selectedVideo.externalLink : `https://${selectedVideo.externalLink}`} target="_blank" rel="noopener noreferrer" 
+                       style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)', borderRadius: '8px', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600, border: '1px solid rgba(212,175,55,0.3)' }}>
+                      <ExternalLink size={16} /> 관련 링크 열기
+                    </a>
+                  )}
+                  <button
+                    onClick={() => {
+                      const targetId = selectedVideo.id;
+                      setSelectedVideo(null);
+                      navigate('/quiz', { state: { category: '🎤 주일 설교 퀴즈', quizId: `sermon_${targetId}` } });
+                    }}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                      padding: '0.6rem 1.2rem', background: 'linear-gradient(135deg, #d4af37, #f3e5ab)',
+                      color: '#1a1400', borderRadius: '8px', border: 'none',
+                      fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(212,175,55,0.3)'
+                    }}
+                  >
+                    ✍️ 이 설교 퀴즈 풀기
+                  </button>
+                </div>
                 
                 {/* 실시간 설교 묵상 노트 & 타임스탬프 패널 */}
                 <SermonNotesPanel
