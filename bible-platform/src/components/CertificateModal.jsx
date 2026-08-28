@@ -12,7 +12,7 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
 
   if (!isOpen) return null;
 
-  const isCompleted = completedWeeksCount >= 52 || userProfile?.isAdmin || userProfile?.is52WCertified;
+  const isCompleted = completedWeeksCount >= 52 || userProfile?.is52WCertified;
   const today = new Date();
   const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const certNumber = `BETHEL-52W-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
@@ -24,7 +24,7 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
 
   // 1. 이미지 (PNG) 다운로드
   const handleDownloadImage = async () => {
-    if (!isCompleted && !userProfile?.isAdmin) {
+    if (!isCompleted) {
       alert('🔒 52주차 골든벨 과정을 모두 완주하셔야 정식 공인 수료증을 다운로드하실 수 있습니다.');
       return;
     }
@@ -52,7 +52,7 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
 
   // 2. PDF 다운로드
   const handleDownloadPDF = async () => {
-    if (!isCompleted && !userProfile?.isAdmin) {
+    if (!isCompleted) {
       alert('🔒 52주차 골든벨 과정을 모두 완주하셔야 정식 공인 수료증을 다운로드하실 수 있습니다.');
       return;
     }
@@ -92,7 +92,7 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
 
   // 3. 공유하기
   const handleShare = async () => {
-    if (!isCompleted && !userProfile?.isAdmin) {
+    if (!isCompleted) {
       alert('🔒 52주차 골든벨 완주 후 축하 공유가 가능합니다.');
       return;
     }

@@ -501,7 +501,7 @@ export default function Quiz() {
           {/* 3. 🎓 52주 완주 수료증 (NEW) */}
           {(() => {
             const completedWeeks = Object.keys(completedScores).filter(k => k.startsWith('week_')).length;
-            const isFinished = completedWeeks >= 52 || memberProfile?.isAdmin;
+            const isFinished = completedWeeks >= 52 || memberProfile?.is52WCertified;
             return (
               <button
                 onClick={() => setShowCertificateModal(true)}
@@ -1171,7 +1171,7 @@ export default function Quiz() {
                 {/* 52주 완주 달성 시 활성화되는 정식 수료증 발급 버튼 */}
                 {(() => {
                   const weeksCompleted = Object.keys(completedScores).filter(k => k.startsWith('week_')).length;
-                  const isDone = weeksCompleted >= 52 || memberProfile?.isAdmin || memberProfile?.is52WCertified;
+                  const isDone = weeksCompleted >= 52 || memberProfile?.is52WCertified;
                   return (
                     <button
                       onClick={() => setShowCertificateModal(true)}
