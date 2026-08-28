@@ -555,14 +555,26 @@ const Profile = () => {
       </div>
 
       {/* 52주 완주 골든벨 공인 수료증 모달 */}
-      <CertificateModal
-        isOpen={isCertModalOpen}
-        onClose={() => setIsCertModalOpen(false)}
-        userProfile={memberProfile}
-        currentUser={currentUser}
-        completedWeeksCount={completedDays.length || 52}
-        totalScore={completedDays.length * 15 || 780}
-      />
+      {(() => {
+        let completedQuizWeeks = 0;
+        try {
+          const raw = localStorage.getItem('quiz_completed_scores');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            completedQuizWeeks = Object.keys(parsed).filter(k => k.startsWith('week_')).length;
+          }
+        } catch (e) {}
+        return (
+          <CertificateModal
+            isOpen={isCertModalOpen}
+            onClose={() => setIsCertModalOpen(false)}
+            userProfile={memberProfile}
+            currentUser={currentUser}
+            completedWeeksCount={completedQuizWeeks}
+            totalScore={completedQuizWeeks * 15}
+          />
+        );
+      })()}
     </motion.div>
   );
 };

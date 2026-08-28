@@ -1224,7 +1224,7 @@ export default function Quiz() {
         onClose={() => setShowCertificateModal(false)}
         userProfile={memberProfile}
         currentUser={currentUser}
-        completedWeeksCount={Object.keys(completedScores).filter(k => k.startsWith('week_')).length || 52}
+        completedWeeksCount={Object.keys(completedScores).filter(k => k.startsWith('week_')).length}
         totalScore={talents}
       />
 
