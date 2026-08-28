@@ -68,7 +68,7 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
       const pdf = new jsPDF({
-        orientation: 'landscape',
+        orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       });
@@ -76,11 +76,11 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       
-      const imgWidth = pageWidth - 20;
+      const imgWidth = pageWidth - 30;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const posY = (pageHeight - imgHeight) / 2;
 
-      pdf.addImage(imgData, 'JPEG', 10, Math.max(posY, 10), imgWidth, Math.min(imgHeight, pageHeight - 20));
+      pdf.addImage(imgData, 'JPEG', 15, Math.max(posY, 15), imgWidth, Math.min(imgHeight, pageHeight - 30));
       pdf.save(`화도벧엘교회_52주_성경통독_골든벨_수료증_${memberName}.pdf`);
     } catch (err) {
       console.error('수료증 PDF 생성 실패:', err);
@@ -305,17 +305,18 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                 )}
               </div>
 
-              {/* 수료증 렌더링 캔버스 영역 (가로 스크롤 보장) */}
-              <div style={{ padding: '16px 20px 20px', overflowX: 'auto', display: 'flex', justifyContent: 'center' }}>
+              {/* 수료증 렌더링 캔버스 영역 (스마트폰 세로 9:16 ~ 9:19.5 최적화 규격) */}
+              <div style={{ padding: '16px 12px 20px', overflowX: 'auto', display: 'flex', justifyContent: 'center' }}>
                 <div
                   ref={certificateRef}
                   style={{
-                    width: '760px',
-                    minWidth: '760px', // 모바일에서도 줄바꿈/텍스트 짤림 방지
-                    minHeight: '520px',
-                    background: 'linear-gradient(135deg, #0e0e14 0%, #171620 50%, #0d0d12 100%)',
-                    borderRadius: '16px',
-                    padding: '36px 44px',
+                    width: '420px',
+                    minWidth: '380px',
+                    maxWidth: '430px',
+                    minHeight: '840px',
+                    background: 'linear-gradient(145deg, #0e0e14 0%, #161520 50%, #0d0d12 100%)',
+                    borderRadius: '20px',
+                    padding: '32px 26px',
                     position: 'relative',
                     boxSizing: 'border-box',
                     border: '3px double #d4af37',
@@ -328,33 +329,33 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                   }}
                 >
                   {/* 테두리 장식 골드 코너 */}
-                  <div style={{ position: 'absolute', top: '10px', left: '10px', width: '24px', height: '24px', borderTop: '2px solid #d4af37', borderLeft: '2px solid #d4af37' }} />
-                  <div style={{ position: 'absolute', top: '10px', right: '10px', width: '24px', height: '24px', borderTop: '2px solid #d4af37', borderRight: '2px solid #d4af37' }} />
-                  <div style={{ position: 'absolute', bottom: '10px', left: '10px', width: '24px', height: '24px', borderBottom: '2px solid #d4af37', borderLeft: '2px solid #d4af37' }} />
-                  <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '24px', height: '24px', borderBottom: '2px solid #d4af37', borderRight: '2px solid #d4af37' }} />
+                  <div style={{ position: 'absolute', top: '12px', left: '12px', width: '22px', height: '22px', borderTop: '2px solid #d4af37', borderLeft: '2px solid #d4af37' }} />
+                  <div style={{ position: 'absolute', top: '12px', right: '12px', width: '22px', height: '22px', borderTop: '2px solid #d4af37', borderRight: '2px solid #d4af37' }} />
+                  <div style={{ position: 'absolute', bottom: '12px', left: '12px', width: '22px', height: '22px', borderBottom: '2px solid #d4af37', borderLeft: '2px solid #d4af37' }} />
+                  <div style={{ position: 'absolute', bottom: '12px', right: '12px', width: '22px', height: '22px', borderBottom: '2px solid #d4af37', borderRight: '2px solid #d4af37' }} />
 
                   {/* 1. 상단 증서 번호 & 교회 영문명 */}
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', whiteSpace: 'nowrap' }}>
-                      <span style={{ fontSize: '11px', color: '#9ca3af', letterSpacing: '1px', fontFamily: 'sans-serif' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: '10px', color: '#9ca3af', letterSpacing: '0.5px', fontFamily: 'sans-serif' }}>
                         증서 제 {certNumber} 호
                       </span>
-                      <span style={{ fontSize: '11px', color: '#d4af37', fontWeight: 700, letterSpacing: '1.5px', fontFamily: 'sans-serif' }}>
-                        HWADO BETHEL PRESBYTERIAN CHURCH
+                      <span style={{ fontSize: '10px', color: '#d4af37', fontWeight: 700, letterSpacing: '1px', fontFamily: 'sans-serif' }}>
+                        BETHEL CHURCH
                       </span>
                     </div>
 
-                    <div style={{ textAlign: 'center', marginTop: '10px', marginBottom: '14px' }}>
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#d4af37', marginBottom: '2px' }}>
-                        <Sparkles size={15} />
-                        <span style={{ fontSize: '13px', letterSpacing: '4px', fontWeight: 600 }}>2026 말씀의 사람</span>
-                        <Sparkles size={15} />
+                    <div style={{ textAlign: 'center', marginTop: '8px', marginBottom: '14px' }}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#d4af37', marginBottom: '2px' }}>
+                        <Sparkles size={14} />
+                        <span style={{ fontSize: '13px', letterSpacing: '3px', fontWeight: 600 }}>2026 말씀의 사람</span>
+                        <Sparkles size={14} />
                       </div>
                       <h1 style={{
                         fontSize: '2.4rem',
                         fontWeight: 900,
-                        margin: '4px 0',
-                        letterSpacing: '6px',
+                        margin: '6px 0',
+                        letterSpacing: '8px',
                         background: 'linear-gradient(to bottom, #fff6d1 0%, #d4af37 60%, #aa820a 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -362,16 +363,16 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                       }}>
                         수 료 증 서
                       </h1>
-                      <span style={{ fontSize: '11px', color: '#bfa15f', letterSpacing: '3px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
-                        Certificate of 52-Week Bible Mastery
+                      <span style={{ fontSize: '10.5px', color: '#bfa15f', letterSpacing: '2px', textTransform: 'uppercase', fontFamily: 'sans-serif', display: 'block' }}>
+                        CERTIFICATE OF 52-WEEK BIBLE MASTERY
                       </span>
                     </div>
                   </div>
 
-                  {/* 2. 수여 대상자 (소속 기관을 상단에 별도 배치하여 이름이 절대 줄바꿈되지 않게 함) */}
-                  <div style={{ textAlign: 'center', margin: '10px 0' }}>
+                  {/* 2. 수여 대상자 (기관명 위에 깔끔하게 배치, 이름/직분 절대 줄바꿈 없음) */}
+                  <div style={{ textAlign: 'center', margin: '8px 0' }}>
                     {memberDistrict && (
-                      <div style={{ fontSize: '1.05rem', color: '#d4af37', fontWeight: 700, marginBottom: '4px', letterSpacing: '1px', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: '1.05rem', color: '#d4af37', fontWeight: 700, marginBottom: '6px', letterSpacing: '1px', whiteSpace: 'nowrap' }}>
                         [{memberDistrict}]
                       </div>
                     )}
@@ -379,13 +380,14 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                       display: 'inline-block',
                       borderBottom: '2px solid #d4af37',
                       paddingBottom: '4px',
-                      paddingLeft: '32px',
-                      paddingRight: '32px'
+                      paddingLeft: '24px',
+                      paddingRight: '24px',
+                      whiteSpace: 'nowrap'
                     }}>
                       <span style={{ fontSize: '1.85rem', fontWeight: 900, color: '#ffffff', letterSpacing: '3px', whiteSpace: 'nowrap' }}>
                         {memberName}
                       </span>
-                      <span style={{ fontSize: '1.25rem', color: '#d4af37', marginLeft: '8px', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: '1.25rem', color: '#d4af37', marginLeft: '8px', fontWeight: 700, whiteSpace: 'nowrap' }}>
                         {memberPosition}
                       </span>
                     </div>
@@ -394,12 +396,12 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                   {/* 3. 수여 본문 문구 */}
                   <div style={{
                     textAlign: 'center',
-                    margin: '10px auto',
-                    maxWidth: '620px',
-                    lineHeight: 1.8,
-                    fontSize: '14.5px',
+                    margin: '12px auto',
+                    lineHeight: 1.9,
+                    fontSize: '14px',
                     color: '#e5e7eb',
-                    wordBreak: 'keep-all'
+                    wordBreak: 'keep-all',
+                    padding: '0 6px'
                   }}>
                     위 사람은 2026년도 화도벧엘교회 <strong style={{ color: '#d4af37' }}>52주 성경 전권 통독 및 말씀 골든벨 퀴즈 과정</strong>을 
                     우수한 성적으로 성실히 완주하고, 성경 말씀을 심비에 새겨 하나님 나라의 신실한 청지기로 무장하였으므로 
@@ -408,31 +410,35 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
 
                   {/* 4. 기념 성경 말씀 */}
                   <div style={{
-                    margin: '8px auto 12px',
-                    maxWidth: '580px',
-                    padding: '8px 16px',
+                    margin: '8px auto 14px',
+                    padding: '10px 14px',
                     background: 'rgba(212,175,55,0.06)',
-                    borderRadius: '8px',
+                    borderRadius: '10px',
                     borderLeft: '3px solid #d4af37',
                     fontSize: '12px',
                     color: '#cbd5e1',
-                    lineHeight: 1.6,
+                    lineHeight: 1.65,
                     fontStyle: 'italic',
                     textAlign: 'center'
                   }}>
                     “모든 성경은 하나님의 감동으로 된 것으로 교훈과 책망과 바르게 함과 의로 교육하기에 유익하니”
-                    <div style={{ fontSize: '11px', color: '#d4af37', fontStyle: 'normal', marginTop: '2px', fontWeight: 600 }}>
+                    <div style={{ fontSize: '11px', color: '#d4af37', fontStyle: 'normal', marginTop: '4px', fontWeight: 600 }}>
                       — 디모데후서 3장 16절 —
                     </div>
                   </div>
 
-                  {/* 5. 하단 발행일 및 직인 & 서명 (whiteSpace: nowrap) */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '8px', paddingTop: '10px', borderTop: '1px dashed rgba(212,175,55,0.25)' }}>
+                  {/* 5. 날짜 */}
+                  <div style={{ textAlign: 'center', fontSize: '13px', color: '#cbd5e1', letterSpacing: '1px', marginBottom: '6px' }}>
+                    {dateStr}
+                  </div>
+
+                  {/* 6. 하단 직인 & 서명 */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '12px', borderTop: '1px dashed rgba(212,175,55,0.25)' }}>
                     {/* 골든벨 리본 뱃지 */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{
-                        width: '54px',
-                        height: '54px',
+                        width: '52px',
+                        height: '52px',
                         borderRadius: '50%',
                         background: 'radial-gradient(circle, #ffe28a 0%, #d4af37 60%, #856100 100%)',
                         boxShadow: '0 4px 15px rgba(212,175,55,0.4)',
@@ -444,49 +450,47 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
                         fontWeight: 900,
                         fontSize: '9px',
                         textAlign: 'center',
-                        border: '2px solid #fff'
+                        border: '2px solid #fff',
+                        flexShrink: 0
                       }}>
-                        <Star size={13} fill="#2d1f00" />
+                        <Star size={12} fill="#2d1f00" />
                         <span>52W PASS</span>
-                        <span style={{ fontSize: '7px' }}>GOLDEN BELL</span>
+                        <span style={{ fontSize: '6.5px' }}>GOLDEN BELL</span>
                       </div>
-                      <div>
-                        <div style={{ fontSize: '12px', fontWeight: 800, color: '#d4af37' }}>화도벧엘교회 공인</div>
-                        <div style={{ fontSize: '10px', color: '#9ca3af' }}>52주 전권 마스터 ({totalScore || 780}점 완주)</div>
+                      <div style={{ textAlign: 'left' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 800, color: '#d4af37', whiteSpace: 'nowrap' }}>화도벧엘교회 공인</div>
+                        <div style={{ fontSize: '9px', color: '#9ca3af', whiteSpace: 'nowrap' }}>52주 전권 마스터 ({totalScore || 780}점)</div>
                       </div>
                     </div>
 
-                    {/* 날짜 및 목사님 서명 직인 (한 줄 whiteSpace: nowrap) */}
-                    <div style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                      <div style={{ fontSize: '13px', color: '#cbd5e1', marginBottom: '6px', letterSpacing: '1px' }}>
-                        {dateStr}
+                    {/* 목사님 서명 & 빨간색 직인 (whiteSpace: nowrap) */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                      <div style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: 700 }}>화도벧엘교회</div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#fff', letterSpacing: '1.5px' }}>담임목사 김 석 주</div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
-                        <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', letterSpacing: '2px', whiteSpace: 'nowrap' }}>
-                          화도벧엘교회 담임목사 김 석 주
-                        </span>
 
-                        {/* 빨간색 교회 직인 */}
-                        <div style={{
-                          width: '42px',
-                          height: '42px',
-                          border: '2px solid #ef4444',
-                          borderRadius: '8px',
-                          background: 'rgba(239, 68, 68, 0.12)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: '#ef4444',
-                          fontSize: '10px',
-                          fontWeight: 900,
-                          lineHeight: 1.1,
-                          textAlign: 'center',
-                          padding: '2px',
-                          boxShadow: '0 0 8px rgba(239,68,68,0.3)',
-                          transform: 'rotate(-5deg)'
-                        }}>
-                          벧엘<br/>교회<br/>직인
-                        </div>
+                      {/* 빨간색 직인 */}
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        border: '2px solid #ef4444',
+                        borderRadius: '8px',
+                        background: 'rgba(239, 68, 68, 0.12)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#ef4444',
+                        fontSize: '9.5px',
+                        fontWeight: 900,
+                        lineHeight: 1.1,
+                        textAlign: 'center',
+                        padding: '2px',
+                        boxShadow: '0 0 8px rgba(239,68,68,0.3)',
+                        transform: 'rotate(-5deg)',
+                        flexShrink: 0
+                      }}>
+                        벧엘<br/>교회<br/>직인
                       </div>
                     </div>
                   </div>
