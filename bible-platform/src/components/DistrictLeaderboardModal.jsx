@@ -7,54 +7,69 @@ import { collection, doc, onSnapshot, updateDoc, increment, setDoc, getDocs } fr
 
 import { CHURCH_DEPARTMENTS } from '../data/churchDepartments';
 
-// 화도벧엘교회 공식 8대 기관/부서 초기 데이터
-const INITIAL_DISTRICTS = [
-  { id: 'dept_caleb', name: '갈렙 (남전도회)', shortName: '갈렙', category: '남전도회', icon: '🛡️', leader: '남전도회', membersCount: 18, totalTalents: 4250, completedQuizzes: 124, cheers: 48 },
-  { id: 'dept_joshua', name: '여호수아 (남전도회)', shortName: '여호수아', category: '남전도회', icon: '⚔️', leader: '남전도회', membersCount: 16, totalTalents: 3890, completedQuizzes: 108, cheers: 42 },
-  { id: 'dept_joanna', name: '요안나 (여전도회)', shortName: '요안나', category: '여전도회', icon: '🌸', leader: '여전도회', membersCount: 22, totalTalents: 3720, completedQuizzes: 115, cheers: 65 },
-  { id: 'dept_lydia', name: '루디아 (여전도회)', shortName: '루디아', category: '여전도회', icon: '💜', leader: '여전도회', membersCount: 20, totalTalents: 3450, completedQuizzes: 98, cheers: 51 },
-  { id: 'dept_naomi', name: '나오미 (여전도회)', shortName: '나오미', category: '여전도회', icon: '🌿', leader: '여전도회', membersCount: 17, totalTalents: 3140, completedQuizzes: 89, cheers: 38 },
-  { id: 'dept_joseph', name: '요셉 (청년부)', shortName: '요셉', category: '청년부', icon: '✨', leader: '청년부', membersCount: 25, totalTalents: 2980, completedQuizzes: 82, cheers: 72 },
-  { id: 'dept_ezekiel', name: '에스겔 (학생부)', shortName: '에스겔', category: '학생부', icon: '🔥', leader: '학생부', membersCount: 19, totalTalents: 2410, completedQuizzes: 65, cheers: 54 },
-  { id: 'dept_sunday_school', name: '주일학교', shortName: '주일학교', category: '어린이', icon: '🌱', leader: '교사 및 어린이', membersCount: 24, totalTalents: 2150, completedQuizzes: 58, cheers: 60 },
-];
+// 화도벧엘교회 공식 8대 기관/부서 초기 데이터 (순수 0점 초기화)
+const INITIAL_DISTRICTS = CHURCH_DEPARTMENTS.map(dept => ({
+  id: dept.id,
+  name: dept.name,
+  shortName: dept.shortName,
+  category: dept.category,
+  icon: dept.icon,
+  leader: dept.category,
+  membersCount: 0,
+  totalTalents: 0,
+  completedQuizzes: 0,
+  cheers: 0
+}));
 
 export default function DistrictLeaderboardModal({ isOpen, onClose, userDistrict, userTalents = 0 }) {
   const { memberProfile, currentUser, showToast } = useContext(UserContext);
   const [districts, setDistricts] = useState(INITIAL_DISTRICTS);
   const [activeTab, setActiveTab] = useState('ranking'); // 'ranking' | 'feed' | 'myDistrict'
   const [myCheers, setMyCheers] = useState({});
-  const [liveFeeds, setLiveFeeds] = useState([
-    { id: 1, text: '갈렙(남전도회) 성도님이 [제 34주차 골든벨] 만점을 획득하셨습니다! 🌟 (+150 달란트)', time: '5분 전' },
-    { id: 2, text: '요셉(청년부) 성도님이 [주일 설교 퀴즈 - 죽도록 충성하라]를 완료했습니다! 🎤 (+60 달란트)', time: '18분 전' },
-    { id: 3, text: '루디아(여전도회) 성도님이 [성경 인물 열전 - 다윗 왕] 퀴즈를 통과했습니다! 👑 (+80 달란트)', time: '42분 전' },
-    { id: 4, text: '요안나(여전도회) 성도님이 [오늘의 1분 퀴즈]에 성공했습니다! ☀️ (+50 달란트)', time: '1시간 전' },
-    { id: 5, text: '에스겔(학생부) 성도님이 52주 통독 퀴즈 [제 12주차]를 완주했습니다! 📖 (+150 달란트)', time: '2시간 전' },
-  ]);
+  const [liveFeeds, setLiveFeeds] = useState([]);
 
-  const currentDistrictName = memberProfile?.district || userDistrict || '요셉 (청년부)';
+  const currentDistrictName = memberProfile?.district || userDistrict || '소속 기관 미선택';
 
-  // Firestore 실시간 구역 점수 및 응원 동기화
+  // Firestore 실시간 기관 점수 및 소속 성도 수 동기화
   useEffect(() => {
     if (!isOpen) return;
 
     try {
-      const unsub = onSnapshot(collection(db, 'districtScores'), (snap) => {
-        if (!snap.empty) {
-          const loaded = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          // Merge with initial
-          const merged = INITIAL_DISTRICTS.map(init => {
-            const found = loaded.find(l => l.id === init.id || l.name === init.name);
+      const unsubScores = onSnapshot(collection(db, 'districtScores'), (snap) => {
+        const loadedScores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        setDistricts(prev => {
+          const updated = prev.map(init => {
+            const found = loadedScores.find(l => l.id === init.id || l.name === init.name);
             return found ? { ...init, ...found } : init;
           });
-          merged.sort((a, b) => (b.totalTalents || 0) - (a.totalTalents || 0));
-          setDistricts(merged);
-        }
+          updated.sort((a, b) => (b.totalTalents || 0) - (a.totalTalents || 0));
+          return updated;
+        });
       }, (err) => {
         console.warn('districtScores onSnapshot error:', err.code);
       });
 
-      return () => unsub();
+      const unsubMembers = onSnapshot(collection(db, 'memberProfiles'), (snap) => {
+        const counts = {};
+        snap.docs.forEach(d => {
+          const data = d.data();
+          const dist = data.district;
+          if (dist) {
+            counts[dist] = (counts[dist] || 0) + 1;
+          }
+        });
+        setDistricts(prev => prev.map(init => {
+          const cnt = counts[init.name] || counts[init.shortName] || 0;
+          return { ...init, membersCount: cnt };
+        }));
+      }, (err) => {
+        console.warn('memberProfiles count error:', err.code);
+      });
+
+      return () => {
+        unsubScores();
+        unsubMembers();
+      };
     } catch (e) {
       console.warn('구역 랭킹 초기화:', e);
     }

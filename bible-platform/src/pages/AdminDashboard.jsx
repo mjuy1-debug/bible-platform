@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../services/firebase';
 import { UserContext } from '../context/UserContext';
-import { Globe, Lock, ShieldCheck } from 'lucide-react';
+import { Globe, Lock, ShieldCheck, Trophy, Award, RefreshCw, Plus, Check, Edit2, Users } from 'lucide-react';
 import {
   collection, query, orderBy, onSnapshot,
-  doc, updateDoc, deleteDoc, getDoc, setDoc, serverTimestamp,
+  doc, updateDoc, deleteDoc, getDoc, setDoc, serverTimestamp, increment,
 } from 'firebase/firestore';
+import { CHURCH_DEPARTMENTS, CHURCH_DEPARTMENT_NAMES } from '../data/churchDepartments';
 
 // 관리자 UID 목록 (Firebase Console → Authentication에서 확인)
 const ADMIN_UIDS = ['mjuy1AdminUID']; // TODO: 실제 관리자 UID로 교체
@@ -84,6 +85,39 @@ const AdminDashboard = ({ currentUser }) => {
 
   const setAdmin = async (uid, isAdmin) => {
     await updateDoc(doc(db, 'memberProfiles', uid), { isAdmin });
+  };
+
+  const changeUserDistrict = async (uid, district) => {
+    await updateDoc(doc(db, 'memberProfiles', uid), { district });
+  };
+
+  const changeUserPosition = async (uid, position) => {
+    await updateDoc(doc(db, 'memberProfiles', uid), { position });
+  };
+
+  const toggleCertify52W = async (uid, currentCertified) => {
+    await updateDoc(doc(db, 'memberProfiles', uid), {
+      is52WCertified: !currentCertified,
+      certifiedAt: !currentCertified ? serverTimestamp() : null
+    });
+  };
+
+  const resetAllDistrictScores = async () => {
+    if (!window.confirm('⚠️ 화도벧엘교회 8대 기관 대항전 점수를 모두 0점으로 초기화하시겠습니까? (새 시즌 시작)')) return;
+    try {
+      for (const dept of CHURCH_DEPARTMENTS) {
+        await setDoc(doc(db, 'districtScores', dept.id), {
+          name: dept.name,
+          totalTalents: 0,
+          completedQuizzes: 0,
+          cheers: 0,
+          resetAt: serverTimestamp()
+        }, { merge: true });
+      }
+      alert('✅ 8대 기관 대항전 점수가 성공적으로 0점으로 초기화되었습니다!');
+    } catch (err) {
+      alert('초기화 중 오류 발생: ' + err.message);
+    }
   };
 
   const filtered = users.filter(u => {
@@ -272,6 +306,58 @@ const AdminDashboard = ({ currentUser }) => {
         </div>
       </div>
 
+      {/* 🏛️ 화도벧엘교회 8대 기관 대항전 점수 관리 카드 */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(20,20,28,0.9) 100%)',
+        border: '1px solid rgba(212,175,55,0.4)',
+        borderRadius: '16px', padding: '1.2rem 1.4rem', marginBottom: '1.5rem',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Trophy size={18} /> 화도벧엘교회 8대 기관 대항전 시즌 관리
+            </h3>
+            <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+              새 학기나 연말연시, 새 시즌을 시작할 때 기관별 점수를 0점으로 리셋하거나 관리할 수 있습니다.
+            </p>
+          </div>
+          <button
+            onClick={resetAllDistrictScores}
+            style={{
+              padding: '8px 14px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: 700,
+              background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+          >
+            <RefreshCw size={14} /> 🔄 8대 기관 점수 0점 리셋 (새 시즌)
+          </button>
+        </div>
+
+        {/* 8대 기관 칩 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '8px' }}>
+          {CHURCH_DEPARTMENTS.map(dept => {
+            const memberCount = users.filter(u => u.district === dept.name || u.district === dept.shortName).length;
+            return (
+              <div
+                key={dept.id}
+                style={{
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                  borderRadius: '10px', padding: '8px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                }}
+              >
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {dept.icon} {dept.name}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--accent-gold)', fontWeight: 800 }}>
+                  {memberCount}명 소속
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 통계 카드 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
         {[
@@ -340,38 +426,77 @@ const AdminDashboard = ({ currentUser }) => {
                   alt="avatar"
                   style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
                 />
-                <div style={{ flex: 1, minWidth: '160px' }}>
+                <div style={{ flex: 1, minWidth: '220px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
                       {user.displayName || '이름 없음'}
                     </span>
                     {user.isAdmin && <span style={{ fontSize: '0.7rem', background: 'rgba(212,175,55,0.2)', color: 'var(--accent-gold)', borderRadius: '999px', padding: '0.1rem 0.5rem' }}>관리자</span>}
+                    {user.is52WCertified && <span style={{ fontSize: '0.7rem', background: 'rgba(168,85,247,0.2)', color: '#c084fc', borderRadius: '999px', padding: '0.1rem 0.5rem', fontWeight: 800 }}>🎓 52주 완주인증</span>}
                     <StatusBadge status={user.status} />
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                    {user.email} | {user.position || '직분 미설정'} {user.district ? `| ${user.district}` : ''}
+
+                  {/* 기관 및 직분 빠른 수정 드롭다운 */}
+                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+                    <select
+                      value={user.district || ''}
+                      onChange={(e) => changeUserDistrict(user.id, e.target.value)}
+                      style={{
+                        background: 'rgba(255,255,255,0.06)', border: '1px solid var(--glass-border)',
+                        color: 'var(--accent-gold)', borderRadius: '8px', padding: '3px 8px', fontSize: '0.75rem', fontWeight: 600
+                      }}
+                    >
+                      <option value="">소속 기관 선택</option>
+                      {CHURCH_DEPARTMENT_NAMES.map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={user.position || ''}
+                      onChange={(e) => changeUserPosition(user.id, e.target.value)}
+                      style={{
+                        background: 'rgba(255,255,255,0.06)', border: '1px solid var(--glass-border)',
+                        color: 'var(--text-primary)', borderRadius: '8px', padding: '3px 8px', fontSize: '0.75rem', fontWeight: 600
+                      }}
+                    >
+                      <option value="">직분 선택</option>
+                      {POSITIONS.map(pos => (
+                        <option key={pos} value={pos}>{pos}</option>
+                      ))}
+                    </select>
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', opacity: 0.6, marginTop: '0.1rem' }}>
-                    신청일: {user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString('ko-KR') : '알 수 없음'}
-                    {user.approvedAt?.toDate && ` | 승인일: ${user.approvedAt.toDate().toLocaleDateString('ko-KR')}`}
+
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', opacity: 0.6, marginTop: '0.3rem' }}>
+                    {user.email} | 신청일: {user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString('ko-KR') : '알 수 없음'}
                   </div>
                 </div>
+
                 {/* 액션 버튼 */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                   {user.status !== 'approved' && (
                     <button onClick={() => approve(user.id)} style={{
                       background: 'rgba(76,175,80,0.15)', border: '1px solid rgba(76,175,80,0.4)',
-                      color: '#4caf50', borderRadius: '8px', padding: '0.4rem 0.9rem',
-                      fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
+                      color: '#4caf50', borderRadius: '8px', padding: '0.4rem 0.8rem',
+                      fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
                     }}>✅ 승인</button>
                   )}
                   {user.status !== 'rejected' && (
                     <button onClick={() => reject(user.id)} style={{
                       background: 'rgba(244,67,54,0.12)', border: '1px solid rgba(244,67,54,0.35)',
-                      color: '#f44336', borderRadius: '8px', padding: '0.4rem 0.9rem',
-                      fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer',
+                      color: '#f44336', borderRadius: '8px', padding: '0.4rem 0.8rem',
+                      fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
                     }}>🚫 거부</button>
                   )}
+                  <button onClick={() => toggleCertify52W(user.id, user.is52WCertified)} style={{
+                    background: user.is52WCertified ? 'rgba(168,85,247,0.2)' : 'rgba(255,255,255,0.06)',
+                    border: `1px solid ${user.is52WCertified ? '#a855f7' : 'var(--glass-border)'}`,
+                    color: user.is52WCertified ? '#c084fc' : 'var(--text-secondary)',
+                    borderRadius: '8px', padding: '0.4rem 0.7rem',
+                    fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                  }}>
+                    🎓 {user.is52WCertified ? '수료인증 취소' : '52주 수료인증 부여'}
+                  </button>
                   <button onClick={() => setAdmin(user.id, !user.isAdmin)} style={{
                     background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)',
                     color: 'var(--accent-gold)', borderRadius: '8px', padding: '0.4rem 0.7rem',
@@ -386,7 +511,7 @@ const AdminDashboard = ({ currentUser }) => {
                       background: 'rgba(244,67,54,0.08)',
                       border: '1px solid rgba(244,67,54,0.25)',
                       color: '#f44336', borderRadius: '8px', padding: '0.4rem 0.65rem',
-                      fontSize: '0.82rem', cursor: 'pointer',
+                      fontSize: '0.78rem', cursor: 'pointer',
                     }}
                   >
                     🗑️ 삭제

@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, Download, Share2, X, Check, Sparkles, Printer, FileText, Star, Trophy, ShieldCheck } from 'lucide-react';
+import { Award, Download, Share2, X, Check, Sparkles, Printer, FileText, Star, Trophy, ShieldCheck, Lock, AlertCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
-export default function CertificateModal({ isOpen, onClose, userProfile, currentUser, completedWeeksCount = 52, totalScore = 780 }) {
+export default function CertificateModal({ isOpen, onClose, userProfile, currentUser, completedWeeksCount = 0, totalScore = 0 }) {
   const certificateRef = useRef(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
+  const isCompleted = completedWeeksCount >= 52 || userProfile?.isAdmin;
   const today = new Date();
   const dateStr = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   const certNumber = `BETHEL-52W-${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
@@ -179,6 +180,38 @@ export default function CertificateModal({ isOpen, onClose, userProfile, current
             >
               <X size={16} />
             </button>
+          </div>
+
+          {/* 완주 여부 안내 알림바 */}
+          <div style={{
+            margin: '14px 24px 0',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            background: isCompleted ? 'rgba(16,185,129,0.15)' : 'rgba(234,179,8,0.15)',
+            border: `1px solid ${isCompleted ? 'rgba(16,185,129,0.4)' : 'rgba(234,179,8,0.4)'}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '10px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {isCompleted ? (
+                <ShieldCheck size={18} color="#10b981" />
+              ) : (
+                <Lock size={18} color="#eab308" />
+              )}
+              <span style={{ fontSize: '0.84rem', color: isCompleted ? '#6ee7b7' : '#fef08a', fontWeight: 600 }}>
+                {isCompleted
+                  ? '🎉 52주 말씀 골든벨 과정을 우수한 성적으로 완주하여 공인 수료증이 정식 수여되었습니다!'
+                  : `🔒 52주 완주 진행 중입니다 (현재 ${completedWeeksCount}/52주 완료). 52주차를 모두 마치면 공식 인증 직인이 수여됩니다.`}
+              </span>
+            </div>
+            {!isCompleted && (
+              <span style={{ fontSize: '0.75rem', background: 'rgba(0,0,0,0.4)', padding: '3px 8px', borderRadius: '6px', color: '#fef08a', fontWeight: 700 }}>
+                🔍 사전 미리보기 모드
+              </span>
+            )}
           </div>
 
           {/* 수료증 렌더링 캔버스 영역 */}

@@ -490,25 +490,44 @@ export default function Quiz() {
           </button>
 
           {/* 3. 🎓 52주 완주 수료증 (NEW) */}
-          <button
-            onClick={() => setShowCertificateModal(true)}
-            style={{
-              padding: '12px 10px', borderRadius: '14px',
-              background: 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(20,20,28,0.85) 100%)',
-              border: '1px solid rgba(168,85,247,0.5)',
-              color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px',
-              boxShadow: '0 4px 15px rgba(168,85,247,0.12)'
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Award size={14} /> 52주 수료증
-              </span>
-              <span style={{ fontSize: '9px', background: '#c084fc', color: '#111', fontWeight: 900, padding: '1px 5px', borderRadius: '6px' }}>공인</span>
-            </div>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>골든벨 완주 증서</span>
-            <span style={{ fontSize: '0.72rem', color: '#e9d5ff' }}>이미지/PDF 즉시 발급</span>
-          </button>
+          {(() => {
+            const completedWeeks = Object.keys(completedScores).filter(k => k.startsWith('week_')).length;
+            const isFinished = completedWeeks >= 52 || memberProfile?.isAdmin;
+            return (
+              <button
+                onClick={() => setShowCertificateModal(true)}
+                style={{
+                  padding: '12px 10px', borderRadius: '14px',
+                  background: isFinished 
+                    ? 'linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(168,85,247,0.3) 100%)'
+                    : 'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(20,20,28,0.85) 100%)',
+                  border: isFinished ? '1px solid var(--accent-gold)' : '1px solid rgba(168,85,247,0.4)',
+                  color: '#fff', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '4px',
+                  boxShadow: isFinished ? '0 4px 18px rgba(212,175,55,0.25)' : '0 4px 15px rgba(168,85,247,0.12)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: isFinished ? 'var(--accent-gold)' : '#c084fc', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Award size={14} /> 52주 수료증
+                  </span>
+                  <span style={{
+                    fontSize: '9px',
+                    background: isFinished ? 'var(--accent-gold)' : 'rgba(168,85,247,0.3)',
+                    color: isFinished ? '#111' : '#e9d5ff',
+                    fontWeight: 900, padding: '1px 5px', borderRadius: '6px'
+                  }}>
+                    {isFinished ? '🎉 정식발급' : `🔒 ${completedWeeks}/52주`}
+                  </span>
+                </div>
+                <span style={{ fontSize: '0.85rem', fontWeight: 800 }}>
+                  {isFinished ? '공인 수료증 발급' : '골든벨 완주 증서'}
+                </span>
+                <span style={{ fontSize: '0.72rem', color: isFinished ? '#fef08a' : '#9ca3af' }}>
+                  {isFinished ? 'PDF / 이미지 다운로드' : `52주 완주 시 공식 발급`}
+                </span>
+              </button>
+            );
+          })()}
 
           {/* 4. 무한 서바이벌 */}
           <button
