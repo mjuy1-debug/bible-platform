@@ -348,12 +348,14 @@ export default function Quiz() {
 
             const userDist = memberProfile?.district;
             if (userDist) {
-              const distDocId = userDist.includes('청년') ? 'district_youth' : 
-                                userDist.includes('1') ? 'district_1' :
-                                userDist.includes('2') ? 'district_2' :
-                                userDist.includes('3') ? 'district_3' :
-                                userDist.includes('4') ? 'district_4' :
-                                userDist.includes('5') ? 'district_5' : 'district_1';
+              const distDocId = userDist.includes('갈렙') ? 'dept_caleb' :
+                                userDist.includes('여호수아') ? 'dept_joshua' :
+                                userDist.includes('요안나') ? 'dept_joanna' :
+                                userDist.includes('루디아') ? 'dept_lydia' :
+                                userDist.includes('나오미') ? 'dept_naomi' :
+                                userDist.includes('요셉') || userDist.includes('청년') ? 'dept_joseph' :
+                                userDist.includes('에스겔') || userDist.includes('학생') ? 'dept_ezekiel' :
+                                userDist.includes('주일학교') || userDist.includes('어린이') ? 'dept_sunday_school' : 'dept_caleb';
               updateDoc(doc(db, 'districtScores', distDocId), {
                 totalTalents: increment(earnedTalents),
                 completedQuizzes: increment(1)

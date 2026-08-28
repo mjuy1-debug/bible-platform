@@ -5,16 +5,18 @@ import { UserContext } from '../context/UserContext';
 import { db } from '../services/firebase';
 import { collection, doc, onSnapshot, updateDoc, increment, setDoc, getDocs } from 'firebase/firestore';
 
-// 기본 8대 구역/부서 데이터 (Firestore 연동 전 또는 초기화용)
+import { CHURCH_DEPARTMENTS } from '../data/churchDepartments';
+
+// 화도벧엘교회 공식 8대 기관/부서 초기 데이터
 const INITIAL_DISTRICTS = [
-  { id: 'district_1', name: '1구역 (화도)', leader: '김영숙 권사', membersCount: 18, totalTalents: 4250, completedQuizzes: 124, cheers: 48 },
-  { id: 'district_2', name: '2구역 (마석)', leader: '박정순 권사', membersCount: 16, totalTalents: 3890, completedQuizzes: 108, cheers: 42 },
-  { id: 'district_youth', name: '청년부 (여호수아)', leader: '이진호 청년', membersCount: 22, totalTalents: 3720, completedQuizzes: 115, cheers: 65 },
-  { id: 'district_3', name: '3구역 (창현)', leader: '이순자 집사', membersCount: 14, totalTalents: 3140, completedQuizzes: 89, cheers: 31 },
-  { id: 'district_4', name: '4구역 (묵현)', leader: '정해숙 집사', membersCount: 15, totalTalents: 2850, completedQuizzes: 76, cheers: 28 },
-  { id: 'district_5', name: '5구역 (가곡)', leader: '최미경 집사', membersCount: 12, totalTalents: 2410, completedQuizzes: 65, cheers: 22 },
-  { id: 'district_student', name: '중고등부 (디모데)', leader: '정민우 교사', membersCount: 19, totalTalents: 2190, completedQuizzes: 58, cheers: 54 },
-  { id: 'district_silver', name: '은빛사랑부 (시니어)', leader: '강순덕 권사', membersCount: 11, totalTalents: 1850, completedQuizzes: 49, cheers: 37 },
+  { id: 'dept_caleb', name: '갈렙 (남전도회)', shortName: '갈렙', category: '남전도회', icon: '🛡️', leader: '남전도회', membersCount: 18, totalTalents: 4250, completedQuizzes: 124, cheers: 48 },
+  { id: 'dept_joshua', name: '여호수아 (남전도회)', shortName: '여호수아', category: '남전도회', icon: '⚔️', leader: '남전도회', membersCount: 16, totalTalents: 3890, completedQuizzes: 108, cheers: 42 },
+  { id: 'dept_joanna', name: '요안나 (여전도회)', shortName: '요안나', category: '여전도회', icon: '🌸', leader: '여전도회', membersCount: 22, totalTalents: 3720, completedQuizzes: 115, cheers: 65 },
+  { id: 'dept_lydia', name: '루디아 (여전도회)', shortName: '루디아', category: '여전도회', icon: '💜', leader: '여전도회', membersCount: 20, totalTalents: 3450, completedQuizzes: 98, cheers: 51 },
+  { id: 'dept_naomi', name: '나오미 (여전도회)', shortName: '나오미', category: '여전도회', icon: '🌿', leader: '여전도회', membersCount: 17, totalTalents: 3140, completedQuizzes: 89, cheers: 38 },
+  { id: 'dept_joseph', name: '요셉 (청년부)', shortName: '요셉', category: '청년부', icon: '✨', leader: '청년부', membersCount: 25, totalTalents: 2980, completedQuizzes: 82, cheers: 72 },
+  { id: 'dept_ezekiel', name: '에스겔 (학생부)', shortName: '에스겔', category: '학생부', icon: '🔥', leader: '학생부', membersCount: 19, totalTalents: 2410, completedQuizzes: 65, cheers: 54 },
+  { id: 'dept_sunday_school', name: '주일학교', shortName: '주일학교', category: '어린이', icon: '🌱', leader: '교사 및 어린이', membersCount: 24, totalTalents: 2150, completedQuizzes: 58, cheers: 60 },
 ];
 
 export default function DistrictLeaderboardModal({ isOpen, onClose, userDistrict, userTalents = 0 }) {
@@ -23,14 +25,14 @@ export default function DistrictLeaderboardModal({ isOpen, onClose, userDistrict
   const [activeTab, setActiveTab] = useState('ranking'); // 'ranking' | 'feed' | 'myDistrict'
   const [myCheers, setMyCheers] = useState({});
   const [liveFeeds, setLiveFeeds] = useState([
-    { id: 1, text: '1구역 김영숙 권사님이 [제 34주차 골든벨] 만점을 획득하셨습니다! 🌟 (+150 달란트)', time: '5분 전' },
-    { id: 2, text: '청년부 이진호 성도님이 [주일 설교 퀴즈 - 죽도록 충성하라]를 완료했습니다! 🎤 (+60 달란트)', time: '18분 전' },
-    { id: 3, text: '2구역 박정순 권사님이 [성경 인물 열전 - 다윗 왕] 퀴즈를 통과했습니다! 👑 (+80 달란트)', time: '42분 전' },
-    { id: 4, text: '3구역 이순자 집사님이 [오늘의 1분 퀴즈]에 성공했습니다! ☀️ (+50 달란트)', time: '1시간 전' },
-    { id: 5, text: '4구역 정해숙 집사님이 52주 통독 퀴즈 [제 12주차]를 완주했습니다! 📖 (+150 달란트)', time: '2시간 전' },
+    { id: 1, text: '갈렙(남전도회) 성도님이 [제 34주차 골든벨] 만점을 획득하셨습니다! 🌟 (+150 달란트)', time: '5분 전' },
+    { id: 2, text: '요셉(청년부) 성도님이 [주일 설교 퀴즈 - 죽도록 충성하라]를 완료했습니다! 🎤 (+60 달란트)', time: '18분 전' },
+    { id: 3, text: '루디아(여전도회) 성도님이 [성경 인물 열전 - 다윗 왕] 퀴즈를 통과했습니다! 👑 (+80 달란트)', time: '42분 전' },
+    { id: 4, text: '요안나(여전도회) 성도님이 [오늘의 1분 퀴즈]에 성공했습니다! ☀️ (+50 달란트)', time: '1시간 전' },
+    { id: 5, text: '에스겔(학생부) 성도님이 52주 통독 퀴즈 [제 12주차]를 완주했습니다! 📖 (+150 달란트)', time: '2시간 전' },
   ]);
 
-  const currentDistrictName = memberProfile?.district || userDistrict || '1구역 (화도)';
+  const currentDistrictName = memberProfile?.district || userDistrict || '요셉 (청년부)';
 
   // Firestore 실시간 구역 점수 및 응원 동기화
   useEffect(() => {

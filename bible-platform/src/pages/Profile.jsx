@@ -7,6 +7,7 @@ import { messaging, getToken, VAPID_KEY } from '../services/firebase';
 import { db } from '../services/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import CertificateModal from '../components/CertificateModal';
+import { CHURCH_DEPARTMENT_NAMES } from '../data/churchDepartments';
 
 import Stats from './Stats';
 
@@ -89,18 +90,21 @@ const EditProfileModal = ({ initialName, initialPosition, initialDistrict, onSav
 
           <div>
             <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              소속 구역 / 부서
+              소속 기관 / 부서 *
             </label>
-            <input
-              type="text"
+            <select
               value={district}
               onChange={e => setDistrict(e.target.value)}
-              placeholder="예: 1구역, 남선교회, 청년1부"
               style={{
                 width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
                 borderRadius: '12px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
               }}
-            />
+            >
+              <option value="">소속 기관을 선택해주세요</option>
+              {CHURCH_DEPARTMENT_NAMES.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
+            </select>
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>

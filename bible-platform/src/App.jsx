@@ -26,6 +26,8 @@ import Quiz from './pages/Quiz';
 import Announce from './pages/Announce';
 import AdminDashboard from './pages/AdminDashboard';
 import ApprovalPending from './components/ApprovalPending';
+import LiveBanner from './components/LiveBanner';
+import { CHURCH_DEPARTMENT_NAMES } from './data/churchDepartments';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { messaging, onMessage, db } from './services/firebase';
@@ -92,17 +94,21 @@ const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistr
 
           <div>
             <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 600 }}>
-              소속 구역 / 부서
+              소속 기관 / 부서 *
             </label>
-            <input
+            <select
               value={district}
               onChange={e => setDistrict(e.target.value)}
-              placeholder="예: 1구역, 남선교회, 청년1부"
               style={{
                 width: '100%', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
                 borderRadius: '10px', padding: '0.75rem 1rem', color: 'var(--text-primary)', fontSize: '0.95rem',
               }}
-            />
+            >
+              <option value="">소속 기관을 선택해주세요</option>
+              {CHURCH_DEPARTMENT_NAMES.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
+            </select>
           </div>
 
           <button
