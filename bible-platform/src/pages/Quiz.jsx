@@ -367,14 +367,23 @@ export default function Quiz() {
         }
       }
 
-      // 점수 저장
+      // 점수 저장 및 52주 완주 시 수료증 자동 발급 트리거
       if (activeQuiz.id && !activeQuiz.id.startsWith('survival_')) {
         const cappedScore = Math.min(score, activeQuiz.questions.length);
         const prevBest = completedScores[activeQuiz.id] || 0;
+        const updated = { ...completedScores, [activeQuiz.id]: Math.max(cappedScore, prevBest) };
         if (cappedScore > prevBest) {
-          const updated = { ...completedScores, [activeQuiz.id]: cappedScore };
           setCompletedScores(updated);
           localStorage.setItem('quiz_completed_scores', JSON.stringify(updated));
+        }
+
+        // 52주차 전권 퀴즈 완주 자동 감지 -> 수료증 모달 자동 팝업 활성화!
+        const weeksCompleted = Object.keys(updated).filter(k => k.startsWith('week_')).length;
+        if (weeksCompleted >= 52 && activeQuiz.category === "🌟 주간 골든벨 (52주)") {
+          setTimeout(() => {
+            setShowCertificateModal(true);
+            if (showToast) showToast('🎉 축하합니다! 52주 성경 전권 골든벨을 완주하여 공인 수료증이 자동 발급되었습니다!');
+          }, 800);
         }
       }
     }
@@ -1159,20 +1168,30 @@ export default function Quiz() {
                   <Share2 size={16} /> 결과 공유
                 </button>
 
-                {/* 52주 통독 퀴즈 완료 시 공인 수료증 보기 버튼 */}
-                <button
-                  onClick={() => setShowCertificateModal(true)}
-                  style={{
-                    flex: '1 1 100%', padding: '12px 18px', borderRadius: '12px',
-                    background: 'linear-gradient(135deg, rgba(168,85,247,0.25) 0%, rgba(212,175,55,0.25) 100%)',
-                    border: '1px solid rgba(212,175,55,0.6)',
-                    color: 'var(--accent-gold)', fontSize: '0.92rem', fontWeight: 900, cursor: 'pointer',
-                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px',
-                    boxShadow: '0 4px 15px rgba(212,175,55,0.15)'
-                  }}
-                >
-                  🎓 52주 골든벨 공인 수료증 발급 / 보기
-                </button>
+                {/* 52주 완주 달성 시 활성화되는 정식 수료증 발급 버튼 */}
+                {(() => {
+                  const weeksCompleted = Object.keys(completedScores).filter(k => k.startsWith('week_')).length;
+                  const isDone = weeksCompleted >= 52 || memberProfile?.isAdmin || memberProfile?.is52WCertified;
+                  return (
+                    <button
+                      onClick={() => setShowCertificateModal(true)}
+                      style={{
+                        flex: '1 1 100%', padding: '14px 18px', borderRadius: '14px',
+                        background: isDone
+                          ? 'linear-gradient(135deg, #d4af37 0%, #f3e5ab 50%, #aa820a 100%)'
+                          : 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(20,20,28,0.85) 100%)',
+                        border: isDone ? '2px solid #fff' : '1px solid rgba(168,85,247,0.5)',
+                        color: isDone ? '#1a1400' : '#c084fc', fontSize: '0.95rem', fontWeight: 900, cursor: 'pointer',
+                        display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px',
+                        boxShadow: isDone ? '0 6px 25px rgba(212,175,55,0.45)' : '0 4px 15px rgba(168,85,247,0.15)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <Award size={18} />
+                      {isDone ? '🎉 52주 완주 공인 수료증 즉시 발급 & 인쇄하기' : `🎓 52주 완주 수료증 (현재 ${weeksCompleted}/52주 완료)`}
+                    </button>
+                  );
+                })()}
 
                 <button
                   onClick={() => setActiveQuiz(null)}
