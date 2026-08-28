@@ -9,7 +9,8 @@ if ('serviceWorker' in navigator) {
     const swUrl = import.meta.env.BASE_URL ? `${import.meta.env.BASE_URL}firebase-messaging-sw.js` : '/firebase-messaging-sw.js';
     navigator.serviceWorker.register(swUrl, { scope: import.meta.env.BASE_URL || '/' })
       .then((reg) => {
-        console.log('✅ Service Worker 등록 완료 (Scope:', reg.scope, ')');
+        reg.update();
+        console.log('✅ Service Worker 등록 및 캐시 갱신 (Scope:', reg.scope, ')');
       })
       .catch((err) => {
         console.warn('Service Worker 등록 실패:', err);

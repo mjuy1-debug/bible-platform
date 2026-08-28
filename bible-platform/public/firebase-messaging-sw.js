@@ -13,6 +13,21 @@ firebase.initializeApp({
   appId: "1:25518742112:web:ba2cdfc43f03ac294dc105",
 });
 
+const SW_VERSION = 'v2.2.0-quiz-update';
+
+// 즉시 활성화 및 구버전 캐시 완전 삭제
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((key) => caches.delete(key)));
+    }).then(() => clients.claim())
+  );
+});
+
 const messaging = firebase.messaging();
 
 // 백그라운드 메시지 수신 처리 (FCM)
