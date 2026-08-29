@@ -28,28 +28,61 @@ const Read = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Plan 페이지나 Map 페이지에서 넘어온 경우 해당 책/장/절로 초기화
-  let initBook = BIBLE_BOOKS[0];
+  // 1. Plan/Map/Search 페이지 등에서 location.state로 넘어온 경우
+  let initBook = null;
   let initChapter = 1;
+  let initSelectedVerses = {};
 
   if (location.state?.bookId || location.state?.bookName) {
     initBook = BIBLE_BOOKS.find(b => 
       (location.state.bookId && b.id === location.state.bookId) || 
       (location.state.bookName && (b.name === location.state.bookName || b.shortName === location.state.bookName))
-    ) || BIBLE_BOOKS[0];
+    );
     initChapter = location.state?.chapter || 1;
   } else if (location.state?.verseRef) {
     const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);
     if (match) {
       const bName = match[1].trim();
       initChapter = parseInt(match[2], 10);
-      initBook = BIBLE_BOOKS.find(b => b.name === bName || b.shortName === bName) || BIBLE_BOOKS[0];
+      initBook = BIBLE_BOOKS.find(b => b.name === bName || b.shortName === bName);
     }
   }
 
+  // 2. location.state가 없으면 sessionStorage / localStorage에서 이전에 읽던 책/장 복원
+  if (!initBook) {
+    const savedBookId = sessionStorage.getItem('last_read_book_id') || localStorage.getItem('last_read_book_id');
+    const savedChapter = parseInt(sessionStorage.getItem('last_read_chapter') || localStorage.getItem('last_read_chapter'), 10);
+    if (savedBookId) {
+      initBook = BIBLE_BOOKS.find(b => b.id === savedBookId);
+      if (initBook && !isNaN(savedChapter) && savedChapter > 0) {
+        initChapter = savedChapter;
+      }
+    }
+  }
+
+  // 3. 둘 다 없으면 기본값 창세기 1장
+  if (!initBook) {
+    initBook = BIBLE_BOOKS[0];
+    initChapter = 1;
+  }
+
+  // 저장된 선택 구절 복원
+  try {
+    const savedVersesStr = sessionStorage.getItem('last_read_selected_verses');
+    if (savedVersesStr) {
+      const parsed = JSON.parse(savedVersesStr);
+      if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+        const firstVal = Object.values(parsed)[0];
+        if (firstVal && (firstVal.bookId === initBook.id || firstVal.book === initBook.name) && Number(firstVal.chapter) === Number(initChapter)) {
+          initSelectedVerses = parsed;
+        }
+      }
+    }
+  } catch (e) {}
+
   const [selectedBook, setSelectedBook] = useState(initBook);
   const [selectedChapter, setSelectedChapter] = useState(initChapter);
-  const [selectedVerses, setSelectedVerses] = useState({});
+  const [selectedVerses, setSelectedVerses] = useState(initSelectedVerses);
   const [fontSize, setFontSize] = useState(1.15);
   const [showBookSelector, setShowBookSelector] = useState(false);
   const [bookSearch, setBookSearch] = useState('');
@@ -68,6 +101,27 @@ const Read = () => {
   const [englishTranslation, setEnglishTranslation] = useState('NIV');
   const [activeWordData, setActiveWordData] = useState(null);
   const [speakingVerse, setSpeakingVerse] = useState(null);
+
+  // 현재 읽고 있는 책과 장을 스토리지에 자동 보존
+  useEffect(() => {
+    if (selectedBook?.id) {
+      sessionStorage.setItem('last_read_book_id', selectedBook.id);
+      sessionStorage.setItem('last_read_chapter', String(selectedChapter));
+      localStorage.setItem('last_read_book_id', selectedBook.id);
+      localStorage.setItem('last_read_chapter', String(selectedChapter));
+    }
+  }, [selectedBook?.id, selectedChapter]);
+
+  // 선택된 구절이 변경될 때 세션에 저장
+  useEffect(() => {
+    try {
+      if (selectedVerses && Object.keys(selectedVerses).length > 0) {
+        sessionStorage.setItem('last_read_selected_verses', JSON.stringify(selectedVerses));
+        const firstVerseNum = Math.min(...Object.values(selectedVerses).map(v => v.verse));
+        sessionStorage.setItem('last_read_target_verse', String(firstVerseNum));
+      }
+    } catch (e) {}
+  }, [selectedVerses]);
 
   const handleWriteDevotion = () => {
     const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
@@ -91,11 +145,12 @@ const Read = () => {
     }
     ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
     const verseStr = `${bookName} ${chapter}:${ranges.join(', ')}`;
-    
     const textStr = sortedVerses.map(v => `${v.verse} ${v.text}`).join('\n');
     
-    navigate('/devotion', { state: { verse: verseStr, verseText: textStr } });
-    setSelectedVerses({});
+    sessionStorage.setItem('last_read_selected_verses', JSON.stringify(selectedVerses));
+    sessionStorage.setItem('last_read_target_verse', String(verseNumbers[0]));
+
+    navigate('/devotion', { state: { verse: verseStr, verseText: textStr, fromRead: true } });
   };
 
   const handleMakeCard = () => {
@@ -112,8 +167,11 @@ const Read = () => {
     }
     ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
     const refText = `${bookName} ${chapter}:${ranges.join(', ')}`;
-    navigate('/verse-card', { state: { verses: sortedVerses, refText } });
-    setSelectedVerses({});
+    
+    sessionStorage.setItem('last_read_selected_verses', JSON.stringify(selectedVerses));
+    sessionStorage.setItem('last_read_target_verse', String(verseNumbers[0]));
+
+    navigate('/verse-card', { state: { verses: sortedVerses, refText, fromRead: true } });
   };
 
   const handleMemorize = () => {
@@ -144,20 +202,23 @@ const Read = () => {
     // 현재 읽기 화면이 영어 모드이면 암송도 영어 모드로 즉시 시작
     const initialMode = languageMode === 'english' ? 'en' : 'kr';
 
+    sessionStorage.setItem('last_read_selected_verses', JSON.stringify(selectedVerses));
+    sessionStorage.setItem('last_read_target_verse', String(verseNumbers[0]));
+
     navigate('/memorize', {
       state: {
         verse: textStr,
         engVerse: engTextStr || textStr,
         reference: refText,
-        initialMode: initialMode
+        initialMode: initialMode,
+        fromRead: true
       }
     });
-    setSelectedVerses({});
   };
 
   const handleSearchMap = () => {
     const textStr = Object.values(selectedVerses).map(v => v.text).join(' ');
-    const knownLocations = ["예루살렘", "베들레헴", "가버나움", "나사렛", "갈릴리", "요단", "여리고", "사마리아", "안디옥", "에베소", "고린도", "로마", "애굽", "다메섹", "시내"];
+    const knownLocations = ["예루salem", "예루살렘", "베들레헴", "가버나움", "나사렛", "갈릴리", "요단", "여리고", "사마리아", "안디옥", "에베소", "고린도", "로마", "애굽", "다메섹", "시내"];
     let foundLoc = "";
     for (const loc of knownLocations) {
       if (textStr.includes(loc)) {
@@ -165,15 +226,18 @@ const Read = () => {
         break;
       }
     }
-    navigate('/bible-map', { state: { searchLoc: foundLoc } });
-    setSelectedVerses({});
+    const firstV = Object.values(selectedVerses)[0];
+    if (firstV) {
+      sessionStorage.setItem('last_read_selected_verses', JSON.stringify(selectedVerses));
+      sessionStorage.setItem('last_read_target_verse', String(firstV.verse));
+    }
+    navigate('/bible-map', { state: { searchLoc: foundLoc, fromRead: true } });
   };
 
   // 성경 데이터 로드 (한글 + 영어)
   const loadChapter = useCallback(async (bookId, chapter, engTrans = englishTranslation) => {
     setLoading(true);
     setError(null);
-    setSelectedVerses({});
     setVerses([]);
     setEnglishVerses([]);
     setPlayingVideo(null);
@@ -366,31 +430,47 @@ const Read = () => {
     }
   };
 
-  // Map에서 특정 구절 클릭시 스크롤 및 하이라이트 효과
+  // Map / VerseCard / Memorize / Devotion 등에서 돌아오거나 특정 구절 클릭시 스크롤 및 하이라이트 효과
   useEffect(() => {
-    if (verses.length > 0 && location.state?.verseRef) {
-      const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);
-      if (match) {
-        const targetVerse = parseInt(match[3], 10);
+    if (verses.length > 0) {
+      let targetVerse = null;
+      if (location.state?.verseRef) {
+        const match = location.state.verseRef.match(/(.+)\s(\d+):(\d+)/);
+        if (match) targetVerse = parseInt(match[3], 10);
+      } else if (location.state?.targetVerse) {
+        targetVerse = parseInt(location.state.targetVerse, 10);
+      } else {
+        const savedTarget = sessionStorage.getItem('last_read_target_verse');
+        if (savedTarget) {
+          targetVerse = parseInt(savedTarget, 10);
+        }
+      }
+
+      if (targetVerse && !isNaN(targetVerse)) {
         setTimeout(() => {
           const el = document.getElementById(`verse-${targetVerse}`);
           if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             el.style.backgroundColor = 'rgba(212,175,55,0.4)';
-            el.style.transition = 'background-color 2s';
+            el.style.transition = 'background-color 2s ease';
             setTimeout(() => {
-              el.style.backgroundColor = 'transparent';
-            }, 2000);
+              el.style.backgroundColor = '';
+            }, 2500);
           }
-        }, 300);
+        }, 200);
       }
-      window.history.replaceState({}, document.title);
+      if (location.state?.verseRef) {
+        window.history.replaceState({}, document.title);
+      }
     }
   }, [verses, location.state]);
 
   const handleBookSelect = (book) => {
     setSelectedBook(book);
     setSelectedChapter(1);
+    setSelectedVerses({});
+    sessionStorage.removeItem('last_read_selected_verses');
+    sessionStorage.removeItem('last_read_target_verse');
     setShowBookSelector(false);
     setBookSearch('');
   };
@@ -421,6 +501,9 @@ const Read = () => {
     const next = selectedChapter + dir;
     if (next >= 1 && next <= selectedBook.chapters) {
       setSelectedChapter(next);
+      setSelectedVerses({});
+      sessionStorage.removeItem('last_read_selected_verses');
+      sessionStorage.removeItem('last_read_target_verse');
     }
   };
 

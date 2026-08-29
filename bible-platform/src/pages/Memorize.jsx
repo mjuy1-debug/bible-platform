@@ -3,10 +3,10 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Brain, RefreshCw, Star, BookOpen, Trophy, Trash2, Lightbulb, 
-  Volume2, VolumeX, Sparkles, CheckCircle2, ChevronRight, BookMarked,
+  Volume2, VolumeX, Sparkles, CheckCircle2, ChevronRight, ChevronLeft, BookMarked,
   Layers, Key, Eye, EyeOff, RotateCcw, Share2, Copy, Check, Award, ArrowRight, Globe
 } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import { MEMORIZE_CATEGORIES, MEMORIZE_VERSES, getInitialConsonants } from '../data/memorizeVerses';
 
@@ -35,6 +35,7 @@ function getEnglishInitialHint(text) {
 
 export default function Memorize() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { memorized = {}, toggleMemorized, showToast } = useContext(UserContext);
 
   // 언어 모드 ('kr': 개역한글, 'en': NIV 영어)
@@ -327,27 +328,50 @@ export default function Memorize() {
           </div>
         </div>
 
-        <button
-          onClick={() => {
-            const randomV = MEMORIZE_VERSES[Math.floor(Math.random() * MEMORIZE_VERSES.length)];
-            handleSelectVerse(randomV);
-          }}
-          style={{
-            padding: '8px 14px',
-            borderRadius: '10px',
-            background: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid var(--glass-border)',
-            color: 'var(--text-primary)',
-            fontSize: '0.82rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}
-        >
-          <RefreshCw size={14} /> 추천 구절
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {(location.state?.reference || location.state?.fromRead) && (
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '10px',
+                background: 'rgba(212, 175, 55, 0.18)',
+                border: '1px solid var(--accent-gold)',
+                color: 'var(--text-primary)',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <ChevronLeft size={14} /> 성경 읽기로
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              const randomV = MEMORIZE_VERSES[Math.floor(Math.random() * MEMORIZE_VERSES.length)];
+              handleSelectVerse(randomV);
+            }}
+            style={{
+              padding: '8px 14px',
+              borderRadius: '10px',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid var(--glass-border)',
+              color: 'var(--text-primary)',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <RefreshCw size={14} /> 추천 구절
+          </button>
+        </div>
       </div>
 
       {/* 탭 네비게이션 (모바일 최적화) */}

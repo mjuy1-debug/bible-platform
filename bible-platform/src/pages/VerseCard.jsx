@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ChevronLeft } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 const THEMES = [
@@ -76,8 +77,32 @@ export default function VerseCard() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'var(--bg-primary, #121212)', padding: '2rem 1rem', color: 'var(--text-primary, #fff)', fontFamily: 'sans-serif' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'var(--bg-primary, #121212)', padding: '1rem 1rem 3rem', color: 'var(--text-primary, #fff)', fontFamily: 'sans-serif' }}>
       
+      {/* Top Navigation */}
+      <div style={{ width: '100%', maxWidth: '375px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '8px 14px',
+            borderRadius: '10px',
+            background: 'var(--glass-bg, rgba(255,255,255,0.08))',
+            border: '1px solid var(--glass-border, rgba(212,175,55,0.25))',
+            color: 'var(--text-primary)',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            cursor: 'pointer'
+          }}
+        >
+          <ChevronLeft size={18} />
+          <span>성경 읽기로</span>
+        </button>
+        <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--accent-gold)' }}>말씀 카드 만들기</span>
+      </div>
+
       {/* Card Preview */}
       <motion.div
         ref={cardRef}
