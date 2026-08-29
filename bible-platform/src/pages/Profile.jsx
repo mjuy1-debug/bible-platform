@@ -174,13 +174,16 @@ const Profile = () => {
         return false;
       }
 
-      // Firestore에 토큰 + 알림 시간 저장
+      // Firestore에 토큰 + 알림 시간 + 관리자 여부 저장
       const uid = currentUser?.uid || 'anonymous_' + Date.now();
       await setDoc(doc(db, 'fcmTokens', uid), {
         token,
         notifHour: hour,
         notifMinute: minute,
         enabled: true,
+        isAdmin: !!isAdmin,
+        uid,
+        email: currentUser?.email || '',
         displayName: currentUser?.displayName || '익명',
         updatedAt: new Date().toISOString()
       });
