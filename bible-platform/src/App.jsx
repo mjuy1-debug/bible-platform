@@ -28,6 +28,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ApprovalPending from './components/ApprovalPending';
 import LiveBanner from './components/LiveBanner';
 import PwaInstallModal from './components/PwaInstallModal';
+import ScrollToTop from './components/ScrollToTop';
 import { CHURCH_DEPARTMENT_NAMES } from './data/churchDepartments';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
@@ -687,6 +688,7 @@ function App() {
     <ThemeProvider>
       <UserProvider>
         <Router>
+          <ScrollToTop />
           <AppInner />
         </Router>
       </UserProvider>
