@@ -252,93 +252,109 @@ exports.sendBroadcastNotification = functions.firestore.onDocumentCreated(
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 5. 🔔 새 성도 가입 신청 → 관리자 즉시 알림
+// 5. 🔔 새 성도 가입 신청 → 관리자 즉시 백그라운드 푸시 알림
 // ─────────────────────────────────────────────────────────────────────────────
-exports.notifyAdminOnNewMember = functions.firestore.onDocumentCreated(
-  'members/{uid}',
+const ADMIN_EMAILS = ['mjuy1@naver.com'];
+
+exports.notifyAdminOnNewMember = functions.firestore.onDocumentWritten(
+  'memberProfiles/{uid}',
   async (event) => {
-    const data = event.data?.data();
-    if (!data) return;
-    if (data.status !== 'pending') return; // 관리자 직접 등록은 알림 제외
+    const afterData  = event.data?.after?.data();
+    const beforeData = event.data?.before?.data();
+
+    if (!afterData) return; // 문서 삭제 시 무시
+    if (afterData.status !== 'pending') return; // approved/rejected 등은 무시
+
+    // 이전에도 pending이었고 주요 정보 변경이 없는 단순 조회/터치면 중복 발송 방지
+    const isNew = !beforeData;
+    const isBecamePending = beforeData && beforeData.status !== 'pending';
+    const infoUpdated = beforeData && (
+      (beforeData.position !== afterData.position) ||
+      (beforeData.district !== afterData.district) ||
+      (beforeData.displayName !== afterData.displayName)
+    );
+
+    if (!isNew && !isBecamePending && !infoUpdated) {
+      return;
+    }
 
     const db           = admin.firestore();
-    const displayName  = data.displayName || '이름 미입력';
-    const position     = data.position    || '직분 미입력';
-    const district     = data.district    || '구역 미입력';
+    const displayName  = afterData.displayName || afterData.name || '성도';
+    const position     = afterData.position    || '직분 미선택';
+    const district     = afterData.district    || '구역 미선택';
+    const email        = afterData.email       || '';
 
-    // 관리자 토큰만 조회 (isAdmin 필드가 true인 경우)
-    const tokenSnap = await db.collection('fcmTokens')
+    console.log(`[가입 신청 감지] ${displayName} (${position} / ${district} / ${email})`);
+
+    // 관리자 토큰 조회 (중복 제거용 Map)
+    const adminTokens = new Map();
+
+    // 1) fcmTokens에서 isAdmin == true인 토큰
+    const snap1 = await db.collection('fcmTokens')
       .where('enabled', '==', true)
       .where('isAdmin', '==', true)
       .get();
+    snap1.forEach(docSnap => {
+      const d = docSnap.data();
+      if (d.token) adminTokens.set(docSnap.id, d.token);
+    });
 
-    if (tokenSnap.empty) {
-      console.log('관리자 토큰 없음 - 일반 토큰에서 관리자 찾는 폴백 시도');
-      // 폴백: systemSettings에서 관리자 UID 목록 조회
-      const settingsDoc = await db.doc('systemSettings/adminList').get();
-      if (!settingsDoc.exists) return;
+    // 2) ADMIN_EMAILS 이메일을 가진 관리자 토큰
+    for (const adminEmail of ADMIN_EMAILS) {
+      const emailSnap = await db.collection('fcmTokens')
+        .where('enabled', '==', true)
+        .where('email', '==', adminEmail)
+        .get();
+      emailSnap.forEach(docSnap => {
+        const d = docSnap.data();
+        if (d.token) adminTokens.set(docSnap.id, d.token);
+      });
+    }
 
-      const adminUids = settingsDoc.data()?.uids || [];
-      if (adminUids.length === 0) return;
-
-      const adminTokens = [];
-      for (const uid of adminUids) {
-        const tokenDoc = await db.collection('fcmTokens').doc(uid).get();
-        if (tokenDoc.exists && tokenDoc.data()?.enabled && tokenDoc.data()?.token) {
-          adminTokens.push({
-            token: tokenDoc.data().token,
-            _uid: uid,
-          });
-        }
+    // 3) memberProfiles에서 isAdmin == true인 관리자들의 UID 조회하여 fcmTokens 가져오기
+    const adminProfilesSnap = await db.collection('memberProfiles')
+      .where('isAdmin', '==', true)
+      .get();
+    for (const adminDoc of adminProfilesSnap.docs) {
+      const tokenDoc = await db.collection('fcmTokens').doc(adminDoc.id).get();
+      if (tokenDoc.exists && tokenDoc.data()?.enabled && tokenDoc.data()?.token) {
+        adminTokens.set(adminDoc.id, tokenDoc.data().token);
       }
+    }
 
-      if (adminTokens.length === 0) return;
-
-      const messages = adminTokens.map(t => ({
-        ...t,
-        notification: {
-          title: '👑 새 성도 가입 승인 요청',
-          body: `${displayName} (${position} / ${district}) 성도님이 가입 승인을 기다리고 있습니다.`,
-        },
-        webpush: {
-          notification: {
-            icon:  ICON_URL,
-            badge: ICON_URL,
-            requireInteraction: true,
-          },
-          fcmOptions: { link: `${APP_URL}/#/admin` }
-        },
-        data: { type: 'new_member', url: `${APP_URL}/#/admin` }
-      }));
-
-      await sendToAllTokens(db, messages);
+    if (adminTokens.size === 0) {
+      console.log('⚠️ 등록된 관리자 FCM 토큰이 없습니다. 관리자가 앱에서 [알림 켜기]를 활성화했는지 확인하세요.');
       return;
     }
 
     const messages = [];
-    tokenSnap.forEach(docSnap => {
-      const d = docSnap.data();
-      if (!d.token) return;
+    adminTokens.forEach((token, uid) => {
       messages.push({
-        token: d.token,
-        _uid: docSnap.id,
+        token,
+        _uid: uid,
         notification: {
-          title: '👑 새 성도 가입 승인 요청',
-          body: `${displayName} (${position} / ${district}) 성도님이 가입 승인을 기다리고 있습니다.`,
+          title: '👑 [가입 승인 요청] 새 성도 가입',
+          body: `${displayName} (${position} / ${district}) 성도님이 가입 승인을 요청했습니다.`,
         },
         webpush: {
           notification: {
             icon:  ICON_URL,
             badge: ICON_URL,
             requireInteraction: true,
+            vibrate: [300, 150, 300, 150, 400],
+            tag: `new-member-${event.params.uid}`,
           },
           fcmOptions: { link: `${APP_URL}/#/admin` }
         },
-        data: { type: 'new_member', url: `${APP_URL}/#/admin` }
+        data: {
+          type: 'new_member',
+          uid: event.params.uid,
+          url: `${APP_URL}/#/admin`,
+        }
       });
     });
 
-    console.log(`관리자 가입 신청 알림: ${messages.length}명`);
+    console.log(`관리자 가입 신청 백그라운드 푸시 전송: ${messages.length}대 기기`);
     await sendToAllTokens(db, messages);
   }
 );
