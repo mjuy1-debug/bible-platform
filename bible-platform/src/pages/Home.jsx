@@ -34,7 +34,7 @@ const COMMUNITY_LINKS = [
 ];
 
 const Home = () => {
-  const { planProgress, devotions, favorites, events } = useContext(UserContext);
+  const { planProgress, devotions, favorites, events, openInstallModal, isStandalone } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -81,6 +81,57 @@ const Home = () => {
 
       {/* 실시간 주일/수요 예배 라이브 스트리밍 알림 배너 */}
       <LiveBanner />
+
+      {/* 📱 스마트폰 홈 화면에 앱 설치 안내 배너 (미설치 시) */}
+      {!isStandalone && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            maxWidth: '760px',
+            margin: '0 auto 1.2rem',
+            background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(168,85,247,0.18) 100%)',
+            border: '1px solid rgba(212,175,55,0.45)',
+            borderRadius: '16px',
+            padding: '12px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '10px',
+            boxShadow: '0 4px 18px rgba(0,0,0,0.25)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '1.4rem' }}>📱</span>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>
+                화도벧엘교회 앱을 홈 화면에 설치하세요
+              </div>
+              <div style={{ fontSize: '0.74rem', color: '#e5e7eb' }}>
+                앱스토어 없이 1초 만에 스마트폰 앱으로 설치 & 매일 아침 말씀 알림 수신
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={openInstallModal}
+            style={{
+              padding: '7px 14px',
+              borderRadius: '10px',
+              background: 'linear-gradient(135deg, #d4af37, #f3e5ab)',
+              color: '#1a1400',
+              fontWeight: 800,
+              fontSize: '0.8rem',
+              border: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px rgba(212,175,55,0.4)'
+            }}
+          >
+            앱 설치하기 ➔
+          </button>
+        </motion.div>
+      )}
 
       {/* Hero */}
       <div style={{ textAlign: 'center', padding: 'clamp(2rem, 5vw, 4rem) 0 clamp(2rem, 4vw, 3.5rem)', position: 'relative' }}>

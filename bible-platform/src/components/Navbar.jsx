@@ -27,7 +27,7 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { memberProfile, isAdmin } = useContext(UserContext);
+  const { memberProfile, isAdmin, openInstallModal, isStandalone } = useContext(UserContext);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -81,6 +81,28 @@ const Navbar = () => {
               <Shield size={13} /> 관리자
             </Link>
           )}
+          {!isStandalone && (
+            <button
+              onClick={openInstallModal}
+              title="홈 화면에 앱 설치"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '0.3rem 0.75rem',
+                borderRadius: '999px',
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.2), rgba(168,85,247,0.2))',
+                border: '1px solid var(--accent-gold)',
+                color: 'var(--accent-gold)',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              📱 앱 설치
+            </button>
+          )}
           <button onClick={() => setShowNotificationModal(true)} title="말씀 알림 설정" style={{ color: 'var(--accent-gold)', display: 'flex', padding: '0.4rem', minWidth: '36px', minHeight: '36px', alignItems: 'center', justifyContent: 'center', background: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '50%', cursor: 'pointer' }}>
             <Bell size={18} />
           </button>
@@ -89,8 +111,29 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile: notification + theme + hamburger */}
+        {/* Mobile: install button + notification + theme + hamburger */}
         <div style={{ display: 'none' }} className="mobile-nav">
+          {!isStandalone && (
+            <button
+              onClick={openInstallModal}
+              style={{
+                background: 'rgba(212,175,55,0.15)',
+                border: '1px solid rgba(212,175,55,0.5)',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                color: 'var(--accent-gold)',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                marginRight: '0.4rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px'
+              }}
+            >
+              📱 설치
+            </button>
+          )}
           <button onClick={() => setShowNotificationModal(true)} style={{ color: 'var(--accent-gold)', marginRight: '0.4rem', display: 'flex', padding: '0.4rem', background: 'none', border: 'none', cursor: 'pointer' }}>
             <Bell size={20} />
           </button>
@@ -134,6 +177,30 @@ const Navbar = () => {
               onClick={() => setMenuOpen(false)}>
               <Shield size={22} color="#ffd700" /> 👑 성도 가입 승인 관리
             </Link>
+          )}
+
+          {!isStandalone && (
+            <button
+              onClick={() => {
+                openInstallModal();
+                setMenuOpen(false);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                padding: '0.85rem 1rem', borderRadius: '14px',
+                color: '#fff',
+                fontSize: '1rem', fontWeight: 800,
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(168,85,247,0.3) 100%)',
+                border: '1px solid var(--accent-gold)',
+                marginBottom: '0.6rem',
+                cursor: 'pointer',
+                boxShadow: '0 4px 15px rgba(212,175,55,0.2)',
+                flexShrink: 0,
+                textAlign: 'left'
+              }}
+            >
+              <span style={{ fontSize: '1.2rem' }}>📱</span> 홈 화면에 앱 설치하기
+            </button>
           )}
 
           <div style={{

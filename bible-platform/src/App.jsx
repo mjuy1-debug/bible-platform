@@ -27,6 +27,7 @@ import Announce from './pages/Announce';
 import AdminDashboard from './pages/AdminDashboard';
 import ApprovalPending from './components/ApprovalPending';
 import LiveBanner from './components/LiveBanner';
+import PwaInstallModal from './components/PwaInstallModal';
 import { CHURCH_DEPARTMENT_NAMES } from './data/churchDepartments';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider, UserContext } from './context/UserContext';
@@ -139,7 +140,11 @@ const ProfileEditModal = ({ initialName = '', initialPosition = '', initialDistr
 };
 
 const AppInner = () => {
-  const { toast, showToast, currentUser, memberStatus, memberProfile, isAdmin, isOpenAccessMode, updateMemberProfile, loginWithGoogle } = useContext(UserContext);
+  const {
+    toast, showToast, currentUser, memberStatus, memberProfile, isAdmin,
+    isOpenAccessMode, updateMemberProfile, loginWithGoogle,
+    isInstallModalOpen, closeInstallModal, openInstallModal, deferredPrompt, isStandalone
+  } = useContext(UserContext);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
 
   // ── 0. 오디오 잠금 해제 ──
@@ -527,8 +532,35 @@ const AppInner = () => {
               <img src="https://www.google.com/favicon.ico" alt="Google" style={{ width: '20px', height: '20px' }} />
               Google 계정으로 로그인
             </button>
+
+            {/* 홈 화면에 앱 설치하기 버튼 */}
+            {!isStandalone && (
+              <button
+                onClick={openInstallModal}
+                style={{
+                  marginTop: '0.85rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '0.75rem 1.5rem',
+                  background: 'rgba(212, 175, 55, 0.12)',
+                  border: '1px solid rgba(212, 175, 55, 0.4)',
+                  borderRadius: '12px',
+                  color: 'var(--accent-gold)',
+                  fontSize: '0.88rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  width: '100%',
+                  maxWidth: '320px'
+                }}
+              >
+                📱 홈 화면에 앱 설치하기
+              </button>
+            )}
+
             <p style={{
-              marginTop: '2.5rem',
+              marginTop: '2rem',
               fontSize: '0.8rem',
               color: 'var(--text-secondary)',
               opacity: 0.6,
@@ -539,6 +571,12 @@ const AppInner = () => {
             </p>
           </div>
         </div>
+        <PwaInstallModal
+          isOpen={isInstallModalOpen}
+          onClose={closeInstallModal}
+          deferredPrompt={deferredPrompt}
+          isStandalone={isStandalone}
+        />
         {toast && <Toast message={toast.message} type={toast.type} />}
       </>
     );
@@ -633,6 +671,12 @@ const AppInner = () => {
           onClose={() => setShowProfileEdit(false)}
         />
       )}
+      <PwaInstallModal
+        isOpen={isInstallModalOpen}
+        onClose={closeInstallModal}
+        deferredPrompt={deferredPrompt}
+        isStandalone={isStandalone}
+      />
       {toast && <Toast message={toast.message} type={toast.type} />}
     </>
   );

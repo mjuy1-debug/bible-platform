@@ -140,7 +140,7 @@ const EditProfileModal = ({ initialName, initialPosition, initialDistrict, onSav
 };
 
 const Profile = () => {
-  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, isAdmin, updateMemberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast } = useContext(UserContext);
+  const { favorites, devotions, planProgress, toggleFavorite, currentUser, memberProfile, isAdmin, updateMemberProfile, loginWithGoogle, logout, cloudSynced, forceSync, showToast, openInstallModal, isStandalone } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -502,6 +502,40 @@ const Profile = () => {
           {!pushEnabled && (
             <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>알림 활성화 후 적용됩니다</span>
           )}
+        </div>
+      </div>
+
+      {/* 📱 스마트폰 홈 화면 앱 설치 관리 카드 */}
+      <div className="glass-card" style={{ marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', flexShrink: 0 }}>
+              📱
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-primary)' }}>스마트폰 홈 화면 앱 설치</h4>
+              <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                {isStandalone ? '✅ 현재 화도벧엘교회 전용 앱으로 실행 중입니다.' : '앱스토어 없이 1초 만에 스마트폰 앱으로 설치하여 전체 화면으로 이용하세요.'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={openInstallModal}
+            style={{
+              padding: '0.6rem 1.2rem',
+              borderRadius: '12px',
+              background: isStandalone ? 'rgba(16,185,129,0.15)' : 'linear-gradient(135deg, #d4af37, #f3e5ab)',
+              border: isStandalone ? '1px solid #10b981' : 'none',
+              color: isStandalone ? '#10b981' : '#1a1400',
+              fontWeight: 800,
+              fontSize: '0.88rem',
+              cursor: 'pointer',
+              boxShadow: isStandalone ? 'none' : '0 4px 12px rgba(212,175,55,0.35)',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {isStandalone ? '설치 완료 ✅' : '📱 홈 화면에 설치하기'}
+          </button>
         </div>
       </div>
 

@@ -63,6 +63,9 @@ export const UserProvider = ({ children }) => {
   const [memberStatus, setMemberStatus] = useState(null); // null=loading, 'pending'|'approved'|'rejected'
   const [memberProfile, setMemberProfile] = useState(null);
   const [isOpenAccessMode, setIsOpenAccessMode] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const unsubCloudRef = useRef(null);
   const unsubMemberRef = useRef(null);
   const savingToCloud = useRef(false);
@@ -70,6 +73,40 @@ export const UserProvider = ({ children }) => {
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
+  }, []);
+
+  // ── PWA 설치 프롬프트 및 Standalone 실행 모드 감지 ──
+  useEffect(() => {
+    const checkStandalone = () => {
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true ||
+                    document.referrer.includes('android-app://');
+      setIsStandalone(isPWA);
+    };
+    checkStandalone();
+
+    const handleBeforeInstall = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', () => {
+      setDeferredPrompt(null);
+      setIsStandalone(true);
+    });
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+    };
+  }, []);
+
+  const openInstallModal = useCallback(() => {
+    setIsInstallModalOpen(true);
+  }, []);
+
+  const closeInstallModal = useCallback(() => {
+    setIsInstallModalOpen(false);
   }, []);
 
   // ── 전체 공개(자유 입장) 모드 시스템 설정 실시간 감지 ──
@@ -652,6 +689,11 @@ export const UserProvider = ({ children }) => {
       logout,
       shareDevotion,
       deleteSharedDevotion,
+      deferredPrompt,
+      isStandalone,
+      isInstallModalOpen,
+      openInstallModal,
+      closeInstallModal,
     }}>
       {children}
     </UserContext.Provider>
