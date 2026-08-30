@@ -115,6 +115,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -207,6 +208,12 @@ export const SAMPLE_EVENTS = [
 6부  정리정돈&식사후귀가` },
   { id: 42, title: '[남전도회]연합특송', date: '2026-08-30', category: ['joshua', 'caleb'], description: `[남전도회]연합특송` },
   { id: 43, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
+  { id: 44, title: '9월 월삭일', date: '2026-09-01', category: ['normal', 'church'], description: `9월 월삭일
+준비된 믿음과 기도로 맞이 합시다` },
+  { id: 45, title: '수양관대청소&이불빨래', date: '2026-09-11', endDate: '2026-09-12', category: ['normal', 'church'], description: `기도로 준비바랍니다.
+
+- 날      짜 : 9/11-12(금-토)
+- 봉      사 : 요안나,루디아,갈렙,여호수아` },
 ];
 
 /**
