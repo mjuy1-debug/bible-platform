@@ -234,6 +234,21 @@ const Read = () => {
     navigate('/bible-map', { state: { searchLoc: foundLoc, fromRead: true } });
   };
 
+  const handleFavoriteSelected = () => {
+    const sortedVerses = Object.values(selectedVerses).sort((a, b) => a.verse - b.verse);
+    if (sortedVerses.length === 0) return;
+    sortedVerses.forEach(v => {
+      toggleFavorite({
+        ref: `${selectedBook.shortName} ${selectedChapter}:${v.verse}`,
+        text: v.text,
+        book: selectedBook.name,
+        chapter: selectedChapter,
+        verse: v.verse
+      });
+    });
+    setSelectedVerses({});
+  };
+
   // 성경 데이터 로드 (한글 + 영어)
   const loadChapter = useCallback(async (bookId, chapter, engTrans = englishTranslation) => {
     setLoading(true);
@@ -1112,8 +1127,26 @@ const Read = () => {
               </button>
             </div>
 
-            {/* 묵상 / 암송 / 카드 만들기 */}
-            <div style={{ display: 'flex', gap: '4px' }}>
+            {/* 묵상 / 즐겨찾기 / 암송 / 카드 만들기 */}
+            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+              <button
+                onClick={handleFavoriteSelected}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: '8px',
+                  background: 'rgba(244,63,94,0.16)',
+                  color: '#f43f5e',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  border: '1px solid rgba(244,63,94,0.35)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <Heart size={13} fill="#f43f5e" /> 즐겨찾기
+              </button>
               <button
                 onClick={handleWriteDevotion}
                 style={{

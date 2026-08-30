@@ -699,25 +699,51 @@ export const UserProvider = ({ children }) => {
       const snap = await getDoc(userDocRef(currentUser.uid));
       if (snap.exists()) {
         const cloudData = snap.data();
-        setState(prev => ({
-          ...prev,
-          favorites: cloudData.favorites?.length ? cloudData.favorites : prev.favorites,
-          devotions: cloudData.devotions?.length ? cloudData.devotions : prev.devotions,
-          highlights: Object.keys(cloudData.highlights || {}).length ? cloudData.highlights : prev.highlights,
-          planProgress: cloudData.planProgress?.completedDays?.length
-            ? { ...INITIAL_STATE.planProgress, ...cloudData.planProgress }
-            : prev.planProgress,
-        }));
+        setState(prev => {
+          let loadedPlan = prev.planProgress;
+          if (cloudData.planProgress) {
+            const planType = cloudData.planProgress.type || prev.planProgress.type || 'full-year';
+            const planBooks = cloudData.planProgress.selectedBooks || prev.planProgress.selectedBooks || [];
+            const generated = generatePlan(planType, planBooks);
+            loadedPlan = {
+              ...generated,
+              ...cloudData.planProgress,
+              dailySchedule: (cloudData.planProgress.dailySchedule && cloudData.planProgress.dailySchedule.length > 0)
+                ? cloudData.planProgress.dailySchedule
+                : generated.dailySchedule,
+              completedDays: Array.isArray(cloudData.planProgress.completedDays)
+                ? cloudData.planProgress.completedDays
+                : (prev.planProgress.completedDays || []),
+            };
+          }
+          return {
+            ...prev,
+            favorites: Array.isArray(cloudData.favorites) && cloudData.favorites.length > 0 ? cloudData.favorites : prev.favorites,
+            devotions: Array.isArray(cloudData.devotions) && cloudData.devotions.length > 0 ? cloudData.devotions : prev.devotions,
+            highlights: cloudData.highlights && Object.keys(cloudData.highlights).length > 0 ? cloudData.highlights : prev.highlights,
+            memorized: cloudData.memorized && Object.keys(cloudData.memorized).length > 0 ? cloudData.memorized : prev.memorized,
+            prayers: Array.isArray(cloudData.prayers) && cloudData.prayers.length > 0 ? cloudData.prayers : prev.prayers,
+            planProgress: loadedPlan,
+          };
+        });
         setCloudSynced(true);
         showToast('✅ 클라우드 데이터 복구 완료!');
       } else {
         // 처음 사용자: 로컬 데이터 업로드
         const local = loadLocalState();
         const payload = sanitize({
-          favorites: local.favorites,
-          devotions: local.devotions,
-          highlights: local.highlights,
-          planProgress: { type: local.planProgress.type, totalDays: local.planProgress.totalDays, completedDays: local.planProgress.completedDays, selectedBooks: local.planProgress.selectedBooks },
+          favorites: local.favorites || [],
+          devotions: local.devotions || [],
+          highlights: local.highlights || {},
+          memorized: local.memorized || {},
+          prayers: local.prayers || [],
+          planProgress: {
+            type: local.planProgress.type,
+            totalDays: local.planProgress.totalDays,
+            completedDays: local.planProgress.completedDays || [],
+            selectedBooks: local.planProgress.selectedBooks || [],
+            dailySchedule: local.planProgress.dailySchedule || []
+          },
           updatedAt: new Date().toISOString(),
         });
         await setDoc(userDocRef(currentUser.uid), payload);
