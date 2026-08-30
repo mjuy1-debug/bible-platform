@@ -184,6 +184,61 @@ const Plan = () => {
         </div>
       </div>
 
+      {/* ⚡ 이전 진행률 빠른 복구 안내 배너 (진행률이 0일 때) */}
+      {completedDays.length === 0 && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(20,20,24,0.85) 100%)',
+          border: '1px solid rgba(212,175,55,0.4)',
+          borderRadius: '14px',
+          padding: '12px 16px',
+          marginBottom: '1.2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Flame size={18} color="var(--accent-gold)" />
+            <span style={{ fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+              이전에 신약 통독을 읽고 계셨나요? 1-Click으로 복구하세요:
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setCompletedUpToDay(3, 'new-testament')}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                background: 'var(--accent-gold)',
+                color: '#111',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              ✨ 신약 통독 Day 3 복구 (3.8%)
+            </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '0.82rem',
+                border: '1px solid var(--glass-border)',
+                cursor: 'pointer'
+              }}
+            >
+              다른 일차 입력 ➔
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Settings Panel */}
       <AnimatePresence>
         {showSettings && (

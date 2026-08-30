@@ -544,8 +544,19 @@ export const UserProvider = ({ children }) => {
         newStreak.lastCompletedDate = today;
         if (newStreak.current > newStreak.longest) newStreak.longest = newStreak.current;
       }
+
+      const currentType = prev.planProgress.type || 'full-year';
+      const updatedHistory = {
+        ...(prev.planHistory || {}),
+        [currentType]: newCompleted
+      };
       
-      return { ...prev, planProgress: { ...prev.planProgress, completedDays: newCompleted }, streak: newStreak };
+      return {
+        ...prev,
+        planHistory: updatedHistory,
+        planProgress: { ...prev.planProgress, completedDays: newCompleted },
+        streak: newStreak
+      };
     });
     showToast('오늘 말씀을 완료했습니다! 🎉');
   }, [showToast]);
@@ -572,26 +583,57 @@ export const UserProvider = ({ children }) => {
     showToast('기도 제목이 삭제되었습니다.');
   }, [showToast]);
 
-  const resetPlan = useCallback((type, selectedBookIds = []) => {
+  const resetPlan = useCallback((type, selectedBookIds = [], targetCompletedDays = null) => {
     const newPlan = generatePlan(type, selectedBookIds);
-    setState(prev => ({ ...prev, planProgress: { ...newPlan, completedDays: [] } }));
-    showToast('새 플랜이 설정되었습니다! 📖');
+    setState(prev => {
+      const currentType = prev.planProgress.type || 'full-year';
+      const updatedHistory = {
+        ...(prev.planHistory || {}),
+        [currentType]: prev.planProgress.completedDays || []
+      };
+
+      let restoredDays = [];
+      if (Array.isArray(targetCompletedDays)) {
+        restoredDays = targetCompletedDays;
+      } else if (Array.isArray(updatedHistory[type]) && updatedHistory[type].length > 0) {
+        restoredDays = updatedHistory[type];
+      }
+
+      return {
+        ...prev,
+        planHistory: updatedHistory,
+        planProgress: {
+          ...newPlan,
+          completedDays: restoredDays
+        }
+      };
+    });
+    showToast(`[${PLAN_TYPE_LABELS[type] || '선택한 플랜'}]이 설정되었습니다! 📖`);
   }, [showToast]);
 
   // ── 특정 일차까지 일괄 완료 체크 (빠른 복구 기능) ──
-  const setCompletedUpToDay = useCallback((targetDay) => {
+  const setCompletedUpToDay = useCallback((targetDay, targetPlanType = null) => {
     const num = parseInt(targetDay, 10);
     if (isNaN(num) || num <= 0) return;
     setState(prev => {
-      const maxDay = Math.min(num, prev.planProgress.totalDays);
+      let currentPlan = prev.planProgress;
+      if (targetPlanType && targetPlanType !== currentPlan.type) {
+        currentPlan = generatePlan(targetPlanType);
+      }
+      const maxDay = Math.min(num, currentPlan.totalDays);
       const newCompleted = [];
       for (let i = 1; i <= maxDay; i++) {
         newCompleted.push(i);
       }
+      const updatedHistory = {
+        ...(prev.planHistory || {}),
+        [currentPlan.type]: newCompleted
+      };
       return {
         ...prev,
+        planHistory: updatedHistory,
         planProgress: {
-          ...prev.planProgress,
+          ...currentPlan,
           completedDays: newCompleted,
         }
       };
