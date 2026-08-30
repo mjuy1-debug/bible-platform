@@ -578,6 +578,27 @@ export const UserProvider = ({ children }) => {
     showToast('새 플랜이 설정되었습니다! 📖');
   }, [showToast]);
 
+  // ── 특정 일차까지 일괄 완료 체크 (빠른 복구 기능) ──
+  const setCompletedUpToDay = useCallback((targetDay) => {
+    const num = parseInt(targetDay, 10);
+    if (isNaN(num) || num <= 0) return;
+    setState(prev => {
+      const maxDay = Math.min(num, prev.planProgress.totalDays);
+      const newCompleted = [];
+      for (let i = 1; i <= maxDay; i++) {
+        newCompleted.push(i);
+      }
+      return {
+        ...prev,
+        planProgress: {
+          ...prev.planProgress,
+          completedDays: newCompleted,
+        }
+      };
+    });
+    showToast(`Day ${targetDay}까지 일괄 완료 처리되었습니다! ✨`);
+  }, [showToast]);
+
   // ── 암송 완료 표시 ──
   const toggleMemorized = useCallback((verseRef, forceValue) => {
     setState(prev => {
@@ -726,6 +747,7 @@ export const UserProvider = ({ children }) => {
       deleteDevotion,
       togglePlanDay,
       resetPlan,
+      setCompletedUpToDay,
       toggleHighlight,
       removeHighlight,
       toggleMemorized,

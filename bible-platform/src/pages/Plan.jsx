@@ -10,7 +10,7 @@ import { BIBLE_BOOKS } from '../data/bibleData';
 import { PLAN_TYPE_LABELS, MONTH_NAMES } from '../data/readingPlanData';
 
 const Plan = () => {
-  const { planProgress, togglePlanDay, resetPlan } = useContext(UserContext);
+  const { planProgress, togglePlanDay, resetPlan, setCompletedUpToDay } = useContext(UserContext);
   const { type, totalDays, completedDays, dailySchedule, selectedBooks } = planProgress;
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const Plan = () => {
   const [customBooks, setCustomBooks] = useState(selectedBooks || []);
   const [expandedMonths, setExpandedMonths] = useState({});
   const [searchDay, setSearchDay] = useState('');
-  const [confirmReset, setConfirmReset] = useState(false);
+  const [quickDayInput, setQuickDayInput] = useState('');
 
   const currentDayRef = useRef(null);
 
@@ -82,13 +82,12 @@ const Plan = () => {
     }
   }, [type]);
 
-  const handleApplyPlan = (targetType = selectedType) => {
+  const handleApplyPlan = (targetType) => {
     if (targetType === 'custom' && customBooks.length === 0) {
       return;
     }
     resetPlan(targetType, targetType === 'custom' ? customBooks : []);
     setShowSettings(false);
-    setConfirmReset(false);
   };
 
   const toggleCustomBook = (bookId) => {
@@ -164,13 +163,13 @@ const Plan = () => {
           <button onClick={() => setShowSettings(!showSettings)}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
-              padding: '0.4rem 0.8rem', borderRadius: '20px',
+              padding: '0.45rem 0.9rem', borderRadius: '20px',
               border: `1px solid ${showSettings ? 'var(--accent-gold)' : 'var(--glass-border)'}`,
-              background: showSettings ? 'rgba(196,164,132,0.12)' : 'transparent',
-              color: showSettings ? 'var(--accent-gold)' : 'var(--text-secondary)',
-              fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.2s',
+              background: showSettings ? 'rgba(196,164,132,0.18)' : 'transparent',
+              color: showSettings ? 'var(--accent-gold)' : 'var(--text-primary)',
+              fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
             }}>
-            <Settings size={14} /> 설정
+            <Settings size={15} /> {showSettings ? '설정 닫기' : '플랜 설정'}
           </button>
         </div>
 
@@ -183,35 +182,6 @@ const Plan = () => {
             transition={{ duration: 1.2, ease: 'easeOut' }}
           />
         </div>
-      </div>
-
-      {/* 52주 말씀 퀴즈 바로가기 배너 */}
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(20,20,24,0.85) 100%)',
-        border: '1px solid rgba(212,175,55,0.35)', borderRadius: '16px',
-        padding: '14px 18px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Trophy size={20} color="var(--accent-gold)" />
-          <div>
-            <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
-              오늘 통독을 마치셨나요? 52주 말씀 퀴즈에 도전해보세요!
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              읽은 성경 말씀을 퀴즈로 풀고 말씀 달란트와 칭호를 획득하세요.
-            </div>
-          </div>
-        </div>
-        <button
-          onClick={() => navigate('/quiz', { state: { category: '🌟 주간 골든벨 (52주)' } })}
-          style={{
-            padding: '8px 14px', borderRadius: '10px', background: 'var(--accent-gold)',
-            color: '#111', fontWeight: 800, fontSize: '0.82rem', border: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '4px'
-          }}
-        >
-          🎯 말씀 퀴즈 풀기 ➔
-        </button>
       </div>
 
       {/* Settings Panel */}
@@ -228,90 +198,141 @@ const Plan = () => {
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-gold)' }}>
                   <Settings size={18} /> 통독 플랜 선택 및 설정
                 </h3>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>원하는 목표를 선택하세요</span>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.82rem' }}
+                >
+                  닫기 ✕
+                </button>
               </div>
 
               {/* 플랜 타입 선택 카드 그리드 */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.8rem', marginBottom: '1.4rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.9rem', marginBottom: '1.2rem' }}>
                 {[
                   {
                     id: 'full-year',
                     name: '전체 성경 1년 통독',
-                    badge: '66권 1,189장 • 365일',
-                    desc: '창세기~요한계시록 전체를 1년 동안 완독하는 코스 (하루 3~4장)',
+                    badge: '66권 1,189장 • 365일 코스',
+                    desc: '창세기~요한계시록 전체를 1년 동안 매일 3~4장씩 완독하는 정석 코스',
                     icon: '📖'
                   },
                   {
                     id: 'old-testament',
                     name: '구약 통독',
-                    badge: '39권 929장 • 286일',
-                    desc: '창세기부터 말라기까지 구약 전체를 집중 통독 (하루 3~4장)',
+                    badge: '구약 39권 929장 • 286일 코스',
+                    desc: '창세기부터 말라기까지 구약 전체를 집중적으로 통독하는 코스',
                     icon: '📜'
                   },
                   {
                     id: 'new-testament',
                     name: '신약 통독',
-                    badge: '27권 260장 • 79일',
-                    desc: '마태복음부터 요한계시록까지 신약 전체를 빠르게 완독 (하루 3~4장)',
+                    badge: '신약 27권 260장 • 79일 코스',
+                    desc: '마태복음부터 요한계시록까지 신약 27권을 약 79일 만에 빠르게 완독',
                     icon: '✝️'
                   },
                   {
                     id: 'custom',
                     name: '사용자 맞춤 통독',
                     badge: `${customBooks.length}권 선택됨`,
-                    desc: '원하는 성경 책만 직접 골라 나만의 통독 코스 구성',
+                    desc: '원하는 성경 책만 직접 골라 나만의 맞춤 일정으로 통독',
                     icon: '🎯'
                   }
                 ].map((item) => {
-                  const isSelected = selectedType === item.id;
                   const isCurrent = type === item.id;
                   return (
                     <div
                       key={item.id}
-                      onClick={() => setSelectedType(item.id)}
                       style={{
-                        padding: '1rem',
+                        padding: '1.1rem',
                         borderRadius: '14px',
-                        cursor: 'pointer',
-                        background: isSelected ? 'rgba(212,175,55,0.14)' : 'rgba(255,255,255,0.03)',
-                        border: isSelected ? '2px solid var(--accent-gold)' : '1px solid var(--glass-border)',
-                        boxShadow: isSelected ? '0 4px 16px rgba(212,175,55,0.2)' : 'none',
-                        transition: 'all 0.2s ease',
-                        position: 'relative'
+                        background: isCurrent ? 'rgba(212,175,55,0.12)' : 'rgba(255,255,255,0.03)',
+                        border: isCurrent ? '2px solid var(--accent-gold)' : '1px solid var(--glass-border)',
+                        boxShadow: isCurrent ? '0 4px 16px rgba(212,175,55,0.18)' : 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        gap: '10px'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
-                          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: isSelected ? 'var(--accent-gold)' : 'var(--text-primary)' }}>
-                            {item.name}
-                          </span>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
+                            <span style={{ fontWeight: 800, fontSize: '0.96rem', color: isCurrent ? 'var(--accent-gold)' : 'var(--text-primary)' }}>
+                              {item.name}
+                            </span>
+                          </div>
+                          {isCurrent && (
+                            <span style={{ fontSize: '0.72rem', padding: '2px 7px', borderRadius: '6px', background: '#5bbf6e', color: '#111', fontWeight: 800 }}>
+                              진행중
+                            </span>
+                          )}
                         </div>
-                        {isCurrent && (
-                          <span style={{ fontSize: '0.72rem', padding: '2px 6px', borderRadius: '6px', background: '#5bbf6e', color: '#111', fontWeight: 800 }}>
-                            이용중
-                          </span>
-                        )}
+                        <div style={{ fontSize: '0.76rem', color: 'var(--accent-gold)', fontWeight: 700, marginBottom: '5px' }}>
+                          {item.badge}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                          {item.desc}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '0.76rem', color: 'var(--accent-gold)', fontWeight: 700, marginBottom: '4px' }}>
-                        {item.badge}
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                        {item.desc}
-                      </div>
+
+                      {/* 카드 내 즉시 적용 버튼 */}
+                      {item.id !== 'custom' ? (
+                        <button
+                          type="button"
+                          onClick={() => handleApplyPlan(item.id)}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            borderRadius: '10px',
+                            background: isCurrent ? 'rgba(255,255,255,0.08)' : 'var(--accent-gold)',
+                            color: isCurrent ? 'var(--text-primary)' : '#111',
+                            border: isCurrent ? '1px solid var(--glass-border)' : 'none',
+                            fontWeight: 800,
+                            fontSize: '0.84rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px'
+                          }}
+                        >
+                          <RotateCcw size={14} />
+                          {isCurrent ? 'Day 1부터 다시 시작' : `${item.name} 시작 ➔`}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedType('custom')}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            borderRadius: '10px',
+                            background: selectedType === 'custom' ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.08)',
+                            color: selectedType === 'custom' ? 'var(--accent-gold)' : 'var(--text-primary)',
+                            border: '1px solid var(--glass-border)',
+                            fontWeight: 800,
+                            fontSize: '0.84rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {selectedType === 'custom' ? '성경 책 선택 중...' : '맞춤 책 선택하기'}
+                        </button>
+                      )}
                     </div>
                   );
                 })}
               </div>
 
-              {/* 커스텀 책 선택 */}
+              {/* 커스텀 책 선택 서브패널 */}
               <AnimatePresence>
                 {selectedType === 'custom' && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    style={{ marginBottom: '1.4rem', overflow: 'hidden', background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}
+                    style={{ marginBottom: '1.2rem', overflow: 'hidden', background: 'rgba(0,0,0,0.25)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                       <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
@@ -353,7 +374,7 @@ const Plan = () => {
                       </div>
                     </div>
 
-                    <div>
+                    <div style={{ marginBottom: '1rem' }}>
                       <p style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>✝️ 신약 (27권)</p>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}>
                         {BIBLE_BOOKS.filter(b => b.testament === 'new').map(book => (
@@ -370,58 +391,77 @@ const Plan = () => {
                         ))}
                       </div>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleApplyPlan('custom')}
+                      disabled={customBooks.length === 0}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        background: 'var(--accent-gold)',
+                        color: '#111',
+                        fontWeight: 800,
+                        fontSize: '0.9rem',
+                        border: 'none',
+                        cursor: customBooks.length === 0 ? 'not-allowed' : 'pointer',
+                        opacity: customBooks.length === 0 ? 0.5 : 1
+                      }}
+                    >
+                      🚀 선택한 {customBooks.length}권으로 맞춤 플랜 시작하기 ➔
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* 플랜 적용 & 시작 버튼 */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--glass-border)', paddingTop: '1rem' }}>
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  {selectedType === type
-                    ? `현재 [${PLAN_TYPE_LABELS[type] || '1년 통독'}] 플랜 이용 중입니다.`
-                    : `선택한 [${PLAN_TYPE_LABELS[selectedType] || '새 플랜'}]으로 새롭게 통독을 시작합니다.`}
+              {/* ⚡ 진행 일차 빠른 복구 섹션 */}
+              <div style={{ marginTop: '0.5rem', padding: '1rem', background: 'rgba(212,175,55,0.08)', borderRadius: '12px', border: '1px solid rgba(212,175,55,0.25)' }}>
+                <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--accent-gold)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Flame size={16} /> ⚡ 읽던 진행 일차 빠른 복구
                 </div>
-
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowSettings(false)}
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: '0 0 10px 0', lineHeight: 1.4 }}>
+                  이전에 읽으셨던 일차 번호를 입력하시면 해당 일차까지 한 번에 완료 체크로 복구됩니다.
+                </p>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <input
+                    type="number"
+                    min="1"
+                    max={totalDays}
+                    placeholder={`1 ~ ${totalDays}`}
+                    value={quickDayInput}
+                    onChange={(e) => setQuickDayInput(e.target.value)}
                     style={{
-                      padding: '0.6rem 1rem',
-                      borderRadius: '12px',
-                      background: 'transparent',
+                      width: '110px',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
                       border: '1px solid var(--glass-border)',
-                      color: 'var(--text-secondary)',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      cursor: 'pointer'
+                      background: 'var(--glass-bg)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.9rem',
+                      outline: 'none'
                     }}
-                  >
-                    닫기
-                  </button>
-
+                  />
                   <button
                     type="button"
-                    onClick={() => handleApplyPlan(selectedType)}
-                    disabled={selectedType === 'custom' && customBooks.length === 0}
+                    onClick={() => {
+                      if (!quickDayInput) return;
+                      setCompletedUpToDay(quickDayInput);
+                      setShowSettings(false);
+                      setQuickDayInput('');
+                    }}
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      padding: '0.65rem 1.4rem',
-                      borderRadius: '12px',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
                       background: 'var(--accent-gold)',
                       color: '#111',
                       fontWeight: 800,
-                      fontSize: '0.9rem',
+                      fontSize: '0.85rem',
                       border: 'none',
-                      cursor: (selectedType === 'custom' && customBooks.length === 0) ? 'not-allowed' : 'pointer',
-                      boxShadow: '0 4px 14px rgba(212,175,55,0.4)',
-                      opacity: (selectedType === 'custom' && customBooks.length === 0) ? 0.5 : 1
+                      cursor: 'pointer'
                     }}
                   >
-                    <RotateCcw size={16} />
-                    {selectedType === type ? '플랜 다시 시작 (Day 1 초기화)' : '이 플랜으로 시작하기 ➔'}
+                    {quickDayInput ? `Day ${quickDayInput}까지 일괄 완료 복구` : '일괄 완료 복구'}
                   </button>
                 </div>
               </div>
@@ -547,6 +587,51 @@ const Plan = () => {
           })}
         </div>
       )}
+
+      {/* 52주 말씀 퀴즈 배너 (하단 배치) */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(20,20,24,0.85) 100%)',
+        border: '1px solid rgba(212,175,55,0.35)',
+        borderRadius: '16px',
+        padding: '16px 20px',
+        marginTop: '2rem',
+        marginBottom: '2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Trophy size={24} color="var(--accent-gold)" />
+          <div>
+            <div style={{ fontSize: '0.96rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
+              오늘의 통독을 마치셨나요? 52주 말씀 퀴즈에 도전해보세요!
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              읽은 성경 말씀을 퀴즈로 풀고 말씀 달란트와 칭호를 획득하세요.
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={() => navigate('/quiz', { state: { category: '🌟 주간 골든벨 (52주)' } })}
+          style={{
+            padding: '9px 16px',
+            borderRadius: '10px',
+            background: 'var(--accent-gold)',
+            color: '#111',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
+        >
+          🎯 말씀 퀴즈 풀기 ➔
+        </button>
+      </div>
     </motion.div>
   );
 };
