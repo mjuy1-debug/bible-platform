@@ -33,17 +33,30 @@ const loadLocalState = () => {
     const saved = localStorage.getItem('luxverbi_user');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // 구버전 dailySchedule(7일 이하) 마이그레이션: type/selectedBooks는 유지, dailySchedule 재생성
-      if (
-        parsed.planProgress &&
-        parsed.planProgress.dailySchedule &&
-        parsed.planProgress.dailySchedule.length <= 7 &&
-        !parsed.planProgress.type  // type이 없을 때만 리셋 (구버전 기본값 제거)
-      ) {
-        parsed.planProgress = { ...INITIAL_STATE.planProgress, completedDays: parsed.planProgress.completedDays || [] };
+      // planProgress 복원 및 dailySchedule 완전 보장
+      if (parsed.planProgress) {
+        const planType = parsed.planProgress.type || 'full-year';
+        const planBooks = parsed.planProgress.selectedBooks || [];
+        const generated = generatePlan(planType, planBooks);
+        parsed.planProgress = {
+          ...generated,
+          ...parsed.planProgress,
+          dailySchedule: (parsed.planProgress.dailySchedule && parsed.planProgress.dailySchedule.length > 0)
+            ? parsed.planProgress.dailySchedule
+            : generated.dailySchedule,
+          completedDays: Array.isArray(parsed.planProgress.completedDays) ? parsed.planProgress.completedDays : [],
+        };
       }
       parsed.events = SAMPLE_EVENTS;
-      return { ...INITIAL_STATE, ...parsed };
+      return {
+        ...INITIAL_STATE,
+        ...parsed,
+        favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
+        devotions: Array.isArray(parsed.devotions) ? parsed.devotions : [],
+        highlights: parsed.highlights || {},
+        memorized: parsed.memorized || {},
+        prayers: Array.isArray(parsed.prayers) ? parsed.prayers : [],
+      };
     }
   } catch { /* ignore */ }
   return INITIAL_STATE;
@@ -290,42 +303,63 @@ export const UserProvider = ({ children }) => {
           setMemberProfile({ status: 'approved', isAdmin: isAdminEmail });
         }
 
-        // ── 2. 클라우드 데이터 동기화 (기존 로직 유지) ──
+        // ── 2. 클라우드 데이터 동기화 ──
         try {
           const snap = await getDoc(userDocRef(user.uid));
           if (snap.exists()) {
             const cloudData = snap.data();
             setState(prev => {
+              // planProgress 복원 및 dailySchedule 완전 보장
+              let loadedPlan = prev.planProgress;
+              if (cloudData.planProgress) {
+                const planType = cloudData.planProgress.type || prev.planProgress.type || 'full-year';
+                const planBooks = cloudData.planProgress.selectedBooks || prev.planProgress.selectedBooks || [];
+                const generated = generatePlan(planType, planBooks);
+                loadedPlan = {
+                  ...generated,
+                  ...cloudData.planProgress,
+                  dailySchedule: (cloudData.planProgress.dailySchedule && cloudData.planProgress.dailySchedule.length > 0)
+                    ? cloudData.planProgress.dailySchedule
+                    : generated.dailySchedule,
+                  completedDays: Array.isArray(cloudData.planProgress.completedDays)
+                    ? cloudData.planProgress.completedDays
+                    : (prev.planProgress.completedDays || []),
+                };
+              }
+
               const merged = {
                 ...prev,
-                favorites: cloudData.favorites?.length ? cloudData.favorites : prev.favorites,
-                devotions: cloudData.devotions?.length ? cloudData.devotions : prev.devotions,
-                highlights: Object.keys(cloudData.highlights || {}).length ? cloudData.highlights : prev.highlights,
-                planProgress: cloudData.planProgress?.completedDays?.length
-                  ? { ...INITIAL_STATE.planProgress, ...cloudData.planProgress }
-                  : prev.planProgress,
+                favorites: Array.isArray(cloudData.favorites) && cloudData.favorites.length > 0 ? cloudData.favorites : prev.favorites,
+                devotions: Array.isArray(cloudData.devotions) && cloudData.devotions.length > 0 ? cloudData.devotions : prev.devotions,
+                highlights: cloudData.highlights && Object.keys(cloudData.highlights).length > 0 ? cloudData.highlights : prev.highlights,
+                memorized: cloudData.memorized && Object.keys(cloudData.memorized).length > 0 ? cloudData.memorized : prev.memorized,
+                prayers: Array.isArray(cloudData.prayers) && cloudData.prayers.length > 0 ? cloudData.prayers : prev.prayers,
+                planProgress: loadedPlan,
               };
               return merged;
             });
             setCloudSynced(true);
-            showToast('☁️ 클라우드 데이터가 복구되었습니다!');
+            showToast('☁️ 클라우드 데이터가 동기화되었습니다!');
           } else {
             const local = loadLocalState();
             const payload = sanitize({
-              favorites: local.favorites,
-              devotions: local.devotions,
-              highlights: local.highlights,
+              favorites: local.favorites || [],
+              devotions: local.devotions || [],
+              highlights: local.highlights || {},
+              memorized: local.memorized || {},
+              prayers: local.prayers || [],
               planProgress: {
                 type: local.planProgress.type,
                 totalDays: local.planProgress.totalDays,
-                completedDays: local.planProgress.completedDays,
-                selectedBooks: local.planProgress.selectedBooks,
+                completedDays: local.planProgress.completedDays || [],
+                selectedBooks: local.planProgress.selectedBooks || [],
+                dailySchedule: local.planProgress.dailySchedule || [],
               },
               updatedAt: new Date().toISOString(),
             });
             await setDoc(userDocRef(user.uid), payload);
             setCloudSynced(true);
-            showToast('☁️ 기존 데이터를 클라우드에 저장했습니다!');
+            showToast('☁️ 기존 데이터를 클라우드에 안전하게 백업했습니다!');
           }
         } catch (err) {
           console.error('클라우드 로드 실패:', err);
@@ -335,15 +369,33 @@ export const UserProvider = ({ children }) => {
         unsubCloudRef.current = onSnapshot(userDocRef(user.uid), (snap) => {
           if (!snap.exists() || savingToCloud.current) return;
           const cloudData = snap.data();
-          setState(prev => ({
-            ...prev,
-            favorites: cloudData.favorites ?? prev.favorites,
-            devotions: cloudData.devotions ?? prev.devotions,
-            highlights: cloudData.highlights ?? prev.highlights,
-            planProgress: cloudData.planProgress
-              ? { ...INITIAL_STATE.planProgress, ...cloudData.planProgress }
-              : prev.planProgress,
-          }));
+          setState(prev => {
+            let loadedPlan = prev.planProgress;
+            if (cloudData.planProgress) {
+              const planType = cloudData.planProgress.type || prev.planProgress.type || 'full-year';
+              const planBooks = cloudData.planProgress.selectedBooks || prev.planProgress.selectedBooks || [];
+              const generated = generatePlan(planType, planBooks);
+              loadedPlan = {
+                ...generated,
+                ...cloudData.planProgress,
+                dailySchedule: (cloudData.planProgress.dailySchedule && cloudData.planProgress.dailySchedule.length > 0)
+                  ? cloudData.planProgress.dailySchedule
+                  : generated.dailySchedule,
+                completedDays: Array.isArray(cloudData.planProgress.completedDays)
+                  ? cloudData.planProgress.completedDays
+                  : (prev.planProgress.completedDays || []),
+              };
+            }
+            return {
+              ...prev,
+              favorites: Array.isArray(cloudData.favorites) ? cloudData.favorites : prev.favorites,
+              devotions: Array.isArray(cloudData.devotions) ? cloudData.devotions : prev.devotions,
+              highlights: cloudData.highlights ?? prev.highlights,
+              memorized: cloudData.memorized ?? prev.memorized,
+              prayers: Array.isArray(cloudData.prayers) ? cloudData.prayers : prev.prayers,
+              planProgress: loadedPlan,
+            };
+          });
         });
       } else {
         setCloudSynced(false);
