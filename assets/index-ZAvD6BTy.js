@@ -221,7 +221,7 @@ https://aistudio.google.com/apikey`}]),t(``);return}let o={role:`user`,content:e
 
 ‘하나님의 비밀을 맡은 자’가 된다는 것은 구체적으로 어떤 의미인가요?
 예수의 이름으로 기도하는 권세가 실생활에서 어떻게 나타나는지 궁금해요.
-고난과 시련 속에서도 범사에 감사할 수 있는 비결은 무엇인가요?`,file:``},{id:1787530705416,title:`죽도록 충성하라`,date:`2026-08-23`,preacher:`김석주 목사님`,scripture:`요한계시록 2 : 10`,videoUrl:`https://www.youtube.com/watch?v=6QKyP-ZPVg4`,externalLink:`https://www.youtube.com/watch?v=6QKyP-ZPVg4`,summary:`2026.8.23
+고난과 시련 속에서도 범사에 감사할 수 있는 비결은 무엇인가요?`,file:`/pdfs/sermon_1788147632258.pdf`},{id:1787530705416,title:`죽도록 충성하라`,date:`2026-08-23`,preacher:`김석주 목사님`,scripture:`요한계시록 2 : 10`,videoUrl:`https://www.youtube.com/watch?v=6QKyP-ZPVg4`,externalLink:`https://www.youtube.com/watch?v=6QKyP-ZPVg4`,summary:`2026.8.23
 죽도록 충성하라 ( 요한계시록 2 : 10 )
 화도벧엘교회  김석주 목사님
 
