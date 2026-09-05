@@ -37,7 +37,7 @@ export default function NotificationModal({ isOpen, onClose }) {
         setPermission('granted');
         const updated = { ...settings, enabled: true };
         setSettings(updated);
-        saveNotificationSettings(updated);
+        await saveNotificationSettings(updated, currentUser);
         if (showToast) showToast('🔔 말씀 알림이 성공적으로 설정되었습니다!');
       } else {
         if (showToast) showToast(`❌ 알림 설정 실패: ${res.error}`);
@@ -45,19 +45,19 @@ export default function NotificationModal({ isOpen, onClose }) {
     } else {
       const updated = { ...settings, enabled: false };
       setSettings(updated);
-      saveNotificationSettings(updated);
+      await saveNotificationSettings(updated, currentUser);
       if (showToast) showToast('말씀 알림이 일시 중지되었습니다.');
     }
   };
 
-  const handleTimeChange = (e) => {
+  const handleTimeChange = async (e) => {
     const time = e.target.value;
     const updated = { ...settings, morningTime: time };
     setSettings(updated);
-    saveNotificationSettings(updated);
+    await saveNotificationSettings(updated, currentUser);
   };
 
-  const handleTopicToggle = (topicKey) => {
+  const handleTopicToggle = async (topicKey) => {
     const updated = {
       ...settings,
       topics: {
@@ -66,7 +66,7 @@ export default function NotificationModal({ isOpen, onClose }) {
       }
     };
     setSettings(updated);
-    saveNotificationSettings(updated);
+    await saveNotificationSettings(updated, currentUser);
   };
 
   const handleSendTest = () => {

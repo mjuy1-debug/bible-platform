@@ -32,18 +32,60 @@ export function getNotificationSettings() {
 }
 
 /**
- * 알림 설정 저장
+ * 알림 설정 저장 및 Firestore 동기화
  */
-export function saveNotificationSettings(settings) {
+export async function saveNotificationSettings(settings, currentUser = null) {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    if (settings.morningTime) {
+      const [h, m] = settings.morningTime.split(':').map(Number);
+      localStorage.setItem('push_hour', String(isNaN(h) ? 7 : h));
+      localStorage.setItem('push_minute', String(isNaN(m) ? 0 : m));
+    }
+    localStorage.setItem('push_enabled', settings.enabled ? 'true' : 'false');
+
+    // Firestore에 최신 설정 동기화
+    await syncNotificationToFirestore(settings, currentUser);
   } catch (e) {
     console.error('설정 저장 실패:', e);
   }
 }
 
 /**
- * 알림 권한 요청 및 FCM 토큰 발급
+ * Firestore fcmTokens 컬렉션과 토큰/시간/토픽 동기화
+ */
+export async function syncNotificationToFirestore(settings, currentUser = null) {
+  try {
+    const token = localStorage.getItem('fcm_token');
+    const deviceUid = currentUser?.uid || localStorage.getItem('fcm_device_uid');
+    if (!deviceUid && !token) return;
+
+    const docId = deviceUid || `anon_${token.slice(-16)}`;
+    const [h, m] = (settings.morningTime || '07:00').split(':').map(Number);
+
+    const dataToSave = {
+      enabled: !!settings.enabled,
+      notifHour: isNaN(h) ? 7 : h,
+      notifMinute: isNaN(m) ? 0 : m,
+      topics: settings.topics || { dailyVerse: true, prayerWall: true, announcements: true },
+      updatedAt: serverTimestamp()
+    };
+
+    if (token) dataToSave.token = token;
+    if (currentUser?.uid) {
+      dataToSave.uid = currentUser.uid;
+      dataToSave.email = currentUser.email || '';
+      dataToSave.displayName = currentUser.displayName || '';
+    }
+
+    await setDoc(doc(db, 'fcmTokens', docId), dataToSave, { merge: true });
+  } catch (err) {
+    console.warn('Firestore fcmTokens 동기화 건너뜀:', err?.message);
+  }
+}
+
+/**
+ * 알림 권한 요청 및 FCM 토큰 발급 (백그라운드 푸시 등록)
  */
 export async function requestNotificationPermission(currentUser = null) {
   if (!('Notification' in window)) {
@@ -60,7 +102,13 @@ export async function requestNotificationPermission(currentUser = null) {
     // 2. 서비스 워커 등록 확인
     let swReg = null;
     if ('serviceWorker' in navigator) {
-      swReg = await navigator.serviceWorker.ready;
+      try {
+        const swUrl = `${import.meta.env.BASE_URL || '/'}firebase-messaging-sw.js`;
+        swReg = await navigator.serviceWorker.register(swUrl);
+        await navigator.serviceWorker.ready;
+      } catch (swErr) {
+        console.warn('서비스워커 등록 경고:', swErr);
+      }
     }
 
     // 3. FCM 토큰 획득
@@ -73,17 +121,33 @@ export async function requestNotificationPermission(currentUser = null) {
         });
       }
     } catch (fcmErr) {
-      console.warn('FCM 토큰 발급 경고 (로컬 브라우저 알림으로 폴백):', fcmErr.message);
+      console.warn('FCM 토큰 발급 경고 (로컬 알림으로 폴백):', fcmErr.message);
     }
 
-    // 4. Firestore에 토큰 저장 (로그인된 경우)
-    if (token && currentUser?.uid) {
+    if (token) {
+      localStorage.setItem('fcm_token', token);
+    }
+
+    const current = getNotificationSettings();
+    const [h, m] = (current.morningTime || '07:00').split(':').map(Number);
+    const notifHour = isNaN(h) ? 7 : h;
+    const notifMinute = isNaN(m) ? 0 : m;
+
+    // 4. Firestore에 토큰 + 설정 저장
+    const docId = currentUser?.uid || (token ? `anon_${token.slice(-16)}` : `device_${Date.now()}`);
+    localStorage.setItem('fcm_device_uid', docId);
+
+    if (token) {
       try {
-        await setDoc(doc(db, 'fcmTokens', currentUser.uid), {
-          uid: currentUser.uid,
-          email: currentUser.email || '',
-          displayName: currentUser.displayName || '',
+        await setDoc(doc(db, 'fcmTokens', docId), {
+          uid: currentUser?.uid || docId,
+          email: currentUser?.email || '',
+          displayName: currentUser?.displayName || '성도',
           token,
+          enabled: true,
+          notifHour,
+          notifMinute,
+          topics: current.topics || { dailyVerse: true, prayerWall: true, announcements: true },
           updatedAt: serverTimestamp()
         }, { merge: true });
       } catch (dbErr) {
@@ -92,8 +156,11 @@ export async function requestNotificationPermission(currentUser = null) {
     }
 
     // 설정 활성화 저장
-    const current = getNotificationSettings();
-    saveNotificationSettings({ ...current, enabled: true });
+    const updated = { ...current, enabled: true };
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(updated));
+    localStorage.setItem('push_enabled', 'true');
+    localStorage.setItem('push_hour', String(notifHour));
+    localStorage.setItem('push_minute', String(notifMinute));
 
     return { ok: true, token, permission };
   } catch (error) {

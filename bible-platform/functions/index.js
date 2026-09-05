@@ -59,15 +59,22 @@ exports.sendDailyVerseNotification = functions.scheduler.onSchedule(
     const verse = getTodayVerse(kstTime);
     const todayStr = `${kstTime.getUTCFullYear()}-${String(kstTime.getUTCMonth() + 1).padStart(2, '0')}-${String(kstTime.getUTCDate()).padStart(2, '0')}`;
 
-    // 이 시간에 알림 받을 사용자 조회
-    const snapshot = await db.collection('fcmTokens')
-      .where('enabled', '==', true)
-      .where('notifHour',   '==', currentHour)
-      .where('notifMinute', '==', currentMinute)
-      .get();
+    // 이 시간에 알림 받을 사용자 조회 (정확한 시간 매칭 또는 7시 기본값 매칭)
+    let snapshot;
+    if (currentHour === 7 && currentMinute === 0) {
+      // 7시 00분에는 미설정(기본 7시) 사용자 및 7:00 설정 사용자 모두 처리
+      snapshot = await db.collection('fcmTokens')
+        .where('enabled', '==', true)
+        .get();
+    } else {
+      snapshot = await db.collection('fcmTokens')
+        .where('enabled', '==', true)
+        .where('notifHour', '==', currentHour)
+        .where('notifMinute', '==', currentMinute)
+        .get();
+    }
 
     if (snapshot.empty) {
-      console.log(`[${currentHour}:${String(currentMinute).padStart(2,'0')} KST] 알림 대상 없음`);
       return;
     }
 
@@ -75,6 +82,20 @@ exports.sendDailyVerseNotification = functions.scheduler.onSchedule(
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       if (!data.token) return;
+
+      // 7:00 KST 전체 조회 시 필터링
+      if (currentHour === 7 && currentMinute === 0) {
+        const h = data.notifHour !== undefined && data.notifHour !== null ? Number(data.notifHour) : 7;
+        const m = data.notifMinute !== undefined && data.notifMinute !== null ? Number(data.notifMinute) : 0;
+        if (h !== 7 || m !== 0) {
+          return; // 다른 시간을 설정한 사용자는 본인 시간에 발송
+        }
+      }
+
+      // 주제 설정 확인 (기본값 true)
+      if (data.topics && data.topics.dailyVerse === false) {
+        return;
+      }
 
       const msg = {
         token: data.token,
