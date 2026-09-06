@@ -120,6 +120,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -214,21 +215,21 @@ export const SAMPLE_EVENTS = [
   { id: 43, title: '건축헌신예배', date: '2026-08-16', category: 'church', description: `건축헌신예배` },
   { id: 44, title: '9월 월삭일', date: '2026-09-01', category: ['church'], description: `9월 월삭일
 준비된 믿음과 기도로 맞이 합시다` },
-  { id: 45, title: '수양관대청소&이불빨래', date: '2026-09-11', endDate: '2026-09-12', category: ['church'], description: `기도로 준비바랍니다.
-
-- 날      짜 : 9/11-12(금-토)
-- 봉      사 : 요안나,루디아,갈렙,여호수아` },
-  { id: 46, title: '“ 청년부특별기도회 “', date: '2026-09-15', time: '21:00', endDate: '2026-09-17', category: ['joseph'], description: `- 날      짜 : 9/15-17(화-목),9PM
+  { id: 45, title: '“ 청년부특별기도회 “', date: '2026-09-15', time: '21:00', endDate: '2026-09-17', category: ['joseph'], description: `- 날      짜 : 9/15-17(화-목),9PM
 - 성      경 : 시편64-66,하루 한장씩` },
-  { id: 47, title: '“ 3/4분기 선교헌신예배 “', date: '2026-09-20', category: ['normal', 'church'], description: `“ 3/4분기 선교헌신예배 “가 있습니다.
+  { id: 46, title: '“ 3/4분기 선교헌신예배 “', date: '2026-09-20', category: ['normal', 'church'], description: `“ 3/4분기 선교헌신예배 “가 있습니다.
 
 - 날      짜 : 9/20(셋주)` },
-  { id: 48, title: '“ 3/4분기 전도대회 “', date: '2026-09-27', category: ['church'], description: `“ 3/4분기 전도대회 “도 있습니다. 
+  { id: 47, title: '“ 3/4분기 전도대회 “', date: '2026-09-27', category: ['church'], description: `“ 3/4분기 전도대회 “도 있습니다. 
 기도로 준비 바랍니다.
 
 - 날       짜 : 9/27(넷주)
 - 주       최 : 전도부
 - 전도봉사 : 전도부&각 기관전도부원들` },
+  { id: 48, title: '" 수양관대청소&이불빨래 "', date: '2026-10-09', endDate: '2026-10-10', category: ['church'], description: `기도로 준비바랍니다.
+
+- 날      짜 : 9/11-12(금-토)
+- 봉      사 : 요안나,루디아,갈렙,여호수아` },
 ];
 
 /**
