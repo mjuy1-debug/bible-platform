@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 # /public/share  ← 설교별 OG 공유 페이지 (빌드 시 자동 생성, 배포 포함)
 
+
+/public/share
