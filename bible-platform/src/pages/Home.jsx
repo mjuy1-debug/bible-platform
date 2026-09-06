@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone, Video, Copy, Share2, Check } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone, Video, Copy, Share2, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
@@ -43,6 +43,7 @@ const Home = () => {
   const todayPattern = getPatternForVerse(todayVerse.ref, todayVerse.engText || '');
 
   const [verseTab, setVerseTab] = useState('korean'); // 'korean' | 'english_pattern'
+  const [isDevotionExpanded, setIsDevotionExpanded] = useState(false);
   const [isSpeakingEng, setIsSpeakingEng] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -251,7 +252,7 @@ const Home = () => {
         {verseTab === 'korean' ? (
           <div style={{ textAlign: 'left' }}>
             {/* 1. 📖 말씀 영역 */}
-            <div style={{ textAlign: 'center', marginBottom: '1.4rem', paddingBottom: '1.2rem', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+            <div style={{ textAlign: 'center', marginBottom: '1.2rem', paddingBottom: '1.2rem', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
               <span style={{ display: 'inline-block', fontSize: '0.8rem', background: 'rgba(212,175,55,0.18)', color: 'var(--accent-gold)', padding: '4px 14px', borderRadius: '14px', fontWeight: 800, marginBottom: '12px', border: '1px solid rgba(212,175,55,0.3)' }}>
                 📖 말씀 · {todayVerse.ref}
               </span>
@@ -265,51 +266,97 @@ const Home = () => {
               )}
             </div>
 
-            {/* 2. 🕊 본문 해설 */}
-            {todayVerse.commentary && (
-              <div style={{ marginBottom: '1.2rem', background: 'rgba(255,255,255,0.03)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '10px' }}>
-                  <span>🕊</span>
-                  <span>본문 해설</span>
+            {/* 🕊️ 깊은 묵상 & 기도 펼치기/접기 버튼 */}
+            <div style={{ textAlign: 'center', margin: '0.8rem 0 1.2rem' }}>
+              <button
+                onClick={() => setIsDevotionExpanded(prev => !prev)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: isDevotionExpanded
+                    ? 'rgba(212, 175, 55, 0.15)'
+                    : 'linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(168, 85, 247, 0.22))',
+                  color: 'var(--accent-gold)',
+                  border: '1px solid rgba(212, 175, 55, 0.45)',
+                  borderRadius: '24px',
+                  padding: '9px 18px',
+                  fontSize: '0.88rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: isDevotionExpanded ? 'none' : '0 4px 14px rgba(212, 175, 55, 0.18)',
+                  transition: 'all 0.25s ease'
+                }}
+              >
+                <span>🕊️</span>
+                <span>{isDevotionExpanded ? '묵상 내용 접기' : '깊은 묵상 & 기도문 열기'}</span>
+                {isDevotionExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              {!isDevotionExpanded && (
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+                  ✦ 본문 해설 · 묵상 질문 · 기도문
                 </div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
-                  {todayVerse.commentary}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {/* 3. 🙏 묵상 질문 */}
-            {todayVerse.questions && todayVerse.questions.length > 0 && (
-              <div style={{ marginBottom: '1.2rem', background: 'rgba(212,175,55,0.05)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.18)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#f59e0b', marginBottom: '10px' }}>
-                  <span>🙏</span>
-                  <span>묵상 질문</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {todayVerse.questions.map((q, idx) => (
-                    <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.65 }}>
-                      <span style={{ background: 'rgba(212,175,55,0.25)', color: 'var(--accent-gold)', width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.74rem', fontWeight: 800, flexShrink: 0, marginTop: '2px' }}>
-                        {idx + 1}
-                      </span>
-                      <span>{q}</span>
+            {/* 본문 해설 · 묵상 질문 · 기도문 펼침 영역 */}
+            <AnimatePresence>
+              {isDevotionExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  {/* 2. 🕊 본문 해설 */}
+                  {todayVerse.commentary && (
+                    <div style={{ marginBottom: '1.2rem', background: 'rgba(255,255,255,0.03)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '10px' }}>
+                        <span>🕊</span>
+                        <span>본문 해설</span>
+                      </div>
+                      <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
+                        {todayVerse.commentary}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                  )}
 
-            {/* 4. 🙏 기도문 */}
-            {todayVerse.prayer && (
-              <div style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, rgba(79,134,198,0.08) 0%, rgba(168,85,247,0.08) 100%)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(168,85,247,0.25)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#c084fc', marginBottom: '10px' }}>
-                  <span>🙏</span>
-                  <span>기도문</span>
-                </div>
-                <div style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
-                  {todayVerse.prayer}
-                </div>
-              </div>
-            )}
+                  {/* 3. 🙏 묵상 질문 */}
+                  {todayVerse.questions && todayVerse.questions.length > 0 && (
+                    <div style={{ marginBottom: '1.2rem', background: 'rgba(212,175,55,0.05)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.18)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#f59e0b', marginBottom: '10px' }}>
+                        <span>🙏</span>
+                        <span>묵상 질문</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {todayVerse.questions.map((q, idx) => (
+                          <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.65 }}>
+                            <span style={{ background: 'rgba(212,175,55,0.25)', color: 'var(--accent-gold)', width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.74rem', fontWeight: 800, flexShrink: 0, marginTop: '2px' }}>
+                              {idx + 1}
+                            </span>
+                            <span>{q}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 4. 🙏 기도문 */}
+                  {todayVerse.prayer && (
+                    <div style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, rgba(79,134,198,0.08) 0%, rgba(168,85,247,0.08) 100%)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(168,85,247,0.25)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#c084fc', marginBottom: '10px' }}>
+                        <span>🙏</span>
+                        <span>기도문</span>
+                      </div>
+                      <div style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
+                        {todayVerse.prayer}
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* 5. 🛠 액션 버튼 바 */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', alignItems: 'center', marginTop: '1.2rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
