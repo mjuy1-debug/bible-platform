@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone, Video } from 'lucide-react';
+import { BookOpen, Sparkles, CalendarDays, BookHeart, ArrowRight, Heart, Search, CalendarClock, Clock, X, MapPin, AlignLeft, Users, Handshake, Map, FileText, Brain, Music, Trophy, Megaphone, Video, Copy, Share2, Check } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import { CATEGORY_COLORS, CATEGORY_LABELS, getUpcomingEvents } from '../data/scheduleData';
 import { getTodayVerse } from '../data/dailyVerses';
@@ -34,7 +34,7 @@ const COMMUNITY_LINKS = [
 ];
 
 const Home = () => {
-  const { planProgress, devotions, favorites, events, openInstallModal, isStandalone } = useContext(UserContext);
+  const { planProgress, devotions, favorites, events, openInstallModal, isStandalone, showToast } = useContext(UserContext);
   const { completedDays, totalDays } = planProgress;
   const pct = ((completedDays.length / totalDays) * 100).toFixed(1);
 
@@ -44,6 +44,52 @@ const Home = () => {
 
   const [verseTab, setVerseTab] = useState('korean'); // 'korean' | 'english_pattern'
   const [isSpeakingEng, setIsSpeakingEng] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const getFullDevotionText = () => {
+    let out = `[☀️ 오늘의 말씀]\n\n`;
+    out += `말씀\n${todayVerse.ref}\n\n${todayVerse.text}\n\n`;
+    if (todayVerse.engText) {
+      out += `(NIV) ${todayVerse.engText}\n\n`;
+    }
+    if (todayVerse.commentary) {
+      out += `🕊 본문 해설\n${todayVerse.commentary}\n\n`;
+    }
+    if (todayVerse.questions && todayVerse.questions.length > 0) {
+      out += `🙏 묵상 질문\n` + todayVerse.questions.map((q, i) => `${i + 1}. ${q}`).join('\n') + `\n\n`;
+    }
+    if (todayVerse.prayer) {
+      out += `🙏 기도문\n${todayVerse.prayer}\n\n`;
+    }
+    out += `화도벧엘교회 성경 플랫폼\nhttps://mjuy1-debug.github.io/bible-platform`;
+    return out;
+  };
+
+  const handleCopyDevotion = async () => {
+    try {
+      await navigator.clipboard.writeText(getFullDevotionText());
+      setCopied(true);
+      if (showToast) showToast('📋 오늘의 말씀과 해설, 기도문이 복사되었습니다!');
+      setTimeout(() => setCopied(false), 2500);
+    } catch (e) {
+      if (showToast) showToast('복사에 실패했습니다.');
+    }
+  };
+
+  const handleShareDevotion = async () => {
+    const text = getFullDevotionText();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `☀️ [화도벧엘교회] 오늘의 말씀 (${todayVerse.ref})`,
+          text: text,
+          url: 'https://mjuy1-debug.github.io/bible-platform'
+        });
+      } catch (e) {}
+    } else {
+      handleCopyDevotion();
+    }
+  };
 
   const speakEngVerse = (text) => {
     if (!window.speechSynthesis) return;
@@ -203,19 +249,154 @@ const Home = () => {
         </div>
 
         {verseTab === 'korean' ? (
-          <div>
-            <p className="serif-font" style={{ fontSize: 'clamp(1.05rem, 2.8vw, 1.45rem)', lineHeight: 1.9, marginBottom: '1.2rem', color: 'var(--text-primary)', wordBreak: 'keep-all' }}>
-              &ldquo;{todayVerse.text}&rdquo;
-            </p>
-            <p style={{ color: 'var(--accent-gold)', fontStyle: 'italic', fontWeight: 600, fontSize: '0.9rem' }}>
-              — {todayVerse.ref} —
-            </p>
-            <Link to="/devotion" state={{ verse: todayVerse.ref, verseText: todayVerse.text }}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '1.5rem',
-                background: 'rgba(196,164,132,0.15)', color: 'var(--accent-gold)', padding: '0.55rem 1.3rem',
-                borderRadius: '30px', border: '1px solid var(--glass-border)', fontWeight: 600, fontSize: '0.88rem' }}>
-              ✏️ 이 말씀으로 묵상 쓰기 →
-            </Link>
+          <div style={{ textAlign: 'left' }}>
+            {/* 1. 📖 말씀 영역 */}
+            <div style={{ textAlign: 'center', marginBottom: '1.4rem', paddingBottom: '1.2rem', borderBottom: '1px solid rgba(212,175,55,0.2)' }}>
+              <span style={{ display: 'inline-block', fontSize: '0.8rem', background: 'rgba(212,175,55,0.18)', color: 'var(--accent-gold)', padding: '4px 14px', borderRadius: '14px', fontWeight: 800, marginBottom: '12px', border: '1px solid rgba(212,175,55,0.3)' }}>
+                📖 말씀 · {todayVerse.ref}
+              </span>
+              <p className="serif-font" style={{ fontSize: 'clamp(1.1rem, 3vw, 1.48rem)', lineHeight: 1.9, margin: '0 0 0.8rem', color: 'var(--text-primary)', wordBreak: 'keep-all', fontWeight: 700 }}>
+                &ldquo;{todayVerse.text}&rdquo;
+              </p>
+              {todayVerse.engText && (
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0, lineHeight: 1.6 }}>
+                  {todayVerse.engText}
+                </p>
+              )}
+            </div>
+
+            {/* 2. 🕊 본문 해설 */}
+            {todayVerse.commentary && (
+              <div style={{ marginBottom: '1.2rem', background: 'rgba(255,255,255,0.03)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: 'var(--accent-gold)', marginBottom: '10px' }}>
+                  <span>🕊</span>
+                  <span>본문 해설</span>
+                </div>
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
+                  {todayVerse.commentary}
+                </div>
+              </div>
+            )}
+
+            {/* 3. 🙏 묵상 질문 */}
+            {todayVerse.questions && todayVerse.questions.length > 0 && (
+              <div style={{ marginBottom: '1.2rem', background: 'rgba(212,175,55,0.05)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.18)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#f59e0b', marginBottom: '10px' }}>
+                  <span>🙏</span>
+                  <span>묵상 질문</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {todayVerse.questions.map((q, idx) => (
+                    <div key={idx} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.65 }}>
+                      <span style={{ background: 'rgba(212,175,55,0.25)', color: 'var(--accent-gold)', width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.74rem', fontWeight: 800, flexShrink: 0, marginTop: '2px' }}>
+                        {idx + 1}
+                      </span>
+                      <span>{q}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 4. 🙏 기도문 */}
+            {todayVerse.prayer && (
+              <div style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, rgba(79,134,198,0.08) 0%, rgba(168,85,247,0.08) 100%)', padding: '16px 20px', borderRadius: '18px', border: '1px solid rgba(168,85,247,0.25)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.95rem', fontWeight: 800, color: '#c084fc', marginBottom: '10px' }}>
+                  <span>🙏</span>
+                  <span>기도문</span>
+                </div>
+                <div style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.85, whiteSpace: 'pre-line', wordBreak: 'keep-all' }}>
+                  {todayVerse.prayer}
+                </div>
+              </div>
+            )}
+
+            {/* 5. 🛠 액션 버튼 바 */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', alignItems: 'center', marginTop: '1.2rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <button
+                onClick={handleCopyDevotion}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: copied ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)',
+                  color: copied ? '#4ade80' : 'var(--text-primary)',
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {copied ? <Check size={15} /> : <Copy size={15} />}
+                {copied ? '복사 완료!' : '전체 복사'}
+              </button>
+
+              <button
+                onClick={handleShareDevotion}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                <Share2 size={15} />
+                은혜 나누기
+              </button>
+
+              <Link
+                to="/devotion"
+                state={{ verse: todayVerse.ref, verseText: todayVerse.text }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(196,164,132,0.2)',
+                  color: 'var(--accent-gold)',
+                  border: '1px solid rgba(212,175,55,0.35)',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  textDecoration: 'none'
+                }}
+              >
+                ✏️ 묵상 노트 쓰기
+              </Link>
+
+              <Link
+                to="/verse-card"
+                state={{
+                  verses: [{ verse: 1, text: todayVerse.text, ref: todayVerse.ref, book: todayVerse.ref.split(' ')[0], chapter: 1 }],
+                  refText: todayVerse.ref
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'linear-gradient(135deg, rgba(212,175,55,0.22), rgba(245,158,11,0.22))',
+                  color: 'var(--accent-gold)',
+                  border: '1px solid var(--accent-gold)',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  textDecoration: 'none'
+                }}
+              >
+                💌 말씀 카드
+              </Link>
+            </div>
           </div>
         ) : (
           <div style={{ textAlign: 'left', background: 'rgba(0,0,0,0.2)', padding: 'clamp(14px, 3vw, 20px)', borderRadius: '18px', border: '1px solid rgba(212,175,55,0.2)' }}>
