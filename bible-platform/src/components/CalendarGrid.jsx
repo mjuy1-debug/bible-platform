@@ -99,6 +99,65 @@ const CalendarGrid = ({ year, month, events = [], selectedDate, onDateClick }) =
           {dayNum}
         </span>
 
+        {/* 이벤트 카테고리 dot — 날짜 바로 아래에 붙여서 어떤 날인지 명확하게 */}
+        {(() => {
+          const nonLabelEvents = dayEvents.filter(e => e.category !== 'holiday' && e.category !== 'liturgy');
+          const cats = [...new Set(nonLabelEvents.map(e => Array.isArray(e.category) ? e.category[0] : e.category))];
+          if (cats.length === 0) return null;
+          return (
+            <div style={{
+              display: 'flex',
+              gap: '2px',
+              marginTop: '3px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}>
+              {cats.map((cat) => (
+                <span
+                  key={cat}
+                  style={{
+                    width: '5px',
+                    height: '5px',
+                    borderRadius: '50%',
+                    background: CATEGORY_COLORS[cat]?.dot || 'var(--text-secondary)',
+                    flexShrink: 0,
+                  }}
+                />
+              ))}
+            </div>
+          );
+        })()}
+
+        {/* 이벤트 제목 미리보기 (첫 번째 일정만, 공휴일/절기 제외) */}
+        {(() => {
+          const nonLabelEvents = dayEvents.filter(e => e.category !== 'holiday' && e.category !== 'liturgy');
+          if (nonLabelEvents.length === 0) return null;
+          const first = nonLabelEvents[0];
+          const catArr = Array.isArray(first.category) ? first.category : [first.category];
+          const primaryCat = catArr[0];
+          const color = CATEGORY_COLORS[primaryCat]?.text || 'var(--text-secondary)';
+          const titleClean = first.title.replace(/[\[\]"'""\s]/g, ' ').trim();
+          return (
+            <span style={{
+              fontSize: 'clamp(0.38rem, 1vw, 0.52rem)',
+              color,
+              fontWeight: 700,
+              lineHeight: 1.15,
+              marginTop: '2px',
+              textAlign: 'center',
+              maxWidth: '100%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              letterSpacing: '-0.03em',
+              padding: '0 1px',
+            }}>
+              {titleClean}
+              {nonLabelEvents.length > 1 ? ` +${nonLabelEvents.length - 1}` : ''}
+            </span>
+          );
+        })()}
+
         {/* 공휴일 / 절기 라벨 */}
         {label && (
           <span style={{
@@ -106,7 +165,7 @@ const CalendarGrid = ({ year, month, events = [], selectedDate, onDateClick }) =
             color: label.color,
             fontWeight: 600,
             lineHeight: 1.1,
-            marginTop: '1px',
+            marginTop: '2px',
             textAlign: 'center',
             maxWidth: '100%',
             overflow: 'hidden',
@@ -117,36 +176,6 @@ const CalendarGrid = ({ year, month, events = [], selectedDate, onDateClick }) =
             {label.text}
           </span>
         )}
-
-        {/* 이벤트 카테고리 dot (공휴일/절기 제외한 일정만) */}
-        {(() => {
-          const nonLabelEvents = dayEvents.filter(e => e.category !== 'holiday' && e.category !== 'liturgy');
-          const cats = [...new Set(nonLabelEvents.map(e => e.category))];
-          if (cats.length === 0) return null;
-          return (
-            <div style={{
-              display: 'flex',
-              gap: '2px',
-              marginTop: 'auto',
-              paddingTop: '1px',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-            }}>
-              {cats.map((cat) => (
-                <span
-                  key={cat}
-                  style={{
-                    width: '4px',
-                    height: '4px',
-                    borderRadius: '50%',
-                    background: CATEGORY_COLORS[cat]?.dot || 'var(--text-secondary)',
-                    flexShrink: 0,
-                  }}
-                />
-              ))}
-            </div>
-          );
-        })()}
       </div>
     );
   }
