@@ -1,7 +1,7 @@
 export const SERMONS = [
   {
     "id": 1788690951660,
-    "title": "깨닫지 못하  자",
+    "title": "깨닫지 못하는  자",
     "date": "2026-09-06",
     "preacher": "김석주 목사님",
     "scripture": "시편 49 : 16 - 20",
