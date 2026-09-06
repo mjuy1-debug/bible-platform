@@ -204,7 +204,8 @@ export function showLocalNotification(title, options = {}) {
 
 /**
  * 오늘의 말씀 알림 조건 검사 및 발송
- * - 오늘 아직 알림을 받지 않았고, 설정된 시간이 되었거나 앱에 접속했을 때 발송
+ * - 강제 발송(force=true)이거나, 현재 시각이 설정된 알림 시간(예: 07:00) 일치 구간일 때만 발송
+ * - 앱 접속 시 엉뚱한 시간에 갑자기 팝업이 뜨는 현상을 완벽 방지
  */
 export function checkAndTriggerDailyVerseNotification(force = false) {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
@@ -223,6 +224,22 @@ export function checkAndTriggerDailyVerseNotification(force = false) {
   // 오늘 이미 발송되었고 강제 발송이 아니면 건너뜀
   if (lastSentDate === todayStr && !force) {
     return false;
+  }
+
+  // 시간 일치 검사 (force가 아닐 때 설정된 시간 창 체크)
+  if (!force) {
+    const [targetHour, targetMinute] = (settings.morningTime || '07:00').split(':').map(Number);
+    const curHour = today.getHours();
+    const curMinute = today.getMinutes();
+
+    // 현재 시각이 설정된 시각(시/분)과 일치(또는 10분 이내)하지 않으면 발송하지 않음
+    const isTargetHour = curHour === (isNaN(targetHour) ? 7 : targetHour);
+    const minuteDiff = curMinute - (isNaN(targetMinute) ? 0 : targetMinute);
+    const isTargetMinute = minuteDiff >= 0 && minuteDiff < 10;
+
+    if (!isTargetHour || !isTargetMinute) {
+      return false;
+    }
   }
 
   const todayVerse = getTodayVerse();
