@@ -39,61 +39,88 @@ async function sendToAllTokens(db, messages) {
   }
 }
 
+// 헬퍼: 안전한 시간 파싱
+function parseHour(val, defaultH = 6) {
+  if (val === undefined || val === null || val === '') return defaultH;
+  const n = Number(val);
+  return isNaN(n) ? defaultH : n;
+}
+
+function parseMinute(val, defaultM = 0) {
+  if (val === undefined || val === null || val === '') return defaultM;
+  const n = Number(val);
+  return isNaN(n) ? defaultM : n;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. ☀️ 매일 아침 오늘의 말씀 알림
-//    - 1분마다 실행하여 각 사용자의 설정 시간에 정확히 알림 발송
-//    - 앱이 꺼져 있어도 백그라운드에서 발송됨
+//    - 기본 시간: 오전 6시 (06:00 KST) 모든 사용자 일괄 발송
+//    - 사용자 지정 시간: 해당 시간에 맞춤 발송
+//    - 중복 발송 방지 (lastDailyVerseDate) 및 타입 불일치 방어
 // ─────────────────────────────────────────────────────────────────────────────
 exports.sendDailyVerseNotification = functions.scheduler.onSchedule(
-  { schedule: 'every 1 minutes', timeZone: 'Asia/Seoul' },
+  { schedule: 'every 5 minutes', timeZone: 'Asia/Seoul' },
   async () => {
     const db = admin.firestore();
 
-    // 서버는 UTC → 한국 시간(KST = UTC+9)으로 변환
+    // 현재 한국 시간 (KST = UTC+9)
     const now = new Date();
     const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
     const currentHour   = kstTime.getUTCHours();
     const currentMinute = kstTime.getUTCMinutes();
+    const todayStr      = `${kstTime.getUTCFullYear()}-${String(kstTime.getUTCMonth() + 1).padStart(2, '0')}-${String(kstTime.getUTCDate()).padStart(2, '0')}`;
 
     // 오늘의 말씀 가져오기
     const verse = getTodayVerse(kstTime);
-    const todayStr = `${kstTime.getUTCFullYear()}-${String(kstTime.getUTCMonth() + 1).padStart(2, '0')}-${String(kstTime.getUTCDate()).padStart(2, '0')}`;
 
-    // 이 시간에 알림 받을 사용자 조회 (정확한 시간 매칭 또는 7시 기본값 매칭)
-    let snapshot;
-    if (currentHour === 7 && currentMinute === 0) {
-      // 7시 00분에는 미설정(기본 7시) 사용자 및 7:00 설정 사용자 모두 처리
-      snapshot = await db.collection('fcmTokens')
-        .where('enabled', '==', true)
-        .get();
-    } else {
-      snapshot = await db.collection('fcmTokens')
-        .where('enabled', '==', true)
-        .where('notifHour', '==', currentHour)
-        .where('notifMinute', '==', currentMinute)
-        .get();
-    }
+    // 활성 FCM 토큰 조회
+    const snapshot = await db.collection('fcmTokens')
+      .where('enabled', '==', true)
+      .get();
 
     if (snapshot.empty) {
       return;
     }
 
     const messages = [];
+    const targetDocIds = [];
+
     snapshot.forEach(docSnap => {
       const data = docSnap.data();
       if (!data.token) return;
 
-      // 7:00 KST 전체 조회 시 필터링
-      if (currentHour === 7 && currentMinute === 0) {
-        const h = data.notifHour !== undefined && data.notifHour !== null ? Number(data.notifHour) : 7;
-        const m = data.notifMinute !== undefined && data.notifMinute !== null ? Number(data.notifMinute) : 0;
-        if (h !== 7 || m !== 0) {
-          return; // 다른 시간을 설정한 사용자는 본인 시간에 발송
+      // 1) 주제 설정 확인 (기본값 true)
+      if (data.topics && data.topics.dailyVerse === false) {
+        return;
+      }
+
+      // 2) 오늘 이미 발송받았는지 확인 (중복 발송 완전 차단)
+      if (data.lastDailyVerseDate === todayStr) {
+        return;
+      }
+
+      // 3) 사용자 설정 시간 파싱 (미지정 시 기본 6시 0분)
+      const userHour   = parseHour(data.notifHour, 6);
+      const userMinute = parseMinute(data.notifMinute, 0);
+
+      let isTimeToSend = false;
+
+      // 기본 6시 사용자인 경우: 6시 대(06:00~06:59) 또는 6시 이후 아직 오늘 말씀을 못 받은 경우 발송
+      if (userHour === 6) {
+        if (currentHour === 6) {
+          isTimeToSend = true;
+        } else if (currentHour > 6 && !data.lastDailyVerseDate) {
+          // 6시 이후에 등록되었거나 6시에 서버 지연 등으로 못 받은 기본 사용자에게 당일 1회 발송
+          isTimeToSend = true;
+        }
+      } else {
+        // 사용자가 6시가 아닌 특별한 시간을 지정한 경우: 해당 시간(±5분 창)에 발송
+        if (userHour === currentHour && Math.abs(userMinute - currentMinute) < 5) {
+          isTimeToSend = true;
         }
       }
 
-      // 주제 설정 확인 (기본값 true)
-      if (data.topics && data.topics.dailyVerse === false) {
+      if (!isTimeToSend) {
         return;
       }
 
@@ -119,13 +146,29 @@ exports.sendDailyVerseNotification = functions.scheduler.onSchedule(
           verseText: verse.text,
           verseRef: verse.ref,
           url: APP_URL,
+          date: todayStr
         }
       };
       messages.push(msg);
+      targetDocIds.push(docSnap.id);
     });
 
-    console.log(`[${currentHour}:${String(currentMinute).padStart(2,'0')} KST] 오늘의 말씀 알림 대상: ${messages.length}명`);
+    if (messages.length === 0) {
+      return;
+    }
+
+    console.log(`[${currentHour}:${String(currentMinute).padStart(2,'0')} KST] 오늘의 말씀 알림 발송 대상: ${messages.length}명`);
     await sendToAllTokens(db, messages);
+
+    // 발송 성공 기록 (당일 재발송 방지)
+    const batch = db.batch();
+    targetDocIds.forEach(id => {
+      batch.set(db.collection('fcmTokens').doc(id), {
+        lastDailyVerseDate: todayStr,
+        lastDailyVerseSentAt: new Date().toISOString()
+      }, { merge: true });
+    });
+    await batch.commit().catch(e => console.warn('발송 기록 업데이트 경고:', e.message));
   }
 );
 
@@ -430,3 +473,85 @@ exports.sendLiveStreamNotification = functions.firestore.onDocumentWritten(
     await sendToAllTokens(db, messages);
   }
 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. 🚀 오늘의 말씀 즉시 발송 (수동 실행 / 테스트용 HTTP 엔드포인트)
+// ─────────────────────────────────────────────────────────────────────────────
+exports.sendDailyVerseNow = functions.https.onRequest(
+  { cors: true },
+  async (req, res) => {
+    try {
+      const db = admin.firestore();
+      const now = new Date();
+      const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      const todayStr = `${kstTime.getUTCFullYear()}-${String(kstTime.getUTCMonth() + 1).padStart(2, '0')}-${String(kstTime.getUTCDate()).padStart(2, '0')}`;
+      const verse = getTodayVerse(kstTime);
+
+      const snapshot = await db.collection('fcmTokens')
+        .where('enabled', '==', true)
+        .get();
+
+      if (snapshot.empty) {
+        return res.json({ success: true, count: 0, message: '등록된 활성 토큰이 없습니다.' });
+      }
+
+      const messages = [];
+      const targetDocIds = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (!data.token) return;
+
+        messages.push({
+          token: data.token,
+          _uid: docSnap.id,
+          notification: {
+            title: '☀️ [화도벧엘교회] 오늘의 말씀',
+            body: `"${verse.text}" — ${verse.ref}`,
+          },
+          webpush: {
+            notification: {
+              icon: ICON_URL,
+              badge: ICON_URL,
+              requireInteraction: false,
+              tag: `daily-verse-${todayStr}-${Date.now()}`,
+              vibrate: [200, 100, 200],
+            },
+            fcmOptions: { link: APP_URL }
+          },
+          data: {
+            type: 'daily_verse',
+            verseText: verse.text,
+            verseRef: verse.ref,
+            url: APP_URL,
+            date: todayStr
+          }
+        });
+        targetDocIds.push(docSnap.id);
+      });
+
+      await sendToAllTokens(db, messages);
+
+      // 발송 기록 업데이트
+      const batch = db.batch();
+      targetDocIds.forEach(id => {
+        batch.set(db.collection('fcmTokens').doc(id), {
+          lastDailyVerseDate: todayStr,
+          lastDailyVerseSentAt: new Date().toISOString()
+        }, { merge: true });
+      });
+      await batch.commit().catch(() => {});
+
+      return res.json({
+        success: true,
+        count: messages.length,
+        verse: `${verse.ref} - ${verse.text}`,
+        date: todayStr
+      });
+    } catch (err) {
+      console.error('수동 발송 오류:', err);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  }
+);
+

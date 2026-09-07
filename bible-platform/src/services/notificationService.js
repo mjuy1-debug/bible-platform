@@ -10,7 +10,7 @@ const SETTINGS_KEY = 'bible_notification_settings';
 // 기본 알림 설정
 const DEFAULT_SETTINGS = {
   enabled: false,
-  morningTime: '07:00', // 아침 7시 기본
+  morningTime: '06:00', // 아침 6시 기본
   sound: true,
   topics: {
     dailyVerse: true,   // 매일 아침 오늘의 말씀
@@ -39,7 +39,7 @@ export async function saveNotificationSettings(settings, currentUser = null) {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     if (settings.morningTime) {
       const [h, m] = settings.morningTime.split(':').map(Number);
-      localStorage.setItem('push_hour', String(isNaN(h) ? 7 : h));
+      localStorage.setItem('push_hour', String(isNaN(h) ? 6 : h));
       localStorage.setItem('push_minute', String(isNaN(m) ? 0 : m));
     }
     localStorage.setItem('push_enabled', settings.enabled ? 'true' : 'false');
@@ -61,11 +61,11 @@ export async function syncNotificationToFirestore(settings, currentUser = null) 
     if (!deviceUid && !token) return;
 
     const docId = deviceUid || `anon_${token.slice(-16)}`;
-    const [h, m] = (settings.morningTime || '07:00').split(':').map(Number);
+    const [h, m] = (settings.morningTime || '06:00').split(':').map(Number);
 
     const dataToSave = {
       enabled: !!settings.enabled,
-      notifHour: isNaN(h) ? 7 : h,
+      notifHour: isNaN(h) ? 6 : h,
       notifMinute: isNaN(m) ? 0 : m,
       topics: settings.topics || { dailyVerse: true, prayerWall: true, announcements: true },
       updatedAt: serverTimestamp()
@@ -129,8 +129,8 @@ export async function requestNotificationPermission(currentUser = null) {
     }
 
     const current = getNotificationSettings();
-    const [h, m] = (current.morningTime || '07:00').split(':').map(Number);
-    const notifHour = isNaN(h) ? 7 : h;
+    const [h, m] = (current.morningTime || '06:00').split(':').map(Number);
+    const notifHour = isNaN(h) ? 6 : h;
     const notifMinute = isNaN(m) ? 0 : m;
 
     // 4. Firestore에 토큰 + 설정 저장
@@ -228,12 +228,12 @@ export function checkAndTriggerDailyVerseNotification(force = false) {
 
   // 시간 일치 검사 (force가 아닐 때 설정된 시간 창 체크)
   if (!force) {
-    const [targetHour, targetMinute] = (settings.morningTime || '07:00').split(':').map(Number);
+    const [targetHour, targetMinute] = (settings.morningTime || '06:00').split(':').map(Number);
     const curHour = today.getHours();
     const curMinute = today.getMinutes();
 
     // 현재 시각이 설정된 시각(시/분)과 일치(또는 10분 이내)하지 않으면 발송하지 않음
-    const isTargetHour = curHour === (isNaN(targetHour) ? 7 : targetHour);
+    const isTargetHour = curHour === (isNaN(targetHour) ? 6 : targetHour);
     const minuteDiff = curMinute - (isNaN(targetMinute) ? 0 : targetMinute);
     const isTargetMinute = minuteDiff >= 0 && minuteDiff < 10;
 

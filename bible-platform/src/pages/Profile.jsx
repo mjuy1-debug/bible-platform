@@ -152,7 +152,7 @@ const Profile = () => {
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
   const [pushEnabled, setPushEnabled] = useState(() => localStorage.getItem('push_enabled') === 'true');
-  const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '8', 10));
+  const [notifHour, setNotifHour] = useState(() => parseInt(localStorage.getItem('push_hour') || '6', 10));
   const [notifMinute, setNotifMinute] = useState(() => parseInt(localStorage.getItem('push_minute') || '0', 10));
   const [registering, setRegistering] = useState(false);
 

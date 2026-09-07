@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Plus, X, HandHeart, Trash2, BellRing, BellOff } from 'lucide-react';
 import { db } from '../services/firebase';
@@ -39,7 +39,7 @@ export default function PrayerWall() {
         const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
         if (token) {
           await setDoc(doc(db, 'fcmTokens', uid), {
-            token, notifHour: 8, notifMinute: 0, enabled: true,
+            token, notifHour: 6, notifMinute: 0, enabled: true,
             displayName: currentUser?.displayName || '성도', updatedAt: new Date().toISOString()
           }, { merge: true });
           localStorage.setItem('push_enabled', 'true');
