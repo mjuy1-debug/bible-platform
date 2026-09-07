@@ -100,2568 +100,2568 @@ Content-Type: `+l.contentType+`\r
             ${h}px !important;
             ${g}px !important;
           }
-        `),()=>{s.current?.removeAttribute(`data-motion-pop-id`),v.contains(_)&&v.removeChild(_)}},[t]),(0,q.jsx)(vI,{isPresent:t,childRef:s,sizeRef:c,pop:a,children:a===!1?e:m.cloneElement(e,{ref:u})})}var bI=({children:e,initial:t,isPresent:n,onExitComplete:r,custom:i,presenceAffectsLayout:a,mode:o,anchorX:s,anchorY:c,root:l})=>{let u=AD(xI),d=(0,m.useId)(),f=!0,p=(0,m.useMemo)(()=>(f=!1,{id:d,initial:t,isPresent:n,custom:i,onExitComplete:e=>{u.set(e,!0);for(let e of u.values())if(!e)return;r&&r()},register:e=>(u.set(e,!1),()=>u.delete(e))}),[n,u,r]);return a&&f&&(p={...p}),(0,m.useMemo)(()=>{u.forEach((e,t)=>u.set(t,!1))},[n]),m.useEffect(()=>{!n&&!u.size&&r&&r()},[n]),e=(0,q.jsx)(yI,{pop:o===`popLayout`,isPresent:n,anchorX:s,anchorY:c,root:l,children:e}),(0,q.jsx)(MD.Provider,{value:p,children:e})};function xI(){return new Map}function SI(e=!0){let t=(0,m.useContext)(MD);if(t===null)return[!0,null];let{isPresent:n,onExitComplete:r,register:i}=t,a=(0,m.useId)();(0,m.useEffect)(()=>{if(e)return i(a)},[e]);let o=(0,m.useCallback)(()=>e&&r&&r(a),[a,r,e]);return!n&&r?[!1,o]:[!0]}var CI=e=>e.key||``;function wI(e){let t=[];return m.Children.forEach(e,e=>{(0,m.isValidElement)(e)&&t.push(e)}),t}var TI=({children:e,custom:t,initial:n=!0,onExitComplete:r,presenceAffectsLayout:i=!0,mode:a=`sync`,propagate:o=!1,anchorX:s=`left`,anchorY:c=`top`,root:l})=>{let[u,d]=SI(o),f=(0,m.useMemo)(()=>wI(e),[e]),p=o&&!u?[]:f.map(CI),h=(0,m.useRef)(!0),g=(0,m.useRef)(f),_=AD(()=>new Map),v=(0,m.useRef)(new Set),[y,b]=(0,m.useState)(f),[x,S]=(0,m.useState)(f);jD(()=>{h.current=!1,g.current=f;for(let e=0;e<x.length;e++){let t=CI(x[e]);p.includes(t)?(_.delete(t),v.current.delete(t)):_.get(t)!==!0&&_.set(t,!1)}},[x,p.length,p.join(`-`)]);let C=[];if(f!==y){let e=[...f];for(let t=0;t<x.length;t++){let n=x[t],r=CI(n);p.includes(r)||(e.splice(t,0,n),C.push(n))}return a===`wait`&&C.length&&(e=C),S(wI(e)),b(f),null}let{forceRender:w}=(0,m.useContext)(kD);return(0,q.jsx)(q.Fragment,{children:x.map(e=>{let m=CI(e),y=o&&!u?!1:f===x||p.includes(m);return(0,q.jsx)(bI,{isPresent:y,initial:!h.current||n?void 0:!1,custom:t,presenceAffectsLayout:i,mode:a,root:l,onExitComplete:y?void 0:()=>{if(v.current.has(m))return;if(_.has(m))v.current.add(m),_.set(m,!0);else return;let e=!0;_.forEach(t=>{t||(e=!1)}),e&&(w?.(),S(g.current),o&&d?.(),r&&r())},anchorX:s,anchorY:c,children:e},m)})})},EI=(0,m.createContext)({strict:!1}),DI={animation:[`animate`,`variants`,`whileHover`,`whileTap`,`exit`,`whileInView`,`whileFocus`,`whileDrag`],exit:[`exit`],drag:[`drag`,`dragControls`],focus:[`whileFocus`],hover:[`whileHover`,`onHoverStart`,`onHoverEnd`],tap:[`whileTap`,`onTap`,`onTapStart`,`onTapCancel`],pan:[`onPan`,`onPanStart`,`onPanSessionStart`,`onPanEnd`],inView:[`whileInView`,`onViewportEnter`,`onViewportLeave`],layout:[`layout`,`layoutId`]},OI=!1;function kI(){if(OI)return;let e={};for(let t in DI)e[t]={isEnabled:e=>DI[t].some(t=>!!e[t])};jN(e),OI=!0}function AI(){return kI(),MN()}function jI(e){let t=AI();for(let n in e)t[n]={...t[n],...e[n]};jN(t)}var MI=new Set(`animate.exit.variants.initial.style.values.variants.transition.transformTemplate.custom.inherit.onBeforeLayoutMeasure.onAnimationStart.onAnimationComplete.onUpdate.onDragStart.onDrag.onDragEnd.onMeasureDragConstraints.onDirectionLock.onDragTransitionEnd._dragX._dragY.onHoverStart.onHoverEnd.onViewportEnter.onViewportLeave.globalTapTarget.propagate.ignoreStrict.viewport`.split(`.`));function NI(e){return e.startsWith(`while`)||e.startsWith(`drag`)&&e!==`draggable`||e.startsWith(`layout`)||e.startsWith(`onTap`)||e.startsWith(`onPan`)||e.startsWith(`onLayout`)||MI.has(e)}var PI=r({default:()=>FI}),FI,II=n((()=>{throw FI={},Error(`Could not resolve "@emotion/is-prop-valid" imported by "framer-motion". Is it installed?`)})),LI=e=>!NI(e);function RI(e){typeof e==`function`&&(LI=t=>t.startsWith(`on`)?!NI(t):e(t))}try{RI((II(),t(PI)).default)}catch{}function zI(e,t,n){let r={};for(let i in e)i===`values`&&typeof e.values==`object`||Yj(e[i])||(LI(i)||n===!0&&NI(i)||!t&&!NI(i)||e.draggable&&i.startsWith(`onDrag`))&&(r[i]=e[i]);return r}var BI=(0,m.createContext)({});function VI(e,t){if(SN(e)){let{initial:t,animate:n}=e;return{initial:t===!1||yN(t)?t:void 0,animate:yN(n)?n:void 0}}return e.inherit===!1?{}:t}function HI(e){let{initial:t,animate:n}=VI(e,(0,m.useContext)(BI));return(0,m.useMemo)(()=>({initial:t,animate:n}),[UI(t),UI(n)])}function UI(e){return Array.isArray(e)?e.join(` `):e}var WI=()=>({style:{},transform:{},transformOrigin:{},vars:{}});function GI(e,t,n){for(let r in t)!Yj(t[r])&&!fP(r,n)&&(e[r]=t[r])}function KI({transformTemplate:e},t){return(0,m.useMemo)(()=>{let n=WI();return oP(n,t,e),Object.assign({},n.vars,n.style)},[t])}function qI(e,t){let n=e.style||{},r={};return GI(r,n,e),Object.assign(r,KI(e,t)),r}function JI(e,t){let n={},r=qI(e,t);return e.drag&&e.dragListener!==!1&&(n.draggable=!1,r.userSelect=r.WebkitUserSelect=r.WebkitTouchCallout=`none`,r.touchAction=e.drag===!0?`none`:`pan-${e.drag===`x`?`y`:`x`}`),e.tabIndex===void 0&&(e.onTap||e.onTapStart||e.whileTap)&&(n.tabIndex=0),n.style=r,n}var YI=()=>({...WI(),attrs:{}});function XI(e,t,n,r){let i=(0,m.useMemo)(()=>{let n=YI();return bP(n,t,SP(r),e.transformTemplate,e.style),{...n.attrs,style:{...n.style}}},[t]);if(e.style){let t={};GI(t,e.style,e),i.style={...t,...i.style}}return i}var ZI=[`animate`,`circle`,`defs`,`desc`,`ellipse`,`g`,`image`,`line`,`filter`,`marker`,`mask`,`metadata`,`path`,`pattern`,`polygon`,`polyline`,`rect`,`stop`,`switch`,`symbol`,`svg`,`text`,`tspan`,`use`,`view`];function QI(e){return typeof e!=`string`||e.includes(`-`)?!1:!!(ZI.indexOf(e)>-1||/[A-Z]/u.test(e))}function $I(e,t,n,{latestValues:r},i,a=!1,o){let s=(o??QI(e)?XI:JI)(t,r,i,e),c=zI(t,typeof e==`string`,a),l=e===m.Fragment?{}:{...c,...s,ref:n},{children:u}=t,d=(0,m.useMemo)(()=>Yj(u)?u.get():u,[u]);return(0,m.createElement)(e,{...l,children:d})}function eL({scrapeMotionValuesFromProps:e,createRenderState:t},n,r,i){return{latestValues:tL(n,r,i,e),renderState:t()}}function tL(e,t,n,r){let i={},a=r(e,{});for(let e in a)i[e]=kF(a[e]);let{initial:o,animate:s}=e,c=SN(e),l=CN(e);t&&l&&!c&&e.inherit!==!1&&(o===void 0&&(o=t.initial),s===void 0&&(s=t.animate));let u=n?n.initial===!1:!1;u||=o===!1;let d=u?s:o;if(d&&typeof d!=`boolean`&&!vN(d)){let t=Array.isArray(d)?d:[d];for(let n=0;n<t.length;n++){let r=Lj(e,t[n]);if(r){let{transitionEnd:e,transition:t,...n}=r;for(let e in n){let t=n[e];if(Array.isArray(t)){let e=u?t.length-1:0;t=t[e]}t!==null&&(i[e]=t)}for(let t in e)i[t]=e[t]}}}return i}var nL=e=>(t,n)=>{let r=(0,m.useContext)(BI),i=(0,m.useContext)(MD),a=()=>eL(e,t,r,i);return n?a():AD(a)},rL=nL({scrapeMotionValuesFromProps:pP,createRenderState:WI}),iL=nL({scrapeMotionValuesFromProps:wP,createRenderState:YI}),aL=Symbol.for(`motionComponentSymbol`);function oL(e,t,n){let r=(0,m.useRef)(n);(0,m.useInsertionEffect)(()=>{r.current=n});let i=(0,m.useRef)(null);return(0,m.useCallback)(n=>{n&&e.onMount?.(n);let a=r.current;if(typeof a==`function`)if(n){let e=a(n);typeof e==`function`&&(i.current=e)}else i.current?(i.current(),i.current=null):a(n);else a&&(a.current=n);t&&(n?t.mount(n):t.unmount())},[t])}var sL=(0,m.createContext)({});function cL(e){return e&&typeof e==`object`&&Object.prototype.hasOwnProperty.call(e,`current`)}function lL(e,t,n,r,i,a){let{visualElement:o}=(0,m.useContext)(BI),s=(0,m.useContext)(EI),c=(0,m.useContext)(MD),l=(0,m.useContext)(mI),u=l.reducedMotion,d=l.skipAnimations,f=(0,m.useRef)(null),p=(0,m.useRef)(!1);r||=s.renderer,!f.current&&r&&(f.current=r(e,{visualState:t,parent:o,props:n,presenceContext:c,blockInitialAnimation:c?c.initial===!1:!1,reducedMotionConfig:u,skipAnimations:d,isSVG:a}),p.current&&f.current&&(f.current.manuallyAnimateOnMount=!0));let h=f.current,g=(0,m.useContext)(sL);h&&!h.projection&&i&&(h.type===`html`||h.type===`svg`)&&uL(f.current,n,i,g);let _=(0,m.useRef)(!1);(0,m.useInsertionEffect)(()=>{h&&_.current&&h.update(n,c)});let v=n[$j],y=(0,m.useRef)(!!v&&typeof window<`u`&&!window.MotionHandoffIsComplete?.(v)&&window.MotionHasOptimisedAnimation?.(v));return jD(()=>{p.current=!0,h&&(_.current=!0,window.MotionIsMounted=!0,h.updateFeatures(),h.scheduleRenderMicrotask(),y.current&&h.animationState&&h.animationState.animateChanges())}),(0,m.useEffect)(()=>{h&&(!y.current&&h.animationState&&h.animationState.animateChanges(),y.current&&=(queueMicrotask(()=>{window.MotionHandoffMarkAsComplete?.(v)}),!1),h.enteringChildren=void 0)}),h}function uL(e,t,n,r){let{layoutId:i,layout:a,drag:o,dragConstraints:s,layoutScroll:c,layoutRoot:l,layoutAnchor:u,layoutCrossfade:d}=t;e.projection=new n(e.latestValues,t[`data-framer-portal-id`]?void 0:dL(e.parent)),e.projection.setOptions({layoutId:i,layout:a,alwaysMeasureLayout:!!o||s&&cL(s),visualElement:e,animationType:typeof a==`string`?a:`both`,initialPromotionConfig:r,crossfade:d,layoutScroll:c,layoutRoot:l,layoutAnchor:u})}function dL(e){if(e)return e.options.allowProjection===!1?dL(e.parent):e.projection}function fL(e,{forwardMotionProps:t=!1,type:n}={},r,i){r&&jI(r);let a=n?n===`svg`:QI(e),o=a?iL:rL;function s(n,s){let c,l={...(0,m.useContext)(mI),...n,layoutId:pL(n)},{isStatic:u}=l,d=HI(n),f=o(n,u);if(!u&&typeof window<`u`){mL(l,r);let t=hL(l);c=t.MeasureLayout,d.visualElement=lL(e,f,l,i,t.ProjectionNode,a)}return(0,q.jsxs)(BI.Provider,{value:d,children:[c&&d.visualElement?(0,q.jsx)(c,{visualElement:d.visualElement,...l}):null,$I(e,n,oL(f,d.visualElement,s),f,u,t,a)]})}s.displayName=`motion.${typeof e==`string`?e:`create(${e.displayName??e.name??``})`}`;let c=(0,m.forwardRef)(s);return c[aL]=e,c}function pL({layoutId:e}){let t=(0,m.useContext)(kD).id;return t&&e!==void 0?t+`-`+e:e}function mL(e,t){(0,m.useContext)(EI).strict}function hL(e){let{drag:t,layout:n}=AI();if(!t&&!n)return{};let r={...t,...n};return{MeasureLayout:t?.isEnabled(e)||n?.isEnabled(e)?r.MeasureLayout:void 0,ProjectionNode:r.ProjectionNode}}function gL(e,t){if(typeof Proxy>`u`)return fL;let n=new Map,r=(n,r)=>fL(n,r,e,t);return new Proxy((e,t)=>r(e,t),{get:(i,a)=>a===`create`?r:(n.has(a)||n.set(a,fL(a,void 0,e,t)),n.get(a))})}var _L=(e,t)=>t.isSVG??QI(e)?new TP(t):new hP(t,{allowProjection:e!==m.Fragment}),vL=class extends FN{constructor(e){super(e),e.animationState||=MP(e)}updateAnimationControlsSubscription(){let{animate:e}=this.node.getProps();vN(e)&&(this.unmountControls=e.subscribe(this.node))}mount(){this.updateAnimationControlsSubscription()}update(){let{animate:e}=this.node.getProps(),{animate:t}=this.node.prevProps||{};e!==t&&this.updateAnimationControlsSubscription()}unmount(){this.node.animationState.reset(),this.unmountControls?.()}},yL=0,bL={animation:{Feature:vL},exit:{Feature:class extends FN{constructor(){super(...arguments),this.id=yL++,this.isExitComplete=!1}update(){if(!this.node.presenceContext)return;let{isPresent:e,onExitComplete:t}=this.node.presenceContext,{isPresent:n}=this.node.prevPresenceContext||{};if(!this.node.animationState||e===n)return;if(e&&n===!1){if(this.isExitComplete){let{initial:e,custom:t}=this.node.getProps();if(typeof e==`string`){let n=Rj(this.node,e,t);if(n){let{transition:e,transitionEnd:t,...r}=n;for(let e in r)this.node.getValue(e)?.jump(r[e])}}this.node.animationState.reset(),this.node.animationState.animateChanges()}else this.node.animationState.setActive(`exit`,!1);this.isExitComplete=!1;return}let r=this.node.animationState.setActive(`exit`,!e);t&&!e&&r.then(()=>{this.isExitComplete=!0,t(this.id)})}mount(){let{register:e,onExitComplete:t}=this.node.presenceContext||{};t&&t(this.id),e&&(this.unmount=e(this.id))}unmount(){}}}};function xL(e){return{point:{x:e.pageX,y:e.pageY}}}var SL=e=>t=>LM(t)&&e(t,xL(t));function CL(e,t,n,r){return TF(e,t,SL(n),r)}var wL=({current:e})=>e?e.ownerDocument.defaultView:null,TL=(e,t)=>Math.abs(e-t);function EL(e,t){let n=TL(e.x,t.x),r=TL(e.y,t.y);return Math.sqrt(n**2+r**2)}var DL=new Set([`auto`,`scroll`]),OL=class{constructor(e,t,{transformPagePoint:n,contextWindow:r=window,dragSnapToOrigin:i=!1,distanceThreshold:a=3,element:o}={}){if(this.startEvent=null,this.lastMoveEvent=null,this.lastMoveEventInfo=null,this.lastRawMoveEventInfo=null,this.handlers={},this.contextWindow=window,this.scrollPositions=new Map,this.removeScrollListeners=null,this.onElementScroll=e=>{this.handleScroll(e.target)},this.onWindowScroll=()=>{this.handleScroll(window)},this.updatePoint=()=>{if(!(this.lastMoveEvent&&this.lastMoveEventInfo))return;this.lastRawMoveEventInfo&&(this.lastMoveEventInfo=kL(this.lastRawMoveEventInfo,this.transformPagePoint));let e=jL(this.lastMoveEventInfo,this.history),t=this.startEvent!==null,n=EL(e.offset,{x:0,y:0})>=this.distanceThreshold;if(!t&&!n)return;let{point:r}=e,{timestamp:i}=wO;this.history.push({...r,timestamp:i});let{onStart:a,onMove:o}=this.handlers;t||(a&&a(this.lastMoveEvent,e),this.startEvent=this.lastMoveEvent),o&&o(this.lastMoveEvent,e)},this.handlePointerMove=(e,t)=>{this.lastMoveEvent=e,this.lastRawMoveEventInfo=t,this.lastMoveEventInfo=kL(t,this.transformPagePoint),SO.update(this.updatePoint,!0)},this.handlePointerUp=(e,t)=>{this.end();let{onEnd:n,onSessionEnd:r,resumeAnimation:i}=this.handlers;if((this.dragSnapToOrigin||!this.startEvent)&&i&&i(),!(this.lastMoveEvent&&this.lastMoveEventInfo))return;let a=jL(e.type===`pointercancel`?this.lastMoveEventInfo:kL(t,this.transformPagePoint),this.history);this.startEvent&&n&&n(e,a),r&&r(e,a)},!LM(e))return;this.dragSnapToOrigin=i,this.handlers=t,this.transformPagePoint=n,this.distanceThreshold=a,this.contextWindow=r||window;let s=kL(xL(e),this.transformPagePoint),{point:c}=s,{timestamp:l}=wO;this.history=[{...c,timestamp:l}];let{onSessionStart:u}=t;u&&u(e,jL(s,this.history)),this.removeListeners=UD(CL(this.contextWindow,`pointermove`,this.handlePointerMove),CL(this.contextWindow,`pointerup`,this.handlePointerUp),CL(this.contextWindow,`pointercancel`,this.handlePointerUp)),o&&this.startScrollTracking(o)}startScrollTracking(e){let t=e.parentElement;for(;t;){let e=getComputedStyle(t);(DL.has(e.overflowX)||DL.has(e.overflowY))&&this.scrollPositions.set(t,{x:t.scrollLeft,y:t.scrollTop}),t=t.parentElement}this.scrollPositions.set(window,{x:window.scrollX,y:window.scrollY}),window.addEventListener(`scroll`,this.onElementScroll,{capture:!0}),window.addEventListener(`scroll`,this.onWindowScroll),this.removeScrollListeners=()=>{window.removeEventListener(`scroll`,this.onElementScroll,{capture:!0}),window.removeEventListener(`scroll`,this.onWindowScroll)}}handleScroll(e){let t=this.scrollPositions.get(e);if(!t)return;let n=e===window,r=n?{x:window.scrollX,y:window.scrollY}:{x:e.scrollLeft,y:e.scrollTop},i={x:r.x-t.x,y:r.y-t.y};i.x===0&&i.y===0||(n?this.lastMoveEventInfo&&(this.lastMoveEventInfo.point.x+=i.x,this.lastMoveEventInfo.point.y+=i.y):this.history.length>0&&(this.history[0].x-=i.x,this.history[0].y-=i.y),this.scrollPositions.set(e,r),SO.update(this.updatePoint,!0))}updateHandlers(e){this.handlers=e}end(){this.removeListeners&&this.removeListeners(),this.removeScrollListeners&&this.removeScrollListeners(),this.scrollPositions.clear(),CO(this.updatePoint)}};function kL(e,t){return t?{point:t(e.point)}:e}function AL(e,t){return{x:e.x-t.x,y:e.y-t.y}}function jL({point:e},t){return{point:e,delta:AL(e,NL(t)),offset:AL(e,ML(t)),velocity:PL(t,.1)}}function ML(e){return e[0]}function NL(e){return e[e.length-1]}function PL(e,t){if(e.length<2)return{x:0,y:0};let n=e.length-1,r=null,i=NL(e);for(;n>=0&&(r=e[n],!(i.timestamp-r.timestamp>KD(t)));)n--;if(!r)return{x:0,y:0};r===e[0]&&e.length>2&&i.timestamp-r.timestamp>KD(t)*2&&(r=e[1]);let a=qD(i.timestamp-r.timestamp);if(a===0)return{x:0,y:0};let o={x:(i.x-r.x)/a,y:(i.y-r.y)/a};return o.x===1/0&&(o.x=0),o.y===1/0&&(o.y=0),o}function FL(e,{min:t,max:n},r){return t!==void 0&&e<t?e=r?wk(t,e,r.min):Math.max(e,t):n!==void 0&&e>n&&(e=r?wk(n,e,r.max):Math.min(e,n)),e}function IL(e,t,n){return{min:t===void 0?void 0:e.min+t,max:n===void 0?void 0:e.max+n-(e.max-e.min)}}function LL(e,{top:t,left:n,bottom:r,right:i}){return{x:IL(e.x,n,i),y:IL(e.y,t,r)}}function RL(e,t){let n=t.min-e.min,r=t.max-e.max;return t.max-t.min<e.max-e.min&&([n,r]=[r,n]),{min:n,max:r}}function zL(e,t){return{x:RL(e.x,t.x),y:RL(e.y,t.y)}}function BL(e,t){let n=.5,r=GP(e),i=GP(t);return i>r?n=WD(t.min,t.max-r,e.min):r>i&&(n=WD(e.min,e.max-i,t.min)),FD(0,1,n)}function VL(e,t){let n={};return t.min!==void 0&&(n.min=t.min-e.min),t.max!==void 0&&(n.max=t.max-e.min),n}var HL=.35;function UL(e=HL){return e===!1?e=0:e===!0&&(e=HL),{x:WL(e,`left`,`right`),y:WL(e,`top`,`bottom`)}}function WL(e,t,n){return{min:GL(e,t),max:GL(e,n)}}function GL(e,t){return typeof e==`number`?e:e[t]||0}var KL=new WeakMap,qL=class{constructor(e){this.openDragLock=null,this.isDragging=!1,this.currentDirection=null,this.originPoint={x:0,y:0},this.constraints=!1,this.hasMutatedConstraints=!1,this.elastic=gN(),this.latestPointerEvent=null,this.latestPanInfo=null,this.visualElement=e}start(e,{snapToCursor:t=!1,distanceThreshold:n}={}){let{presenceContext:r}=this.visualElement;if(r&&r.isPresent===!1)return;let i=e=>{t&&this.snapToCursor(xL(e).point),this.stopAnimation()},a=(e,t)=>{let{drag:n,dragPropagation:r,onDragStart:i}=this.getProps();if(n&&!r&&(this.openDragLock&&this.openDragLock(),this.openDragLock=MM(n),!this.openDragLock))return;this.latestPointerEvent=e,this.latestPanInfo=t,this.isDragging=!0,this.currentDirection=null,this.resolveConstraints(),this.visualElement.projection&&(this.visualElement.projection.isAnimationBlocked=!0,this.visualElement.projection.target=void 0),pF(e=>{let t=this.getAxisMotionValue(e).get()||0;if(QO.test(t)){let{projection:n}=this.visualElement;if(n&&n.layout){let r=n.layout.layoutBox[e];r&&(t=GP(r)*(parseFloat(t)/100))}}this.originPoint[e]=t}),i&&SO.update(()=>i(e,t),!1,!0),Zj(this.visualElement,`transform`);let{animationState:a}=this.visualElement;a&&a.setActive(`whileDrag`,!0)},o=(e,t)=>{this.latestPointerEvent=e,this.latestPanInfo=t;let{dragPropagation:n,dragDirectionLock:r,onDirectionLock:i,onDrag:a}=this.getProps();if(!n&&!this.openDragLock)return;let{offset:o}=t;if(r&&this.currentDirection===null){this.currentDirection=ZL(o),this.currentDirection!==null&&i&&i(this.currentDirection);return}this.updateAxis(`x`,t.point,o),this.updateAxis(`y`,t.point,o),this.visualElement.render(),a&&SO.update(()=>a(e,t),!1,!0)},s=(e,t)=>{this.latestPointerEvent=e,this.latestPanInfo=t,this.stop(e,t),this.latestPointerEvent=null,this.latestPanInfo=null},c=()=>{let{dragSnapToOrigin:e}=this.getProps();(e||this.constraints)&&this.startAnimation({x:0,y:0})},{dragSnapToOrigin:l}=this.getProps();this.panSession=new OL(e,{onSessionStart:i,onStart:a,onMove:o,onSessionEnd:s,resumeAnimation:c},{transformPagePoint:this.visualElement.getTransformPagePoint(),dragSnapToOrigin:l,distanceThreshold:n,contextWindow:wL(this.visualElement),element:this.visualElement.current})}stop(e,t){let n=e||this.latestPointerEvent,r=t||this.latestPanInfo,i=this.isDragging;if(this.cancel(),!i||!r||!n)return;let{velocity:a}=r;this.startAnimation(a);let{onDragEnd:o}=this.getProps();o&&SO.postRender(()=>o(n,r))}cancel(){this.isDragging=!1;let{projection:e,animationState:t}=this.visualElement;e&&(e.isAnimationBlocked=!1),this.endPanSession();let{dragPropagation:n}=this.getProps();!n&&this.openDragLock&&(this.openDragLock(),this.openDragLock=null),t&&t.setActive(`whileDrag`,!1)}endPanSession(){this.panSession&&this.panSession.end(),this.panSession=void 0}updateAxis(e,t,n){let{drag:r}=this.getProps();if(!n||!XL(e,r,this.currentDirection))return;let i=this.getAxisMotionValue(e),a=this.originPoint[e]+n[e];this.constraints&&this.constraints[e]&&(a=FL(a,this.constraints[e],this.elastic[e])),i.set(a)}resolveConstraints(){let{dragConstraints:e,dragElastic:t}=this.getProps(),n=this.visualElement.projection&&!this.visualElement.projection.layout?this.visualElement.projection.measure(!1):this.visualElement.projection?.layout,r=this.constraints;e&&cL(e)?this.constraints||=this.resolveRefConstraints():e&&n?this.constraints=LL(n.layoutBox,e):this.constraints=!1,this.elastic=UL(t),r!==this.constraints&&!cL(e)&&n&&this.constraints&&!this.hasMutatedConstraints&&pF(e=>{this.constraints!==!1&&this.getAxisMotionValue(e)&&(this.constraints[e]=VL(n.layoutBox[e],this.constraints[e]))})}resolveRefConstraints(){let{dragConstraints:e,onMeasureDragConstraints:t}=this.getProps();if(!e||!cL(e))return!1;let n=e.current,{projection:r}=this.visualElement;if(!r||!r.layout)return!1;let i=nP(n,r.root,this.visualElement.getTransformPagePoint()),a=zL(r.layout.layoutBox,i);if(t){let e=t(LN(a));this.hasMutatedConstraints=!!e,e&&(a=IN(e))}return a}startAnimation(e){let{drag:t,dragMomentum:n,dragElastic:r,dragTransition:i,dragSnapToOrigin:a,onDragTransitionEnd:o}=this.getProps(),s=this.constraints||{},c=pF(o=>{if(!XL(o,t,this.currentDirection))return;let c=s&&s[o]||{};(a===!0||a===o)&&(c={min:0,max:0});let l=r?200:1e6,u=r?40:1e7,d={type:`inertia`,velocity:n?e[o]:0,bounceStiffness:l,bounceDamping:u,timeConstant:750,restDelta:1,restSpeed:10,...i,...c};return this.startAxisValueAnimation(o,d)});return Promise.all(c).then(o)}startAxisValueAnimation(e,t){let n=this.getAxisMotionValue(e);return Zj(this.visualElement,e),n.start(Fj(e,n,0,t,this.visualElement,!1))}stopAnimation(){pF(e=>this.getAxisMotionValue(e).stop())}getAxisMotionValue(e){let t=`_drag${e.toUpperCase()}`,n=this.visualElement.getProps();return n[t]||this.visualElement.getValue(e,(n.initial?n.initial[e]:void 0)||0)}snapToCursor(e){pF(t=>{let{drag:n}=this.getProps();if(!XL(t,n,this.currentDirection))return;let{projection:r}=this.visualElement,i=this.getAxisMotionValue(t);if(r&&r.layout){let{min:n,max:a}=r.layout.layoutBox[t],o=i.get()||0;i.set(e[t]-wk(n,a,.5)+o)}})}scalePositionWithinConstraints(){if(!this.visualElement.current)return;let{drag:e,dragConstraints:t}=this.getProps(),{projection:n}=this.visualElement;if(!cL(t)||!n||!this.constraints)return;this.stopAnimation();let r={x:0,y:0};pF(e=>{let t=this.getAxisMotionValue(e);if(t&&this.constraints!==!1){let n=t.get();r[e]=BL({min:n,max:n},this.constraints[e])}});let{transformTemplate:i}=this.visualElement.getProps();this.visualElement.current.style.transform=i?i({},``):`none`,n.root&&n.root.updateScroll(),n.updateLayout(),this.constraints=!1,this.resolveConstraints(),pF(t=>{if(!XL(t,e,null))return;let n=this.getAxisMotionValue(t),{min:i,max:a}=this.constraints[t];n.set(wk(i,a,r[t]))}),this.visualElement.render()}addListeners(){if(!this.visualElement.current)return;KL.set(this.visualElement,this);let e=this.visualElement.current,t=CL(e,`pointerdown`,t=>{let{drag:n,dragListener:r=!0}=this.getProps(),i=t.target,a=i!==e&&VM(i);n&&r&&!a&&this.start(t)}),n,r=()=>{let{dragConstraints:t}=this.getProps();cL(t)&&t.current&&(this.constraints=this.resolveRefConstraints(),n||=YL(e,t.current,()=>this.scalePositionWithinConstraints()))},{projection:i}=this.visualElement,a=i.addEventListener(`measure`,r);i&&!i.layout&&(i.root&&i.root.updateScroll(),i.updateLayout()),SO.read(r);let o=TF(window,`resize`,()=>this.scalePositionWithinConstraints()),s=i.addEventListener(`didUpdate`,(({delta:e,hasLayoutChanged:t})=>{this.isDragging&&t&&(pF(t=>{let n=this.getAxisMotionValue(t);n&&(this.originPoint[t]+=e[t].translate,n.set(n.get()+e[t].translate))}),this.visualElement.render())}));return()=>{o(),t(),a(),s&&s(),n&&n()}}getProps(){let e=this.visualElement.getProps(),{drag:t=!1,dragDirectionLock:n=!1,dragPropagation:r=!1,dragConstraints:i=!1,dragElastic:a=HL,dragMomentum:o=!0}=e;return{...e,drag:t,dragDirectionLock:n,dragPropagation:r,dragConstraints:i,dragElastic:a,dragMomentum:o}}};function JL(e){let t=!0;return()=>{if(t){t=!1;return}e()}}function YL(e,t,n){let r=lN(e,JL(n)),i=lN(t,JL(n));return()=>{r(),i()}}function XL(e,t,n){return(t===!0||t===e)&&(n===null||n===e)}function ZL(e,t=10){let n=null;return Math.abs(e.y)>t?n=`y`:Math.abs(e.x)>t&&(n=`x`),n}var QL=class extends FN{constructor(e){super(e),this.removeGroupControls=VD,this.removeListeners=VD,this.controls=new qL(e)}mount(){let{dragControls:e}=this.node.getProps();e&&(this.removeGroupControls=e.subscribe(this.controls)),this.removeListeners=this.controls.addListeners()||VD}update(){let{dragControls:e}=this.node.getProps(),{dragControls:t}=this.node.prevProps||{};e!==t&&(this.removeGroupControls(),e&&(this.removeGroupControls=e.subscribe(this.controls)))}unmount(){this.removeGroupControls(),this.removeListeners(),this.controls.isDragging||this.controls.endPanSession()}},$L=e=>(t,n)=>{e&&SO.update(()=>e(t,n),!1,!0)},eR=class extends FN{constructor(){super(...arguments),this.removePointerDownListener=VD}onPointerDown(e){this.session=new OL(e,this.createPanHandlers(),{transformPagePoint:this.node.getTransformPagePoint(),contextWindow:wL(this.node)})}createPanHandlers(){let{onPanSessionStart:e,onPanStart:t,onPan:n,onPanEnd:r}=this.node.getProps();return{onSessionStart:$L(e),onStart:$L(t),onMove:$L(n),onEnd:(e,t)=>{delete this.session,r&&SO.postRender(()=>r(e,t))}}}mount(){this.removePointerDownListener=CL(this.node.current,`pointerdown`,e=>this.onPointerDown(e))}update(){this.session&&this.session.updateHandlers(this.createPanHandlers())}unmount(){this.removePointerDownListener(),this.session&&this.session.end()}},tR=!1,nR=class extends m.Component{componentDidMount(){let{visualElement:e,layoutGroup:t,switchLayoutGroup:n,layoutId:r}=this.props,{projection:i}=e;i&&(t.group&&t.group.add(i),n&&n.register&&r&&n.register(i),tR&&i.root.didUpdate(),i.addEventListener(`animationComplete`,()=>{this.safeToRemove()}),i.setOptions({...i.options,layoutDependency:this.props.layoutDependency,onExitComplete:()=>this.safeToRemove()})),jF.hasEverUpdated=!0}getSnapshotBeforeUpdate(e){let{layoutDependency:t,visualElement:n,drag:r,isPresent:i}=this.props,{projection:a}=n;return a?(a.isPresent=i,e.layoutDependency!==t&&a.setOptions({...a.options,layoutDependency:t}),tR=!0,r||e.layoutDependency!==t||t===void 0||e.isPresent!==i?a.willUpdate():this.safeToRemove(),e.isPresent!==i&&(i?a.promote():a.relegate()||SO.postRender(()=>{let e=a.getStack();(!e||!e.members.length)&&this.safeToRemove()})),null):null}componentDidUpdate(){let{visualElement:e,layoutAnchor:t}=this.props,{projection:n}=e;n&&(n.options.layoutAnchor=t,n.root.didUpdate(),OM.postRender(()=>{!n.currentAnimation&&n.isLead()&&this.safeToRemove()}))}componentWillUnmount(){let{visualElement:e,layoutGroup:t,switchLayoutGroup:n}=this.props,{projection:r}=e;tR=!0,r&&(r.scheduleCheckAfterUnmount(),t&&t.group&&t.group.remove(r),n&&n.deregister&&n.deregister(r))}safeToRemove(){let{safeToRemove:e}=this.props;e&&e()}render(){return null}};function rR(e){let[t,n]=SI(),r=(0,m.useContext)(kD);return(0,q.jsx)(nR,{...e,layoutGroup:r,switchLayoutGroup:(0,m.useContext)(sL),isPresent:t,safeToRemove:n})}var iR={pan:{Feature:eR},drag:{Feature:QL,ProjectionNode:pI,MeasureLayout:rR}};function aR(e,t,n){let{props:r}=e;e.animationState&&r.whileHover&&e.animationState.setActive(`whileHover`,n===`Start`);let i=r[`onHover`+n];i&&SO.postRender(()=>i(t,xL(t)))}var oR=class extends FN{mount(){let{current:e}=this.node;e&&(this.unmount=FM(e,(e,t)=>(aR(this.node,t,`Start`),e=>aR(this.node,e,`End`))))}unmount(){}},sR=class extends FN{constructor(){super(...arguments),this.isActive=!1}onFocus(){let e=!1;try{e=this.node.current.matches(`:focus-visible`)}catch{e=!0}!e||!this.node.animationState||(this.node.animationState.setActive(`whileFocus`,!0),this.isActive=!0)}onBlur(){!this.isActive||!this.node.animationState||(this.node.animationState.setActive(`whileFocus`,!1),this.isActive=!1)}mount(){this.unmount=UD(TF(this.node.current,`focus`,()=>this.onFocus()),TF(this.node.current,`blur`,()=>this.onBlur()))}unmount(){}};function cR(e,t,n){let{props:r}=e;if(e.current instanceof HTMLButtonElement&&e.current.disabled)return;e.animationState&&r.whileTap&&e.animationState.setActive(`whileTap`,n===`Start`);let i=r[`onTap`+(n===`End`?``:n)];i&&SO.postRender(()=>i(t,xL(t)))}var lR=class extends FN{mount(){let{current:e}=this.node;if(!e)return;let{globalTapTarget:t,propagate:n}=this.node.props;this.unmount=JM(e,(e,t)=>(cR(this.node,t,`Start`),(e,{success:t})=>cR(this.node,e,t?`End`:`Cancel`)),{useGlobalTarget:t,stopPropagation:n?.tap===!1})}unmount(){}},uR=new WeakMap,dR=new WeakMap,fR=e=>{let t=uR.get(e.target);t&&t(e)},pR=e=>{e.forEach(fR)};function mR({root:e,...t}){let n=e||document;dR.has(n)||dR.set(n,{});let r=dR.get(n),i=JSON.stringify(t);return r[i]||(r[i]=new IntersectionObserver(pR,{root:e,...t})),r[i]}function hR(e,t,n){let r=mR(t);return uR.set(e,n),r.observe(e),()=>{uR.delete(e),r.unobserve(e)}}var gR={some:0,all:1},_R=class extends FN{constructor(){super(...arguments),this.hasEnteredView=!1,this.isInView=!1}startObserver(){this.stopObserver?.();let{viewport:e={}}=this.node.getProps(),{root:t,margin:n,amount:r=`some`,once:i}=e,a={root:t?t.current:void 0,rootMargin:n,threshold:typeof r==`number`?r:gR[r]};this.stopObserver=hR(this.node.current,a,e=>{let{isIntersecting:t}=e;if(this.isInView===t||(this.isInView=t,i&&!t&&this.hasEnteredView))return;t&&(this.hasEnteredView=!0),this.node.animationState&&this.node.animationState.setActive(`whileInView`,t);let{onViewportEnter:n,onViewportLeave:r}=this.node.getProps(),a=t?n:r;a&&a(e)})}mount(){this.startObserver()}update(){if(typeof IntersectionObserver>`u`)return;let{props:e,prevProps:t}=this.node;[`amount`,`margin`,`root`].some(vR(e,t))&&this.startObserver()}unmount(){this.stopObserver?.(),this.hasEnteredView=!1,this.isInView=!1}};function vR({viewport:e={}},{viewport:t={}}={}){return n=>e[n]!==t[n]}var yR={inView:{Feature:_R},tap:{Feature:lR},focus:{Feature:sR},hover:{Feature:oR}},bR={layout:{ProjectionNode:pI,MeasureLayout:rR}},$=gL({...bL,...yR,...iR,...bR},_L),xR=[{text:`하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이니라`,ref:`요한복음 3:16`,engText:`For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.`,commentary:`본문(요한복음 3:16)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 목자시니 내가 부족함이 없으리로다`,ref:`시편 23:1`,engText:`The Lord is my shepherd, I lack nothing.`,commentary:`본문(시편 23:1)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 알거니와 하나님을 사랑하는 자 곧 그 뜻대로 부르심을 입은 자들에게는 모든 것이 합력하여 선을 이루느니라`,ref:`로마서 8:28`,engText:`And we know that in all things God works for the good of those who love him, who have been called according to his purpose.`,commentary:`본문(로마서 8:28)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 여호와를 앙망하는 자는 새 힘을 얻으리니 독수리의 날개치며 올라감 같을 것이요 달음박질하여도 곤비치 아니하겠고 걸어가도 피곤치 아니하리로다`,ref:`이사야 40:31`,engText:`But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.`,commentary:`본문(이사야 40:31)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 마음을 다하여 여호와를 의뢰하고 네 명철을 의지하지 말라 너는 범사에 그를 인정하라 그리하면 네 길을 지도하시리라`,ref:`잠언 3:5-6`,engText:`Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.`,commentary:`본문(잠언 3:5-6)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`믿음은 바라는 것들의 실상이요 보지 못하는 것들의 증거니`,ref:`히브리서 11:1`,engText:`Now faith is confidence in what we hope for and assurance about what we do not see.`,commentary:`본문(히브리서 11:1)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`태초에 하나님이 천지를 창조하시니라`,ref:`창세기 1:1`,engText:`In the beginning God created the heavens and the earth.`,commentary:`본문(창세기 1:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라`,ref:`마태복음 6:33`,engText:`But seek first his kingdom and his righteousness, and all these things will be given to you as well.`,commentary:`본문(마태복음 6:33)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주의 말씀은 내 발에 등이요 내 길에 빛이니이다`,ref:`시편 119:105`,engText:`Your word is a lamp for my feet, a light on my path.`,commentary:`본문(시편 119:105)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라`,ref:`빌립보서 4:13`,engText:`I can do all this through him who gives me strength.`,commentary:`본문(빌립보서 4:13)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`두려워 말라 내가 너와 함께 함이니라 놀라지 말라 나는 네 하나님이 됨이니라 내가 너를 굳세게 하리라 참으로 너를 도와주리라 참으로 나의 의로운 오른손으로 너를 붙들리라`,ref:`이사야 41:10`,engText:`So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you; I will uphold you with my righteous right hand.`,commentary:`본문(이사야 41:10)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람이 마음으로 자기의 길을 계획할지라도 그 걸음을 인도하는 자는 여호와시니라`,ref:`잠언 16:9`,engText:`In their hearts humans plan their course, but the Lord establishes their steps.`,commentary:`본문(잠언 16:9)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희 중에 누구든지 지혜가 부족하거든 모든 사람에게 후히 주시고 꾸짖지 아니하시는 하나님께 구하라 그리하면 주시리라`,ref:`야고보서 1:5`,engText:`If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.`,commentary:`본문(야고보서 1:5)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 네게 명한 것이 아니냐 마음을 강하게 하고 담대히 하라 두려워 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라 하시니라`,ref:`여호수아 1:9`,engText:`Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.`,commentary:`본문(여호수아 1:9)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`수고하고 무거운 짐진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라`,ref:`마태복음 11:28`,engText:`Come to me, all you who are weary and burdened, and I will give you rest.`,commentary:`본문(마태복음 11:28)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[성전에 올라가는 노래] 내가 산을 향하여 눈을 들리라 나의 도움이 어디서 올꼬 나의 도움이 천지를 지으신 여호와에게서로다`,ref:`시편 121:1-2`,engText:`I lift up my eyes to the mountains — where does my help come from? My help comes from the Lord, the Maker of heaven and earth.`,commentary:`본문(시편 121:1-2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 산 것이 아니요 오직 내 안에 그리스도께서 사신 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 몸을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라`,ref:`갈라디아서 2:20`,engText:`I have been crucified with Christ and I no longer live, but Christ lives in me. The life I now live in the body, I live by faith in the Son of God, who loved me and gave himself for me.`,commentary:`본문(갈라디아서 2:20)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 말하노라 너희를 향한 나의 생각은 내가 아나니 재앙이 아니라 곧 평안이요 너희 장래에 소망을 주려하는 생각이라`,ref:`예레미야 29:11`,engText:`"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."`,commentary:`본문(예레미야 29:11)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`무릇 지킬만한 것보다 더욱 네 마음을 지키라 생명의 근원이 이에서 남이니라`,ref:`잠언 4:23`,engText:`Above all else, guard your heart, for everything you do flows from it.`,commentary:`본문(잠언 4:23)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희 염려를 다 주께 맡겨 버리라 이는 저가 너희를 권고하심이니라`,ref:`베드로전서 5:7`,engText:`Cast all your anxiety on him because he cares for you.`,commentary:`본문(베드로전서 5:7)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이스라엘아 들으라 우리 하나님 여호와는 오직 하나인 여호와시니 너는 마음을 다하고 성품을 다하고 힘을 다하여 네 하나님 여호와를 사랑하라`,ref:`신명기 6:4-5`,engText:`Hear, O Israel: The Lord our God, the Lord is one. Love the Lord your God with all your heart and with all your soul and with all your strength.`,commentary:`본문(신명기 6:4-5)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 내가 곧 길이요 진리요 생명이니 나로 말미암지 않고는 아버지께로 올 자가 없느니라`,ref:`요한복음 14:6`,engText:`Jesus answered, "I am the way and the truth and the life. No one comes to the Father except through me."`,commentary:`본문(요한복음 14:6)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`또 여호와를 기뻐하라 저가 네 마음의 소원을 이루어 주시리로다`,ref:`시편 37:4`,engText:`Take delight in the Lord, and he will give you the desires of your heart.`,commentary:`본문(시편 37:4)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희가 그 은혜를 인하여 믿음으로 말미암아 구원을 얻었나니 이것이 너희에게서 난 것이 아니요 하나님의 선물이라`,ref:`에베소서 2:8`,engText:`For it is by grace you have been saved, through faith — and this is not from yourselves, it is the gift of God.`,commentary:`본문(에베소서 2:8)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`보라 내가 새 일을 행하리니 이제 나타낼 것이라 너희가 그것을 알지 못하겠느냐 정녕히 내가 광야에 길과 사막에 강을 내리니`,ref:`이사야 43:19`,engText:`See, I am doing a new thing! Now it springs up; do you not perceive it? I am making a way in the wilderness and streams in the wasteland.`,commentary:`본문(이사야 43:19)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`마음의 즐거움은 양약이라도 심령의 근심은 뼈로 마르게 하느니라`,ref:`잠언 17:22`,engText:`A cheerful heart is good medicine, but a crushed spirit dries up the bones.`,commentary:`본문(잠언 17:22)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 사랑함은 그가 먼저 우리를 사랑하셨음이라`,ref:`요한일서 4:19`,engText:`We love because he first loved us.`,commentary:`본문(요한일서 4:19)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 너희를 위하여 싸우시리니 너희는 가만히 있을지니라`,ref:`출애굽기 14:14`,engText:`The Lord will fight for you; you need only to be still.`,commentary:`본문(출애굽기 14:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라 하시니라`,ref:`마태복음 28:20`,engText:`And teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age.`,commentary:`본문(마태복음 28:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주는 나의 은신처요 방패시라 내가 주의 말씀을 바라나이다`,ref:`시편 119:114`,engText:`You are my refuge and my shield; I have put my hope in your word.`,commentary:`본문(시편 119:114)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라`,ref:`로마서 12:2`,engText:`Do not conform to the pattern of this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what God's will is — his good, pleasing and perfect will.`,commentary:`본문(로마서 12:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 내게 부르짖으라 내가 네게 응답하겠고 네가 알지 못하는 크고 비밀한 일을 네게 보이리라`,ref:`예레미야 33:3`,engText:`Call to me and I will answer you and tell you great and unsearchable things you do not know.`,commentary:`본문(예레미야 33:3)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 가는 길을 오직 그가 아시나니 그가 나를 단련하신 후에는 내가 정금 같이 나오리라`,ref:`욥기 23:10`,engText:`But he knows the way that I take; when he has tested me, I will come forth as gold.`,commentary:`본문(욥기 23:10)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`믿음의 주요 또 온전케 하시는 이인 예수를 바라보자 저는 그 앞에 있는 즐거움을 위하여 십자가를 참으사 부끄러움을 개의치 아니하시더니 하나님 보좌 우편에 앉으셨느니라`,ref:`히브리서 12:2`,engText:`Fixing our eyes on Jesus, the pioneer and perfecter of faith.`,commentary:`본문(히브리서 12:2)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 아브람에게 이르시되 너는 너의 본토 친척 아비 집을 떠나 내가 네게 지시할 땅으로 가라 내가 너로 큰 민족을 이루고 네게 복을 주어 네 이름을 창대케 하리니 너는 복의 근원이 될지라`,ref:`창세기 12:1-2`,engText:`The Lord had said to Abram, "Go from your country, your people and your father's household to the land I will show you. I will make you into a great nation, and I will bless you; I will make your name great, and you will be a blessing."`,commentary:`본문(창세기 12:1-2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`영접하는 자 곧 그 이름을 믿는 자들에게는 하나님의 자녀가 되는 권세를 주셨으니`,ref:`요한복음 1:12`,engText:`Yet to all who did receive him, to those who believed in his name, he gave the right to become children of God.`,commentary:`본문(요한복음 1:12)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[성전에 올라가는 노래] 여호와여 내가 깊은 데서 주께 부르짖었나이다`,ref:`시편 130:1`,engText:`Out of the depths I cry to you, Lord.`,commentary:`본문(시편 130:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 믿음, 소망, 사랑, 이 세가지는 항상 있을 것인데 그 중에 제일은 사랑이라`,ref:`고린도전서 13:13`,engText:`And now these three remain: faith, hope and love. But the greatest of these is love.`,commentary:`본문(고린도전서 13:13)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람아 주께서 선한 것이 무엇임을 네게 보이셨나니 여호와께서 네게 구하시는 것이 오직 공의를 행하며 인자를 사랑하며 겸손히 네 하나님과 함께 행하는 것이 아니냐`,ref:`미가 6:8`,engText:`He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.`,commentary:`본문(미가 6:8)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 모든 것을 지으시되 때를 따라 아름답게 하셨고 또 사람에게 영원을 사모하는 마음을 주셨느니라 그러나 하나님의 하시는 일의 시종을 사람으로 측량할 수 없게 하셨도다`,ref:`전도서 3:11`,engText:`He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end.`,commentary:`본문(전도서 3:11)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이와 같이 행함이 없는 믿음은 그 자체가 죽은 것이라`,ref:`야고보서 2:17`,engText:`In the same way, faith by itself, if it is not accompanied by action, is dead.`,commentary:`본문(야고보서 2:17)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 네게 복을 주시고 너를 지키시기를 원하며 여호와는 그 얼굴로 네게 비취사 은혜 베푸시기를 원하며 여호와는 그 얼굴을 네게로 향하여 드사 평강주시기를 원하노라 할지니라 하라`,ref:`민수기 6:24-26`,engText:`The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you; the Lord turn his face toward you and give you peace.`,commentary:`본문(민수기 6:24-26)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`심령이 가난한 자는 복이 있나니 천국이 저희 것임이요 애통하는 자는 복이 있나니 저희가 위로를 받을 것임이요`,ref:`마태복음 5:3-4`,engText:`Blessed are the poor in spirit, for theirs is the kingdom of heaven. Blessed are those who mourn, for they will be comforted.`,commentary:`본문(마태복음 5:3-4)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 영혼아 네가 어찌하여 낙망하며 어찌하여 내 속에서 불안하여 하는고 너는 하나님을 바라라 그 얼굴의 도우심을 인하여 내가 오히려 찬송하리로다`,ref:`시편 42:5`,engText:`Why, my soul, are you downcast? Why so disturbed within me? Put your hope in God, for I will yet praise him, my Savior and my God.`,commentary:`본문(시편 42:5)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`아무 것도 염려하지 말고 오직 모든 일에 기도와 간구로, 너희 구할 것을 감사함으로 하나님께 아뢰라 그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라`,ref:`빌립보서 4:6-7`,engText:`Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.`,commentary:`본문(빌립보서 4:6-7)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너의 하나님 여호와가 너의 가운데 계시니 그는 구원을 베푸실 전능자시라 그가 너로 인하여 기쁨을 이기지 못하여 하시며 너를 잠잠히 사랑하시며 너로 인하여 즐거이 부르며 기뻐하시리라 하리라`,ref:`스바냐 3:17`,engText:`The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing.`,commentary:`본문(스바냐 3:17)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너의 행사를 여호와께 맡기라 그리하면 너의 경영하는 것이 이루리라`,ref:`잠언 16:3`,engText:`Commit to the Lord whatever you do, and he will establish your plans.`,commentary:`본문(잠언 16:3)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 너희는 택하신 족속이요 왕같은 제사장들이요 거룩한 나라요 그의 소유된 백성이니 이는 너희를 어두운 데서 불러내어 그의 기이한 빛에 들어가게 하신 자의 아름다운 덕을 선전하게 하려 하심이라`,ref:`베드로전서 2:9`,engText:`But you are a chosen people, a royal priesthood, a holy nation, God's special possession, that you may declare the praises of him who called you out of darkness into his wonderful light.`,commentary:`본문(베드로전서 2:9)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 율법책을 네 입에서 떠나지 말게 하며 주야로 그것을 묵상하여 그 가운데 기록한대로 다 지켜 행하라 그리하면 네 길이 평탄하게 될 것이라 네가 형통하리라`,ref:`여호수아 1:8`,engText:`Keep this Book of the Law always on your lips; meditate on it day and night, so that you may be careful to do everything written in it. Then you will be prosperous and successful.`,commentary:`본문(여호수아 1:8)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라 내가 너희에게 주는 것은 세상이 주는 것 같지 아니하니라 너희는 마음에 근심도 말고 두려워하지도 말라`,ref:`요한복음 14:27`,engText:`Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.`,commentary:`본문(요한복음 14:27)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[고라 자손의 마스길, 영장으로 한 노래] 하나님이여 사슴이 시냇물을 찾기에 갈급함 같이 내 영혼이 주를 찾기에 갈급하니이다`,ref:`시편 42:1`,engText:`As the deer pants for streams of water, so my soul pants for you, my God.`,commentary:`본문(시편 42:1)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 확신하노니 사망이나 생명이나 천사들이나 권세자들이나 현재 일이나 장래 일이나 능력이나 높음이나 깊음이나 다른 아무 피조물이라도 우리를 우리 주 그리스도 예수 안에 있는 하나님의 사랑에서 끊을 수 없으리라`,ref:`로마서 8:38-39`,engText:`For I am convinced that neither death nor life, neither angels nor demons, neither the present nor the future, nor any powers, neither height nor depth, nor anything else in all creation, will be able to separate us from the love of God that is in Christ Jesus our Lord.`,commentary:`본문(로마서 8:38-39)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 자비와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것이 아침마다 새로우니 주의 성실이 크도소이다`,ref:`예레미야애가 3:22-23`,engText:`Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.`,commentary:`본문(예레미야애가 3:22-23)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`대저 의인은 일곱 번 넘어질지라도 다시 일어나려니와 악인은 재앙으로 인하여 엎드러지느니라`,ref:`잠언 24:16`,engText:`For though the righteous fall seven times, they rise again, but the wicked stumble when calamity strikes.`,commentary:`본문(잠언 24:16)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`만일 우리가 우리 죄를 자백하면 저는 미쁘시고 의로우사 우리 죄를 사하시며 모든 불의에서 우리를 깨끗케 하실 것이요`,ref:`요한일서 1:9`,engText:`If we confess our sins, he is faithful and just and will forgive us our sins and purify us from all unrighteousness.`,commentary:`본문(요한일서 1:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 사무엘에게 이르시되 그 용모와 신장을 보지 말라 내가 이미 그를 버렸노라 나의 보는 것은 사람과 같지 아니하니 사람은 외모를 보거니와 나 여호와는 중심을 보느니라`,ref:`사무엘상 16:7`,engText:`The Lord does not look at the things people look at. People look at the outward appearance, but the Lord looks at the heart.`,commentary:`본문(사무엘상 16:7)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 이르시되 할 수 있거든이 무슨 말이냐 믿는 자에게는 능치 못할 일이 없느니라 하시니`,ref:`마가복음 9:23`,engText:`"If you can'?" said Jesus. "Everything is possible for one who believes."`,commentary:`본문(마가복음 9:23)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 빛이요 나의 구원이시니 내가 누구를 두려워하리요 여호와는 내 생명의 능력이시니 내가 누구를 무서워하리요`,ref:`시편 27:1`,engText:`The Lord is my light and my salvation — whom shall I fear? The Lord is the stronghold of my life — of whom shall I be afraid?`,commentary:`본문(시편 27:1)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 누구든지 그리스도 안에 있으면 새로운 피조물이라 이전 것은 지나갔으니 보라 새 것이 되었도다`,ref:`고린도후서 5:17`,engText:`Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!`,commentary:`본문(고린도후서 5:17)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`비록 무화과나무가 무성치 못하며 포도나무에 열매가 없으며 감람나무에 소출이 없으며 밭에 식물이 없으며 우리에 양이 없으며 외양간에 소가 없을지라도 나는 여호와를 인하여 즐거워하며 나의 구원의 하나님을 인하여 기뻐하리로다`,ref:`하박국 3:17-18`,engText:`Though the fig tree does not bud and there are no grapes on the vines, though the olive crop fails and the fields produce no food, yet I will rejoice in the Lord, I will be joyful in God my Savior.`,commentary:`본문(하박국 3:17-18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 청년의 때 곧 곤고한 날이 이르기 전, 나는 아무 낙이 없다고 할 해가 가깝기 전에 너의 창조자를 기억하라`,ref:`전도서 12:1`,engText:`Remember your Creator in the days of your youth, before the days of trouble come and the years approach when you will say, "I find no pleasure in them."`,commentary:`본문(전도서 12:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그로 더불어 먹고 그는 나로 더불어 먹으리라`,ref:`요한계시록 3:20`,engText:`Here I am! I stand at the door and knock. If anyone hears my voice and opens the door, I will come in and eat with that person, and they with me.`,commentary:`본문(요한계시록 3:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 이름으로 일컫는 내 백성이 그 악한 길에서 떠나 스스로 겸비하고 기도하여 내 얼굴을 구하면 내가 하늘에서 듣고 그 죄를 사하고 그 땅을 고칠지라`,ref:`역대하 7:14`,engText:`If my people, who are called by my name, will humble themselves and pray and seek my face and turn from their wicked ways, then I will hear from heaven, and I will forgive their sin and will heal their land.`,commentary:`본문(역대하 7:14)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`대저 하나님의 모든 말씀은 능치 못하심이 없느니라`,ref:`누가복음 1:37`,engText:`For no word from God will ever fail.`,commentary:`본문(누가복음 1:37)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주의 인자가 생명보다 나으므로 내 입술이 주를 찬양할 것이라`,ref:`시편 63:3`,engText:`Because your love is better than life, my lips will glorify you.`,commentary:`본문(시편 63:3)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라`,ref:`갈라디아서 5:22-23`,engText:`But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control. Against such things there is no law.`,commentary:`본문(갈라디아서 5:22-23)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그가 찔림은 우리의 허물을 인함이요 그가 상함은 우리의 죄악을 인함이라 그가 징계를 받음으로 우리가 평화를 누리고 그가 채찍에 맞음으로 우리가 나음을 입었도다`,ref:`이사야 53:5`,engText:`But he was pierced for our transgressions, he was crushed for our iniquities; the punishment that brought us peace was on him, and by his wounds we are healed.`,commentary:`본문(이사야 53:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`유순한 대답은 분노를 쉬게 하여도 과격한 말은 노를 격동하느니라`,ref:`잠언 15:1`,engText:`A gentle answer turns away wrath, but a harsh word stirs up anger.`,commentary:`본문(잠언 15:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 말씀은 살았고 운동력이 있어 죄우에 날선 어떤 검보다도 예리하여 혼과 영과 및 관절과 골수를 찔러 쪼개기까지 하며 또 마음의 생각과 뜻을 감찰하나니`,ref:`히브리서 4:12`,engText:`For the word of God is alive and active. Sharper than any double-edged sword, it penetrates even to dividing soul and spirit, joints and marrow; it judges the thoughts and attitudes of the heart.`,commentary:`본문(히브리서 4:12)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 마음을 강하게 하고 담대히 하라 그들을 두려워 말라 그들 앞에서 떨지 말라 이는 네 하나님 여호와 그가 너와 함께 행하실 것임이라 반드시 너를 떠나지 아니하시며 버리지 아니하시리라 하고`,ref:`신명기 31:6`,engText:`Be strong and courageous. Do not be afraid or terrified because of them, for the Lord your God goes with you; he will never leave you nor forsake you.`,commentary:`본문(신명기 31:6)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅 끝까지 이르러 내 증인이 되리라 하시니라`,ref:`사도행전 1:8`,engText:`But you will receive power when the Holy Spirit comes on you; and you will be my witnesses in Jerusalem, and in all Judea and Samaria, and to the ends of the earth.`,commentary:`본문(사도행전 1:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 경외함이 곧 지혜의 근본이라 그 계명을 지키는 자는 다 좋은 지각이 있나니 여호와를 찬송함이 영원히 있으리로다`,ref:`시편 111:10`,engText:`The fear of the Lord is the beginning of wisdom; all who follow his precepts have good understanding.`,commentary:`본문(시편 111:10)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이는 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라`,ref:`데살로니가전서 5:16-18`,engText:`Rejoice always, pray continually, give thanks in all circumstances; for this is God's will for you in Christ Jesus.`,commentary:`본문(데살로니가전서 5:16-18)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나는 인애를 원하고 제사를 원치 아니하며 번제보다 하나님을 아는 것을 원하노라`,ref:`호세아 6:6`,engText:`For I desire mercy, not sacrifice, and acknowledgment of God rather than burnt offerings.`,commentary:`본문(호세아 6:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주께서는 무소불능하시오며 무슨 경영이든지 못 이루실 것이 없는 줄 아오니`,ref:`욥기 42:2`,engText:`I know that you can do all things; no purpose of yours can be thwarted.`,commentary:`본문(욥기 42:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 형제들아 너희가 여러 가지 시험을 만나거든 온전히 기쁘게 여기라 이는 너희 믿음의 시련이 인내를 만들어 내는 줄 너희가 앎이라`,ref:`야고보서 1:2-3`,engText:`Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance.`,commentary:`본문(야고보서 1:2-3)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`느헤미야가 또 이르기를 너희는 가서 살찐 것을 먹고 단 것을 마시되 예비치 못한 자에게는 너희가 나누어 주라 이 날은 우리 주의 성일이니 근심하지 말라 여호와를 기뻐하는 것이 너희의 힘이니라 하고`,ref:`느헤미야 8:10`,engText:`Do not grieve, for the joy of the Lord is your strength.`,commentary:`본문(느헤미야 8:10)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`진리를 알지니 진리가 너희를 자유케 하리라`,ref:`요한복음 8:32`,engText:`Then you will know the truth, and the truth will set you free.`,commentary:`본문(요한복음 8:32)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[솔로몬의 Psa 곧 성전에 올라가는 노래] 여호와께서 집을 세우지 아니하시면 세우는 자의 수고가 헛되며 여호와께서 성을 지키지 아니하시면 파수꾼의 경성함이 허사로다`,ref:`시편 127:1`,engText:`Unless the Lord builds the house, the builders labor in vain. Unless the Lord watches over the city, the guards stand watch in vain.`,commentary:`본문(시편 127:1)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`종말로 너희가 주 안에서와 그 힘의 능력으로 강건하여지고 마귀의 궤계를 능히 대적하기 위하여 하나님의 전신 갑주를 입으라`,ref:`에베소서 6:10-11`,engText:`Finally, be strong in the Lord and in his mighty power. Put on the full armor of God, so that you can take your stand against the devil's schemes.`,commentary:`본문(에베소서 6:10-11)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 말씀에 내 생각은 너희 생각과 다르며 내 길은 너희 길과 달라서 하늘이 땅보다 높음 같이 내 길은 너희 길보다 높으며 내 생각은 너희 생각보다 높으니라`,ref:`이사야 55:8-9`,engText:`"For my thoughts are not your thoughts, neither are your ways my ways," declares the Lord. "As the heavens are higher than the earth, so are my ways higher than your ways and my thoughts than your thoughts."`,commentary:`본문(이사야 55:8-9)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람의 마음에는 많은 계획이 있어도 오직 여호와의 뜻이 완전히 서리라`,ref:`잠언 19:21`,engText:`Many are the plans in a person's heart, but it is the Lord's purpose that prevails.`,commentary:`본문(잠언 19:21)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 모든 육체는 풀과 같고 그 모든 영광이 풀의 꽃과 같으니 풀은 마르고 꽃은 떨어지되 오직 주의 말씀은 세세토록 있도다 하였으니 너희에게 전한 복음이 곧 이 말씀이니라`,ref:`베드로전서 1:24-25`,engText:`For, "All people are like grass, and all their glory is like the flowers of the field; the grass withers and the flowers fall, but the word of the Lord endures forever."`,commentary:`본문(베드로전서 1:24-25)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 너와 함께 있어 네가 어디로 가든지 너를 지키며 너를 이끌어 이 땅으로 돌아오게 할지라 내가 네게 허락한 것을 다 이루기까지 너를 떠나지 아니하리라 하신지라`,ref:`창세기 28:15`,engText:`I am with you and will watch over you wherever you go, and I will bring you back to this land. I will not leave you until I have done what I have promised you.`,commentary:`본문(창세기 28:15)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니`,ref:`마태복음 7:7`,engText:`Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.`,commentary:`본문(마태복음 7:7)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[고라 자손의 시, 영장으로 알라못에 맞춘 노래] 하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라`,ref:`시편 46:1`,engText:`God is our refuge and strength, an ever-present help in trouble.`,commentary:`본문(시편 46:1)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라`,ref:`골로새서 3:14`,engText:`And over all these virtues put on love, which binds them all together in perfect unity.`,commentary:`본문(골로새서 3:14)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`지혜 있는 자는 궁창의 빛과 같이 빛날 것이요 많은 사람을 옳은 데로 돌아오게 한 자는 별과 같이 영원토록 비취리라`,ref:`다니엘 12:3`,engText:`Those who are wise will shine like the brightness of the heavens, and those who lead many to righteousness, like the stars for ever and ever.`,commentary:`본문(다니엘 12:3)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`일의 결국을 다 들었으니 하나님을 경외하고 그 명령을 지킬지어다 이것이 사람의 본분이니라`,ref:`전도서 12:13`,engText:`Now all has been heard; here is the conclusion of the matter: Fear God and keep his commandments, for this is the duty of all mankind.`,commentary:`본문(전도서 12:13)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`자녀들아 우리가 말과 혀로만 사랑하지 말고 오직 행함과 진실함으로 하자`,ref:`요한일서 3:18`,engText:`Dear children, let us not love with words or speech but with actions and in truth.`,commentary:`본문(요한일서 3:18)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 모세에게 이르시되 나는 스스로 있는 자니라 또 이르시되 너는 이스라엘 자손에게 이같이 이르기를 스스로 있는 자가 나를 너희에게 보내셨다 하라`,ref:`출애굽기 3:14`,engText:`God said to Moses, "I AM WHO I AM. This is what you are to say to the Israelites: 'I AM has sent me to you.'"`,commentary:`본문(출애굽기 3:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나는 포도나무요 너희는 가지니 저가 내 안에, 내가 저 안에 있으면 이 사람은 과실을 많이 맺나니 나를 떠나서는 너희가 아무 것도 할 수 (없음)이라`,ref:`요한복음 15:5`,engText:`I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.`,commentary:`본문(요한복음 15:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 반석이시요 나의 요새시요 나를 건지시는 자시요 나의 하나님이시요 나의 피할 바위시요 나의 방패시요 나의 구원의 뿔이시요 나의 산성이시로다`,ref:`시편 18:2`,engText:`The Lord is my rock, my fortress and my deliverer; my God is my rock, in whom I take refuge, my shield and the horn of my salvation, my stronghold.`,commentary:`본문(시편 18:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에게 대한 자기의 사랑을 확증하셨느니라`,ref:`로마서 5:8`,engText:`But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.`,commentary:`본문(로마서 5:8)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그 후에 내가 내 신을 만민에게 부어 주리니 너희 자녀들이 장래일을 말할 것이며 너희 늙은이는 꿈을 꾸며 너희 젊은이는 이상을 볼 것이며`,ref:`요엘 2:28`,engText:`And afterward, I will pour out my Spirit on all people. Your sons and daughters will prophesy, your old men will dream dreams, your young men will see visions.`,commentary:`본문(요엘 2:28)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 경외하는 것이 지식의 근본이어늘 미련한 자는 지혜와 훈계를 멸시하느니라`,ref:`잠언 1:7`,engText:`The fear of the Lord is the beginning of knowledge, but fools despise wisdom and instruction.`,commentary:`본문(잠언 1:7)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수 그리스도는 어제나 오늘이나 영원토록 동일하시니라`,ref:`히브리서 13:8`,engText:`Jesus Christ is the same yesterday and today and forever.`,commentary:`본문(히브리서 13:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`만일 여호와를 섬기는 것이 너희에게 좋지 않게 보이거든 너희 열조가 강 저편에서 섬기던 신이든지 혹 너희의 거하는 땅 아모리 사람의 신이든지 너희 섬길 자를 오늘날 택하라 오직 나와 내 집은 여호와를 섬기겠노라`,ref:`여호수아 24:15`,engText:`But if serving the Lord seems undesirable to you, then choose for yourselves this day whom you will serve... But as for me and my household, we will serve the Lord.`,commentary:`본문(여호수아 24:15)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`가로되 주 예수를 믿으라 그리하면 너와 네 집이 구원을 얻으리라 하고`,ref:`사도행전 16:31`,engText:`They replied, "Believe in the Lord Jesus, and you will be saved — you and your household."`,commentary:`본문(사도행전 16:31)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`감사함으로 그 문에 들어가며 찬송함으로 그 궁정에 들어가서 그에게 감사하며 그 이름을 송축할지어다`,ref:`시편 100:4`,engText:`Enter his gates with thanksgiving and his courts with praise; give thanks to him and praise his name.`,commentary:`본문(시편 100:4)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내게 이르시기를 내 은혜가 네게 족하도다 이는 내 능력이 약한 데서 온전하여짐이라 하신지라 이러므로 도리어 크게 기뻐함으로 나의 여러 약한 것들에 대하여 자랑하리니 이는 그리스도의 능력으로 내게 머물게 하려 함이라`,ref:`고린도후서 12:9`,engText:`But he said to me, "My grace is sufficient for you, for my power is made perfect in weakness."`,commentary:`본문(고린도후서 12:9)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주께서 심지가 견고한 자를 평강에 평강으로 지키시리니 이는 그가 주를 의뢰함이니이다`,ref:`이사야 26:3`,engText:`You will keep in perfect peace those whose minds are steadfast, because they trust in you.`,commentary:`본문(이사야 26:3)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 이름은 견고한 망대라 의인은 그리로 달려가서 안전함을 얻느니라`,ref:`잠언 18:10`,engText:`The name of the Lord is a fortified tower; the righteous run to it and are safe.`,commentary:`본문(잠언 18:10)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 눈물을 그 눈에서 씻기시매 다시 사망이 없고 애통하는 것이나 곡하는 것이나 아픈 것이 다시 있지 아니하리니 처음 것들이 다 지나갔음이러라`,ref:`요한계시록 21:4`,engText:`'He will wipe every tear from their eyes. There will be no more death' or mourning or crying or pain, for the old order of things has passed away.`,commentary:`본문(요한계시록 21:4)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와께서 너희를 위하여 행하신 그 큰 일을 생각하여 오직 그를 경외하며 너희의 마음을 다하여 진실히 섬기라`,ref:`사무엘상 12:24`,engText:`Be sure to fear the Lord and serve him faithfully with all your heart; consider what great things he has done for you.`,commentary:`본문(사무엘상 12:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이같이 너희 빛을 사람 앞에 비취게 하여 저희로 너희 착한 행실을 보고 하늘에 계신 너희 아버지께 영광을 돌리게 하라`,ref:`마태복음 5:16`,engText:`In the same way, let your light shine before others, that they may see your good deeds and glorify your Father in heaven.`,commentary:`본문(마태복음 5:16)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주는 선하사 사유하기를 즐기시며 주께 부르짖는 자에게 인자함이 후하심이니이다`,ref:`시편 86:5`,engText:`You, Lord, are forgiving and good, abounding in love to all who call to you.`,commentary:`본문(시편 86:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 우리에게 주신 것은 두려워하는 마음이 아니요 오직 능력과 사랑과 근신하는 마음이니`,ref:`디모데후서 1:7`,engText:`For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.`,commentary:`본문(디모데후서 1:7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그가 내게 일러 가로되 여호와께서 스룹바벨에게 하신 말씀이 이러하니라 만군의 여호와께서 말씀하시되 이는 힘으로 되지 아니하며 능으로 되지 아니하고 오직 나의 신으로 되느니라`,ref:`스가랴 4:6`,engText:`So he said to me, "This is the word of the Lord to Zerubbabel: 'Not by might nor by power, but by my Spirit,' says the Lord Almighty."`,commentary:`본문(스가랴 4:6)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 사랑은 많은 물이 꺼치지 못하겠고 홍수라도 엄몰하지 못하나니 사람이 그 온 가산을 다 주고 사랑과 바꾸려 할지라도 오히려 멸시를 받으리라`,ref:`아가 8:7`,engText:`Many waters cannot quench love; rivers cannot sweep it away.`,commentary:`본문(아가 8:7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 너희 죄를 서로 고하며 병 낫기를 위하여 서로 기도하라 의인의 간구는 역사하는 힘이 많으니라`,ref:`야고보서 5:16`,engText:`Therefore confess your sins to each other and pray for each other so that you may be healed. The prayer of a righteous person is powerful and effective.`,commentary:`본문(야고보서 5:16)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너를 낮추시며 너로 주리게 하시며 또 너도 알지 못하며 네 열조도 알지 못하던 만나를 네게 먹이신 것은 사람이 떡으로만 사는 것이 아니요 여호와의 입에서 나오는 모든 말씀으로 사는 줄을 너로 알게 하려 하심이니라`,ref:`신명기 8:3`,engText:`He humbled you, causing you to hunger and then feeding you with manna, which neither you nor your ancestors had known, to teach you that man does not live on bread alone but on every word that comes from the mouth of the Lord.`,commentary:`본문(신명기 8:3)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`도적이 오는 것은 도적질하고 죽이고 멸망시키려는 것뿐이요 내가 온 것은 양으로 생명을 얻게 하고 더 풍성히 얻게 하려는 것이라`,ref:`요한복음 10:10`,engText:`The thief comes only to steal and kill and destroy; I have come that they may have life, and have it to the full.`,commentary:`본문(요한복음 10:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`복 있는 사람은 악인의 꾀를 좇지 아니하며 죄인의 길에 서지 아니하며 오만한 자의 자리에 앉지 아니하고 오직 여호와의 율법을 즐거워하여 그 율법을 주야로 묵상하는 자로다`,ref:`시편 1:1-2`,engText:`Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord.`,commentary:`본문(시편 1:1-2)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 하나님이 그리스도 예수 안에서 영광 가운게 그 풍성한 대로 너희 모든 쓸 것을 채우시리라`,ref:`빌립보서 4:19`,engText:`And my God will meet all your needs according to the riches of his glory in Christ Jesus.`,commentary:`본문(빌립보서 4:19)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 공법을 물 같이, 정의를 하수 같이 흘릴지로다`,ref:`아모스 5:24`,engText:`But let justice roll on like a river, righteousness like a never-failing stream!`,commentary:`본문(아모스 5:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`가로되 내가 모태에서 적신이 나왔사온즉 또한 적신이 그리로 돌아가올지라 주신 자도 여호와시요 취하신 자도 여호와시오니 여호와의 이름이 찬송을 받으실지니이다 하고`,ref:`욥기 1:21`,engText:`"Naked I came from my mother's womb, and naked I will depart. The Lord gave and the Lord has taken away; may the name of the Lord be praised."`,commentary:`본문(욥기 1:21)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희 마음에 그리스도를 주로 삼아 거룩하게 하고 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 예비하되 온유와 두려움으로 하고`,ref:`베드로전서 3:15`,engText:`But in your hearts revere Christ as Lord. Always be prepared to give an answer to everyone who asks you to give the reason for the hope that you have.`,commentary:`본문(베드로전서 3:15)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 찬송할지로다 저가 무릇 허하신 대로 그 백성 이스라엘에게 태평을 주셨으니 그 종 모세를 빙자하여 무릇 허하신 그 선한 말씀이 하나도 이루지 않음이 없도다`,ref:`열왕기상 8:56`,engText:`Praise be to the Lord, who has given rest to his people Israel just as he promised. Not one word has failed of all the good promises he gave through his servant Moses.`,commentary:`본문(열왕기상 8:56)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내가 너희에게 말하노니 무엇이든지 기도하고 구하는 것은 받은 줄로 믿으라 그리하면 너희에게 그대로 되리라`,ref:`마가복음 11:24`,engText:`Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours.`,commentary:`본문(마가복음 11:24)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 자비로우시며 은혜로우시며 노하기를 더디하시며 인자하심이 풍부하시도다`,ref:`시편 103:8`,engText:`The Lord is compassionate and gracious, slow to anger, abounding in love.`,commentary:`본문(시편 103:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 믿음은 들음에서 나며 들음은 그리스도의 말씀으로 말미암았느니라`,ref:`로마서 10:17`,engText:`Consequently, faith comes from hearing the message, and the message is heard through the word about Christ.`,commentary:`본문(로마서 10:17)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`일어나라 빛을 발하라 이는 네 빛이 이르렀고 여호와의 영광이 네 위에 임하였음이니라`,ref:`이사야 60:1`,engText:`Arise, shine, for your light has come, and the glory of the Lord rises upon you.`,commentary:`본문(이사야 60:1)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`많은 재물보다 명예를 택할 것이요 은이나 금보다 은총을 더욱 택할 것이니라`,ref:`잠언 22:1`,engText:`A good name is more desirable than great riches; to be esteemed is better than silver or gold.`,commentary:`본문(잠언 22:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 우리를 사랑하시는 사랑을 우리가 알고 믿었노니 하나님은 사랑이시라 사랑 안에 거하는 자는 하나님 안에 거하고 하나님도 그 안에 거하시느니라`,ref:`요한일서 4:16`,engText:`And so we know and rely on the love God has for us. God is love. Whoever lives in love lives in God, and God in them.`,commentary:`본문(요한일서 4:16)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 때에 네가 만일 잠잠하여 말이 없으면 유다인은 다른 데로 말미암아 놓임과 구원을 얻으려니와 너와 네 아비 집은 멸망하리라 네가 왕후의 위를 얻은 것이 이 때를 위함이 아닌지 누가 아느냐`,ref:`에스더 4:14`,engText:`And who knows but that you have come to your royal position for such a time as this?`,commentary:`본문(에스더 4:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 너희는 그의 나라를 구하라 그리하면 이런 것을 너희에게 더하시리라`,ref:`누가복음 12:31`,engText:`But seek his kingdom, and these things will be given to you as well.`,commentary:`본문(누가복음 12:31)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 마음이 상한 자에게 가까이 하시고 중심에 통회하는 자를 구원하시는도다`,ref:`시편 34:18`,engText:`The Lord is close to the brokenhearted and saves those who are crushed in spirit.`,commentary:`본문(시편 34:18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람이 감당할 시험 밖에는 너희에게 당한 것이 없나니 오직 하나님은 미쁘사 너희가 감당치 못할 시험 당함을 허락지 아니하시고 시험 당할 즈음에 또한 피할 길을 내사 너희로 능히 감당하게 하시느니라`,ref:`고린도전서 10:13`,engText:`No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear. But when you are tempted, he will also provide a way out so that you can endure it.`,commentary:`본문(고린도전서 10:13)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`만군의 여호와가 이르노라 너희의 온전한 십일조를 창고에 들여 나의 집에 양식이 있게 하고 그것으로 나를 시험하여 내가 하늘 문을 열고 너희에게 복을 쌓을 곳이 없도록 붓지 아니하나 보라`,ref:`말라기 3:10`,engText:`"Bring the whole tithe into the storehouse, that there may be food in my house. Test me in this," says the Lord Almighty, "and see if I will not throw open the floodgates of heaven and pour out so much blessing that there will not be room enough to store it."`,commentary:`본문(말라기 3:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`철이 철을 날카롭게 하는 것 같이 사람이 그 친구의 얼굴을 빛나게 하느니라`,ref:`잠언 27:17`,engText:`As iron sharpens iron, so one person sharpens another.`,commentary:`본문(잠언 27:17)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`서로 돌아보아 사랑과 선행을 격려하며 모이기를 폐하는 어떤 사람들의 습관과 같이 하지 말고 오직 권하여 그 날이 가까움을 볼수록 더욱 그리하자`,ref:`히브리서 10:24-25`,engText:`And let us consider how we may spur one another on toward love and good deeds, not giving up meeting together, as some are in the habit of doing, but encouraging one another.`,commentary:`본문(히브리서 10:24-25)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`당신들은 나를 해하려 하였으나 하나님은 그것을 선으로 바꾸사 오늘과 같이 만민의 생명을 구원하게 하시려 하셨나니`,ref:`창세기 50:20`,engText:`You intended to harm me, but God intended it for good to accomplish what is now being done, the saving of many lives.`,commentary:`본문(창세기 50:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 나는 부활이요 생명이니 나를 믿는 자는 죽어도 살겠고`,ref:`요한복음 11:25`,engText:`Jesus said to her, "I am the resurrection and the life. The one who believes in me will live, even though they die."`,commentary:`본문(요한복음 11:25)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너의 길을 여호와께 맡기라 저를 의지하면 저가 이루시고`,ref:`시편 37:5`,engText:`Commit your way to the Lord; trust in him and he will do this.`,commentary:`본문(시편 37:5)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리 가운데서 역사하시는 능력대로 우리의 온갖 구하는 것이나 생각하는 것에 더 넘치도록 능히 하실 이에게`,ref:`에베소서 3:20`,engText:`Now to him who is able to do immeasurably more than all we ask or imagine, according to his power that is at work within us.`,commentary:`본문(에베소서 3:20)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`또 새 영을 너희 속에 두고 새 마음을 너희에게 주되 너희 육신에서 굳은 마음을 제하고 부드러운 마음을 줄 것이며`,ref:`에스겔 36:26`,engText:`I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh.`,commentary:`본문(에스겔 36:26)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`천하에 범사가 기한이 있고 모든 목적이 이룰 때가 있나니`,ref:`전도서 3:1`,engText:`There is a time for everything, and a season for every activity under the heavens.`,commentary:`본문(전도서 3:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님을 가까이 하라 그리하면 너희를 가까이 하시리라 죄인들아 손을 깨끗이 하라 두 마음을 품은 자들아 마음을 성결케 하라`,ref:`야고보서 4:8`,engText:`Come near to God and he will come near to you.`,commentary:`본문(야고보서 4:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 이 모든 말씀으로 일러 가라사대 나는 너를 애굽 땅 종 되었던 집에서 인도하여 낸 너의 하나님 여호와로라 너는 나 외에는 다른 신들을 네게 있게 말지니라`,ref:`출애굽기 20:1-3`,engText:`And God spoke all these words: "I am the Lord your God, who brought you out of Egypt, out of the land of slavery. You shall have no other gods before me."`,commentary:`본문(출애굽기 20:1-3)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내일 일을 위하여 염려하지 말라 내일 일은 내일 염려할 것이요 한 날 괴로움은 그 날에 족하니라`,ref:`마태복음 6:34`,engText:`Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.`,commentary:`본문(마태복음 6:34)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 너의 갈 길을 가르쳐 보이고 너를 주목하여 훈계하리로다`,ref:`시편 32:8`,engText:`I will instruct you and teach you in the way you should go; I will counsel you with my loving eye on you.`,commentary:`본문(시편 32:8)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`소망 중에 즐거워하며 환난 중에 참으며 기도에 항상 힘쓰며`,ref:`로마서 12:12`,engText:`Be joyful in hope, patient in affliction, faithful in prayer.`,commentary:`본문(로마서 12:12)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이는 한 아기가 우리에게 났고 한 아들을 우리에게 주신바 되었는데 그 어깨에는 정사를 메었고 그 이름은 기묘자라, 모사라, 전능하신 하나님이라, 영존하시는 아버지라, 평강의 왕이라 할 것임이라`,ref:`이사야 9:6`,engText:`For to us a child is born, to us a son is given, and the government will be on his shoulders. And he will be called Wonderful Counselor, Mighty God, Everlasting Father, Prince of Peace.`,commentary:`본문(이사야 9:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`교만은 패망의 선봉이요 거만한 마음은 넘어짐의 앞잡이니라`,ref:`잠언 16:18`,engText:`Pride goes before destruction, a haughty spirit before a fall.`,commentary:`본문(잠언 16:18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`무엇보다도 열심으로 서로 사랑할지니 사랑은 허다한 죄를 덮느니라`,ref:`베드로전서 4:8`,engText:`Above all, love each other deeply, because love covers over a multitude of sins.`,commentary:`본문(베드로전서 4:8)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다`,ref:`역대상 16:34`,engText:`Give thanks to the Lord, for he is good; his love endures forever.`,commentary:`본문(역대상 16:34)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`새 계명을 너희에게 주노니 서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라`,ref:`요한복음 13:34`,engText:`A new command I give you: Love one another. As I have loved you, so you must love one another.`,commentary:`본문(요한복음 13:34)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`환난 날에 나를 부르라 내가 너를 건지리니 네가 나를 영화롭게 하리로다`,ref:`시편 50:15`,engText:`Call on me in the day of trouble; I will deliver you, and you will honor me.`,commentary:`본문(시편 50:15)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사랑은 오래 참고 사랑은 온유하며 투기하는 자가 되지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며 무례히 행치 아니하며 자기의 유익을 구치 아니하며 성내지 아니하며 악한 것을 생각지 아니하며 불의를 기뻐하지 아니하며 진리와 함께 기뻐하고 모든 것을 참으며 모든 것을 믿으며 모든 것을 바라며 모든 것을 견디느니라`,ref:`고린도전서 13:4-7`,engText:`Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs.`,commentary:`본문(고린도전서 13:4-7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 전의 나중 영광이 이전 영광보다 크리라 만군의 여호와의 말이니라 내가 이곳에 평강을 주리라 만군의 여호와의 말이니라`,ref:`학개 2:9`,engText:`'The glory of this present house will be greater than the glory of the former house,' says the Lord Almighty. 'And in this place I will grant peace,' declares the Lord Almighty.`,commentary:`본문(학개 2:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`지혜로운 자와 동행하면 지혜를 얻고 미련한 자와 사귀면 해를 받느니라`,ref:`잠언 13:20`,engText:`Walk with the wise and become wise, for a companion of fools suffers harm.`,commentary:`본문(잠언 13:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`대저 하나님께로서 난 자마다 세상을 이기느니라 세상을 이긴 이김은 이것이니 우리의 믿음이니라`,ref:`요한일서 5:4`,engText:`For everyone born of God overcomes the world. This is the victory that has overcome the world, even our faith.`,commentary:`본문(요한일서 5:4)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네가 네 하나님 여호와의 말씀을 삼가 듣고 내가 오늘날 네게 명하는 그 모든 명령을 지켜 행하면 네 하나님 여호와께서 너를 세계 모든 민족 위에 뛰어나게 하실 것이라 네가 네 하나님 여호와의 말씀을 순종하면 이 모든 복이 네게 임하며 네게 미치리니`,ref:`신명기 28:1-2`,engText:`If you fully obey the Lord your God and carefully follow all his commands I give you today, the Lord your God will set you high above all the nations on earth. All these blessings will come on you and accompany you if you obey the Lord your God.`,commentary:`본문(신명기 28:1-2)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주라 그리하면 너희에게 줄 것이니 곧 후히 되어 누르고 흔들어 넘치도록 하여 너희에게 안겨 주리라 너희의 헤아리는 그 헤아림으로 너희도 헤아림을 도로 받을 것이니라`,ref:`누가복음 6:38`,engText:`Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap.`,commentary:`본문(누가복음 6:38)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 힘과 나의 방패시니 내 마음이 저를 의지하여 도움을 얻었도다 그러므로 내 마음이 크게 기뻐하며 내 노래로 저를 찬송하리로다`,ref:`시편 28:7`,engText:`The Lord is my strength and my shield; my heart trusts in him, and he helps me.`,commentary:`본문(시편 28:7)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`믿음의 선한 싸움을 싸우라 영생을 취하라 이를 위하여 네가 부르심을 입었고 많은 증인 앞에서 선한 증거를 증거하였도다`,ref:`디모데전서 6:12`,engText:`Fight the good fight of the faith. Take hold of the eternal life to which you were called when you made your good confession in the presence of many witnesses.`,commentary:`본문(디모데전서 6:12)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 너를 항상 인도하여 마른 곳에서도 네 영혼을 만족케 하며 네 뼈를 견고케 하리니 너는 물댄 동산 같겠고 물이 끊어지지 아니하는 샘 같을 것이라`,ref:`이사야 58:11`,engText:`The Lord will guide you always; he will satisfy your needs in a sun-scorched land and will strengthen your frame. You will be like a well-watered garden, like a spring whose waters never fail.`,commentary:`본문(이사야 58:11)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네 시작은 미약하였으나 네 나중은 심히 창대하리라`,ref:`욥기 8:7`,engText:`Your beginnings will seem humble, so prosperous will your future be.`,commentary:`본문(욥기 8:7)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이것들을 증거하신 이가 가라사대 내가 진실로 속히 오리라 하시거늘 아멘 주 예수여 오시옵소서`,ref:`요한계시록 22:20`,engText:`He who testifies to these things says, "Yes, I am coming soon." Amen. Come, Lord Jesus.`,commentary:`본문(요한계시록 22:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`다윗이 블레셋 사람에게 이르되 너는 칼과 창과 단창으로 내게 오거니와 나는 만군의 여호와의 이름 곧 네가 모욕하는 이스라엘 군대의 하나님의 이름으로 네게 가노라`,ref:`사무엘상 17:45`,engText:`David said to the Philistine, "You come against me with sword and spear and javelin, but I come against you in the name of the Lord Almighty, the God of the armies of Israel, whom you have defied."`,commentary:`본문(사무엘상 17:45)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`다른 이로서는 구원을 얻을 수 없나니 천하 인간에 구원을 얻을 만한 다른 이름을 우리에게 주신 일이 (없음)이니라 하였더라`,ref:`사도행전 4:12`,engText:`Salvation is found in no one else, for there is no other name under heaven given to mankind by which we must be saved.`,commentary:`본문(사도행전 4:12)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 새벽 날개를 치며 바다 끝에 가서 거할지라도 곧 거기서도 주의 손이 나를 인도하시며 주의 오른손이 나를 붙드시리이다`,ref:`시편 139:9-10`,engText:`If I rise on the wings of the dawn, if I settle on the far side of the sea, even there your hand will guide me, your right hand will hold me fast.`,commentary:`본문(시편 139:9-10)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 선을 행하되 낙심하지 말지니 피곤하지 아니하면 때가 이르매 거두리라`,ref:`갈라디아서 6:9`,engText:`Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.`,commentary:`본문(갈라디아서 6:9)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 여호와를 알자 힘써 여호와를 알자 그의 나오심은 새벽 빛 같이 일정하니 비와 같이, 땅을 적시는 늦은 비와 같이 우리에게 임하시리라 하리라`,ref:`호세아 6:3`,engText:`Let us acknowledge the Lord; let us press on to acknowledge him. As surely as the sun rises, he will appear; he will come to us like the winter rains, like the spring rains that water the earth.`,commentary:`본문(호세아 6:3)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`어떤 길은 사람의 보기에 바르나 필경은 사망의 길이니라`,ref:`잠언 14:12`,engText:`There is a way that appears to be right, but in the end it leads to death.`,commentary:`본문(잠언 14:12)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`믿음이 없이는 기쁘시게 못하나니 하나님께 나아가는 자는 반드시 그가 계신 것과 또한 그가 자기를 찾는 자들에게 상 주시는 이심을 믿어야 할지니라`,ref:`히브리서 11:6`,engText:`And without faith it is impossible to please God, because anyone who comes to him must believe that he exists and that he rewards those who earnestly seek him.`,commentary:`본문(히브리서 11:6)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`룻이 가로되 나로 어머니를 떠나며 어머니를 따르지 말고 돌아가라 강권하지 마옵소서 어머니께서 가시는 곳에 나도 가고 어머니께서 유숙하시는 곳에서 나도 유숙하겠나이다 어머니의 백성이 나의 백성이 되고 어머니의 하나님이 나의 하나님이 되시리니`,ref:`룻기 1:16`,engText:`Ruth replied, "Don't urge me to leave you or to turn back from you. Where you go I will go, and where you stay I will stay. Your people will be my people and your God my God."`,commentary:`본문(룻기 1:16)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이것을 너희에게 이름은 너희로 내 안에서 평안을 누리게 하려 함이라 세상에서는 너희가 환난을 당하나 담대하라 내가 세상을 이기었노라 하시니라`,ref:`요한복음 16:33`,engText:`I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world.`,commentary:`본문(요한복음 16:33)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서는 자기에게 간구하는 모든 자 곧 진실하게 간구하는 모든 자에게 가까이 하시는도다`,ref:`시편 145:18`,engText:`The Lord is near to all who call on him, to all who call on him in truth.`,commentary:`본문(시편 145:18)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`또 무엇을 하든지 말에나 일에나 다 주 예수의 이름으로 하고 그를 힘입어 하나님 아버지께 감사하라`,ref:`골로새서 3:17`,engText:`And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus, giving thanks to God the Father through him.`,commentary:`본문(골로새서 3:17)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`야곱아 너를 창조하신 여호와께서 이제 말씀하시느니라 이스라엘아 너를 조성하신 자가 이제 말씀하시느니라 너는 두려워 말라 내가 너를 구속하였고 내가 너를 지명하여 불렀나니 너는 내 것이라`,ref:`이사야 43:1`,engText:`Do not fear, for I have redeemed you; I have summoned you by name; you are mine.`,commentary:`본문(이사야 43:1)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`경우에 합당한 말은 아로새긴 은쟁반에 금사과니라`,ref:`잠언 25:11`,engText:`Like apples of gold in settings of silver is a ruling rightly given.`,commentary:`본문(잠언 25:11)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 사랑하는 형제들아 너희가 알거니와 사람마다 듣기는 속히 하고 말하기는 더디 하며 성내기도 더디하라`,ref:`야고보서 1:19`,engText:`My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry.`,commentary:`본문(야고보서 1:19)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`야하시엘이 가로되 온 유다와 예루살렘 거민과 여호사밧 왕이여 들을지어다 여호와께서 너희에게 말씀하시기를 이 큰 무리로 인하여 두려워하거나 놀라지 말라 이 전쟁이 너희에게 속한 것이 아니요 하나님께 속한 것이니라`,ref:`역대하 20:15`,engText:`He said: "Listen, King Jehoshaphat and all who live in Judah and Jerusalem! This is what the Lord says to you: 'Do not be afraid or discouraged because of this vast army. For the battle is not yours, but God's.'"`,commentary:`본문(역대하 20:15)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`두세 사람이 내 이름으로 모인 곳에는 나도 그들 중에 있느니라`,ref:`마태복음 18:20`,engText:`For where two or three gather in my name, there am I with them.`,commentary:`본문(마태복음 18:20)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 평생에 선하심과 인자하심이 정녕 나를 따르리니 내가 여호와의 집에 영원히 거하리로다`,ref:`시편 23:6`,engText:`Surely your goodness and love will follow me all the days of my life, and I will dwell in the house of the Lord forever.`,commentary:`본문(시편 23:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`죄의 삯은 사망이요 하나님의 은사는 그리스도 예수 우리 주 안에 있는 영생이니라`,ref:`로마서 6:23`,engText:`For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.`,commentary:`본문(로마서 6:23)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 선하시며 환난 날에 산성이시라 그는 자기에게 의뢰하는 자들을 아시느니라`,ref:`나훔 1:7`,engText:`The Lord is good, a refuge in times of trouble. He cares for those who trust in him.`,commentary:`본문(나훔 1:7)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`한 사람이면 패하겠거니와 두 사람이면 능히 당하나니 삼겹 줄은 쉽게 끊어지지 아니하느니라`,ref:`전도서 4:12`,engText:`Though one may be overpowered, two can defend themselves. A cord of three strands is not quickly broken.`,commentary:`본문(전도서 4:12)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주의 약속은 어떤 이의 더디다고 생각하는 것 같이 더딘 것이 아니라 오직 너희를 대하여 오래 참으사 아무도 멸망치 않고 다 회개하기에 이르기를 원하시느니라`,ref:`베드로후서 3:9`,engText:`The Lord is not slow in keeping his promise, as some understand slowness. Instead he is patient with you, not wanting anyone to perish, but everyone to come to repentance.`,commentary:`본문(베드로후서 3:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`영원하신 하나님이 너의 처소가 되시니 그 영원하신 팔이 네 아래 있도다 그가 네 앞에서 대적을 쫓으시며 멸하라 하시도다`,ref:`신명기 33:27`,engText:`The eternal God is your refuge, and underneath are the everlasting arms.`,commentary:`본문(신명기 33:27)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 저희를 보시며 가라사대 사람으로는 할 수 없으되 하나님으로는 그렇지 아니하니 하나님으로서는 다 하실 수 있느니라`,ref:`마가복음 10:27`,engText:`Jesus looked at them and said, "With man this is impossible, but not with God; all things are possible with God."`,commentary:`본문(마가복음 10:27)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`지존자의 은밀한 곳에 거하는 자는 전능하신 자의 그늘 아래 거하리로다 내가 여호와를 가리켜 말하기를 저는 나의 피난처요 나의 요새요 나의 의뢰하는 하나님이라 하리니`,ref:`시편 91:1-2`,engText:`Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty. I will say of the Lord, "He is my refuge and my fortress, my God, in whom I trust."`,commentary:`본문(시편 91:1-2)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`아무 일에든지 다툼이나 허영으로 하지 말고 오직 겸손한 마음으로 각각 자기보다 남을 낫게 여기고 각각 자기 일을 돌아볼 뿐더러 또한 각각 다른 사람들의 일을 돌아보아 나의 기쁨을 충만케 하라`,ref:`빌립보서 2:3-4`,engText:`Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves, not looking to your own interests but each of you to the interests of the others.`,commentary:`본문(빌립보서 2:3-4)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 또 주의 목소리를 들은즉 이르시되 내가 누구를 보내며 누가 우리를 위하여 갈꼬 그 때에 내가 가로되 내가 여기 있나이다 나를 보내소서`,ref:`이사야 6:8`,engText:`Then I heard the voice of the Lord saying, "Whom shall I send? And who will go for us?" And I said, "Here am I. Send me!"`,commentary:`본문(이사야 6:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네 재물과 네 소산물의 처음 익은 열매로 여호와를 공경하라`,ref:`잠언 3:9`,engText:`Honor the Lord with your wealth, with the firstfruits of all your crops.`,commentary:`본문(잠언 3:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 사랑하는 자마다 하나님께로 나서 하나님을 알고`,ref:`요한일서 4:7`,engText:`Dear friends, let us love one another, for love comes from God. Everyone who loves has been born of God and knows God.`,commentary:`본문(요한일서 4:7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 자기 형상 곧 하나님의 형상대로 사람을 창조하시되 남자와 여자를 창조하시고`,ref:`창세기 1:27`,engText:`So God created mankind in his own image, in the image of God he created them; male and female he created them.`,commentary:`본문(창세기 1:27)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 내가 곧 생명의 떡이니 내게 오는 자는 결코 주리지 아니할 터이요 나를 믿는 자는 영원히 목마르지 아니하리라`,ref:`요한복음 6:35`,engText:`Then Jesus declared, "I am the bread of life. Whoever comes to me will never go hungry, and whoever believes in me will never be thirsty."`,commentary:`본문(요한복음 6:35)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 내 영혼아 여호와를 송축하라 내 속에 있는 것들아 다 그 성호를 송축하라 내 영혼아 여호와를 송축하며 그 모든 은택을 잊지 말지어다`,ref:`시편 103:1-2`,engText:`Praise the Lord, my soul; all my inmost being, praise his holy name. Praise the Lord, my soul, and forget not all his benefits.`,commentary:`본문(시편 103:1-2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 선한 싸움을 싸우고 나의 달려갈 길을 마치고 믿음을 지켰으니`,ref:`디모데후서 4:7`,engText:`I have fought the good fight, I have finished the race, I have kept the faith.`,commentary:`본문(디모데후서 4:7)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러나 무릇 여호와를 의지하며 여호와를 의뢰하는 그 사람은 복을 받을 것이라 그는 물가에 심기운 나무가 그 뿌리를 강변에 뻗치고 더위가 올지라도 두려워 아니하며 그 잎이 청청하며 가무는 해에도 걱정이 없고 결실이 그치지 아니함 같으리라`,ref:`예레미야 17:7-8`,engText:`But blessed is the one who trusts in the Lord, whose confidence is in him. They will be like a tree planted by the water that sends out its roots by the stream.`,commentary:`본문(예레미야 17:7-8)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 복을 주시므로 사람으로 부하게 하시고 근심을 겸하여 주지 아니하시느니라`,ref:`잠언 10:22`,engText:`The blessing of the Lord brings wealth, without painful toil for it.`,commentary:`본문(잠언 10:22)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`돈을 사랑치 말고 있는 바를 족한 줄로 알라 그가 친히 말씀하시기를 내가 과연 너희를 버리지 아니하고 과연 너희를 떠나지 아니하리라 하셨느니라`,ref:`히브리서 13:5`,engText:`Keep your lives free from the love of money and be content with what you have, because God has said, "Never will I leave you; never will I forsake you."`,commentary:`본문(히브리서 13:5)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 힘이요 노래시며 나의 구원이시로다 그는 나의 하나님이시니 내가 그를 찬송할 것이요 내 아비의 하나님이시니 내가 그를 높이리로다`,ref:`출애굽기 15:2`,engText:`The Lord is my strength and my defense; he has become my salvation. He is my God, and I will praise him, my father's God, and I will exalt him.`,commentary:`본문(출애굽기 15:2)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 또 너희에게 이르노니 구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니`,ref:`누가복음 11:9`,engText:`So I say to you: Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.`,commentary:`본문(누가복음 11:9)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 날은 여호와의 정하신 것이라 이 날에 우리가 즐거워하고 기뻐하리로다`,ref:`시편 118:24`,engText:`The Lord has done it this very day; let us rejoice today and be glad.`,commentary:`본문(시편 118:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 낙심하지 아니하노니 겉 사람은 후패하나 우리의 속은 날로 새롭도다`,ref:`고린도후서 4:16`,engText:`Therefore we do not lose heart. Though outwardly we are wasting away, yet inwardly we are being renewed day by day.`,commentary:`본문(고린도후서 4:16)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`보라 그의 마음은 교만하며 그의 속에서 정직하지 못하니라 그러나 의인은 믿음으로 말미암아 살리라`,ref:`하박국 2:4`,engText:`See, the enemy is puffed up; his desires are not upright — but the righteous person will live by his faithfulness.`,commentary:`본문(하박국 2:4)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 사랑하는 자가 내게 말하여 이르기를 나의 사랑 나의 어여쁜 자야 일어나서 함께 가자`,ref:`아가 2:10`,engText:`My beloved spoke and said to me, "Arise, my darling, my beautiful one, come with me."`,commentary:`본문(아가 2:10)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자들아 너희는 너희의 지극히 거룩한 믿음 위에 자기를 건축하며 성령으로 기도하며 하나님의 사랑 안에서 자기를 지키며 영생에 이르도록 우리 주 예수 그리스도의 긍휼을 기다리라`,ref:`유다서 1:20-21`,engText:`But you, dear friends, by building yourselves up in your most holy faith and praying in the Holy Spirit, keep yourselves in God's love as you wait for the mercy of our Lord Jesus Christ to bring you to eternal life.`,commentary:`본문(유다서 1:20-21)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 사자가 기드온에게 나타나 이르되 큰 용사여 여호와께서 너와 함께 계시도다`,ref:`사사기 6:12`,engText:`When the angel of the Lord appeared to Gideon, he said, "The Lord is with you, mighty warrior."`,commentary:`본문(사사기 6:12)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`베드로가 가로되 너희가 회개하여 각각 예수 그리스도의 이름으로 세례를 받고 죄 사함을 얻으라 그리하면 성령을 선물로 받으리니`,ref:`사도행전 2:38`,engText:`Peter replied, "Repent and be baptized, every one of you, in the name of Jesus Christ for the forgiveness of your sins. And you will receive the gift of the Holy Spirit."`,commentary:`본문(사도행전 2:38)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 반석이시요 나의 구속자이신 여호와여 내 입의 말과 마음의 묵상이 주의 앞에 열납되기를 원하나이다`,ref:`시편 19:14`,engText:`May these words of my mouth and this meditation of my heart be pleasing in your sight, Lord, my Rock and my Redeemer.`,commentary:`본문(시편 19:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 복음을 부끄러워하지 아니하노니 이 복음은 모든 믿는 자에게 구원을 주시는 하나님의 능력이 됨이라 첫째는 유대인에게요 또한 헬라인에게로다`,ref:`로마서 1:16`,engText:`For I am not ashamed of the gospel, because it is the power of God that brings salvation to everyone who believes.`,commentary:`본문(로마서 1:16)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`산들은 떠나며 작은 산들은 옮길지라도 나의 인자는 네게서 떠나지 아니하며 화평케 하는 나의 언약은 옮기지 아니하리라 너를 긍휼히 여기는 여호와의 말이니라`,ref:`이사야 54:10`,engText:`"Though the mountains be shaken and the hills be removed, yet my unfailing love for you will not be shaken nor my covenant of peace be removed," says the Lord, who has compassion on you.`,commentary:`본문(이사야 54:10)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`고운 것도 거짓되고 아름다운 것도 헛되나 오직 여호와를 경외하는 여자는 칭찬을 받을 것이라`,ref:`잠언 31:30`,engText:`Charm is deceptive, and beauty is fleeting; but a woman who fears the Lord is to be praised.`,commentary:`본문(잠언 31:30)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 예언의 말씀을 읽는 자와 듣는 자들과 그 가운데 기록한 것을 지키는 자들이 복이 있나니 때가 가까움이라`,ref:`요한계시록 1:3`,engText:`Blessed is the one who reads aloud the words of this prophecy, and blessed are those who hear it and take to heart what is written in it, because the time is near.`,commentary:`본문(요한계시록 1:3)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와와 같이 거룩하신 이가 없으시니 이는 주 밖에 다른 이가 없고 우리 하나님 같은 반석도 없으심이니이다`,ref:`사무엘상 2:2`,engText:`There is no one holy like the Lord; there is no one besides you; there is no Rock like our God.`,commentary:`본문(사무엘상 2:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희가 내 안에 거하고 내 말이 너희 안에 거하면 무엇이든지 원하는 대로 구하라 그리하면 이루리라`,ref:`요한복음 15:7`,engText:`If you remain in me and my words remain in you, ask whatever you wish, and it will be done for you.`,commentary:`본문(요한복음 15:7)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와의 선하심을 맛보아 알지어다 그에게 피하는 자는 복이 있도다`,ref:`시편 34:8`,engText:`Taste and see that the Lord is good; blessed is the one who takes refuge in him.`,commentary:`본문(시편 34:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`서로 인자하게 하며 불쌍히 여기며 서로 용서하기를 하나님이 그리스도 안에서 너희를 용서하심과 같이 하라`,ref:`에베소서 4:32`,engText:`Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you.`,commentary:`본문(에베소서 4:32)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 이름을 경외하는 너희에게는 의로운 해가 떠올라서 치료하는 광선을 발하리니 너희가 나가서 외양간에서 나온 송아지 같이 뛰리라`,ref:`말라기 4:2`,engText:`But for you who revere my name, the sun of righteousness will rise with healing in its rays. And you will go out and frolic like well-fed calves.`,commentary:`본문(말라기 4:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`마음의 즐거움은 얼굴을 빛나게 하여도 마음의 근심은 심령을 상하게 하느니라`,ref:`잠언 15:13`,engText:`A happy heart makes the face cheerful, but heartache crushes the spirit.`,commentary:`본문(잠언 15:13)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`시험을 참는 자는 복이 있도다 이것이 옳다 인정하심을 받은 후에 주께서 자기를 사랑하는 자들에게 약속하신 생명의 면류관을 얻을 것임이니라`,ref:`야고보서 1:12`,engText:`Blessed is the one who perseveres under trial because, having stood the test, that person will receive the crown of life that the Lord has promised to those who love him.`,commentary:`본문(야고보서 1:12)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`대답하되 두려워하지 말라 우리와 함께한 자가 저와 함께한 자보다 많으니라 하고`,ref:`열왕기하 6:16`,engText:`"Don't be afraid," the prophet answered. "Those who are with us are more than those who are with them."`,commentary:`본문(열왕기하 6:16)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 네 마음을 다하고 목숨을 다하고 뜻을 다하여 주 너의 하나님을 사랑하라 하셨으니 이것이 크고 첫째 되는 계명이요 둘째는 그와 같으니 네 이웃을 네 몸과 같이 사랑하라 하셨으니`,ref:`마태복음 22:37-39`,engText:`Jesus replied: "'Love the Lord your God with all your heart and with all your soul and with all your mind.' This is the first and greatest commandment. And the second is like it: 'Love your neighbor as yourself.'"`,commentary:`본문(마태복음 22:37-39)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님이여 내 속에 정한 마음을 창조하시고 내 안에 정직한 영을 새롭게 하소서`,ref:`시편 51:10`,engText:`Create in me a pure heart, O God, and renew a steadfast spirit within me.`,commentary:`본문(시편 51:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희 속에 착한 일을 시작하신 이가 그리스도 예수의 날까지 이루실 줄을 우리가 확신하노라`,ref:`빌립보서 1:6`,engText:`Being confident of this, that he who began a good work in you will carry it on to completion until the day of Christ Jesus.`,commentary:`본문(빌립보서 1:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주 여호와 이스라엘의 거룩하신 자가 말씀하시되 너희가 돌이켜 안연히 처하여야 구원을 얻을 것이요 잠잠하고 신뢰하여야 힘을 얻을 것이어늘 너희가 원치 아니하고`,ref:`이사야 30:15`,engText:`In repentance and rest is your salvation, in quietness and trust is your strength.`,commentary:`본문(이사야 30:15)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 알기에는 나의 구속자가 살아 계시니 후일에 그가 땅 위에 서실 것이라`,ref:`욥기 19:25`,engText:`I know that my redeemer lives, and that in the end he will stand on the earth.`,commentary:`본문(욥기 19:25)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 은혜의 하나님 곧 그리스도 안에서 너희를 부르사 자기의 영원한 영광에 들어가게 하신 이가 잠간 고난을 받은 너희를 친히 온전케 하시며 굳게 하시며 강하게 하시며 터를 견고케 하시리라`,ref:`베드로전서 5:10`,engText:`And the God of all grace, who called you to his eternal glory in Christ, after you have suffered a little while, will himself restore you and make you strong, firm and steadfast.`,commentary:`본문(베드로전서 5:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`에스라가 여호와의 율법을 연구하여 준행하며 율례와 규례를 이스라엘에게 가르치기로 결심하였었더라`,ref:`에스라 7:10`,engText:`For Ezra had devoted himself to the study and observance of the Law of the Lord, and to teaching its decrees and laws in Israel.`,commentary:`본문(에스라 7:10)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`가라사대 무릇 사람의 할 수 없는 것을 하나님은 하실 수 있느니라`,ref:`누가복음 18:27`,engText:`Jesus replied, "What is impossible with man is possible with God."`,commentary:`본문(누가복음 18:27)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시, 영장으로 여두둔의 법칙을 의지하여 한 노래] 나의 영혼이 잠잠히 하나님만 바람이여 나의 구원이 그에게서 나는도다`,ref:`시편 62:1`,engText:`Truly my soul finds rest in God; my salvation comes from him.`,commentary:`본문(시편 62:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내 사랑하는 형제들아 견고하며 흔들리지 말며 항상 주의 일에 더욱 힘쓰는 자들이 되라 이는 너희 수고가 주 안에서 헛되지 않은 줄을 앎이니라`,ref:`고린도전서 15:58`,engText:`Therefore, my dear brothers and sisters, stand firm. Let nothing move you. Always give yourselves fully to the work of the Lord, because you know that your labor in the Lord is not in vain.`,commentary:`본문(고린도전서 15:58)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나는 감사하는 목소리로 주께 제사를 드리며 나의 서원을 주께 갚겠나이다 구원은 여호와께로서 말미암나이다 하니라`,ref:`요나 2:9`,engText:`Salvation comes from the Lord.`,commentary:`본문(요나 2:9)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람의 걸음은 여호와께로서 말미암나니 사람이 어찌 자기의 길을 알 수 있으랴`,ref:`잠언 20:24`,engText:`A person's steps are directed by the Lord. How then can anyone understand their own way?`,commentary:`본문(잠언 20:24)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자여 네 영혼이 잘됨 같이 네가 범사에 잘되고 강건하기를 내가 간구하노라`,ref:`요한삼서 1:2`,engText:`Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well.`,commentary:`본문(요한삼서 1:2)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주여 구하오니 귀를 기울이사 종의 기도와 주의 이름을 경외하기를 기뻐하는 종들의 기도를 들으시고 오늘날 종으로 형통하여 이 사람 앞에서 은혜를 입게 하옵소서 하였나니 그 때에 내가 왕의 술관원이 되었었느니라`,ref:`느헤미야 1:11`,engText:`Lord, let your ear be attentive to the prayer of this your servant and to the prayer of your servants who delight in revering your name. Give your servant success today by granting him favor in the presence of this man.`,commentary:`본문(느헤미야 1:11)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`가라사대 때가 찼고 하나님 나라가 가까웠으니 회개하고 복음을 믿으라 하시더라`,ref:`마가복음 1:15`,engText:`"The time has come," he said. "The kingdom of God has come near. Repent and believe the good news!"`,commentary:`본문(마가복음 1:15)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주의 궁정에서 한 날이 다른 곳에서 천 날보다 나은즉 악인의 장막에 거함보다 내 하나님 문지기로 있는 것이 좋사오니`,ref:`시편 84:10`,engText:`Better is one day in your courts than a thousand elsewhere.`,commentary:`본문(시편 84:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 살아도 주를 위하여 살고 죽어도 주를 위하여 죽나니 그러므로 사나 죽으나 우리가 주의 것이로라`,ref:`로마서 14:8`,engText:`If we live, we live for the Lord; and if we die, we die for the Lord. So, whether we live or die, we belong to the Lord.`,commentary:`본문(로마서 14:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`풀은 마르고 꽃은 시드나 우리 하나님의 말씀은 영영히 서리라 하라`,ref:`이사야 40:8`,engText:`The grass withers and the flowers fall, but the word of our God endures forever.`,commentary:`본문(이사야 40:8)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 네 식물을 물 위에 던지라 여러 날 후에 도로 찾으리라`,ref:`전도서 11:1`,engText:`Ship your grain across the sea; after many days you may receive a return.`,commentary:`본문(전도서 11:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 긍휼하심을 받고 때를 따라 돕는 은혜를 얻기 위하여 은혜의 보좌 앞에 담대히 나아갈 것이니라`,ref:`히브리서 4:16`,engText:`Let us then approach God's throne of grace with confidence, so that we may receive mercy and find grace to help us in our time of need.`,commentary:`본문(히브리서 4:16)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`아브라함이 그 땅 이름을 여호와이레라 하였으므로 오늘까지 사람들이 이르기를 여호와의 산에서 준비되리라 하더라`,ref:`창세기 22:14`,engText:`So Abraham called that place The Lord Will Provide. And to this day it is said, "On the mountain of the Lord it will be provided."`,commentary:`본문(창세기 22:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`범사에 너희에게 모본을 보였노니 곧 이같이 수고하여 약한 사람들을 돕고 또 주 예수의 친히 말씀하신 바 주는 것이 받는 것보다 복이 있다 하심을 기억하여야 할지니라`,ref:`사도행전 20:35`,engText:`In everything I did, I showed you that by this kind of hard work we must help the weak, remembering the words the Lord Jesus himself said: "It is more blessed to give than to receive."`,commentary:`본문(사도행전 20:35)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다`,ref:`시편 126:5`,engText:`Those who sow with tears will reap with songs of joy.`,commentary:`본문(시편 126:5)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`누구든지 네 연소함을 업신여기지 못하게 하고 오직 말과 행실과 사랑과 믿음과 정절에 대하여 믿는 자에게 본이 되어`,ref:`디모데전서 4:12`,engText:`Don't let anyone look down on you because you are young, but set an example for the believers in speech, in conduct, in love, in faith and in purity.`,commentary:`본문(디모데전서 4:12)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주 여호와께서 이 뼈들에게 말씀하시기를 내가 생기로 너희에게 들어가게 하리니 너희가 살리라`,ref:`에스겔 37:5`,engText:`This is what the Sovereign Lord says to these bones: I will make breath enter you, and you will come to life.`,commentary:`본문(에스겔 37:5)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`근심이 사람의 마음에 있으면 그것으로 번뇌케 하나 선한 말은 그것을 즐겁게 하느니라`,ref:`잠언 12:25`,engText:`Anxiety weighs down the heart, but a kind word cheers it up.`,commentary:`본문(잠언 12:25)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 위로부터 난 지혜는 첫째 성결하고 다음에 화평하고 관용하고 양순하며 궁휼과 선한 열매가 가득하고 편벽과 거짓이 없나니`,ref:`야고보서 3:17`,engText:`But the wisdom that comes from heaven is first of all pure; then peace-loving, considerate, submissive, full of mercy and good fruit, impartial and sincere.`,commentary:`본문(야고보서 3:17)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러나 네가 거기서 네 하나님 여호와를 구하게 되리니 만일 마음을 다하고 성품을 다하여 그를 구하면 만나리라`,ref:`신명기 4:29`,engText:`But if from there you seek the Lord your God, you will find him if you seek him with all your heart and with all your soul.`,commentary:`본문(신명기 4:29)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님은 영이시니 예배하는 자가 신령과 진정으로 예배할지니라`,ref:`요한복음 4:24`,engText:`God is spirit, and his worshipers must worship in the Spirit and in truth.`,commentary:`본문(요한복음 4:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 Psa 곧 성전에 올라가는 노래] 형제가 연합하여 동거함이 어찌 그리 선하고 아름다운고`,ref:`시편 133:1`,engText:`How good and pleasant it is when God's people live together in unity!`,commentary:`본문(시편 133:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`위엣 것을 생각하고 땅엣 것을 생각지 말라`,ref:`골로새서 3:2`,engText:`Set your minds on things above, not on earthly things.`,commentary:`본문(골로새서 3:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여인이 어찌 그 젖먹는 자식을 잊겠으며 자기 태에서 난 아들을 긍휼히 여기지 않겠느냐 그들은 혹시 잊을지라도 나는 너를 잊지 아니할 것이라`,ref:`이사야 49:15`,engText:`"Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you!"`,commentary:`본문(이사야 49:15)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`악인은 쫓아 오는 자가 없어도 도망하나 의인은 사자 같이 담대하니라`,ref:`잠언 28:1`,engText:`The wicked flee though no one pursues, but the righteous are as bold as a lion.`,commentary:`본문(잠언 28:1)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 너희가 더욱 힘써 너희 믿음에 덕을, 덕에 지식을, 지식에 절제를, 절제에 인내를, 인내에 경건을, 경건에 형제 우애를, 형제 우애에 사랑을 공급하라`,ref:`베드로후서 1:5-7`,engText:`For this very reason, make every effort to add to your faith goodness; and to goodness, knowledge; and to knowledge, self-control; and to self-control, perseverance; and to perseverance, godliness; and to godliness, mutual affection; and to mutual affection, love.`,commentary:`본문(베드로후서 1:5-7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 가라사대 내가 친히 가리라 내가 너로 편케 하리라`,ref:`출애굽기 33:14`,engText:`The Lord replied, "My Presence will go with you, and I will give you rest."`,commentary:`본문(출애굽기 33:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`마음이 청결한 자는 복이 있나니 저희가 하나님을 볼 것임이요`,ref:`마태복음 5:8`,engText:`Blessed are the pure in heart, for they will see God.`,commentary:`본문(마태복음 5:8)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`호흡이 있는 자마다 여호와를 찬양할지어다 할렐루야`,ref:`시편 150:6`,engText:`Let everything that has breath praise the Lord. Praise the Lord.`,commentary:`본문(시편 150:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라`,ref:`고린도후서 9:7`,engText:`Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.`,commentary:`본문(고린도후서 9:7)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`만일 그럴 것이면 왕이여 우리가 섬기는 우리 하나님이 우리를 극렬히 타는 풀무 가운데서 능히 건져 내시겠고 왕의 손에서도 건져내시리이다 그리 아니하실지라도 왕이여 우리가 왕의 신들을 섬기지도 아니하고 왕의 세우신 금 신상에게 절하지도 아니할 줄을 아옵소서`,ref:`다니엘 3:17-18`,engText:`If we are thrown into the blazing furnace, the God we serve is able to deliver us from it, and he will deliver us from Your Majesty's hand. But even if he does not, we want you to know, Your Majesty, that we will not serve your gods or worship the image of gold you have set up.`,commentary:`본문(다니엘 3:17-18)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나를 사랑하는 자들이 나의 사랑을 입으며 나를 간절히 찾는 자가 나를 만날 것이니라`,ref:`잠언 8:17`,engText:`I love those who love me, and those who seek me find me.`,commentary:`본문(잠언 8:17)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이 세상도 그 정욕도 지나가되 오직 하나님의 뜻을 행하는 이는 영원히 거하느니라`,ref:`요한일서 2:17`,engText:`The world and its desires pass away, but whoever does the will of God lives forever.`,commentary:`본문(요한일서 2:17)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`야베스가 이스라엘 하나님께 아뢰어 가로되 원컨대 주께서 내게 복에 복을 더하사 나의 지경을 넓히시고 주의 손으로 나를 도우사 나로 환난을 벗어나 근심이 없게 하옵소서 하였더니 하나님이 그 구하는 것을 허락하셨더라`,ref:`역대상 4:10`,engText:`Jabez cried out to the God of Israel, "Oh, that you would bless me and enlarge my territory! Let your hand be with me, and keep me from harm so that I will be free from pain." And God granted his request.`,commentary:`본문(역대상 4:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람이 만일 온 천하를 얻고도 제 목숨을 잃으면 무엇이 유익하리요`,ref:`마가복음 8:36`,engText:`What good is it for someone to gain the whole world, yet forfeit their soul?`,commentary:`본문(마가복음 8:36)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주께서 생명의 길로 내게 보이시리니 주의 우편에는 영원한 즐거움이 있나이다`,ref:`시편 16:11`,engText:`You make known to me the path of life; you will fill me with joy in your presence, with eternal pleasures at your right hand.`,commentary:`본문(시편 16:11)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`소망의 하나님이 모든 기쁨과 평강을 믿음 안에서 너희에게 충만케 하사 성령의 능력으로 소망이 넘치게 하시기를 원하노라`,ref:`로마서 15:13`,engText:`May the God of hope fill you with all joy and peace as you trust in him, so that you may overflow with hope by the power of the Holy Spirit.`,commentary:`본문(로마서 15:13)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그들이 부르기 전에 내가 응답하겠고 그들이 말을 마치기 전에 내가 들을 것이며`,ref:`이사야 65:24`,engText:`Before they call I will answer; while they are still speaking I will hear.`,commentary:`본문(이사야 65:24)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`볼지어다 하나님께 징계받는 자에게는 복이 있나니 그런즉 너는 전능자의 경책을 업신여기지 말지니라 하나님은 아프게 하시다가 싸매시며 상하게 하시다가 그 손으로 고치시나니`,ref:`욥기 5:17-18`,engText:`Blessed is the one whom God corrects; so do not despise the discipline of the Almighty. For he wounds, but he also binds up; he injures, but his hands also heal.`,commentary:`본문(욥기 5:17-18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 우리에게 구름 같이 둘러싼 허다한 증인들이 있으니 모든 무거운 것과 얽매이기 쉬운 죄를 벗어 버리고 인내로써 우리 앞에 당한 경주를 경주하며`,ref:`히브리서 12:1`,engText:`Therefore, since we are surrounded by such a great cloud of witnesses, let us throw off everything that hinders and the sin that so easily entangles. And let us run with perseverance the race marked out for us.`,commentary:`본문(히브리서 12:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 도는 완전하고 여호와의 말씀은 정미하니 저는 자기에게 피하는 모든 자에게 방패시로다`,ref:`사무엘하 22:31`,engText:`As for God, his way is perfect: The Lord's word is flawless; he shields all who take refuge in him.`,commentary:`본문(사무엘하 22:31)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`인자의 온 것은 잃어버린 자를 찾아 구원하려 함이니라`,ref:`누가복음 19:10`,engText:`For the Son of Man came to seek and to save the lost.`,commentary:`본문(누가복음 19:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리에게 우리 날 계수함을 가르치사 지혜의 마음을 얻게 하소서`,ref:`시편 90:12`,engText:`Teach us to number our days, that we may gain a heart of wisdom.`,commentary:`본문(시편 90:12)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`푯대를 향하여 그리스도 예수 안에서 하나님이 위에서 부르신 부름의 상을 위하여 좇아가노라`,ref:`빌립보서 3:14`,engText:`I press on toward the goal to win the prize for which God has called me heavenward in Christ Jesus.`,commentary:`본문(빌립보서 3:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 너를 복중에 짓기 전에 너를 알았고 네가 태에서 나오기 전에 너를 구별하였고 너를 열방의 선지자로 세웠노라 하시기로`,ref:`예레미야 1:5`,engText:`"Before I formed you in the womb I knew you, before you were born I set you apart; I appointed you as a prophet to the nations."`,commentary:`본문(예레미야 1:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`가산이 적어도 여호와를 경외하는 것이 크게 부하고 번뇌하는 것보다 나으니라`,ref:`잠언 15:16`,engText:`Better a little with the fear of the Lord than great wealth with turmoil.`,commentary:`본문(잠언 15:16)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네가 장차 받을 고난을 두려워 말라 볼지어다 마귀가 장차 너희 가운데서 몇 사람을 옥에 던져 시험을 받게 하리니 너희가 십 일 동안 환난을 받으리라 네가 죽도록 충성하라 그리하면 내가 생명의 면류관을 네게 주리라`,ref:`요한계시록 2:10`,engText:`Do not be afraid of what you are about to suffer. Be faithful, even to the point of death, and I will give you life as your victor's crown.`,commentary:`본문(요한계시록 2:10)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 눈은 온 땅을 두루 감찰하사 전심으로 자기에게 향하는 자를 위하여 능력을 베푸시나니 이 일은 왕이 망령되이 행하였은즉 이후부터는 왕에게 전쟁이 있으리이다 하매`,ref:`역대하 16:9`,engText:`For the eyes of the Lord range throughout the earth to strengthen those whose hearts are fully committed to him.`,commentary:`본문(역대하 16:9)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 마음에 근심하지 말라 하나님을 믿으니 또 나를 믿으라`,ref:`요한복음 14:1`,engText:`Do not let your hearts be troubled. You believe in God; believe also in me.`,commentary:`본문(요한복음 14:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`청년이 무엇으로 그 행실을 깨끗케 하리이까 주의 말씀을 따라 삼갈 것이니이다`,ref:`시편 119:9`,engText:`How can a young person stay on the path of purity? By living according to your word.`,commentary:`본문(시편 119:9)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주는 미쁘사 너희를 굳게 하시고 악한 자에게서 지키시리라`,ref:`데살로니가후서 3:3`,engText:`But the Lord is faithful, and he will strengthen you and protect you from the evil one.`,commentary:`본문(데살로니가후서 3:3)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`보라 하나님은 나의 구원이시라 내가 의뢰하고 두려움이 없으리니 주 여호와는 나의 힘이시며 나의 노래시며 나의 구원이심이라`,ref:`이사야 12:2`,engText:`Surely God is my salvation; I will trust and not be afraid. The Lord, the Lord himself, is my strength and my defense; he has become my salvation.`,commentary:`본문(이사야 12:2)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`사람을 두려워하면 올무에 걸리게 되거니와 여호와를 의지하는 자는 안전하리라`,ref:`잠언 29:25`,engText:`Fear of man will prove to be a snare, but whoever trusts in the Lord is kept safe.`,commentary:`본문(잠언 29:25)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주 앞에서 낮추라 그리하면 주께서 너희를 높이시리라`,ref:`야고보서 4:10`,engText:`Humble yourselves before the Lord, and he will lift you up.`,commentary:`본문(야고보서 4:10)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 이스라엘 자손의 온 회중에게 고하여 이르라 너희는 거룩하라 나 여호와 너희 하나님이 거룩함이니라`,ref:`레위기 19:2`,engText:`Speak to the entire assembly of Israel and say to them: 'Be holy because I, the Lord your God, am holy.'`,commentary:`본문(레위기 19:2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 그를 힘입어 살며 기동하며 있느니라 너희 시인 중에도 어떤 사람들의 말과 같이 우리가 그의 소생이라 하니`,ref:`사도행전 17:28`,engText:`For in him we live and move and have our being.`,commentary:`본문(사도행전 17:28)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 간구하는 날에 주께서 응답하시고 내 영혼을 장려하여 강하게 하셨나이다`,ref:`시편 138:3`,engText:`When I called, you answered me; you greatly emboldened me.`,commentary:`본문(시편 138:3)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람에게 구원을 주시는 하나님의 은혜가 나타나`,ref:`디도서 2:11`,engText:`For the grace of God has appeared that offers salvation to all people.`,commentary:`본문(디도서 2:11)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 그 때에 너희를 이끌고 그 때에 너희를 모을지라 내가 너희 목전에서 너희 사로잡힘을 돌이킬 때에 너희로 천하 만민 중에서 명성과 칭찬을 얻게 하리라 나 여호와의 말이니라`,ref:`스바냐 3:20`,engText:`At that time I will gather you; at that time I will bring you home.`,commentary:`본문(스바냐 3:20)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`형통한 날에는 기뻐하고 곤고한 날에는 생각하라 하나님이 이 두가지를 병행하게 하사 사람으로 그 장래 일을 능히 헤아려 알지 못하게 하셨느니라`,ref:`전도서 7:14`,engText:`When times are good, be happy; but when times are bad, consider this: God has made the one as well as the other.`,commentary:`본문(전도서 7:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 우리 주 예수 그리스도의 아버지 하나님이 그 많으신 긍휼대로 예수 그리스도의 죽은 자 가운데서 부활하심으로 말미암아 우리를 거듭나게 하사 산 소망이 있게 하시며`,ref:`베드로전서 1:3`,engText:`Praise be to the God and Father of our Lord Jesus Christ! In his great mercy he has given us new birth into a living hope through the resurrection of Jesus Christ from the dead.`,commentary:`본문(베드로전서 1:3)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 너는 알라 오직 네 하나님 여호와는 하나님이시요 신실하신 하나님이시라 그를 사랑하고 그 계명을 지키는 자에게는 천 대까지 그 언약을 이행하시며 인애를 베푸시되`,ref:`신명기 7:9`,engText:`Know therefore that the Lord your God is God; he is the faithful God, keeping his covenant of love to a thousand generations of those who love him and keep his commandments.`,commentary:`본문(신명기 7:9)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`시험에 들지 않게 깨어 있어 기도하라 마음에는 원이로되 육신이 약하도다 하시고`,ref:`마태복음 26:41`,engText:`Watch and pray so that you will not fall into temptation. The spirit is willing, but the flesh is weak.`,commentary:`본문(마태복음 26:41)은 전심으로 주님을 찾는 자에게 주어지는 간절한 기도와 신실하신 하나님의 응답의 원리를 보여줍니다.
-우리의 기도는 허공에 흩어지는 외침이 아니라, 하늘 보좌를 움직이고 하나님의 일하심을 이끌어내는 영적 통로입니다.
-
-아무것도 염려하지 말고 모든 일에 기도와 간구로 구할 때, 모든 지각에 뛰어난 하나님의 평강이 우리의 마음과 생각을 지키시며 가장 좋은 때에 가장 선한 응답으로 채워주십니다.`,questions:[`염려하고 걱정하기보다 기도로 하나님께 먼저 나아가고 있는가?`,`하나님께서 내 기도를 들으시고 가장 좋은 것으로 응답하심을 확신하는가?`,`나만을 위한 기도를 넘어 이웃과 교회를 위해 중보하는 기도의 사람인가?`],prayer:`기도를 들으시는 주님,
-염려 대신 감사의 기도로 주님 앞에 나아갑니다.
-저의 작은 신음에도 귀 기울이시는 신실하신 하나님을 온전히 신뢰하게 하소서.
-오늘 하루도 쉬지 않고 기도하며 하나님의 살아계심과 응답을 경험하게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 주의 도를 내게 보이시고 주의 길을 내게 가르치소서`,ref:`시편 25:4`,engText:`Show me your ways, Lord, teach me your paths.`,commentary:`본문(시편 25:4)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람이 죄를 범하였으매 하나님의 영광에 이르지 못하더니`,ref:`로마서 3:23`,engText:`For all have sinned and fall short of the glory of God.`,commentary:`본문(로마서 3:23)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 네 허물을 빽빽한 구름의 사라짐 같이, 네 죄를 안개의 사라짐 같이 도말하였으니 너는 내게로 돌아오라 내가 너를 구속하였음이니라`,ref:`이사야 44:22`,engText:`I have swept away your offenses like a cloud, your sins like the morning mist. Return to me, for I have redeemed you.`,commentary:`본문(이사야 44:22)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`선한 말은 꿀송이 같아서 마음에 달고 뼈에 양약이 되느니라`,ref:`잠언 16:24`,engText:`Gracious words are a honeycomb, sweet to the soul and healing to the bones.`,commentary:`본문(잠언 16:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`보라 아버지께서 어떠한 사랑을 우리에게 주사 하나님의 자녀라 일컬음을 얻게 하셨는고 우리가 그러하도다 그러므로 세상이 우리를 알지 못함은 그를 알지 못함이니라`,ref:`요한일서 3:1`,engText:`See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!`,commentary:`본문(요한일서 3:1)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`아브람이 여호와를 믿으니 여호와께서 이를 그의 의로 여기시고`,ref:`창세기 15:6`,engText:`Abram believed the Lord, and he credited it to him as righteousness.`,commentary:`본문(창세기 15:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 계명은 곧 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라 하는 이것이니라`,ref:`요한복음 15:12`,engText:`My command is this: Love each other as I have loved you.`,commentary:`본문(요한복음 15:12)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시, 영장으로 한 노래] 내가 여호와를 기다리고 기다렸더니 귀를 기울이사 나의 부르짖음을 들으셨도다`,ref:`시편 40:1`,engText:`I waited patiently for the Lord; he turned to me and heard my cry.`,commentary:`본문(시편 40:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`세월을 아끼라 때가 악하니라`,ref:`에베소서 5:16`,engText:`Making the most of every opportunity, because the days are evil.`,commentary:`본문(에베소서 5:16)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`시온의 딸아 크게 기뻐할지어다 예루살렘의 딸아 즐거이 부를지어다 보라 네 왕이 네게 임하나니 그는 공의로우며 구원을 베풀며 겸손하여서 나귀를 타나니 나귀의 작은 것 곧 나귀새끼니라`,ref:`스가랴 9:9`,engText:`Rejoice greatly, Daughter Zion! Shout, Daughter Jerusalem! See, your king comes to you, righteous and victorious, lowly and riding on a donkey.`,commentary:`본문(스가랴 9:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나의 사랑하는 자는 내게 속하였고 나는 그에게 속하였구나 그가 백합화 가운데서 양떼를 먹이는구나`,ref:`아가 2:16`,engText:`My beloved is mine and I am his; he browses among the lilies.`,commentary:`본문(아가 2:16)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 우리가 예수로 말미암아 항상 찬미의 제사를 하나님께 드리자 이는 그 이름을 증거하는 입술의 열매니라`,ref:`히브리서 13:15`,engText:`Through Jesus, therefore, let us continually offer to God a sacrifice of praise — the fruit of lips that openly profess his name.`,commentary:`본문(히브리서 13:15)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`세계가 다 내게 속하였나니 너희가 내 말을 잘 듣고 내 언약을 지키면 너희는 열국 중에서 내 소유가 되겠고`,ref:`출애굽기 19:5`,engText:`Now if you obey me fully and keep my covenant, then out of all nations you will be my treasured possession.`,commentary:`본문(출애굽기 19:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`지극히 높은 곳에서는 하나님께 영광이요 땅에서는 기뻐하심을 입은 사람들 중에 평화로다 하니라`,ref:`누가복음 2:14`,engText:`Glory to God in the highest heaven, and on earth peace to those on whom his favor rests.`,commentary:`본문(누가복음 2:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 육체와 마음은 쇠잔하나 하나님은 내 마음의 반석이시요 영원한 분깃이시라`,ref:`시편 73:26`,engText:`My flesh and my heart may fail, but God is the strength of my heart and my portion forever.`,commentary:`본문(시편 73:26)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희 모든 일을 사랑으로 행하라`,ref:`고린도전서 16:14`,engText:`Do everything in love.`,commentary:`본문(고린도전서 16:14)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와를 만날 만한 때에 찾으라 가까이 계실 때에 그를 부르라`,ref:`이사야 55:6`,engText:`Seek the Lord while he may be found; call on him while he is near.`,commentary:`본문(이사야 55:6)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내 아들아 나의 법을 잊어버리지 말고 네 마음으로 나의 명령을 지키라 그리하면 그것이 너로 장수하여 많은 해를 누리게 하며 평강을 더하게 하리라`,ref:`잠언 3:1-2`,engText:`My son, do not forget my teaching, but keep my commands in your heart, for they will prolong your life many years and bring you peace and prosperity.`,commentary:`본문(잠언 3:1-2)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`또 사랑은 이것이니 우리가 그 계명을 좇아 행하는 것이요 계명은 이것이니 너희가 처음부터 들은 바와 같이 그 가운데서 행하라 하심이라`,ref:`요한이서 1:6`,engText:`And this is love: that we walk in obedience to his commands. As you have heard from the beginning, his command is that you walk in love.`,commentary:`본문(요한이서 1:6)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호수아가 또 백성에게 이르되 너희는 스스로 성결케 하라 여호와께서 내일 너희 가운데 기사를 행하시리라`,ref:`여호수아 3:5`,engText:`Joshua told the people, "Consecrate yourselves, for tomorrow the Lord will do amazing things among you."`,commentary:`본문(여호수아 3:5)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 무엇이든지 남에게 대접을 받고자 하는대로 너희도 남을 대접하라 이것이 율법이요 선지자니라`,ref:`마태복음 7:12`,engText:`So in everything, do to others what you would have them do to you, for this sums up the Law and the Prophets.`,commentary:`본문(마태복음 7:12)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[안식일의 찬송 시] 지존자여 십현금과 비파와 수금의 정숙한 소리로 여호와께 감사하며 주의 이름을 찬양하며 아침에 주의 인자하심을 나타내며 밤마다 주의 성실하심을 베풂이 좋으니이다`,ref:`시편 92:1`,engText:`It is good to praise the Lord and make music to your name, O Most High.`,commentary:`본문(시편 92:1)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 그는 우리 주 예수 그리스도의 하나님이시요 자비의 아버지시요 모든 위로의 하나님이시며 우리의 모든 환난 중에서 우리를 위로하사 우리로 하여금 하나님께 받는 위로로써 모든 환난 중에 있는 자들을 능히 위로하게 하시는 이시로다`,ref:`고린도후서 1:3-4`,engText:`Praise be to the God and Father of our Lord Jesus Christ, the Father of compassion and the God of all comfort, who comforts us in all our troubles.`,commentary:`본문(고린도후서 1:3-4)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`구원자들이 시온 산에 올라와서 에서의 산을 심판하리니 나라가 여호와께 속하리라`,ref:`오바댜 1:21`,engText:`And the kingdom will be the Lord's.`,commentary:`본문(오바댜 1:21)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`구제를 좋아하는 자는 풍족하여질 것이요 남을 윤택하게 하는 자는 윤택하여지리라`,ref:`잠언 11:25`,engText:`A generous person will prosper; whoever refreshes others will be refreshed.`,commentary:`본문(잠언 11:25)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나는 알파와 오메가요 처음과 나중이요 시작과 끝이라`,ref:`요한계시록 22:13`,engText:`I am the Alpha and the Omega, the First and the Last, the Beginning and the End.`,commentary:`본문(요한계시록 22:13)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와 하나님이여 이러므로 주는 광대하시니 이는 우리 귀로 들은 대로는 주와 같은 이가 없고 주 외에는 참 신이 (없음)이니이다`,ref:`사무엘하 7:22`,engText:`How great you are, Sovereign Lord! There is no one like you, and there is no God but you, as we have heard with our own ears.`,commentary:`본문(사무엘하 7:22)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네 마음을 다하고 목숨을 다하고 뜻을 다하고 힘을 다하여 주 너의 하나님을 사랑하라 하신 것이요`,ref:`마가복음 12:30`,engText:`Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength.`,commentary:`본문(마가복음 12:30)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다`,ref:`시편 107:1`,engText:`Give thanks to the Lord, for he is good; his love endures forever.`,commentary:`본문(시편 107:1)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그리스도께서 우리로 자유케 하려고 자유를 주셨으니 그러므로 굳세게 서서 다시는 종의 멍에를 메지 말라`,ref:`갈라디아서 5:1`,engText:`It is for freedom that Christ has set us free. Stand firm, then, and do not let yourselves be burdened again by a yoke of slavery.`,commentary:`본문(갈라디아서 5:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`땅 끝의 모든 백성아 나를 앙망하라 그리하며 구원을 얻으리라 나는 하나님이라 다른 이가 (없음)이니라`,ref:`이사야 45:22`,engText:`Turn to me and be saved, all you ends of the earth; for I am God, and there is no other.`,commentary:`본문(이사야 45:22)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 내일 일을 자랑하지 말라 하루 동안에 무슨 일이 날는지 네가 알 수 (없음)이니라`,ref:`잠언 27:1`,engText:`Do not boast about tomorrow, for you do not know what a day may bring.`,commentary:`본문(잠언 27:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 우리 주 곧 구주 예수 그리스도의 은혜와 저를 아는 지식에서 자라가라 영광이 이제와 영원한 날까지 저에게 있을지어다`,ref:`베드로후서 3:18`,engText:`But grow in the grace and knowledge of our Lord and Savior Jesus Christ. To him be glory both now and forever! Amen.`,commentary:`본문(베드로후서 3:18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`누가 주의 이 많은 백성을 재판할 수 있사오리이까 지혜로운 마음을 종에게 주사 주의 백성을 재판하여 선악을 분별하게 하옵소서`,ref:`열왕기상 3:9`,engText:`So give your servant a discerning heart to govern your people and to distinguish between right and wrong.`,commentary:`본문(열왕기상 3:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`영생은 곧 유일하신 참 하나님과 그의 보내신 자 예수 그리스도를 아는 것이니이다`,ref:`요한복음 17:3`,engText:`Now this is eternal life: that they know you, the only true God, and Jesus Christ, whom you have sent.`,commentary:`본문(요한복음 17:3)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 영광을 우리에게 돌리지 마옵소서 우리에게 돌리지 마옵소서 오직 주의 인자하심과 진실하심을 인하여 주의 이름에 돌리옵소서`,ref:`시편 115:1`,engText:`Not to us, Lord, not to us but to your name be the glory, because of your love and faithfulness.`,commentary:`본문(시편 115:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 너희가 그리스도 예수를 주로 받았으니 그 안에서 행하되 그 안에 뿌리를 박으며 세움을 입어 교훈을 받은 대로 믿음에 굳게 서서 감사함을 넘치게 하라`,ref:`골로새서 2:6-7`,engText:`So then, just as you received Christ Jesus as Lord, continue to live your lives in him, rooted and built up in him, strengthened in the faith as you were taught, and overflowing with thankfulness.`,commentary:`본문(골로새서 2:6-7)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 옛적에 이스라엘에게 나타나 이르기를 내가 무궁한 사랑으로 너를 사랑하는 고로 인자함으로 너를 인도하였다 하였노라`,ref:`예레미야 31:3`,engText:`The Lord appeared to us in the past, saying: "I have loved you with an everlasting love; I have drawn you with unfailing kindness."`,commentary:`본문(예레미야 31:3)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 신이 나를 지으셨고 전능자의 기운이 나를 살리시느니라`,ref:`욥기 33:4`,engText:`The Spirit of God has made me; the breath of the Almighty gives me life.`,commentary:`본문(욥기 33:4)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희는 도를 행하는 자가 되고 듣기만 하여 자신을 속이는 자가 되지 말라`,ref:`야고보서 1:22`,engText:`Do not merely listen to the word, and so deceive yourselves. Do what it says.`,commentary:`본문(야고보서 1:22)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 광대하심과 권능과 영광과 이김과 위엄이 다 주께 속하였사오니 천지에 있는 것이 다 주의 것이로소이다 여호와여 주권도 주께 속하였사오니 주는 높으사 만유의 머리심이니이다 부와 귀가 주께로 말미암고 또 주는 만유의 주재가 되사 손에 권세와 능력이 있사오니 모든 자를 크게 하심과 강하게 하심이 주의 손에 있나이다`,ref:`역대상 29:11-12`,engText:`Yours, Lord, is the greatness and the power and the glory and the majesty and the splendor, for everything in heaven and earth is yours. Yours, Lord, is the kingdom; you are exalted as head over all. Wealth and honor come from you; you are the ruler of all things.`,commentary:`본문(역대상 29:11-12)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`베드로가 입을 열어 가로되 내가 참으로 하나님은 사람의 외모를 취하지 아니하시고`,ref:`사도행전 10:34`,engText:`Then Peter began to speak: "I now realize how true it is that God does not show favoritism."`,commentary:`본문(사도행전 10:34)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`아침에 나로 주의 인자한 말씀을 듣게 하소서 내가 주를 의뢰함이니이다 나의 다닐 길을 알게 하소서 내가 내 영혼을 주께 받듦이니이다`,ref:`시편 143:8`,engText:`Let the morning bring me word of your unfailing love, for I have put my trust in you. Show me the way I should go, for to you I entrust my life.`,commentary:`본문(시편 143:8)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 성경은 하나님의 감동으로 된 것으로 교훈과 책망과 바르게 함과 의로 교육하기에 유익하니`,ref:`디모데후서 3:16`,engText:`All Scripture is God-breathed and is useful for teaching, rebuking, correcting and training in righteousness.`,commentary:`본문(디모데후서 3:16)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 속량함을 얻은 자들이 돌아오되 노래하며 시온에 이르러 그 머리 위에 영영한 희락을 띠고 기쁨과 즐거움을 얻으리니 슬픔과 탄식이 달아나리로다`,ref:`이사야 35:10`,engText:`And those the Lord has rescued will return. They will enter Zion with singing; everlasting joy will crown their heads. Gladness and joy will overtake them, and sorrow and sighing will flee away.`,commentary:`본문(이사야 35:10)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`의인의 길은 돋는 햇볕 같아서 점점 빛나서 원만한 광명에 이르거니와`,ref:`잠언 4:18`,engText:`The path of the righteous is like the morning sun, shining ever brighter till the full light of day.`,commentary:`본문(잠언 4:18)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 이 소망이 있는 것은 영혼의 닻 같아서 튼튼하고 견고하여 휘장 안에 들어가나니`,ref:`히브리서 6:19`,engText:`We have this hope as an anchor for the soul, firm and secure.`,commentary:`본문(히브리서 6:19)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이스라엘아 네 하나님 여호와께서 네게 요구하시는 것이 무엇이냐 곧 네 하나님 여호와를 경외하여 그 모든 도를 행하고 그를 사랑하며 마음을 다하고 성품을 다하여 네 하나님 여호와를 섬기고`,ref:`신명기 10:12`,engText:`And now, Israel, what does the Lord your God ask of you but to fear the Lord your God, to walk in obedience to him, to love him, to serve the Lord your God with all your heart and with all your soul.`,commentary:`본문(신명기 10:12)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 대답하여 가라사대 기록되었으되 사람이 떡으로만 살 것이 아니요 하나님의 입으로 나오는 모든 말씀으로 살 것이라 하였느니라 하시니`,ref:`마태복음 4:4`,engText:`Jesus answered, "It is written: 'Man shall not live on bread alone, but on every word that comes from the mouth of God.'"`,commentary:`본문(마태복음 4:4)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`상심한 자를 고치시며 저희 상처를 싸매시는도다`,ref:`시편 147:3`,engText:`He heals the brokenhearted and binds up their wounds.`,commentary:`본문(시편 147:3)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라`,ref:`빌립보서 4:4`,engText:`Rejoice in the Lord always. I will say it again: Rejoice!`,commentary:`본문(빌립보서 4:4)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희가 자기를 위하여 의를 심고 긍휼을 거두라 지금이 곧 여호와를 찾을 때니 너희 묵은 땅을 기경하라 마침내 여호와께서 임하사 의를 비처럼 너희에게 내리시리라`,ref:`호세아 10:12`,engText:`Sow righteousness for yourselves, reap the fruit of unfailing love, and break up your unplowed ground; for it is time to seek the Lord, until he comes and showers his righteousness on you.`,commentary:`본문(호세아 10:12)은 우리를 향한 하나님의 무한한 사랑과 은혜를 선명하게 증거합니다.
-우리가 아직 연약하고 죄인 되었을 때에 하나님께서는 변함없는 사랑으로 먼저 찾아오셨고, 독생자 예수 그리스도를 통해 영원한 생명의 길을 열어주셨습니다.
-
-세상의 조건적인 사랑은 상황에 따라 흔들리지만, 십자가에서 확증된 하나님의 사랑은 어떤 환난이나 곤고도 끊을 수 없습니다. 오늘도 이 크신 사랑 안에 거할 때 두려움은 떠나가고 참된 평안과 담대함을 얻게 됩니다.`,questions:[`오늘 내 삶 속에서 하나님의 변함없는 사랑을 깊이 신뢰하고 있는가?`,`내가 받은 이 귀한 사랑을 주변의 이웃과 가족에게 어떻게 흘려보낼 수 있을까?`,`세상의 불안과 염려보다 주님의 사랑을 먼저 묵상하고 있는가?`],prayer:`사랑의 하나님 아버지,
-측량할 수 없는 은혜와 십자가의 사랑으로 저를 품어주심에 감사드립니다.
-세상의 조건에 흔들리지 않고 오직 주님의 사랑 안에서 참된 안식을 누리게 하소서.
-오늘 하루 만나는 모든 이들에게 주님의 사랑의 통로가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`의와 인자를 따라 구하는 자는 생명과 의와 영광을 얻느니라`,ref:`잠언 21:21`,engText:`Whoever pursues righteousness and love finds life, prosperity and honor.`,commentary:`본문(잠언 21:21)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그를 향하여 우리의 가진 바 담대한 것이 이것이니 그의 뜻대로 무엇을 구하면 들으심이라`,ref:`요한일서 5:14`,engText:`This is the confidence we have in approaching God: that if we ask anything according to his will, he hears us.`,commentary:`본문(요한일서 5:14)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그 밤에 여호와께서 그에게 나타나 가라사대 나는 네 아비 아브라함의 하나님이니 두려워 말라 내 종 아브라함을 위하여 내가 너와 함께 있어 네게 복을 주어 네 자손으로 번성케 하리라 하신지라`,ref:`창세기 26:24`,engText:`That night the Lord appeared to him and said, "I am the God of your father Abraham. Do not be afraid, for I am with you; I will bless you and will increase the number of your descendants for the sake of my servant Abraham."`,commentary:`본문(창세기 26:24)은 불안과 두려움으로 가득 찬 세상 속에서 주시는 세상이 줄 수 없는 참된 평안과 안식을 선포합니다.
-주님은 '두려워하지 말라 내가 너와 함께함이라' 말씀하시며 우리의 오른손을 굳게 붙들어 주십니다.
-
-수고하고 무거운 짐을 진 자들을 향해 주님은 안식을 약속하셨습니다. 주님이 주시는 평안은 세상의 환경에 좌우되지 않는 영원한 하늘의 평강입니다. 오늘 이 평안을 마음에 품고 담대히 나아가십시오.`,questions:[`마음속에 자리 잡은 염려와 두려움을 주님의 십자가 앞에 온전히 내려놓았는가?`,`세상의 조건이 아닌 주님이 함께하심으로 인해 참된 평안을 누리는가?`,`불안해하는 주변 사람들에게 주님의 평안을 전하는 평화의 도구가 되고 있는가?`],prayer:`평강의 왕 되신 주님,
-세상이 알지 못하는 하늘의 깊은 평안으로 저의 마음과 생각을 지켜주옵소서.
-모든 염려와 무거운 짐을 주님 발앞에 내려놓사오니, 참된 쉼과 안식을 누리게 하소서.
-주님의 임재 안에서 언제나 담대하고 평온한 하루를 보내게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 너희에게 이르노니 이와 같이 죄인 하나가 회개하면 하늘에서는 회개할 것 없는 의인 아흔아홉을 인하여 기뻐하는 것보다 더하리라`,ref:`누가복음 15:7`,engText:`I tell you that in the same way there will be more rejoicing in heaven over one sinner who repents than over ninety-nine righteous persons who do not need to repent.`,commentary:`본문(누가복음 15:7)은 시련과 한계를 뛰어넘는 보이지 않는 것을 바라보는 담대한 믿음의 본질을 가르쳐줍니다.
-믿음은 눈앞의 환경에 좌우되는 것이 아니라, 신실하신 하나님의 약속을 바라보고 영적인 실상을 확신하는 능력입니다.
-
-의인은 일곱 번 넘어질지라도 하나님의 손에 붙들려 다시 일어납니다. 세상의 파도가 거셀수록 약속의 말씀을 굳게 붙잡고 믿음으로 전진하는 자에게 하나님께서는 합력하여 선을 이루시는 기적을 베풀어 주십니다.`,questions:[`눈앞의 상황에 낙심하지 않고 하나님의 약속을 끝까지 신뢰하고 있는가?`,`넘어짐의 순간에도 나를 다시 일으키실 주님의 전능하신 손을 바라보는가?`,`오늘 나의 말과 행동이 믿음의 고백에서 출발하고 있는가?`],prayer:`살아계신 하나님,
-눈에 보이는 상황보다 크신 하나님의 약속을 바라보는 믿음의 눈을 열어주소서.
-낙심되고 지칠 때마다 다시 일으켜 세우시는 주님의 능력을 덧입게 하옵소서.
-믿음으로 세상을 이기며 날마다 승리하는 자녀가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그 노염은 잠간이요 그 은총은 평생이로다 저녁에는 울음이 기숙할지라도 아침에는 기쁨이 오리로다`,ref:`시편 30:5`,engText:`For his anger lasts only a moment, but his favor lasts a lifetime; weeping may stay for the night, but rejoicing comes in the morning.`,commentary:`본문(시편 30:5)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 이제 그리스도 예수 안에 있는 자에게는 결코 정죄함이 없나니`,ref:`로마서 8:1`,engText:`Therefore, there is now no condemnation for those who are in Christ Jesus.`,commentary:`본문(로마서 8:1)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 주는 나의 하나님이시라 내가 주를 높이고 주의 이름을 찬송하오리니 주는 기사를 옛적의 정하신 뜻대로 성실함과 진실함으로 행하셨음이라`,ref:`이사야 25:1`,engText:`Lord, you are my God; I will exalt you and praise your name, for in perfect faithfulness you have done wonderful things, things planned long ago.`,commentary:`본문(이사야 25:1)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`무릇 네 손이 일을 당하는 대로 힘을 다하여 할지어다 네가 장차 들어갈 음부에는 일도 없고 계획도 없고 지식도 없고 지혜도 (없음)이니라`,ref:`전도서 9:10`,engText:`Whatever your hand finds to do, do it with all your might.`,commentary:`본문(전도서 9:10)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`친히 나무에 달려 그 몸으로 우리 죄를 담당하셨으니 이는 우리로 죄에 대하여 죽고 의에 대하여 살게 하려 하심이라 저가 채찍에 맞음으로 너희는 나음을 얻었나니`,ref:`베드로전서 2:24`,engText:`"He himself bore our sins" in his body on the cross, so that we might die to sins and live for righteousness; "by his wounds you have been healed."`,commentary:`본문(베드로전서 2:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 사자를 네 앞서 보내어 길에서 너를 보호하여 너로 내가 예비한 곳에 이르게 하리니`,ref:`출애굽기 23:20`,engText:`See, I am sending an angel ahead of you to guard you along the way and to bring you to the place I have prepared.`,commentary:`본문(출애굽기 23:20)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`내가 진실로 진실로 너희에게 이르노니 한 알의 밀이 땅에 떨어져 죽지 아니하면 한 알 그대로 있고 죽으면 많은 열매를 맺느니라`,ref:`요한복음 12:24`,engText:`Very truly I tell you, unless a kernel of wheat falls to the ground and dies, it remains only a single seed. But if it dies, it produces many seeds.`,commentary:`본문(요한복음 12:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님을 찬송하리로다 저가 내 기도를 물리치지 아니하시고 그 인자하심을 내게서 거두지도 아니하셨도다`,ref:`시편 66:20`,engText:`Praise be to God, who has not rejected my prayer or withheld his love from me!`,commentary:`본문(시편 66:20)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 하나님 곧 우리 주 예수 그리스도의 아버지께서 그리스도 안에서 하늘에 속한 모든 신령한 복으로 우리에게 복 주시되`,ref:`에베소서 1:3`,engText:`Praise be to the God and Father of our Lord Jesus Christ, who has blessed us in the heavenly realms with every spiritual blessing in Christ.`,commentary:`본문(에베소서 1:3)은 성도가 하나님께 드릴 수 있는 최고의 영적 제사인 범사에 드리는 진실한 감사와 찬양을 강조합니다.
-감사는 상황이 좋을 때만 드리는 것이 아니라, 모든 환경 속에서 일하시는 하나님의 주권을 인정하는 믿음의 고백입니다.
-
-감사로 제사를 드리는 자가 하나님을 영화롭게 하며, 그 길 속에서 하나님의 놀라운 구원과 기적을 목도하게 됩니다. 오늘 하루 불평을 멈추고 감사의 입술을 열 때 영혼의 문이 활짝 열립니다.`,questions:[`주어진 환경과 상황 속에서 감사의 조건을 먼저 찾아내고 있는가?`,`원망과 불평 대신 찬송과 감사의 언어로 내 입술을 채우고 있는가?`,`오늘 나에게 베푸신 하나님의 은혜를 세어보며 진실한 감사의 제사를 드렸는가?`],prayer:`찬양받기에 합당하신 하나님,
-베풀어주신 구원의 은혜와 날마다 부어주시는 자비에 진심으로 감사드립니다.
-어떤 상황 속에서도 원망치 않고 범사에 감사하는 성숙한 신앙인이 되게 하소서.
-저의 찬양과 감사를 통해 주님 홀로 영광 받아 주옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`주와 같은 신이 어디 있으리이까 주께서는 죄악을 사유하시며 그 기업의 남은 자의 허물을 넘기시며 인애를 기뻐하심으로 노를 항상 품지 아니하시나이다`,ref:`미가 7:18`,engText:`Who is a God like you, who pardons sin and forgives the transgression of the remnant of his inheritance? You do not stay angry forever but delight to show mercy.`,commentary:`본문(미가 7:18)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 말씀은 다 순전하며 하나님은 그를 의지하는 자의 방패시니라`,ref:`잠언 30:5`,engText:`Every word of God is flawless; he is a shield to those who take refuge in him.`,commentary:`본문(잠언 30:5)은 인생의 어두운 길을 밝혀주는 내 발의 등이요 내 길의 빛이 되시는 말씀의 능력을 증거합니다.
-풀은 마르고 꽃은 시드나 하나님의 말씀은 영원히 서며, 살았고 활력이 있어 우리의 혼과 영과 관절과 골수를 찔러 쪼개기까지 합니다.
-
-말씀을 묵상하고 그 안에 거할 때, 세상의 헛된 유혹을 분별하고 주님이 기뻐하시는 의의 길을 뚜벅뚜벅 걸어갈 수 있습니다.`,questions:[`매일 주어지는 말씀을 내 인생의 가장 확실한 나침반으로 삼고 있는가?`,`말씀을 듣고 읽는 데서 그치지 않고 삶의 현장에서 순종하고 있는가?`,`오늘 나를 비추시는 말씀의 빛을 따라 버려야 할 어두운 습관은 무엇인가?`],prayer:`진리의 말씀 되신 주님,
-주의 말씀은 내 발의 등이요 내 길의 빛임을 고백합니다.
-세상의 혼탁한 소리에 흔들리지 않고 오직 기록된 생명의 말씀 위에 굳건히 서게 하소서.
-오늘도 말씀을 사모하며 온전한 순종으로 열매 맺는 삶이 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이는 보좌 가운데 계신 어린 양이 저희의 목자가 되사 생명수 샘으로 인도하시고 하나님께서 저희 눈에서 모든 눈물을 씻어 주실 것임이러라`,ref:`요한계시록 7:17`,engText:`For the Lamb at the center of the throne will be their shepherd; "he will lead them to springs of living water." "And God will wipe away every tear from their eyes."`,commentary:`본문(요한계시록 7:17)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`보라 나는 오늘날 온 세상이 가는 길로 가려니와 너희 하나님 여호와께서 너희에게 대하여 말씀하신 모든 선한 일이 하나도 틀리지 아니하고 다 너희에게 응하여 그 중에 하나도 어김이 (없음)을 너희 모든 사람의 마음과 뜻에 아는 바라`,ref:`여호수아 23:14`,engText:`You know with all your heart and soul that not one of all the good promises the Lord your God gave you has failed. Every promise has been fulfilled; not one has failed.`,commentary:`본문(여호수아 23:14)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`이에 예수께서 제자들에게 이르시되 아무든지 나를 따라 오려거든 자기를 부인하고 자기 십자가를 지고 나를 좇을 것이니라`,ref:`마태복음 16:24`,engText:`Then Jesus said to his disciples, "Whoever wants to be my disciple must deny themselves and take up their cross and follow me."`,commentary:`본문(마태복음 16:24)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[에스라인 에단의 마스길] 내가 여호와의 인자하심을 영원히 노래하며 주의 성실하심을 내 입으로 대대에 알게 하리이다`,ref:`시편 89:1`,engText:`I will sing of the Lord's great love forever; with my mouth I will make your faithfulness known through all generations.`,commentary:`본문(시편 89:1)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`십자가의 도가 멸망하는 자들에게는 미련한 것이요 구원을 얻는 우리에게는 하나님의 능력이라`,ref:`고린도전서 1:18`,engText:`For the message of the cross is foolishness to those who are perishing, but to us who are being saved it is the power of God.`,commentary:`본문(고린도전서 1:18)은 지치고 곤비한 우리 영혼을 향한 주님을 앙망할 때 주어지는 새 힘과 회복의 약속입니다.
-인간의 체력과 지혜는 한계가 있어 넘어지고 피곤하지만, 온 우주를 창조하시고 피곤치 아니하시는 여호와를 앙망하는 자는 날마다 독수리 날개 치듯 새 힘을 얻습니다.
-
-내 힘으로 버티려 하지 말고 주님의 보좌 앞에 나아가 은혜를 구할 때, 성령의 충만한 능력으로 세상을 넉넉히 이길 담대함이 부어집니다.`,questions:[`내 힘으로 애쓰기보다 주님 앞에 엎드려 공급하시는 새 힘을 구하고 있는가?`,`지친 마음과 육신을 온전히 주님께 맡기고 쉼과 회복을 누리고 있는가?`,`오늘 하루 어떤 어려움 앞에서도 강하고 담대하게 전진하고 있는가?`],prayer:`능력의 주님,
-저의 연약함을 고백하오니 위로부터 내리시는 독수리 같은 새 힘을 부어주소서.
-세상의 무게에 눌리지 않고 날마다 주님을 앙망함으로 영과 육이 온전히 회복되게 하옵소서.
-오직 주만 바라보며 기쁨으로 승리하는 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`네가 물 가운데로 지날 때에 내가 함께할 것이라 강을 건널 때에 물이 너를 침몰치 못할 것이며 네가 불 가운데로 행할 때에 타지도 아니할 것이요 불꽃이 너를 사르지도 못하리니`,ref:`이사야 43:2`,engText:`When you pass through the waters, I will be with you; and when you pass through the rivers, they will not sweep over you. When you walk through the fire, you will not be burned; the flames will not set you ablaze.`,commentary:`본문(이사야 43:2)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`노하기를 더디하는 자는 용사보다 낫고 자기의 마음을 다스리는 자는 성을 빼앗는 자보다 나으니라`,ref:`잠언 16:32`,engText:`Better a patient person than a warrior, one with self-control than one who takes a city.`,commentary:`본문(잠언 16:32)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람으로 더불어 화평함과 거룩함을 좆으라 이것이 없이는 아무도 주를 보지 못하리라`,ref:`히브리서 12:14`,engText:`Make every effort to live in peace with everyone and to be holy; without holiness no one will see the Lord.`,commentary:`본문(히브리서 12:14)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`너희가 만일 여호와께 돌아오면 너희 형제와 너희 자녀가 사로잡은 자에게서 자비를 입어 다시 이 땅으로 돌아오리라 너희 하나님 여호와는 은혜로우시고 자비하신지라 너희가 그에게로 돌아오면 그 얼굴을 너희에게서 돌이키지 아니하시리라 하였더라`,ref:`역대하 30:9`,engText:`For the Lord your God is gracious and compassionate. He will not turn his face from you if you return to him.`,commentary:`본문(역대하 30:9)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`또 가라사대 너희는 온 천하에 다니며 만민에게 복음을 전파하라`,ref:`마가복음 16:15`,engText:`He said to them, "Go into all the world and preach the gospel to all creation."`,commentary:`본문(마가복음 16:15)은 오늘 우리에게 생명과 진리의 길을 제시하며 날마다 우리를 온전케 하시는 하나님의 은혜를 깨닫게 합니다.
-하나님의 말씀은 결코 헛되이 돌아오지 않고 주님이 뜻하신 바를 반드시 성취하며 영혼을 소성케 합니다.
-
-육신의 헛된 생각과 세상의 유혹을 벗어버리고 거룩한 부르심을 따라 순종할 때, 주님께서는 하늘의 신령한 복과 평강으로 우리의 모든 삶을 넉넉히 채워주십니다.`,questions:[`오늘 이 말씀을 통해 나에게 말씀하시는 하나님의 음성을 진지하게 들었는가?`,`내 삶의 중심에 하나님의 뜻을 두고 순종하기로 결단하고 있는가?`,`말씀을 품고 살아갈 때 변화될 내 삶의 모습과 태도는 무엇인가?`],prayer:`은혜와 진리의 주님,
-오늘도 귀한 생명의 말씀으로 저의 영혼을 깨워주시니 감사드립니다.
-말씀을 마음에 깊이 새기고 한 걸음 한 걸음 믿음으로 순종하게 하소서.
-주님의 뜻을 이루어 드리며 하나님께 기쁨이 되는 복된 하루가 되게 하옵소서.
-예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 목자시니 내가 부족함이 없으리로다`,ref:`시편 23:1`,engText:`The Lord is my shepherd, I lack nothing.`,commentary:`본문(시편 23:1)은 인생의 모든 걸음 속에서 우리를 신실하게 이끄시는 선한 목자 되신 주님의 인도하심을 노래합니다.
-양은 스스로 길을 찾을 능력이 없으나 선한 목자의 음성을 따를 때 쉴 만한 물가와 푸른 초장으로 나아갈 수 있습니다.
-
-내 생각과 명철을 내려놓고 범사에 하나님을 인정할 때, 주님께서는 가장 선하고 안전한 길로 우리의 발걸음을 지도하십니다. 험한 골짜기를 지날 때에도 목자의 지팡이와 막대기가 우리를 든든히 지켜주십니다.`,questions:[`내 삶의 주도권을 내가 쥐려 하지 않고 선한 목자 되신 주님께 온전히 맡기고 있는가?`,`앞이 보이지 않는 순간에도 주님의 선하신 인도하심을 신뢰하는가?`,`오늘 하루 목자의 세미한 음성에 귀 기울이며 순종할 준비가 되어 있는가?`],prayer:`나의 목자 되신 주님,
-연약한 저의 손을 붙드시고 언제나 가장 선한 길로 인도해 주심을 믿습니다.
-내 명철과 고집을 내려놓고 범사에 주님을 인정하오니, 저의 앞길을 밝히 지도하여 주옵소서.
-어떤 상황 속에서도 목자 되신 주님만 따르는 복된 하루가 되게 하소서.
+        `),()=>{s.current?.removeAttribute(`data-motion-pop-id`),v.contains(_)&&v.removeChild(_)}},[t]),(0,q.jsx)(vI,{isPresent:t,childRef:s,sizeRef:c,pop:a,children:a===!1?e:m.cloneElement(e,{ref:u})})}var bI=({children:e,initial:t,isPresent:n,onExitComplete:r,custom:i,presenceAffectsLayout:a,mode:o,anchorX:s,anchorY:c,root:l})=>{let u=AD(xI),d=(0,m.useId)(),f=!0,p=(0,m.useMemo)(()=>(f=!1,{id:d,initial:t,isPresent:n,custom:i,onExitComplete:e=>{u.set(e,!0);for(let e of u.values())if(!e)return;r&&r()},register:e=>(u.set(e,!1),()=>u.delete(e))}),[n,u,r]);return a&&f&&(p={...p}),(0,m.useMemo)(()=>{u.forEach((e,t)=>u.set(t,!1))},[n]),m.useEffect(()=>{!n&&!u.size&&r&&r()},[n]),e=(0,q.jsx)(yI,{pop:o===`popLayout`,isPresent:n,anchorX:s,anchorY:c,root:l,children:e}),(0,q.jsx)(MD.Provider,{value:p,children:e})};function xI(){return new Map}function SI(e=!0){let t=(0,m.useContext)(MD);if(t===null)return[!0,null];let{isPresent:n,onExitComplete:r,register:i}=t,a=(0,m.useId)();(0,m.useEffect)(()=>{if(e)return i(a)},[e]);let o=(0,m.useCallback)(()=>e&&r&&r(a),[a,r,e]);return!n&&r?[!1,o]:[!0]}var CI=e=>e.key||``;function wI(e){let t=[];return m.Children.forEach(e,e=>{(0,m.isValidElement)(e)&&t.push(e)}),t}var TI=({children:e,custom:t,initial:n=!0,onExitComplete:r,presenceAffectsLayout:i=!0,mode:a=`sync`,propagate:o=!1,anchorX:s=`left`,anchorY:c=`top`,root:l})=>{let[u,d]=SI(o),f=(0,m.useMemo)(()=>wI(e),[e]),p=o&&!u?[]:f.map(CI),h=(0,m.useRef)(!0),g=(0,m.useRef)(f),_=AD(()=>new Map),v=(0,m.useRef)(new Set),[y,b]=(0,m.useState)(f),[x,S]=(0,m.useState)(f);jD(()=>{h.current=!1,g.current=f;for(let e=0;e<x.length;e++){let t=CI(x[e]);p.includes(t)?(_.delete(t),v.current.delete(t)):_.get(t)!==!0&&_.set(t,!1)}},[x,p.length,p.join(`-`)]);let C=[];if(f!==y){let e=[...f];for(let t=0;t<x.length;t++){let n=x[t],r=CI(n);p.includes(r)||(e.splice(t,0,n),C.push(n))}return a===`wait`&&C.length&&(e=C),S(wI(e)),b(f),null}let{forceRender:w}=(0,m.useContext)(kD);return(0,q.jsx)(q.Fragment,{children:x.map(e=>{let m=CI(e),y=o&&!u?!1:f===x||p.includes(m);return(0,q.jsx)(bI,{isPresent:y,initial:!h.current||n?void 0:!1,custom:t,presenceAffectsLayout:i,mode:a,root:l,onExitComplete:y?void 0:()=>{if(v.current.has(m))return;if(_.has(m))v.current.add(m),_.set(m,!0);else return;let e=!0;_.forEach(t=>{t||(e=!1)}),e&&(w?.(),S(g.current),o&&d?.(),r&&r())},anchorX:s,anchorY:c,children:e},m)})})},EI=(0,m.createContext)({strict:!1}),DI={animation:[`animate`,`variants`,`whileHover`,`whileTap`,`exit`,`whileInView`,`whileFocus`,`whileDrag`],exit:[`exit`],drag:[`drag`,`dragControls`],focus:[`whileFocus`],hover:[`whileHover`,`onHoverStart`,`onHoverEnd`],tap:[`whileTap`,`onTap`,`onTapStart`,`onTapCancel`],pan:[`onPan`,`onPanStart`,`onPanSessionStart`,`onPanEnd`],inView:[`whileInView`,`onViewportEnter`,`onViewportLeave`],layout:[`layout`,`layoutId`]},OI=!1;function kI(){if(OI)return;let e={};for(let t in DI)e[t]={isEnabled:e=>DI[t].some(t=>!!e[t])};jN(e),OI=!0}function AI(){return kI(),MN()}function jI(e){let t=AI();for(let n in e)t[n]={...t[n],...e[n]};jN(t)}var MI=new Set(`animate.exit.variants.initial.style.values.variants.transition.transformTemplate.custom.inherit.onBeforeLayoutMeasure.onAnimationStart.onAnimationComplete.onUpdate.onDragStart.onDrag.onDragEnd.onMeasureDragConstraints.onDirectionLock.onDragTransitionEnd._dragX._dragY.onHoverStart.onHoverEnd.onViewportEnter.onViewportLeave.globalTapTarget.propagate.ignoreStrict.viewport`.split(`.`));function NI(e){return e.startsWith(`while`)||e.startsWith(`drag`)&&e!==`draggable`||e.startsWith(`layout`)||e.startsWith(`onTap`)||e.startsWith(`onPan`)||e.startsWith(`onLayout`)||MI.has(e)}var PI=r({default:()=>FI}),FI,II=n((()=>{throw FI={},Error(`Could not resolve "@emotion/is-prop-valid" imported by "framer-motion". Is it installed?`)})),LI=e=>!NI(e);function RI(e){typeof e==`function`&&(LI=t=>t.startsWith(`on`)?!NI(t):e(t))}try{RI((II(),t(PI)).default)}catch{}function zI(e,t,n){let r={};for(let i in e)i===`values`&&typeof e.values==`object`||Yj(e[i])||(LI(i)||n===!0&&NI(i)||!t&&!NI(i)||e.draggable&&i.startsWith(`onDrag`))&&(r[i]=e[i]);return r}var BI=(0,m.createContext)({});function VI(e,t){if(SN(e)){let{initial:t,animate:n}=e;return{initial:t===!1||yN(t)?t:void 0,animate:yN(n)?n:void 0}}return e.inherit===!1?{}:t}function HI(e){let{initial:t,animate:n}=VI(e,(0,m.useContext)(BI));return(0,m.useMemo)(()=>({initial:t,animate:n}),[UI(t),UI(n)])}function UI(e){return Array.isArray(e)?e.join(` `):e}var WI=()=>({style:{},transform:{},transformOrigin:{},vars:{}});function GI(e,t,n){for(let r in t)!Yj(t[r])&&!fP(r,n)&&(e[r]=t[r])}function KI({transformTemplate:e},t){return(0,m.useMemo)(()=>{let n=WI();return oP(n,t,e),Object.assign({},n.vars,n.style)},[t])}function qI(e,t){let n=e.style||{},r={};return GI(r,n,e),Object.assign(r,KI(e,t)),r}function JI(e,t){let n={},r=qI(e,t);return e.drag&&e.dragListener!==!1&&(n.draggable=!1,r.userSelect=r.WebkitUserSelect=r.WebkitTouchCallout=`none`,r.touchAction=e.drag===!0?`none`:`pan-${e.drag===`x`?`y`:`x`}`),e.tabIndex===void 0&&(e.onTap||e.onTapStart||e.whileTap)&&(n.tabIndex=0),n.style=r,n}var YI=()=>({...WI(),attrs:{}});function XI(e,t,n,r){let i=(0,m.useMemo)(()=>{let n=YI();return bP(n,t,SP(r),e.transformTemplate,e.style),{...n.attrs,style:{...n.style}}},[t]);if(e.style){let t={};GI(t,e.style,e),i.style={...t,...i.style}}return i}var ZI=[`animate`,`circle`,`defs`,`desc`,`ellipse`,`g`,`image`,`line`,`filter`,`marker`,`mask`,`metadata`,`path`,`pattern`,`polygon`,`polyline`,`rect`,`stop`,`switch`,`symbol`,`svg`,`text`,`tspan`,`use`,`view`];function QI(e){return typeof e!=`string`||e.includes(`-`)?!1:!!(ZI.indexOf(e)>-1||/[A-Z]/u.test(e))}function $I(e,t,n,{latestValues:r},i,a=!1,o){let s=(o??QI(e)?XI:JI)(t,r,i,e),c=zI(t,typeof e==`string`,a),l=e===m.Fragment?{}:{...c,...s,ref:n},{children:u}=t,d=(0,m.useMemo)(()=>Yj(u)?u.get():u,[u]);return(0,m.createElement)(e,{...l,children:d})}function eL({scrapeMotionValuesFromProps:e,createRenderState:t},n,r,i){return{latestValues:tL(n,r,i,e),renderState:t()}}function tL(e,t,n,r){let i={},a=r(e,{});for(let e in a)i[e]=kF(a[e]);let{initial:o,animate:s}=e,c=SN(e),l=CN(e);t&&l&&!c&&e.inherit!==!1&&(o===void 0&&(o=t.initial),s===void 0&&(s=t.animate));let u=n?n.initial===!1:!1;u||=o===!1;let d=u?s:o;if(d&&typeof d!=`boolean`&&!vN(d)){let t=Array.isArray(d)?d:[d];for(let n=0;n<t.length;n++){let r=Lj(e,t[n]);if(r){let{transitionEnd:e,transition:t,...n}=r;for(let e in n){let t=n[e];if(Array.isArray(t)){let e=u?t.length-1:0;t=t[e]}t!==null&&(i[e]=t)}for(let t in e)i[t]=e[t]}}}return i}var nL=e=>(t,n)=>{let r=(0,m.useContext)(BI),i=(0,m.useContext)(MD),a=()=>eL(e,t,r,i);return n?a():AD(a)},rL=nL({scrapeMotionValuesFromProps:pP,createRenderState:WI}),iL=nL({scrapeMotionValuesFromProps:wP,createRenderState:YI}),aL=Symbol.for(`motionComponentSymbol`);function oL(e,t,n){let r=(0,m.useRef)(n);(0,m.useInsertionEffect)(()=>{r.current=n});let i=(0,m.useRef)(null);return(0,m.useCallback)(n=>{n&&e.onMount?.(n);let a=r.current;if(typeof a==`function`)if(n){let e=a(n);typeof e==`function`&&(i.current=e)}else i.current?(i.current(),i.current=null):a(n);else a&&(a.current=n);t&&(n?t.mount(n):t.unmount())},[t])}var sL=(0,m.createContext)({});function cL(e){return e&&typeof e==`object`&&Object.prototype.hasOwnProperty.call(e,`current`)}function lL(e,t,n,r,i,a){let{visualElement:o}=(0,m.useContext)(BI),s=(0,m.useContext)(EI),c=(0,m.useContext)(MD),l=(0,m.useContext)(mI),u=l.reducedMotion,d=l.skipAnimations,f=(0,m.useRef)(null),p=(0,m.useRef)(!1);r||=s.renderer,!f.current&&r&&(f.current=r(e,{visualState:t,parent:o,props:n,presenceContext:c,blockInitialAnimation:c?c.initial===!1:!1,reducedMotionConfig:u,skipAnimations:d,isSVG:a}),p.current&&f.current&&(f.current.manuallyAnimateOnMount=!0));let h=f.current,g=(0,m.useContext)(sL);h&&!h.projection&&i&&(h.type===`html`||h.type===`svg`)&&uL(f.current,n,i,g);let _=(0,m.useRef)(!1);(0,m.useInsertionEffect)(()=>{h&&_.current&&h.update(n,c)});let v=n[$j],y=(0,m.useRef)(!!v&&typeof window<`u`&&!window.MotionHandoffIsComplete?.(v)&&window.MotionHasOptimisedAnimation?.(v));return jD(()=>{p.current=!0,h&&(_.current=!0,window.MotionIsMounted=!0,h.updateFeatures(),h.scheduleRenderMicrotask(),y.current&&h.animationState&&h.animationState.animateChanges())}),(0,m.useEffect)(()=>{h&&(!y.current&&h.animationState&&h.animationState.animateChanges(),y.current&&=(queueMicrotask(()=>{window.MotionHandoffMarkAsComplete?.(v)}),!1),h.enteringChildren=void 0)}),h}function uL(e,t,n,r){let{layoutId:i,layout:a,drag:o,dragConstraints:s,layoutScroll:c,layoutRoot:l,layoutAnchor:u,layoutCrossfade:d}=t;e.projection=new n(e.latestValues,t[`data-framer-portal-id`]?void 0:dL(e.parent)),e.projection.setOptions({layoutId:i,layout:a,alwaysMeasureLayout:!!o||s&&cL(s),visualElement:e,animationType:typeof a==`string`?a:`both`,initialPromotionConfig:r,crossfade:d,layoutScroll:c,layoutRoot:l,layoutAnchor:u})}function dL(e){if(e)return e.options.allowProjection===!1?dL(e.parent):e.projection}function fL(e,{forwardMotionProps:t=!1,type:n}={},r,i){r&&jI(r);let a=n?n===`svg`:QI(e),o=a?iL:rL;function s(n,s){let c,l={...(0,m.useContext)(mI),...n,layoutId:pL(n)},{isStatic:u}=l,d=HI(n),f=o(n,u);if(!u&&typeof window<`u`){mL(l,r);let t=hL(l);c=t.MeasureLayout,d.visualElement=lL(e,f,l,i,t.ProjectionNode,a)}return(0,q.jsxs)(BI.Provider,{value:d,children:[c&&d.visualElement?(0,q.jsx)(c,{visualElement:d.visualElement,...l}):null,$I(e,n,oL(f,d.visualElement,s),f,u,t,a)]})}s.displayName=`motion.${typeof e==`string`?e:`create(${e.displayName??e.name??``})`}`;let c=(0,m.forwardRef)(s);return c[aL]=e,c}function pL({layoutId:e}){let t=(0,m.useContext)(kD).id;return t&&e!==void 0?t+`-`+e:e}function mL(e,t){(0,m.useContext)(EI).strict}function hL(e){let{drag:t,layout:n}=AI();if(!t&&!n)return{};let r={...t,...n};return{MeasureLayout:t?.isEnabled(e)||n?.isEnabled(e)?r.MeasureLayout:void 0,ProjectionNode:r.ProjectionNode}}function gL(e,t){if(typeof Proxy>`u`)return fL;let n=new Map,r=(n,r)=>fL(n,r,e,t);return new Proxy((e,t)=>r(e,t),{get:(i,a)=>a===`create`?r:(n.has(a)||n.set(a,fL(a,void 0,e,t)),n.get(a))})}var _L=(e,t)=>t.isSVG??QI(e)?new TP(t):new hP(t,{allowProjection:e!==m.Fragment}),vL=class extends FN{constructor(e){super(e),e.animationState||=MP(e)}updateAnimationControlsSubscription(){let{animate:e}=this.node.getProps();vN(e)&&(this.unmountControls=e.subscribe(this.node))}mount(){this.updateAnimationControlsSubscription()}update(){let{animate:e}=this.node.getProps(),{animate:t}=this.node.prevProps||{};e!==t&&this.updateAnimationControlsSubscription()}unmount(){this.node.animationState.reset(),this.unmountControls?.()}},yL=0,bL={animation:{Feature:vL},exit:{Feature:class extends FN{constructor(){super(...arguments),this.id=yL++,this.isExitComplete=!1}update(){if(!this.node.presenceContext)return;let{isPresent:e,onExitComplete:t}=this.node.presenceContext,{isPresent:n}=this.node.prevPresenceContext||{};if(!this.node.animationState||e===n)return;if(e&&n===!1){if(this.isExitComplete){let{initial:e,custom:t}=this.node.getProps();if(typeof e==`string`){let n=Rj(this.node,e,t);if(n){let{transition:e,transitionEnd:t,...r}=n;for(let e in r)this.node.getValue(e)?.jump(r[e])}}this.node.animationState.reset(),this.node.animationState.animateChanges()}else this.node.animationState.setActive(`exit`,!1);this.isExitComplete=!1;return}let r=this.node.animationState.setActive(`exit`,!e);t&&!e&&r.then(()=>{this.isExitComplete=!0,t(this.id)})}mount(){let{register:e,onExitComplete:t}=this.node.presenceContext||{};t&&t(this.id),e&&(this.unmount=e(this.id))}unmount(){}}}};function xL(e){return{point:{x:e.pageX,y:e.pageY}}}var SL=e=>t=>LM(t)&&e(t,xL(t));function CL(e,t,n,r){return TF(e,t,SL(n),r)}var wL=({current:e})=>e?e.ownerDocument.defaultView:null,TL=(e,t)=>Math.abs(e-t);function EL(e,t){let n=TL(e.x,t.x),r=TL(e.y,t.y);return Math.sqrt(n**2+r**2)}var DL=new Set([`auto`,`scroll`]),OL=class{constructor(e,t,{transformPagePoint:n,contextWindow:r=window,dragSnapToOrigin:i=!1,distanceThreshold:a=3,element:o}={}){if(this.startEvent=null,this.lastMoveEvent=null,this.lastMoveEventInfo=null,this.lastRawMoveEventInfo=null,this.handlers={},this.contextWindow=window,this.scrollPositions=new Map,this.removeScrollListeners=null,this.onElementScroll=e=>{this.handleScroll(e.target)},this.onWindowScroll=()=>{this.handleScroll(window)},this.updatePoint=()=>{if(!(this.lastMoveEvent&&this.lastMoveEventInfo))return;this.lastRawMoveEventInfo&&(this.lastMoveEventInfo=kL(this.lastRawMoveEventInfo,this.transformPagePoint));let e=jL(this.lastMoveEventInfo,this.history),t=this.startEvent!==null,n=EL(e.offset,{x:0,y:0})>=this.distanceThreshold;if(!t&&!n)return;let{point:r}=e,{timestamp:i}=wO;this.history.push({...r,timestamp:i});let{onStart:a,onMove:o}=this.handlers;t||(a&&a(this.lastMoveEvent,e),this.startEvent=this.lastMoveEvent),o&&o(this.lastMoveEvent,e)},this.handlePointerMove=(e,t)=>{this.lastMoveEvent=e,this.lastRawMoveEventInfo=t,this.lastMoveEventInfo=kL(t,this.transformPagePoint),SO.update(this.updatePoint,!0)},this.handlePointerUp=(e,t)=>{this.end();let{onEnd:n,onSessionEnd:r,resumeAnimation:i}=this.handlers;if((this.dragSnapToOrigin||!this.startEvent)&&i&&i(),!(this.lastMoveEvent&&this.lastMoveEventInfo))return;let a=jL(e.type===`pointercancel`?this.lastMoveEventInfo:kL(t,this.transformPagePoint),this.history);this.startEvent&&n&&n(e,a),r&&r(e,a)},!LM(e))return;this.dragSnapToOrigin=i,this.handlers=t,this.transformPagePoint=n,this.distanceThreshold=a,this.contextWindow=r||window;let s=kL(xL(e),this.transformPagePoint),{point:c}=s,{timestamp:l}=wO;this.history=[{...c,timestamp:l}];let{onSessionStart:u}=t;u&&u(e,jL(s,this.history)),this.removeListeners=UD(CL(this.contextWindow,`pointermove`,this.handlePointerMove),CL(this.contextWindow,`pointerup`,this.handlePointerUp),CL(this.contextWindow,`pointercancel`,this.handlePointerUp)),o&&this.startScrollTracking(o)}startScrollTracking(e){let t=e.parentElement;for(;t;){let e=getComputedStyle(t);(DL.has(e.overflowX)||DL.has(e.overflowY))&&this.scrollPositions.set(t,{x:t.scrollLeft,y:t.scrollTop}),t=t.parentElement}this.scrollPositions.set(window,{x:window.scrollX,y:window.scrollY}),window.addEventListener(`scroll`,this.onElementScroll,{capture:!0}),window.addEventListener(`scroll`,this.onWindowScroll),this.removeScrollListeners=()=>{window.removeEventListener(`scroll`,this.onElementScroll,{capture:!0}),window.removeEventListener(`scroll`,this.onWindowScroll)}}handleScroll(e){let t=this.scrollPositions.get(e);if(!t)return;let n=e===window,r=n?{x:window.scrollX,y:window.scrollY}:{x:e.scrollLeft,y:e.scrollTop},i={x:r.x-t.x,y:r.y-t.y};i.x===0&&i.y===0||(n?this.lastMoveEventInfo&&(this.lastMoveEventInfo.point.x+=i.x,this.lastMoveEventInfo.point.y+=i.y):this.history.length>0&&(this.history[0].x-=i.x,this.history[0].y-=i.y),this.scrollPositions.set(e,r),SO.update(this.updatePoint,!0))}updateHandlers(e){this.handlers=e}end(){this.removeListeners&&this.removeListeners(),this.removeScrollListeners&&this.removeScrollListeners(),this.scrollPositions.clear(),CO(this.updatePoint)}};function kL(e,t){return t?{point:t(e.point)}:e}function AL(e,t){return{x:e.x-t.x,y:e.y-t.y}}function jL({point:e},t){return{point:e,delta:AL(e,NL(t)),offset:AL(e,ML(t)),velocity:PL(t,.1)}}function ML(e){return e[0]}function NL(e){return e[e.length-1]}function PL(e,t){if(e.length<2)return{x:0,y:0};let n=e.length-1,r=null,i=NL(e);for(;n>=0&&(r=e[n],!(i.timestamp-r.timestamp>KD(t)));)n--;if(!r)return{x:0,y:0};r===e[0]&&e.length>2&&i.timestamp-r.timestamp>KD(t)*2&&(r=e[1]);let a=qD(i.timestamp-r.timestamp);if(a===0)return{x:0,y:0};let o={x:(i.x-r.x)/a,y:(i.y-r.y)/a};return o.x===1/0&&(o.x=0),o.y===1/0&&(o.y=0),o}function FL(e,{min:t,max:n},r){return t!==void 0&&e<t?e=r?wk(t,e,r.min):Math.max(e,t):n!==void 0&&e>n&&(e=r?wk(n,e,r.max):Math.min(e,n)),e}function IL(e,t,n){return{min:t===void 0?void 0:e.min+t,max:n===void 0?void 0:e.max+n-(e.max-e.min)}}function LL(e,{top:t,left:n,bottom:r,right:i}){return{x:IL(e.x,n,i),y:IL(e.y,t,r)}}function RL(e,t){let n=t.min-e.min,r=t.max-e.max;return t.max-t.min<e.max-e.min&&([n,r]=[r,n]),{min:n,max:r}}function zL(e,t){return{x:RL(e.x,t.x),y:RL(e.y,t.y)}}function BL(e,t){let n=.5,r=GP(e),i=GP(t);return i>r?n=WD(t.min,t.max-r,e.min):r>i&&(n=WD(e.min,e.max-i,t.min)),FD(0,1,n)}function VL(e,t){let n={};return t.min!==void 0&&(n.min=t.min-e.min),t.max!==void 0&&(n.max=t.max-e.min),n}var HL=.35;function UL(e=HL){return e===!1?e=0:e===!0&&(e=HL),{x:WL(e,`left`,`right`),y:WL(e,`top`,`bottom`)}}function WL(e,t,n){return{min:GL(e,t),max:GL(e,n)}}function GL(e,t){return typeof e==`number`?e:e[t]||0}var KL=new WeakMap,qL=class{constructor(e){this.openDragLock=null,this.isDragging=!1,this.currentDirection=null,this.originPoint={x:0,y:0},this.constraints=!1,this.hasMutatedConstraints=!1,this.elastic=gN(),this.latestPointerEvent=null,this.latestPanInfo=null,this.visualElement=e}start(e,{snapToCursor:t=!1,distanceThreshold:n}={}){let{presenceContext:r}=this.visualElement;if(r&&r.isPresent===!1)return;let i=e=>{t&&this.snapToCursor(xL(e).point),this.stopAnimation()},a=(e,t)=>{let{drag:n,dragPropagation:r,onDragStart:i}=this.getProps();if(n&&!r&&(this.openDragLock&&this.openDragLock(),this.openDragLock=MM(n),!this.openDragLock))return;this.latestPointerEvent=e,this.latestPanInfo=t,this.isDragging=!0,this.currentDirection=null,this.resolveConstraints(),this.visualElement.projection&&(this.visualElement.projection.isAnimationBlocked=!0,this.visualElement.projection.target=void 0),pF(e=>{let t=this.getAxisMotionValue(e).get()||0;if(QO.test(t)){let{projection:n}=this.visualElement;if(n&&n.layout){let r=n.layout.layoutBox[e];r&&(t=GP(r)*(parseFloat(t)/100))}}this.originPoint[e]=t}),i&&SO.update(()=>i(e,t),!1,!0),Zj(this.visualElement,`transform`);let{animationState:a}=this.visualElement;a&&a.setActive(`whileDrag`,!0)},o=(e,t)=>{this.latestPointerEvent=e,this.latestPanInfo=t;let{dragPropagation:n,dragDirectionLock:r,onDirectionLock:i,onDrag:a}=this.getProps();if(!n&&!this.openDragLock)return;let{offset:o}=t;if(r&&this.currentDirection===null){this.currentDirection=ZL(o),this.currentDirection!==null&&i&&i(this.currentDirection);return}this.updateAxis(`x`,t.point,o),this.updateAxis(`y`,t.point,o),this.visualElement.render(),a&&SO.update(()=>a(e,t),!1,!0)},s=(e,t)=>{this.latestPointerEvent=e,this.latestPanInfo=t,this.stop(e,t),this.latestPointerEvent=null,this.latestPanInfo=null},c=()=>{let{dragSnapToOrigin:e}=this.getProps();(e||this.constraints)&&this.startAnimation({x:0,y:0})},{dragSnapToOrigin:l}=this.getProps();this.panSession=new OL(e,{onSessionStart:i,onStart:a,onMove:o,onSessionEnd:s,resumeAnimation:c},{transformPagePoint:this.visualElement.getTransformPagePoint(),dragSnapToOrigin:l,distanceThreshold:n,contextWindow:wL(this.visualElement),element:this.visualElement.current})}stop(e,t){let n=e||this.latestPointerEvent,r=t||this.latestPanInfo,i=this.isDragging;if(this.cancel(),!i||!r||!n)return;let{velocity:a}=r;this.startAnimation(a);let{onDragEnd:o}=this.getProps();o&&SO.postRender(()=>o(n,r))}cancel(){this.isDragging=!1;let{projection:e,animationState:t}=this.visualElement;e&&(e.isAnimationBlocked=!1),this.endPanSession();let{dragPropagation:n}=this.getProps();!n&&this.openDragLock&&(this.openDragLock(),this.openDragLock=null),t&&t.setActive(`whileDrag`,!1)}endPanSession(){this.panSession&&this.panSession.end(),this.panSession=void 0}updateAxis(e,t,n){let{drag:r}=this.getProps();if(!n||!XL(e,r,this.currentDirection))return;let i=this.getAxisMotionValue(e),a=this.originPoint[e]+n[e];this.constraints&&this.constraints[e]&&(a=FL(a,this.constraints[e],this.elastic[e])),i.set(a)}resolveConstraints(){let{dragConstraints:e,dragElastic:t}=this.getProps(),n=this.visualElement.projection&&!this.visualElement.projection.layout?this.visualElement.projection.measure(!1):this.visualElement.projection?.layout,r=this.constraints;e&&cL(e)?this.constraints||=this.resolveRefConstraints():e&&n?this.constraints=LL(n.layoutBox,e):this.constraints=!1,this.elastic=UL(t),r!==this.constraints&&!cL(e)&&n&&this.constraints&&!this.hasMutatedConstraints&&pF(e=>{this.constraints!==!1&&this.getAxisMotionValue(e)&&(this.constraints[e]=VL(n.layoutBox[e],this.constraints[e]))})}resolveRefConstraints(){let{dragConstraints:e,onMeasureDragConstraints:t}=this.getProps();if(!e||!cL(e))return!1;let n=e.current,{projection:r}=this.visualElement;if(!r||!r.layout)return!1;let i=nP(n,r.root,this.visualElement.getTransformPagePoint()),a=zL(r.layout.layoutBox,i);if(t){let e=t(LN(a));this.hasMutatedConstraints=!!e,e&&(a=IN(e))}return a}startAnimation(e){let{drag:t,dragMomentum:n,dragElastic:r,dragTransition:i,dragSnapToOrigin:a,onDragTransitionEnd:o}=this.getProps(),s=this.constraints||{},c=pF(o=>{if(!XL(o,t,this.currentDirection))return;let c=s&&s[o]||{};(a===!0||a===o)&&(c={min:0,max:0});let l=r?200:1e6,u=r?40:1e7,d={type:`inertia`,velocity:n?e[o]:0,bounceStiffness:l,bounceDamping:u,timeConstant:750,restDelta:1,restSpeed:10,...i,...c};return this.startAxisValueAnimation(o,d)});return Promise.all(c).then(o)}startAxisValueAnimation(e,t){let n=this.getAxisMotionValue(e);return Zj(this.visualElement,e),n.start(Fj(e,n,0,t,this.visualElement,!1))}stopAnimation(){pF(e=>this.getAxisMotionValue(e).stop())}getAxisMotionValue(e){let t=`_drag${e.toUpperCase()}`,n=this.visualElement.getProps();return n[t]||this.visualElement.getValue(e,(n.initial?n.initial[e]:void 0)||0)}snapToCursor(e){pF(t=>{let{drag:n}=this.getProps();if(!XL(t,n,this.currentDirection))return;let{projection:r}=this.visualElement,i=this.getAxisMotionValue(t);if(r&&r.layout){let{min:n,max:a}=r.layout.layoutBox[t],o=i.get()||0;i.set(e[t]-wk(n,a,.5)+o)}})}scalePositionWithinConstraints(){if(!this.visualElement.current)return;let{drag:e,dragConstraints:t}=this.getProps(),{projection:n}=this.visualElement;if(!cL(t)||!n||!this.constraints)return;this.stopAnimation();let r={x:0,y:0};pF(e=>{let t=this.getAxisMotionValue(e);if(t&&this.constraints!==!1){let n=t.get();r[e]=BL({min:n,max:n},this.constraints[e])}});let{transformTemplate:i}=this.visualElement.getProps();this.visualElement.current.style.transform=i?i({},``):`none`,n.root&&n.root.updateScroll(),n.updateLayout(),this.constraints=!1,this.resolveConstraints(),pF(t=>{if(!XL(t,e,null))return;let n=this.getAxisMotionValue(t),{min:i,max:a}=this.constraints[t];n.set(wk(i,a,r[t]))}),this.visualElement.render()}addListeners(){if(!this.visualElement.current)return;KL.set(this.visualElement,this);let e=this.visualElement.current,t=CL(e,`pointerdown`,t=>{let{drag:n,dragListener:r=!0}=this.getProps(),i=t.target,a=i!==e&&VM(i);n&&r&&!a&&this.start(t)}),n,r=()=>{let{dragConstraints:t}=this.getProps();cL(t)&&t.current&&(this.constraints=this.resolveRefConstraints(),n||=YL(e,t.current,()=>this.scalePositionWithinConstraints()))},{projection:i}=this.visualElement,a=i.addEventListener(`measure`,r);i&&!i.layout&&(i.root&&i.root.updateScroll(),i.updateLayout()),SO.read(r);let o=TF(window,`resize`,()=>this.scalePositionWithinConstraints()),s=i.addEventListener(`didUpdate`,(({delta:e,hasLayoutChanged:t})=>{this.isDragging&&t&&(pF(t=>{let n=this.getAxisMotionValue(t);n&&(this.originPoint[t]+=e[t].translate,n.set(n.get()+e[t].translate))}),this.visualElement.render())}));return()=>{o(),t(),a(),s&&s(),n&&n()}}getProps(){let e=this.visualElement.getProps(),{drag:t=!1,dragDirectionLock:n=!1,dragPropagation:r=!1,dragConstraints:i=!1,dragElastic:a=HL,dragMomentum:o=!0}=e;return{...e,drag:t,dragDirectionLock:n,dragPropagation:r,dragConstraints:i,dragElastic:a,dragMomentum:o}}};function JL(e){let t=!0;return()=>{if(t){t=!1;return}e()}}function YL(e,t,n){let r=lN(e,JL(n)),i=lN(t,JL(n));return()=>{r(),i()}}function XL(e,t,n){return(t===!0||t===e)&&(n===null||n===e)}function ZL(e,t=10){let n=null;return Math.abs(e.y)>t?n=`y`:Math.abs(e.x)>t&&(n=`x`),n}var QL=class extends FN{constructor(e){super(e),this.removeGroupControls=VD,this.removeListeners=VD,this.controls=new qL(e)}mount(){let{dragControls:e}=this.node.getProps();e&&(this.removeGroupControls=e.subscribe(this.controls)),this.removeListeners=this.controls.addListeners()||VD}update(){let{dragControls:e}=this.node.getProps(),{dragControls:t}=this.node.prevProps||{};e!==t&&(this.removeGroupControls(),e&&(this.removeGroupControls=e.subscribe(this.controls)))}unmount(){this.removeGroupControls(),this.removeListeners(),this.controls.isDragging||this.controls.endPanSession()}},$L=e=>(t,n)=>{e&&SO.update(()=>e(t,n),!1,!0)},eR=class extends FN{constructor(){super(...arguments),this.removePointerDownListener=VD}onPointerDown(e){this.session=new OL(e,this.createPanHandlers(),{transformPagePoint:this.node.getTransformPagePoint(),contextWindow:wL(this.node)})}createPanHandlers(){let{onPanSessionStart:e,onPanStart:t,onPan:n,onPanEnd:r}=this.node.getProps();return{onSessionStart:$L(e),onStart:$L(t),onMove:$L(n),onEnd:(e,t)=>{delete this.session,r&&SO.postRender(()=>r(e,t))}}}mount(){this.removePointerDownListener=CL(this.node.current,`pointerdown`,e=>this.onPointerDown(e))}update(){this.session&&this.session.updateHandlers(this.createPanHandlers())}unmount(){this.removePointerDownListener(),this.session&&this.session.end()}},tR=!1,nR=class extends m.Component{componentDidMount(){let{visualElement:e,layoutGroup:t,switchLayoutGroup:n,layoutId:r}=this.props,{projection:i}=e;i&&(t.group&&t.group.add(i),n&&n.register&&r&&n.register(i),tR&&i.root.didUpdate(),i.addEventListener(`animationComplete`,()=>{this.safeToRemove()}),i.setOptions({...i.options,layoutDependency:this.props.layoutDependency,onExitComplete:()=>this.safeToRemove()})),jF.hasEverUpdated=!0}getSnapshotBeforeUpdate(e){let{layoutDependency:t,visualElement:n,drag:r,isPresent:i}=this.props,{projection:a}=n;return a?(a.isPresent=i,e.layoutDependency!==t&&a.setOptions({...a.options,layoutDependency:t}),tR=!0,r||e.layoutDependency!==t||t===void 0||e.isPresent!==i?a.willUpdate():this.safeToRemove(),e.isPresent!==i&&(i?a.promote():a.relegate()||SO.postRender(()=>{let e=a.getStack();(!e||!e.members.length)&&this.safeToRemove()})),null):null}componentDidUpdate(){let{visualElement:e,layoutAnchor:t}=this.props,{projection:n}=e;n&&(n.options.layoutAnchor=t,n.root.didUpdate(),OM.postRender(()=>{!n.currentAnimation&&n.isLead()&&this.safeToRemove()}))}componentWillUnmount(){let{visualElement:e,layoutGroup:t,switchLayoutGroup:n}=this.props,{projection:r}=e;tR=!0,r&&(r.scheduleCheckAfterUnmount(),t&&t.group&&t.group.remove(r),n&&n.deregister&&n.deregister(r))}safeToRemove(){let{safeToRemove:e}=this.props;e&&e()}render(){return null}};function rR(e){let[t,n]=SI(),r=(0,m.useContext)(kD);return(0,q.jsx)(nR,{...e,layoutGroup:r,switchLayoutGroup:(0,m.useContext)(sL),isPresent:t,safeToRemove:n})}var iR={pan:{Feature:eR},drag:{Feature:QL,ProjectionNode:pI,MeasureLayout:rR}};function aR(e,t,n){let{props:r}=e;e.animationState&&r.whileHover&&e.animationState.setActive(`whileHover`,n===`Start`);let i=r[`onHover`+n];i&&SO.postRender(()=>i(t,xL(t)))}var oR=class extends FN{mount(){let{current:e}=this.node;e&&(this.unmount=FM(e,(e,t)=>(aR(this.node,t,`Start`),e=>aR(this.node,e,`End`))))}unmount(){}},sR=class extends FN{constructor(){super(...arguments),this.isActive=!1}onFocus(){let e=!1;try{e=this.node.current.matches(`:focus-visible`)}catch{e=!0}!e||!this.node.animationState||(this.node.animationState.setActive(`whileFocus`,!0),this.isActive=!0)}onBlur(){!this.isActive||!this.node.animationState||(this.node.animationState.setActive(`whileFocus`,!1),this.isActive=!1)}mount(){this.unmount=UD(TF(this.node.current,`focus`,()=>this.onFocus()),TF(this.node.current,`blur`,()=>this.onBlur()))}unmount(){}};function cR(e,t,n){let{props:r}=e;if(e.current instanceof HTMLButtonElement&&e.current.disabled)return;e.animationState&&r.whileTap&&e.animationState.setActive(`whileTap`,n===`Start`);let i=r[`onTap`+(n===`End`?``:n)];i&&SO.postRender(()=>i(t,xL(t)))}var lR=class extends FN{mount(){let{current:e}=this.node;if(!e)return;let{globalTapTarget:t,propagate:n}=this.node.props;this.unmount=JM(e,(e,t)=>(cR(this.node,t,`Start`),(e,{success:t})=>cR(this.node,e,t?`End`:`Cancel`)),{useGlobalTarget:t,stopPropagation:n?.tap===!1})}unmount(){}},uR=new WeakMap,dR=new WeakMap,fR=e=>{let t=uR.get(e.target);t&&t(e)},pR=e=>{e.forEach(fR)};function mR({root:e,...t}){let n=e||document;dR.has(n)||dR.set(n,{});let r=dR.get(n),i=JSON.stringify(t);return r[i]||(r[i]=new IntersectionObserver(pR,{root:e,...t})),r[i]}function hR(e,t,n){let r=mR(t);return uR.set(e,n),r.observe(e),()=>{uR.delete(e),r.unobserve(e)}}var gR={some:0,all:1},_R=class extends FN{constructor(){super(...arguments),this.hasEnteredView=!1,this.isInView=!1}startObserver(){this.stopObserver?.();let{viewport:e={}}=this.node.getProps(),{root:t,margin:n,amount:r=`some`,once:i}=e,a={root:t?t.current:void 0,rootMargin:n,threshold:typeof r==`number`?r:gR[r]};this.stopObserver=hR(this.node.current,a,e=>{let{isIntersecting:t}=e;if(this.isInView===t||(this.isInView=t,i&&!t&&this.hasEnteredView))return;t&&(this.hasEnteredView=!0),this.node.animationState&&this.node.animationState.setActive(`whileInView`,t);let{onViewportEnter:n,onViewportLeave:r}=this.node.getProps(),a=t?n:r;a&&a(e)})}mount(){this.startObserver()}update(){if(typeof IntersectionObserver>`u`)return;let{props:e,prevProps:t}=this.node;[`amount`,`margin`,`root`].some(vR(e,t))&&this.startObserver()}unmount(){this.stopObserver?.(),this.hasEnteredView=!1,this.isInView=!1}};function vR({viewport:e={}},{viewport:t={}}={}){return n=>e[n]!==t[n]}var yR={inView:{Feature:_R},tap:{Feature:lR},focus:{Feature:sR},hover:{Feature:oR}},bR={layout:{ProjectionNode:pI,MeasureLayout:rR}},$=gL({...bL,...yR,...iR,...bR},_L),xR=[{text:`하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이니라`,ref:`요한복음 3:16`,engText:`For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.`,commentary:`본문(요한복음 3:16)은 기독교 복음의 가장 위대한 핵심이자 하나님의 무한한 사랑을 선포합니다.
+하나님께서는 심판받아 마땅한 세상을 버리지 않으시고 하나뿐인 독생자 예수 그리스도를 아낌없이 내어주셨습니다. 구원은 사람의 공로나 노력이 아니라 오직 예수 그리스도를 믿음으로 얻는 값없는 선물입니다.
+
+어떤 절망과 고난 속에서도 십자가에서 증명된 하나님의 사랑은 결코 끊어지지 않습니다. 오늘 하루 영생의 확신과 기쁨으로 살아가십시오.`,questions:[`독생자를 주시기까지 나를 사랑하신 하나님의 은혜를 오늘 내 삶의 첫 자리에 두고 있는가?`,`멸망치 않고 영생을 얻은 자로서 세상의 염려보다 구원의 기쁨을 더 크게 누리고 있는가?`,`이 위대한 복음과 사랑을 오늘 누구에게 전하고 흘려보내겠습니까?`],prayer:`사랑의 하나님 아버지,
+죄로 인해 죽을 수밖에 없던 저를 위해 독생자 예수님을 보내주시고 영생을 선물로 주심에 감사드립니다.
+세상의 헛된 것들에 흔들리지 않고 날마다 십자가 사랑에 감사하며 살게 하소서.
+오늘 하루도 주님의 사랑을 본받아 주변 이웃을 품고 섬기는 복된 날이 되게 하옵소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 목자시니 내가 부족함이 없으리로다`,ref:`시편 23:1`,engText:`The Lord is my shepherd, I lack nothing.`,commentary:`본문(시편 23:1)은 다윗의 평생 신앙고백으로, 선한 목자 되신 하나님 안에서 누리는 참된 만족과 평안을 노래합니다.
+스스로 길을 찾을 수 없는 연약한 양과 같은 우리에게 주님은 완전한 인도자이자 보호자가 되십니다. 주님이 나의 목자가 되실 때 부족함이 없는 이유는 모든 필요를 가장 선하게 채우시기 때문입니다.
+
+내 생각과 조급함을 내려놓고 목자의 세미한 음성에 귀 기울이며 따를 때 푸른 풀밭과 쉴 만한 물가로 인도함을 받게 됩니다.`,questions:[`내 인생의 주도권을 내가 쥐려 하지 않고 선한 목자이신 주님께 온전히 맡기고 있는가?`,`세상의 결핍에 불안해하기보다 목자 되신 하나님 한 분만으로 만족하고 감사하고 있는가?`,`오늘 하루 목자의 인도하심을 신뢰하며 한 걸음 한 걸음 순종할 준비가 되어 있는가?`],prayer:`선한 목자 되신 주님,
+연약한 저를 친히 기르시고 가장 안전하고 복된 길로 인도해 주시니 감사합니다.
+내 고집과 명철을 의지하지 않고 오직 목자 되신 주님의 음성에만 순종하는 양이 되게 하소서.
+험한 골짜기를 지날 때에도 주님의 지팡이와 막대기를 의지하여 담대히 걷게 하옵소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`우리가 알거니와 하나님을 사랑하는 자 곧 그 뜻대로 부르심을 입은 자들에게는 모든 것이 합력하여 선을 이루느니라`,ref:`로마서 8:28`,engText:`And we know that in all things God works for the good of those who love him, who have been called according to his purpose.`,commentary:`본문(로마서 8:28)은 하나님의 주권과 신실하신 섭리를 믿는 성도에게 주어지는 절대적인 승리의 약속입니다.
+우리가 겪는 이해할 수 없는 고난, 눈물, 실패까지도 하나님을 사랑하는 자의 삶 속에서는 합력하여 최고의 선을 이루는 재료가 됩니다.
+
+현재의 고난은 장차 나타날 영광과 족히 비교할 수 없습니다. 지금 당장 결과가 보이지 않더라도 모든 것을 가장 선하게 이끄시는 하나님의 크신 손길을 신뢰하십시오.`,questions:[`지금 내 삶에 일어나는 고난과 어려움 배후에 하나님의 선하신 계획이 있음을 믿고 있는가?`,`결과가 내 뜻대로 되지 않을 때에도 하나님을 원망치 않고 사랑과 신뢰를 고백하고 있는가?`,`합력하여 선을 이루실 하나님을 바라보며 오늘 하루 감사와 찬양으로 시작하고 있는가?`],prayer:`모든 것을 주관하시는 주권자 하나님 아버지,
+때로는 이해할 수 없는 환난 속에서도 모든 것이 합력하여 선을 이루게 하심을 믿습니다.
+조급한 마음과 불안을 내려놓고 주님의 완전한 타이밍과 선하심을 신뢰하게 하소서.
+오늘 하루도 하나님을 뜨겁게 사랑하며 주님의 거룩한 부르심에 합당하게 걸어가게 하옵소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`오직 여호와를 앙망하는 자는 새 힘을 얻으리니 독수리의 날개치며 올라감 같을 것이요 달음박질하여도 곤비치 아니하겠고 걸어가도 피곤치 아니하리로다`,ref:`이사야 40:31`,engText:`But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.`,commentary:`본문(이사야 40:31)은 지치고 탈진한 영혼에게 위로부터 공급되는 하늘의 초자연적인 새 힘을 약속합니다.
+젊은이라도 피곤하며 장정이라도 넘어지지만, 영원하신 하나님 여호와를 앙망하는 자는 독수리가 창공을 가르며 날아오르듯 날마다 새로운 능력과 생기를 덧입습니다.
+
+내 체력과 지혜로 버티려 하지 말고 주님의 보좌 앞에 무릎 꿇으십시오. 주님을 바라보는 순간, 지친 마음이 회복되고 영적인 활력이 샘솟게 될 것입니다.`,questions:[`내 열심과 체력으로 일하기보다 먼저 여호와 하나님을 앙망하며 영적 충전을 받고 있는가?`,`지친 일상 속에서 세상의 오락 대신 말씀과 기도로 새 힘을 공급받고 있는가?`,`독수리 날개 치며 올라가듯 오늘 하루 믿음의 높은 시선으로 문제들을 바라보고 있는가?`],prayer:`영원한 능력의 근원 되시는 하나님,
+육신과 마음이 지치고 곤비할 때 저의 시선을 들어 오직 주님만을 앙망하게 하소서.
+독수리가 바람을 타고 비상하듯 위로부터 부어주시는 성령의 새 힘으로 충만케 하옵소서.
+달려가도 피곤치 않고 걸어가도 곤비치 않는 기쁨과 활력 넘치는 하루가 되게 하소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`너는 마음을 다하여 여호와를 의뢰하고 네 명철을 의지하지 말라 너는 범사에 그를 인정하라 그리하면 네 길을 지도하시리라`,ref:`잠언 3:5-6`,engText:`Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.`,commentary:`본문(잠언 3:5-6)은 인생의 안전한 항해를 위한 절대 원칙으로, 전심으로 하나님을 신뢰하고 범사에 주권을 인정할 것을 권면합니다.
+인간의 명철과 계산은 불완전하여 실족하기 쉽지만, 마음을 다하여 여호와를 의뢰할 때 하나님께서는 우리의 굽은 길을 곧게 펴시고 바른길로 지도하십니다.
+
+가장 작은 결정부터 큰 진로에 이르기까지 내 지혜를 내려놓고 주님께 묻고 순종하십시오. 주님이 당신의 앞길을 가장 완벽하게 인도하십니다.`,questions:[`나의 경험과 얄팍한 명철을 의지하지 않고 전심으로 하나님을 신뢰하고 있는가?`,`일상의 사소한 결정 속에서도 주님의 뜻을 묻고 범사에 하나님을 인정하고 있는가?`,`내 뜻과 다른 방향으로 인도하실 때에도 온전히 순종할 마음의 준비가 되어 있는가?`],prayer:`참 지혜와 인도의 주님,
+스스로 지혜롭다 여기며 제 명철을 의지했던 교만을 내려놓고 전심으로 주님을 의뢰합니다.
+저의 생각과 발걸음을 온전히 주관하여 주시고 범사에 주님을 인정하는 겸손을 주옵소서.
+오늘 하루 제 모든 길을 친히 지도하시고 가장 바르고 복된 길로 인도하여 주옵소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`믿음은 바라는 것들의 실상이요 보지 못하는 것들의 증거니`,ref:`히브리서 11:1`,engText:`Now faith is confidence in what we hope for and assurance about what we do not see.`,commentary:`본문(히브리서 11:1)은 「믿음은 바라는 것들의 실상이요 보지 못하는 것들의 증거니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 11:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 11:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「믿음은 바라는 것들의 실상이요 보지 못하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 11:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`태초에 하나님이 천지를 창조하시니라`,ref:`창세기 1:1`,engText:`In the beginning God created the heavens and the earth.`,commentary:`본문(창세기 1:1)은 「태초에 하나님이 천지를 창조하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 1:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 1:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「태초에 하나님이 천지를 창조하시니라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 1:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라`,ref:`마태복음 6:33`,engText:`But seek first his kingdom and his righteousness, and all these things will be given to you as well.`,commentary:`본문(마태복음 6:33)은 「너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 6:33」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 6:33)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 먼저 그의 나라와 그의 의를 구하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 6:33」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주의 말씀은 내 발에 등이요 내 길에 빛이니이다`,ref:`시편 119:105`,engText:`Your word is a lamp for my feet, a light on my path.`,commentary:`본문(시편 119:105)은 「주의 말씀은 내 발에 등이요 내 길에 빛이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 119:105」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 119:105)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주의 말씀은 내 발에 등이요 내 길에 빛…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 119:105」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라`,ref:`빌립보서 4:13`,engText:`I can do all this through him who gives me strength.`,commentary:`본문(빌립보서 4:13)은 「내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 4:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 4:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내게 능력 주시는 자 안에서 내가 모든 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 4:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`두려워 말라 내가 너와 함께 함이니라 놀라지 말라 나는 네 하나님이 됨이니라 내가 너를 굳세게 하리라 참으로 너를 도와주리라 참으로 나의 의로운 오른손으로 너를 붙들리라`,ref:`이사야 41:10`,engText:`So do not fear, for I am with you; do not be dismayed, for I am your God. I will strengthen you and help you; I will uphold you with my righteous right hand.`,commentary:`본문(이사야 41:10)은 「두려워 말라 내가 너와 함께 함이니라 놀라지 말라 나는 네 하나님이 됨이니라 내가 너를 굳세게 하리라 참으로 너를 도와주리라 참으로 나의 의로운 오른손으로 너를 붙들리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 41:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 41:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「두려워 말라 내가 너와 함께 함이니라 놀…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 41:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람이 마음으로 자기의 길을 계획할지라도 그 걸음을 인도하는 자는 여호와시니라`,ref:`잠언 16:9`,engText:`In their hearts humans plan their course, but the Lord establishes their steps.`,commentary:`본문(잠언 16:9)은 「사람이 마음으로 자기의 길을 계획할지라도 그 걸음을 인도하는 자는 여호와시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 16:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 16:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람이 마음으로 자기의 길을 계획할지라도…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 16:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희 중에 누구든지 지혜가 부족하거든 모든 사람에게 후히 주시고 꾸짖지 아니하시는 하나님께 구하라 그리하면 주시리라`,ref:`야고보서 1:5`,engText:`If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.`,commentary:`본문(야고보서 1:5)은 「너희 중에 누구든지 지혜가 부족하거든 모든 사람에게 후히 주시고 꾸짖지 아니하시는 하나님께 구하라 그리하면 주시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 1:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 1:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희 중에 누구든지 지혜가 부족하거든 모…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 1:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 네게 명한 것이 아니냐 마음을 강하게 하고 담대히 하라 두려워 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라 하시니라`,ref:`여호수아 1:9`,engText:`Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.`,commentary:`본문(여호수아 1:9)은 「내가 네게 명한 것이 아니냐 마음을 강하게 하고 담대히 하라 두려워 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라 하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「여호수아 1:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(여호수아 1:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 네게 명한 것이 아니냐 마음을 강하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「여호수아 1:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`수고하고 무거운 짐진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라`,ref:`마태복음 11:28`,engText:`Come to me, all you who are weary and burdened, and I will give you rest.`,commentary:`본문(마태복음 11:28)은 「수고하고 무거운 짐진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 11:28」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 11:28)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「수고하고 무거운 짐진 자들아 다 내게로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 11:28」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[성전에 올라가는 노래] 내가 산을 향하여 눈을 들리라 나의 도움이 어디서 올꼬 나의 도움이 천지를 지으신 여호와에게서로다`,ref:`시편 121:1-2`,engText:`I lift up my eyes to the mountains — where does my help come from? My help comes from the Lord, the Maker of heaven and earth.`,commentary:`본문(시편 121:1-2)은 「[성전에 올라가는 노래] 내가 산을 향하여 눈을 들리라 나의 도움이 어디서 올꼬 나의 도움이 천지를 지으신 여호와에게서로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 121:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 121:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[성전에 올라가는 노래] 내가 산을 향하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 121:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 산 것이 아니요 오직 내 안에 그리스도께서 사신 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 몸을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라`,ref:`갈라디아서 2:20`,engText:`I have been crucified with Christ and I no longer live, but Christ lives in me. The life I now live in the body, I live by faith in the Son of God, who loved me and gave himself for me.`,commentary:`본문(갈라디아서 2:20)은 「내가 그리스도와 함께 십자가에 못 박혔나니 그런즉 이제는 내가 산 것이 아니요 오직 내 안에 그리스도께서 사신 것이라 이제 내가 육체 가운데 사는 것은 나를 사랑하사 나를 위하여 자기 몸을 버리신 하나님의 아들을 믿는 믿음 안에서 사는 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「갈라디아서 2:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(갈라디아서 2:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 그리스도와 함께 십자가에 못 박혔나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「갈라디아서 2:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 말하노라 너희를 향한 나의 생각은 내가 아나니 재앙이 아니라 곧 평안이요 너희 장래에 소망을 주려하는 생각이라`,ref:`예레미야 29:11`,engText:`"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future."`,commentary:`본문(예레미야 29:11)은 「나 여호와가 말하노라 너희를 향한 나의 생각은 내가 아나니 재앙이 아니라 곧 평안이요 너희 장래에 소망을 주려하는 생각이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야 29:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야 29:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나 여호와가 말하노라 너희를 향한 나의 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야 29:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`무릇 지킬만한 것보다 더욱 네 마음을 지키라 생명의 근원이 이에서 남이니라`,ref:`잠언 4:23`,engText:`Above all else, guard your heart, for everything you do flows from it.`,commentary:`본문(잠언 4:23)은 「무릇 지킬만한 것보다 더욱 네 마음을 지키라 생명의 근원이 이에서 남이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 4:23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 4:23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「무릇 지킬만한 것보다 더욱 네 마음을 지…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 4:23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희 염려를 다 주께 맡겨 버리라 이는 저가 너희를 권고하심이니라`,ref:`베드로전서 5:7`,engText:`Cast all your anxiety on him because he cares for you.`,commentary:`본문(베드로전서 5:7)은 「너희 염려를 다 주께 맡겨 버리라 이는 저가 너희를 권고하심이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 5:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 5:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희 염려를 다 주께 맡겨 버리라 이는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 5:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이스라엘아 들으라 우리 하나님 여호와는 오직 하나인 여호와시니 너는 마음을 다하고 성품을 다하고 힘을 다하여 네 하나님 여호와를 사랑하라`,ref:`신명기 6:4-5`,engText:`Hear, O Israel: The Lord our God, the Lord is one. Love the Lord your God with all your heart and with all your soul and with all your strength.`,commentary:`본문(신명기 6:4-5)은 「이스라엘아 들으라 우리 하나님 여호와는 오직 하나인 여호와시니 너는 마음을 다하고 성품을 다하고 힘을 다하여 네 하나님 여호와를 사랑하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 6:4-5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 6:4-5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이스라엘아 들으라 우리 하나님 여호와는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 6:4-5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 내가 곧 길이요 진리요 생명이니 나로 말미암지 않고는 아버지께로 올 자가 없느니라`,ref:`요한복음 14:6`,engText:`Jesus answered, "I am the way and the truth and the life. No one comes to the Father except through me."`,commentary:`본문(요한복음 14:6)은 「예수께서 가라사대 내가 곧 길이요 진리요 생명이니 나로 말미암지 않고는 아버지께로 올 자가 없느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 14:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 14:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 가라사대 내가 곧 길이요 진리요…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 14:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`또 여호와를 기뻐하라 저가 네 마음의 소원을 이루어 주시리로다`,ref:`시편 37:4`,engText:`Take delight in the Lord, and he will give you the desires of your heart.`,commentary:`본문(시편 37:4)은 「또 여호와를 기뻐하라 저가 네 마음의 소원을 이루어 주시리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 37:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 37:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「또 여호와를 기뻐하라 저가 네 마음의 소…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 37:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희가 그 은혜를 인하여 믿음으로 말미암아 구원을 얻었나니 이것이 너희에게서 난 것이 아니요 하나님의 선물이라`,ref:`에베소서 2:8`,engText:`For it is by grace you have been saved, through faith — and this is not from yourselves, it is the gift of God.`,commentary:`본문(에베소서 2:8)은 「너희가 그 은혜를 인하여 믿음으로 말미암아 구원을 얻었나니 이것이 너희에게서 난 것이 아니요 하나님의 선물이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 2:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 2:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희가 그 은혜를 인하여 믿음으로 말미암…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 2:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`보라 내가 새 일을 행하리니 이제 나타낼 것이라 너희가 그것을 알지 못하겠느냐 정녕히 내가 광야에 길과 사막에 강을 내리니`,ref:`이사야 43:19`,engText:`See, I am doing a new thing! Now it springs up; do you not perceive it? I am making a way in the wilderness and streams in the wasteland.`,commentary:`본문(이사야 43:19)은 「보라 내가 새 일을 행하리니 이제 나타낼 것이라 너희가 그것을 알지 못하겠느냐 정녕히 내가 광야에 길과 사막에 강을 내리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 43:19」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 43:19)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「보라 내가 새 일을 행하리니 이제 나타낼…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 43:19」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`마음의 즐거움은 양약이라도 심령의 근심은 뼈로 마르게 하느니라`,ref:`잠언 17:22`,engText:`A cheerful heart is good medicine, but a crushed spirit dries up the bones.`,commentary:`본문(잠언 17:22)은 「마음의 즐거움은 양약이라도 심령의 근심은 뼈로 마르게 하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 17:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 17:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「마음의 즐거움은 양약이라도 심령의 근심은…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 17:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 사랑함은 그가 먼저 우리를 사랑하셨음이라`,ref:`요한일서 4:19`,engText:`We love because he first loved us.`,commentary:`본문(요한일서 4:19)은 「우리가 사랑함은 그가 먼저 우리를 사랑하셨음이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 4:19」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 4:19)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 사랑함은 그가 먼저 우리를 사랑하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 4:19」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 너희를 위하여 싸우시리니 너희는 가만히 있을지니라`,ref:`출애굽기 14:14`,engText:`The Lord will fight for you; you need only to be still.`,commentary:`본문(출애굽기 14:14)은 「여호와께서 너희를 위하여 싸우시리니 너희는 가만히 있을지니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 14:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 14:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께서 너희를 위하여 싸우시리니 너희…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 14:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라 하시니라`,ref:`마태복음 28:20`,engText:`And teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age.`,commentary:`본문(마태복음 28:20)은 「내가 너희에게 분부한 모든 것을 가르쳐 지키게 하라 볼지어다 내가 세상 끝날까지 너희와 항상 함께 있으리라 하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 28:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 28:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 너희에게 분부한 모든 것을 가르쳐 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 28:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주는 나의 은신처요 방패시라 내가 주의 말씀을 바라나이다`,ref:`시편 119:114`,engText:`You are my refuge and my shield; I have put my hope in your word.`,commentary:`본문(시편 119:114)은 「주는 나의 은신처요 방패시라 내가 주의 말씀을 바라나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 119:114」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 119:114)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주는 나의 은신처요 방패시라 내가 주의 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 119:114」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라`,ref:`로마서 12:2`,engText:`Do not conform to the pattern of this world, but be transformed by the renewing of your mind. Then you will be able to test and approve what God's will is — his good, pleasing and perfect will.`,commentary:`본문(로마서 12:2)은 「너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 12:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 12:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 이 세대를 본받지 말고 오직 마음…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 12:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 내게 부르짖으라 내가 네게 응답하겠고 네가 알지 못하는 크고 비밀한 일을 네게 보이리라`,ref:`예레미야 33:3`,engText:`Call to me and I will answer you and tell you great and unsearchable things you do not know.`,commentary:`본문(예레미야 33:3)은 「너는 내게 부르짖으라 내가 네게 응답하겠고 네가 알지 못하는 크고 비밀한 일을 네게 보이리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야 33:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야 33:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 내게 부르짖으라 내가 네게 응답하겠…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야 33:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 가는 길을 오직 그가 아시나니 그가 나를 단련하신 후에는 내가 정금 같이 나오리라`,ref:`욥기 23:10`,engText:`But he knows the way that I take; when he has tested me, I will come forth as gold.`,commentary:`본문(욥기 23:10)은 「나의 가는 길을 오직 그가 아시나니 그가 나를 단련하신 후에는 내가 정금 같이 나오리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 23:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 23:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 가는 길을 오직 그가 아시나니 그가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 23:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`믿음의 주요 또 온전케 하시는 이인 예수를 바라보자 저는 그 앞에 있는 즐거움을 위하여 십자가를 참으사 부끄러움을 개의치 아니하시더니 하나님 보좌 우편에 앉으셨느니라`,ref:`히브리서 12:2`,engText:`Fixing our eyes on Jesus, the pioneer and perfecter of faith.`,commentary:`본문(히브리서 12:2)은 「믿음의 주요 또 온전케 하시는 이인 예수를 바라보자 저는 그 앞에 있는 즐거움을 위하여 십자가를 참으사 부끄러움을 개의치 아니하시더니 하나님 보좌 우편에 앉으셨느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 12:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 12:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「믿음의 주요 또 온전케 하시는 이인 예수…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 12:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 아브람에게 이르시되 너는 너의 본토 친척 아비 집을 떠나 내가 네게 지시할 땅으로 가라 내가 너로 큰 민족을 이루고 네게 복을 주어 네 이름을 창대케 하리니 너는 복의 근원이 될지라`,ref:`창세기 12:1-2`,engText:`The Lord had said to Abram, "Go from your country, your people and your father's household to the land I will show you. I will make you into a great nation, and I will bless you; I will make your name great, and you will be a blessing."`,commentary:`본문(창세기 12:1-2)은 「여호와께서 아브람에게 이르시되 너는 너의 본토 친척 아비 집을 떠나 내가 네게 지시할 땅으로 가라 내가 너로 큰 민족을 이루고 네게 복을 주어 네 이름을 창대케 하리니 너는 복의 근원이 될지라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 12:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 12:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께서 아브람에게 이르시되 너는 너의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 12:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`영접하는 자 곧 그 이름을 믿는 자들에게는 하나님의 자녀가 되는 권세를 주셨으니`,ref:`요한복음 1:12`,engText:`Yet to all who did receive him, to those who believed in his name, he gave the right to become children of God.`,commentary:`본문(요한복음 1:12)은 「영접하는 자 곧 그 이름을 믿는 자들에게는 하나님의 자녀가 되는 권세를 주셨으니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 1:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 1:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「영접하는 자 곧 그 이름을 믿는 자들에게…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 1:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[성전에 올라가는 노래] 여호와여 내가 깊은 데서 주께 부르짖었나이다`,ref:`시편 130:1`,engText:`Out of the depths I cry to you, Lord.`,commentary:`본문(시편 130:1)은 「[성전에 올라가는 노래] 여호와여 내가 깊은 데서 주께 부르짖었나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 130:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 130:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[성전에 올라가는 노래] 여호와여 내가 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 130:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 믿음, 소망, 사랑, 이 세가지는 항상 있을 것인데 그 중에 제일은 사랑이라`,ref:`고린도전서 13:13`,engText:`And now these three remain: faith, hope and love. But the greatest of these is love.`,commentary:`본문(고린도전서 13:13)은 「그런즉 믿음, 소망, 사랑, 이 세가지는 항상 있을 것인데 그 중에 제일은 사랑이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 13:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 13:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그런즉 믿음, 소망, 사랑, 이 세가지는…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 13:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람아 주께서 선한 것이 무엇임을 네게 보이셨나니 여호와께서 네게 구하시는 것이 오직 공의를 행하며 인자를 사랑하며 겸손히 네 하나님과 함께 행하는 것이 아니냐`,ref:`미가 6:8`,engText:`He has shown you, O mortal, what is good. And what does the Lord require of you? To act justly and to love mercy and to walk humbly with your God.`,commentary:`본문(미가 6:8)은 「사람아 주께서 선한 것이 무엇임을 네게 보이셨나니 여호와께서 네게 구하시는 것이 오직 공의를 행하며 인자를 사랑하며 겸손히 네 하나님과 함께 행하는 것이 아니냐」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「미가 6:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(미가 6:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람아 주께서 선한 것이 무엇임을 네게 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「미가 6:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 모든 것을 지으시되 때를 따라 아름답게 하셨고 또 사람에게 영원을 사모하는 마음을 주셨느니라 그러나 하나님의 하시는 일의 시종을 사람으로 측량할 수 없게 하셨도다`,ref:`전도서 3:11`,engText:`He has made everything beautiful in its time. He has also set eternity in the human heart; yet no one can fathom what God has done from beginning to end.`,commentary:`본문(전도서 3:11)은 「하나님이 모든 것을 지으시되 때를 따라 아름답게 하셨고 또 사람에게 영원을 사모하는 마음을 주셨느니라 그러나 하나님의 하시는 일의 시종을 사람으로 측량할 수 없게 하셨도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 3:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 3:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 모든 것을 지으시되 때를 따라 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 3:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이와 같이 행함이 없는 믿음은 그 자체가 죽은 것이라`,ref:`야고보서 2:17`,engText:`In the same way, faith by itself, if it is not accompanied by action, is dead.`,commentary:`본문(야고보서 2:17)은 「이와 같이 행함이 없는 믿음은 그 자체가 죽은 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 2:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 2:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이와 같이 행함이 없는 믿음은 그 자체가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 2:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 네게 복을 주시고 너를 지키시기를 원하며 여호와는 그 얼굴로 네게 비취사 은혜 베푸시기를 원하며 여호와는 그 얼굴을 네게로 향하여 드사 평강주시기를 원하노라 할지니라 하라`,ref:`민수기 6:24-26`,engText:`The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you; the Lord turn his face toward you and give you peace.`,commentary:`본문(민수기 6:24-26)은 「여호와는 네게 복을 주시고 너를 지키시기를 원하며 여호와는 그 얼굴로 네게 비취사 은혜 베푸시기를 원하며 여호와는 그 얼굴을 네게로 향하여 드사 평강주시기를 원하노라 할지니라 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「민수기 6:24-26」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(민수기 6:24-26)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 네게 복을 주시고 너를 지키시기…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「민수기 6:24-26」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`심령이 가난한 자는 복이 있나니 천국이 저희 것임이요 애통하는 자는 복이 있나니 저희가 위로를 받을 것임이요`,ref:`마태복음 5:3-4`,engText:`Blessed are the poor in spirit, for theirs is the kingdom of heaven. Blessed are those who mourn, for they will be comforted.`,commentary:`본문(마태복음 5:3-4)은 「심령이 가난한 자는 복이 있나니 천국이 저희 것임이요 애통하는 자는 복이 있나니 저희가 위로를 받을 것임이요」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 5:3-4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 5:3-4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「심령이 가난한 자는 복이 있나니 천국이 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 5:3-4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 영혼아 네가 어찌하여 낙망하며 어찌하여 내 속에서 불안하여 하는고 너는 하나님을 바라라 그 얼굴의 도우심을 인하여 내가 오히려 찬송하리로다`,ref:`시편 42:5`,engText:`Why, my soul, are you downcast? Why so disturbed within me? Put your hope in God, for I will yet praise him, my Savior and my God.`,commentary:`본문(시편 42:5)은 「내 영혼아 네가 어찌하여 낙망하며 어찌하여 내 속에서 불안하여 하는고 너는 하나님을 바라라 그 얼굴의 도우심을 인하여 내가 오히려 찬송하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 42:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 42:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 영혼아 네가 어찌하여 낙망하며 어찌하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 42:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`아무 것도 염려하지 말고 오직 모든 일에 기도와 간구로, 너희 구할 것을 감사함으로 하나님께 아뢰라 그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라`,ref:`빌립보서 4:6-7`,engText:`Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.`,commentary:`본문(빌립보서 4:6-7)은 「아무 것도 염려하지 말고 오직 모든 일에 기도와 간구로, 너희 구할 것을 감사함으로 하나님께 아뢰라 그리하면 모든 지각에 뛰어난 하나님의 평강이 그리스도 예수 안에서 너희 마음과 생각을 지키시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 4:6-7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 4:6-7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「아무 것도 염려하지 말고 오직 모든 일에…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 4:6-7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너의 하나님 여호와가 너의 가운데 계시니 그는 구원을 베푸실 전능자시라 그가 너로 인하여 기쁨을 이기지 못하여 하시며 너를 잠잠히 사랑하시며 너로 인하여 즐거이 부르며 기뻐하시리라 하리라`,ref:`스바냐 3:17`,engText:`The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing.`,commentary:`본문(스바냐 3:17)은 「너의 하나님 여호와가 너의 가운데 계시니 그는 구원을 베푸실 전능자시라 그가 너로 인하여 기쁨을 이기지 못하여 하시며 너를 잠잠히 사랑하시며 너로 인하여 즐거이 부르며 기뻐하시리라 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「스바냐 3:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(스바냐 3:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너의 하나님 여호와가 너의 가운데 계시니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「스바냐 3:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너의 행사를 여호와께 맡기라 그리하면 너의 경영하는 것이 이루리라`,ref:`잠언 16:3`,engText:`Commit to the Lord whatever you do, and he will establish your plans.`,commentary:`본문(잠언 16:3)은 「너의 행사를 여호와께 맡기라 그리하면 너의 경영하는 것이 이루리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 16:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 16:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너의 행사를 여호와께 맡기라 그리하면 너…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 16:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 너희는 택하신 족속이요 왕같은 제사장들이요 거룩한 나라요 그의 소유된 백성이니 이는 너희를 어두운 데서 불러내어 그의 기이한 빛에 들어가게 하신 자의 아름다운 덕을 선전하게 하려 하심이라`,ref:`베드로전서 2:9`,engText:`But you are a chosen people, a royal priesthood, a holy nation, God's special possession, that you may declare the praises of him who called you out of darkness into his wonderful light.`,commentary:`본문(베드로전서 2:9)은 「오직 너희는 택하신 족속이요 왕같은 제사장들이요 거룩한 나라요 그의 소유된 백성이니 이는 너희를 어두운 데서 불러내어 그의 기이한 빛에 들어가게 하신 자의 아름다운 덕을 선전하게 하려 하심이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 2:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 2:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 너희는 택하신 족속이요 왕같은 제사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 2:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 율법책을 네 입에서 떠나지 말게 하며 주야로 그것을 묵상하여 그 가운데 기록한대로 다 지켜 행하라 그리하면 네 길이 평탄하게 될 것이라 네가 형통하리라`,ref:`여호수아 1:8`,engText:`Keep this Book of the Law always on your lips; meditate on it day and night, so that you may be careful to do everything written in it. Then you will be prosperous and successful.`,commentary:`본문(여호수아 1:8)은 「이 율법책을 네 입에서 떠나지 말게 하며 주야로 그것을 묵상하여 그 가운데 기록한대로 다 지켜 행하라 그리하면 네 길이 평탄하게 될 것이라 네가 형통하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「여호수아 1:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(여호수아 1:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 율법책을 네 입에서 떠나지 말게 하며…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「여호수아 1:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라 내가 너희에게 주는 것은 세상이 주는 것 같지 아니하니라 너희는 마음에 근심도 말고 두려워하지도 말라`,ref:`요한복음 14:27`,engText:`Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.`,commentary:`본문(요한복음 14:27)은 「평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라 내가 너희에게 주는 것은 세상이 주는 것 같지 아니하니라 너희는 마음에 근심도 말고 두려워하지도 말라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 14:27」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 14:27)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「평안을 너희에게 끼치노니 곧 나의 평안을…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 14:27」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[고라 자손의 마스길, 영장으로 한 노래] 하나님이여 사슴이 시냇물을 찾기에 갈급함 같이 내 영혼이 주를 찾기에 갈급하니이다`,ref:`시편 42:1`,engText:`As the deer pants for streams of water, so my soul pants for you, my God.`,commentary:`본문(시편 42:1)은 「[고라 자손의 마스길, 영장으로 한 노래] 하나님이여 사슴이 시냇물을 찾기에 갈급함 같이 내 영혼이 주를 찾기에 갈급하니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 42:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 42:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[고라 자손의 마스길, 영장으로 한 노래…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 42:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 확신하노니 사망이나 생명이나 천사들이나 권세자들이나 현재 일이나 장래 일이나 능력이나 높음이나 깊음이나 다른 아무 피조물이라도 우리를 우리 주 그리스도 예수 안에 있는 하나님의 사랑에서 끊을 수 없으리라`,ref:`로마서 8:38-39`,engText:`For I am convinced that neither death nor life, neither angels nor demons, neither the present nor the future, nor any powers, neither height nor depth, nor anything else in all creation, will be able to separate us from the love of God that is in Christ Jesus our Lord.`,commentary:`본문(로마서 8:38-39)은 「내가 확신하노니 사망이나 생명이나 천사들이나 권세자들이나 현재 일이나 장래 일이나 능력이나 높음이나 깊음이나 다른 아무 피조물이라도 우리를 우리 주 그리스도 예수 안에 있는 하나님의 사랑에서 끊을 수 없으리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 8:38-39」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 8:38-39)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 확신하노니 사망이나 생명이나 천사들…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 8:38-39」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 자비와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것이 아침마다 새로우니 주의 성실이 크도소이다`,ref:`예레미야애가 3:22-23`,engText:`Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.`,commentary:`본문(예레미야애가 3:22-23)은 「여호와의 자비와 긍휼이 무궁하시므로 우리가 진멸되지 아니함이니이다 이것이 아침마다 새로우니 주의 성실이 크도소이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야애가 3:22-23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야애가 3:22-23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 자비와 긍휼이 무궁하시므로 우리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야애가 3:22-23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`대저 의인은 일곱 번 넘어질지라도 다시 일어나려니와 악인은 재앙으로 인하여 엎드러지느니라`,ref:`잠언 24:16`,engText:`For though the righteous fall seven times, they rise again, but the wicked stumble when calamity strikes.`,commentary:`본문(잠언 24:16)은 의인이 결코 넘어지지 않는 사람이 아니라, 일곱 번 넘어져도 하나님의 능력으로 다시 일어나는 사람임을 교훈합니다.
+성도의 위대함은 실수가 없는 데 있는 것이 아니라, 실패와 환난 속에서도 주님의 손을 붙잡고 오뚝이처럼 다시 일어서는 회복탄력성에 있습니다.
+
+악인은 작은 재앙에도 스스로 엎드러지나, 의인은 넘어진 그 자리에서 하나님의 은혜를 힘입어 다시 전진합니다. 낙심하지 말고 당신을 붙드시는 주님의 강한 오른손을 바라보십시오.`,questions:[`최근 나를 낙심하게 만든 실패나 넘어짐 속에서 하나님의 도우심을 구하고 있는가?`,`실패를 두려워하여 도전을 멈추지 않고, 다시 일으키실 주님을 신뢰하며 일어나고 있는가?`,`주변에 넘어져 좌절하고 있는 이웃을 찾아가 하나님의 격려와 손길을 내밀 수 있는가?`],prayer:`넘어진 자를 일으켜 세우시는 신실하신 주님,
+저의 연약함으로 낙심하고 주저앉았던 자리에서 저를 다시 일으켜 세워주시니 감사합니다.
+일곱 번 넘어져도 주님의 손을 붙잡고 다시 일어나는 믿음의 용기를 주옵소서.
+어떤 환난 앞에서도 뒤로 물러서지 않고 주님과 함께 승리하는 복된 하루가 되게 하소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`만일 우리가 우리 죄를 자백하면 저는 미쁘시고 의로우사 우리 죄를 사하시며 모든 불의에서 우리를 깨끗케 하실 것이요`,ref:`요한일서 1:9`,engText:`If we confess our sins, he is faithful and just and will forgive us our sins and purify us from all unrighteousness.`,commentary:`본문(요한일서 1:9)은 죄로 인해 무너진 영혼을 온전히 회복시키시는 하나님의 신실하심과 의로우심을 증거합니다.
+하나님은 우리가 완벽해서 용서하시는 것이 아니라, 상하고 통회하는 마음으로 죄를 숨기지 않고 자백할 때 그리스도의 보혈로 깨끗하게 씻어주십니다.
+
+죄책감과 정죄감에 사로잡혀 숨기보다 은혜의 보좌 앞에 나아가 정직하게 털어놓을 때, 주님은 모든 불의에서 우리를 깨끗하게 하시고 새로운 시작을 허락하십니다.`,questions:[`하나님 앞에서 숨기거나 합리화하고 있는 은밀한 죄나 부끄러운 습관은 없는가?`,`자백하는 자를 반드시 용서하시고 깨끗하게 하시는 하나님의 미쁘심을 온전히 신뢰하는가?`,`용서받은 의인으로서 오늘 하루 이웃의 허물 또한 너그럽게 품고 용서할 수 있는가?`],prayer:`미쁘시고 의로우신 하나님 아버지,
+저의 연약함과 허물을 주님 앞에 정직하게 고백하며 엎드립니다.
+예수 그리스도의 십자가 보혈로 저의 모든 죄와 불의를 깨끗하게 씻어주옵소서.
+정죄감에서 벗어나 참된 자유를 누리게 하시고, 거룩하고 정결한 마음으로 주님을 기쁘시게 하는 하루가 되게 하소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 사무엘에게 이르시되 그 용모와 신장을 보지 말라 내가 이미 그를 버렸노라 나의 보는 것은 사람과 같지 아니하니 사람은 외모를 보거니와 나 여호와는 중심을 보느니라`,ref:`사무엘상 16:7`,engText:`The Lord does not look at the things people look at. People look at the outward appearance, but the Lord looks at the heart.`,commentary:`본문(사무엘상 16:7)은 사람의 외모와 스펙이 아닌, 하나님을 향한 중심을 보시는 하나님의 거룩한 기준을 선명하게 보여줍니다.
+사무엘조차 엘리압의 외모와 키를 보고 감탄했으나, 하나님은 사람의 눈에 띄지 않던 어린 양치기 다윗의 순전한 마음을 주목하셨습니다.
+
+세상은 외모, 학벌, 재력 등 겉모습으로 사람을 평가하지만, 하나님은 우리의 숨은 동기와 하나님을 향한 진실한 예배의 중심을 살피십니다. 사람의 인정보다 하나님의 시선을 의식하는 거룩한 성도가 되십시오.`,questions:[`세상의 평가나 겉모습을 꾸미는 데 집착하기보다 하나님 앞에서의 내 중심을 가꾸고 있는가?`,`다른 사람을 대할 때 외모나 겉조건으로 판단하지 않고 주님의 시선으로 존중하고 있는가?`,`오늘 나의 예배와 기도가 형식에 그치지 않고 하나님을 향한 진실한 마음에서 비롯되고 있는가?`],prayer:`우리의 중심을 감찰하시는 하나님 아버지,
+사람의 시선과 세상의 기준에 얽매여 겉모습만 꾸미려 했던 저의 어리석음을 용서하소서.
+다윗처럼 보이지 않는 곳에서도 하나님을 경외하며 순전하고 깨끗한 중심을 간직하게 하옵소서.
+오늘 하루 하나님이 기뻐하시는 정직하고 신실한 예배자로 살아가게 하옵소서.
+예수님의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 이르시되 할 수 있거든이 무슨 말이냐 믿는 자에게는 능치 못할 일이 없느니라 하시니`,ref:`마가복음 9:23`,engText:`"If you can'?" said Jesus. "Everything is possible for one who believes."`,commentary:`본문(마가복음 9:23)은 「예수께서 이르시되 할 수 있거든이 무슨 말이냐 믿는 자에게는 능치 못할 일이 없느니라 하시니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 9:23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 9:23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 이르시되 할 수 있거든이 무슨 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 9:23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 빛이요 나의 구원이시니 내가 누구를 두려워하리요 여호와는 내 생명의 능력이시니 내가 누구를 무서워하리요`,ref:`시편 27:1`,engText:`The Lord is my light and my salvation — whom shall I fear? The Lord is the stronghold of my life — of whom shall I be afraid?`,commentary:`본문(시편 27:1)은 「여호와는 나의 빛이요 나의 구원이시니 내가 누구를 두려워하리요 여호와는 내 생명의 능력이시니 내가 누구를 무서워하리요」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 27:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 27:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 나의 빛이요 나의 구원이시니 내…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 27:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 누구든지 그리스도 안에 있으면 새로운 피조물이라 이전 것은 지나갔으니 보라 새 것이 되었도다`,ref:`고린도후서 5:17`,engText:`Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!`,commentary:`본문(고린도후서 5:17)은 「그런즉 누구든지 그리스도 안에 있으면 새로운 피조물이라 이전 것은 지나갔으니 보라 새 것이 되었도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도후서 5:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도후서 5:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그런즉 누구든지 그리스도 안에 있으면 새…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도후서 5:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`비록 무화과나무가 무성치 못하며 포도나무에 열매가 없으며 감람나무에 소출이 없으며 밭에 식물이 없으며 우리에 양이 없으며 외양간에 소가 없을지라도 나는 여호와를 인하여 즐거워하며 나의 구원의 하나님을 인하여 기뻐하리로다`,ref:`하박국 3:17-18`,engText:`Though the fig tree does not bud and there are no grapes on the vines, though the olive crop fails and the fields produce no food, yet I will rejoice in the Lord, I will be joyful in God my Savior.`,commentary:`본문(하박국 3:17-18)은 「비록 무화과나무가 무성치 못하며 포도나무에 열매가 없으며 감람나무에 소출이 없으며 밭에 식물이 없으며 우리에 양이 없으며 외양간에 소가 없을지라도 나는 여호와를 인하여 즐거워하며 나의 구원의 하나님을 인하여 기뻐하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「하박국 3:17-18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(하박국 3:17-18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「비록 무화과나무가 무성치 못하며 포도나무…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「하박국 3:17-18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 청년의 때 곧 곤고한 날이 이르기 전, 나는 아무 낙이 없다고 할 해가 가깝기 전에 너의 창조자를 기억하라`,ref:`전도서 12:1`,engText:`Remember your Creator in the days of your youth, before the days of trouble come and the years approach when you will say, "I find no pleasure in them."`,commentary:`본문(전도서 12:1)은 「너는 청년의 때 곧 곤고한 날이 이르기 전, 나는 아무 낙이 없다고 할 해가 가깝기 전에 너의 창조자를 기억하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 12:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 12:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 청년의 때 곧 곤고한 날이 이르기 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 12:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그로 더불어 먹고 그는 나로 더불어 먹으리라`,ref:`요한계시록 3:20`,engText:`Here I am! I stand at the door and knock. If anyone hears my voice and opens the door, I will come in and eat with that person, and they with me.`,commentary:`본문(요한계시록 3:20)은 「볼지어다 내가 문 밖에 서서 두드리노니 누구든지 내 음성을 듣고 문을 열면 내가 그에게로 들어가 그로 더불어 먹고 그는 나로 더불어 먹으리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 3:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 3:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「볼지어다 내가 문 밖에 서서 두드리노니 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 3:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 이름으로 일컫는 내 백성이 그 악한 길에서 떠나 스스로 겸비하고 기도하여 내 얼굴을 구하면 내가 하늘에서 듣고 그 죄를 사하고 그 땅을 고칠지라`,ref:`역대하 7:14`,engText:`If my people, who are called by my name, will humble themselves and pray and seek my face and turn from their wicked ways, then I will hear from heaven, and I will forgive their sin and will heal their land.`,commentary:`본문(역대하 7:14)은 「내 이름으로 일컫는 내 백성이 그 악한 길에서 떠나 스스로 겸비하고 기도하여 내 얼굴을 구하면 내가 하늘에서 듣고 그 죄를 사하고 그 땅을 고칠지라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대하 7:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대하 7:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 이름으로 일컫는 내 백성이 그 악한 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대하 7:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`대저 하나님의 모든 말씀은 능치 못하심이 없느니라`,ref:`누가복음 1:37`,engText:`For no word from God will ever fail.`,commentary:`본문(누가복음 1:37)은 「대저 하나님의 모든 말씀은 능치 못하심이 없느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 1:37」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 1:37)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「대저 하나님의 모든 말씀은 능치 못하심이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 1:37」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주의 인자가 생명보다 나으므로 내 입술이 주를 찬양할 것이라`,ref:`시편 63:3`,engText:`Because your love is better than life, my lips will glorify you.`,commentary:`본문(시편 63:3)은 「주의 인자가 생명보다 나으므로 내 입술이 주를 찬양할 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 63:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 63:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주의 인자가 생명보다 나으므로 내 입술이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 63:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라`,ref:`갈라디아서 5:22-23`,engText:`But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control. Against such things there is no law.`,commentary:`본문(갈라디아서 5:22-23)은 「오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「갈라디아서 5:22-23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(갈라디아서 5:22-23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 성령의 열매는 사랑과 희락과 화평과…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「갈라디아서 5:22-23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그가 찔림은 우리의 허물을 인함이요 그가 상함은 우리의 죄악을 인함이라 그가 징계를 받음으로 우리가 평화를 누리고 그가 채찍에 맞음으로 우리가 나음을 입었도다`,ref:`이사야 53:5`,engText:`But he was pierced for our transgressions, he was crushed for our iniquities; the punishment that brought us peace was on him, and by his wounds we are healed.`,commentary:`본문(이사야 53:5)은 「그가 찔림은 우리의 허물을 인함이요 그가 상함은 우리의 죄악을 인함이라 그가 징계를 받음으로 우리가 평화를 누리고 그가 채찍에 맞음으로 우리가 나음을 입었도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 53:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 53:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그가 찔림은 우리의 허물을 인함이요 그가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 53:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`유순한 대답은 분노를 쉬게 하여도 과격한 말은 노를 격동하느니라`,ref:`잠언 15:1`,engText:`A gentle answer turns away wrath, but a harsh word stirs up anger.`,commentary:`본문(잠언 15:1)은 「유순한 대답은 분노를 쉬게 하여도 과격한 말은 노를 격동하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 15:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 15:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「유순한 대답은 분노를 쉬게 하여도 과격한…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 15:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 말씀은 살았고 운동력이 있어 죄우에 날선 어떤 검보다도 예리하여 혼과 영과 및 관절과 골수를 찔러 쪼개기까지 하며 또 마음의 생각과 뜻을 감찰하나니`,ref:`히브리서 4:12`,engText:`For the word of God is alive and active. Sharper than any double-edged sword, it penetrates even to dividing soul and spirit, joints and marrow; it judges the thoughts and attitudes of the heart.`,commentary:`본문(히브리서 4:12)은 「하나님의 말씀은 살았고 운동력이 있어 죄우에 날선 어떤 검보다도 예리하여 혼과 영과 및 관절과 골수를 찔러 쪼개기까지 하며 또 마음의 생각과 뜻을 감찰하나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 4:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 4:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님의 말씀은 살았고 운동력이 있어 죄…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 4:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 마음을 강하게 하고 담대히 하라 그들을 두려워 말라 그들 앞에서 떨지 말라 이는 네 하나님 여호와 그가 너와 함께 행하실 것임이라 반드시 너를 떠나지 아니하시며 버리지 아니하시리라 하고`,ref:`신명기 31:6`,engText:`Be strong and courageous. Do not be afraid or terrified because of them, for the Lord your God goes with you; he will never leave you nor forsake you.`,commentary:`본문(신명기 31:6)은 「너는 마음을 강하게 하고 담대히 하라 그들을 두려워 말라 그들 앞에서 떨지 말라 이는 네 하나님 여호와 그가 너와 함께 행하실 것임이라 반드시 너를 떠나지 아니하시며 버리지 아니하시리라 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 31:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 31:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 마음을 강하게 하고 담대히 하라 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 31:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅 끝까지 이르러 내 증인이 되리라 하시니라`,ref:`사도행전 1:8`,engText:`But you will receive power when the Holy Spirit comes on you; and you will be my witnesses in Jerusalem, and in all Judea and Samaria, and to the ends of the earth.`,commentary:`본문(사도행전 1:8)은 「오직 성령이 너희에게 임하시면 너희가 권능을 받고 예루살렘과 온 유대와 사마리아와 땅 끝까지 이르러 내 증인이 되리라 하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 1:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 1:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 성령이 너희에게 임하시면 너희가 권…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 1:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 경외함이 곧 지혜의 근본이라 그 계명을 지키는 자는 다 좋은 지각이 있나니 여호와를 찬송함이 영원히 있으리로다`,ref:`시편 111:10`,engText:`The fear of the Lord is the beginning of wisdom; all who follow his precepts have good understanding.`,commentary:`본문(시편 111:10)은 「여호와를 경외함이 곧 지혜의 근본이라 그 계명을 지키는 자는 다 좋은 지각이 있나니 여호와를 찬송함이 영원히 있으리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 111:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 111:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와를 경외함이 곧 지혜의 근본이라 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 111:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이는 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라`,ref:`데살로니가전서 5:16-18`,engText:`Rejoice always, pray continually, give thanks in all circumstances; for this is God's will for you in Christ Jesus.`,commentary:`본문(데살로니가전서 5:16-18)은 「항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이는 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「데살로니가전서 5:16-18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(데살로니가전서 5:16-18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「항상 기뻐하라 쉬지 말고 기도하라 범사에…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「데살로니가전서 5:16-18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나는 인애를 원하고 제사를 원치 아니하며 번제보다 하나님을 아는 것을 원하노라`,ref:`호세아 6:6`,engText:`For I desire mercy, not sacrifice, and acknowledgment of God rather than burnt offerings.`,commentary:`본문(호세아 6:6)은 「나는 인애를 원하고 제사를 원치 아니하며 번제보다 하나님을 아는 것을 원하노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「호세아 6:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(호세아 6:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나는 인애를 원하고 제사를 원치 아니하며…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「호세아 6:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주께서는 무소불능하시오며 무슨 경영이든지 못 이루실 것이 없는 줄 아오니`,ref:`욥기 42:2`,engText:`I know that you can do all things; no purpose of yours can be thwarted.`,commentary:`본문(욥기 42:2)은 「주께서는 무소불능하시오며 무슨 경영이든지 못 이루실 것이 없는 줄 아오니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 42:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 42:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주께서는 무소불능하시오며 무슨 경영이든지…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 42:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 형제들아 너희가 여러 가지 시험을 만나거든 온전히 기쁘게 여기라 이는 너희 믿음의 시련이 인내를 만들어 내는 줄 너희가 앎이라`,ref:`야고보서 1:2-3`,engText:`Consider it pure joy, my brothers and sisters, whenever you face trials of many kinds, because you know that the testing of your faith produces perseverance.`,commentary:`본문(야고보서 1:2-3)은 「내 형제들아 너희가 여러 가지 시험을 만나거든 온전히 기쁘게 여기라 이는 너희 믿음의 시련이 인내를 만들어 내는 줄 너희가 앎이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 1:2-3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 1:2-3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 형제들아 너희가 여러 가지 시험을 만…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 1:2-3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`느헤미야가 또 이르기를 너희는 가서 살찐 것을 먹고 단 것을 마시되 예비치 못한 자에게는 너희가 나누어 주라 이 날은 우리 주의 성일이니 근심하지 말라 여호와를 기뻐하는 것이 너희의 힘이니라 하고`,ref:`느헤미야 8:10`,engText:`Do not grieve, for the joy of the Lord is your strength.`,commentary:`본문(느헤미야 8:10)은 「느헤미야가 또 이르기를 너희는 가서 살찐 것을 먹고 단 것을 마시되 예비치 못한 자에게는 너희가 나누어 주라 이 날은 우리 주의 성일이니 근심하지 말라 여호와를 기뻐하는 것이 너희의 힘이니라 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「느헤미야 8:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(느헤미야 8:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「느헤미야가 또 이르기를 너희는 가서 살찐…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「느헤미야 8:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`진리를 알지니 진리가 너희를 자유케 하리라`,ref:`요한복음 8:32`,engText:`Then you will know the truth, and the truth will set you free.`,commentary:`본문(요한복음 8:32)은 「진리를 알지니 진리가 너희를 자유케 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 8:32」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 8:32)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「진리를 알지니 진리가 너희를 자유케 하리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 8:32」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[솔로몬의 Psa 곧 성전에 올라가는 노래] 여호와께서 집을 세우지 아니하시면 세우는 자의 수고가 헛되며 여호와께서 성을 지키지 아니하시면 파수꾼의 경성함이 허사로다`,ref:`시편 127:1`,engText:`Unless the Lord builds the house, the builders labor in vain. Unless the Lord watches over the city, the guards stand watch in vain.`,commentary:`본문(시편 127:1)은 「[솔로몬의 Psa 곧 성전에 올라가는 노래] 여호와께서 집을 세우지 아니하시면 세우는 자의 수고가 헛되며 여호와께서 성을 지키지 아니하시면 파수꾼의 경성함이 허사로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 127:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 127:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[솔로몬의 Psa 곧 성전에 올라가는 노…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 127:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`종말로 너희가 주 안에서와 그 힘의 능력으로 강건하여지고 마귀의 궤계를 능히 대적하기 위하여 하나님의 전신 갑주를 입으라`,ref:`에베소서 6:10-11`,engText:`Finally, be strong in the Lord and in his mighty power. Put on the full armor of God, so that you can take your stand against the devil's schemes.`,commentary:`본문(에베소서 6:10-11)은 「종말로 너희가 주 안에서와 그 힘의 능력으로 강건하여지고 마귀의 궤계를 능히 대적하기 위하여 하나님의 전신 갑주를 입으라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 6:10-11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 6:10-11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「종말로 너희가 주 안에서와 그 힘의 능력…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 6:10-11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 말씀에 내 생각은 너희 생각과 다르며 내 길은 너희 길과 달라서 하늘이 땅보다 높음 같이 내 길은 너희 길보다 높으며 내 생각은 너희 생각보다 높으니라`,ref:`이사야 55:8-9`,engText:`"For my thoughts are not your thoughts, neither are your ways my ways," declares the Lord. "As the heavens are higher than the earth, so are my ways higher than your ways and my thoughts than your thoughts."`,commentary:`본문(이사야 55:8-9)은 「여호와의 말씀에 내 생각은 너희 생각과 다르며 내 길은 너희 길과 달라서 하늘이 땅보다 높음 같이 내 길은 너희 길보다 높으며 내 생각은 너희 생각보다 높으니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 55:8-9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 55:8-9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 말씀에 내 생각은 너희 생각과 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 55:8-9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람의 마음에는 많은 계획이 있어도 오직 여호와의 뜻이 완전히 서리라`,ref:`잠언 19:21`,engText:`Many are the plans in a person's heart, but it is the Lord's purpose that prevails.`,commentary:`본문(잠언 19:21)은 「사람의 마음에는 많은 계획이 있어도 오직 여호와의 뜻이 완전히 서리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 19:21」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 19:21)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람의 마음에는 많은 계획이 있어도 오직…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 19:21」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 모든 육체는 풀과 같고 그 모든 영광이 풀의 꽃과 같으니 풀은 마르고 꽃은 떨어지되 오직 주의 말씀은 세세토록 있도다 하였으니 너희에게 전한 복음이 곧 이 말씀이니라`,ref:`베드로전서 1:24-25`,engText:`For, "All people are like grass, and all their glory is like the flowers of the field; the grass withers and the flowers fall, but the word of the Lord endures forever."`,commentary:`본문(베드로전서 1:24-25)은 「그러므로 모든 육체는 풀과 같고 그 모든 영광이 풀의 꽃과 같으니 풀은 마르고 꽃은 떨어지되 오직 주의 말씀은 세세토록 있도다 하였으니 너희에게 전한 복음이 곧 이 말씀이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 1:24-25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 1:24-25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 모든 육체는 풀과 같고 그 모든…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 1:24-25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 너와 함께 있어 네가 어디로 가든지 너를 지키며 너를 이끌어 이 땅으로 돌아오게 할지라 내가 네게 허락한 것을 다 이루기까지 너를 떠나지 아니하리라 하신지라`,ref:`창세기 28:15`,engText:`I am with you and will watch over you wherever you go, and I will bring you back to this land. I will not leave you until I have done what I have promised you.`,commentary:`본문(창세기 28:15)은 「내가 너와 함께 있어 네가 어디로 가든지 너를 지키며 너를 이끌어 이 땅으로 돌아오게 할지라 내가 네게 허락한 것을 다 이루기까지 너를 떠나지 아니하리라 하신지라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 28:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 28:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 너와 함께 있어 네가 어디로 가든지…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 28:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니`,ref:`마태복음 7:7`,engText:`Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.`,commentary:`본문(마태복음 7:7)은 「구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 7:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 7:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「구하라 그러면 너희에게 주실 것이요 찾으…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 7:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[고라 자손의 시, 영장으로 알라못에 맞춘 노래] 하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라`,ref:`시편 46:1`,engText:`God is our refuge and strength, an ever-present help in trouble.`,commentary:`본문(시편 46:1)은 「[고라 자손의 시, 영장으로 알라못에 맞춘 노래] 하나님은 우리의 피난처시요 힘이시니 환난 중에 만날 큰 도움이시라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 46:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 46:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[고라 자손의 시, 영장으로 알라못에 맞…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 46:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라`,ref:`골로새서 3:14`,engText:`And over all these virtues put on love, which binds them all together in perfect unity.`,commentary:`본문(골로새서 3:14)은 「이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「골로새서 3:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(골로새서 3:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 모든 것 위에 사랑을 더하라 이는 온…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「골로새서 3:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`지혜 있는 자는 궁창의 빛과 같이 빛날 것이요 많은 사람을 옳은 데로 돌아오게 한 자는 별과 같이 영원토록 비취리라`,ref:`다니엘 12:3`,engText:`Those who are wise will shine like the brightness of the heavens, and those who lead many to righteousness, like the stars for ever and ever.`,commentary:`본문(다니엘 12:3)은 「지혜 있는 자는 궁창의 빛과 같이 빛날 것이요 많은 사람을 옳은 데로 돌아오게 한 자는 별과 같이 영원토록 비취리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「다니엘 12:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(다니엘 12:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「지혜 있는 자는 궁창의 빛과 같이 빛날 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「다니엘 12:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`일의 결국을 다 들었으니 하나님을 경외하고 그 명령을 지킬지어다 이것이 사람의 본분이니라`,ref:`전도서 12:13`,engText:`Now all has been heard; here is the conclusion of the matter: Fear God and keep his commandments, for this is the duty of all mankind.`,commentary:`본문(전도서 12:13)은 「일의 결국을 다 들었으니 하나님을 경외하고 그 명령을 지킬지어다 이것이 사람의 본분이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 12:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 12:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「일의 결국을 다 들었으니 하나님을 경외하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 12:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`자녀들아 우리가 말과 혀로만 사랑하지 말고 오직 행함과 진실함으로 하자`,ref:`요한일서 3:18`,engText:`Dear children, let us not love with words or speech but with actions and in truth.`,commentary:`본문(요한일서 3:18)은 「자녀들아 우리가 말과 혀로만 사랑하지 말고 오직 행함과 진실함으로 하자」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 3:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 3:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「자녀들아 우리가 말과 혀로만 사랑하지 말…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 3:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 모세에게 이르시되 나는 스스로 있는 자니라 또 이르시되 너는 이스라엘 자손에게 이같이 이르기를 스스로 있는 자가 나를 너희에게 보내셨다 하라`,ref:`출애굽기 3:14`,engText:`God said to Moses, "I AM WHO I AM. This is what you are to say to the Israelites: 'I AM has sent me to you.'"`,commentary:`본문(출애굽기 3:14)은 「하나님이 모세에게 이르시되 나는 스스로 있는 자니라 또 이르시되 너는 이스라엘 자손에게 이같이 이르기를 스스로 있는 자가 나를 너희에게 보내셨다 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 3:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 3:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 모세에게 이르시되 나는 스스로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 3:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나는 포도나무요 너희는 가지니 저가 내 안에, 내가 저 안에 있으면 이 사람은 과실을 많이 맺나니 나를 떠나서는 너희가 아무 것도 할 수 (없음)이라`,ref:`요한복음 15:5`,engText:`I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.`,commentary:`본문(요한복음 15:5)은 「나는 포도나무요 너희는 가지니 저가 내 안에, 내가 저 안에 있으면 이 사람은 과실을 많이 맺나니 나를 떠나서는 너희가 아무 것도 할 수 (없음)이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 15:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 15:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나는 포도나무요 너희는 가지니 저가 내 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 15:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 반석이시요 나의 요새시요 나를 건지시는 자시요 나의 하나님이시요 나의 피할 바위시요 나의 방패시요 나의 구원의 뿔이시요 나의 산성이시로다`,ref:`시편 18:2`,engText:`The Lord is my rock, my fortress and my deliverer; my God is my rock, in whom I take refuge, my shield and the horn of my salvation, my stronghold.`,commentary:`본문(시편 18:2)은 「여호와는 나의 반석이시요 나의 요새시요 나를 건지시는 자시요 나의 하나님이시요 나의 피할 바위시요 나의 방패시요 나의 구원의 뿔이시요 나의 산성이시로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 18:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 18:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 나의 반석이시요 나의 요새시요 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 18:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에게 대한 자기의 사랑을 확증하셨느니라`,ref:`로마서 5:8`,engText:`But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.`,commentary:`본문(로마서 5:8)은 「우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에게 대한 자기의 사랑을 확증하셨느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 5:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 5:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 아직 죄인 되었을 때에 그리스도께…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 5:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그 후에 내가 내 신을 만민에게 부어 주리니 너희 자녀들이 장래일을 말할 것이며 너희 늙은이는 꿈을 꾸며 너희 젊은이는 이상을 볼 것이며`,ref:`요엘 2:28`,engText:`And afterward, I will pour out my Spirit on all people. Your sons and daughters will prophesy, your old men will dream dreams, your young men will see visions.`,commentary:`본문(요엘 2:28)은 「그 후에 내가 내 신을 만민에게 부어 주리니 너희 자녀들이 장래일을 말할 것이며 너희 늙은이는 꿈을 꾸며 너희 젊은이는 이상을 볼 것이며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요엘 2:28」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요엘 2:28)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그 후에 내가 내 신을 만민에게 부어 주…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요엘 2:28」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 경외하는 것이 지식의 근본이어늘 미련한 자는 지혜와 훈계를 멸시하느니라`,ref:`잠언 1:7`,engText:`The fear of the Lord is the beginning of knowledge, but fools despise wisdom and instruction.`,commentary:`본문(잠언 1:7)은 「여호와를 경외하는 것이 지식의 근본이어늘 미련한 자는 지혜와 훈계를 멸시하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 1:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 1:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와를 경외하는 것이 지식의 근본이어늘…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 1:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수 그리스도는 어제나 오늘이나 영원토록 동일하시니라`,ref:`히브리서 13:8`,engText:`Jesus Christ is the same yesterday and today and forever.`,commentary:`본문(히브리서 13:8)은 「예수 그리스도는 어제나 오늘이나 영원토록 동일하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 13:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 13:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수 그리스도는 어제나 오늘이나 영원토록…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 13:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`만일 여호와를 섬기는 것이 너희에게 좋지 않게 보이거든 너희 열조가 강 저편에서 섬기던 신이든지 혹 너희의 거하는 땅 아모리 사람의 신이든지 너희 섬길 자를 오늘날 택하라 오직 나와 내 집은 여호와를 섬기겠노라`,ref:`여호수아 24:15`,engText:`But if serving the Lord seems undesirable to you, then choose for yourselves this day whom you will serve... But as for me and my household, we will serve the Lord.`,commentary:`본문(여호수아 24:15)은 「만일 여호와를 섬기는 것이 너희에게 좋지 않게 보이거든 너희 열조가 강 저편에서 섬기던 신이든지 혹 너희의 거하는 땅 아모리 사람의 신이든지 너희 섬길 자를 오늘날 택하라 오직 나와 내 집은 여호와를 섬기겠노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「여호수아 24:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(여호수아 24:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「만일 여호와를 섬기는 것이 너희에게 좋지…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「여호수아 24:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`가로되 주 예수를 믿으라 그리하면 너와 네 집이 구원을 얻으리라 하고`,ref:`사도행전 16:31`,engText:`They replied, "Believe in the Lord Jesus, and you will be saved — you and your household."`,commentary:`본문(사도행전 16:31)은 「가로되 주 예수를 믿으라 그리하면 너와 네 집이 구원을 얻으리라 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 16:31」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 16:31)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「가로되 주 예수를 믿으라 그리하면 너와 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 16:31」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`감사함으로 그 문에 들어가며 찬송함으로 그 궁정에 들어가서 그에게 감사하며 그 이름을 송축할지어다`,ref:`시편 100:4`,engText:`Enter his gates with thanksgiving and his courts with praise; give thanks to him and praise his name.`,commentary:`본문(시편 100:4)은 「감사함으로 그 문에 들어가며 찬송함으로 그 궁정에 들어가서 그에게 감사하며 그 이름을 송축할지어다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 100:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 100:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「감사함으로 그 문에 들어가며 찬송함으로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 100:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내게 이르시기를 내 은혜가 네게 족하도다 이는 내 능력이 약한 데서 온전하여짐이라 하신지라 이러므로 도리어 크게 기뻐함으로 나의 여러 약한 것들에 대하여 자랑하리니 이는 그리스도의 능력으로 내게 머물게 하려 함이라`,ref:`고린도후서 12:9`,engText:`But he said to me, "My grace is sufficient for you, for my power is made perfect in weakness."`,commentary:`본문(고린도후서 12:9)은 「내게 이르시기를 내 은혜가 네게 족하도다 이는 내 능력이 약한 데서 온전하여짐이라 하신지라 이러므로 도리어 크게 기뻐함으로 나의 여러 약한 것들에 대하여 자랑하리니 이는 그리스도의 능력으로 내게 머물게 하려 함이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도후서 12:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도후서 12:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내게 이르시기를 내 은혜가 네게 족하도다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도후서 12:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주께서 심지가 견고한 자를 평강에 평강으로 지키시리니 이는 그가 주를 의뢰함이니이다`,ref:`이사야 26:3`,engText:`You will keep in perfect peace those whose minds are steadfast, because they trust in you.`,commentary:`본문(이사야 26:3)은 「주께서 심지가 견고한 자를 평강에 평강으로 지키시리니 이는 그가 주를 의뢰함이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 26:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 26:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주께서 심지가 견고한 자를 평강에 평강으…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 26:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 이름은 견고한 망대라 의인은 그리로 달려가서 안전함을 얻느니라`,ref:`잠언 18:10`,engText:`The name of the Lord is a fortified tower; the righteous run to it and are safe.`,commentary:`본문(잠언 18:10)은 「여호와의 이름은 견고한 망대라 의인은 그리로 달려가서 안전함을 얻느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 18:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 18:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 이름은 견고한 망대라 의인은 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 18:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 눈물을 그 눈에서 씻기시매 다시 사망이 없고 애통하는 것이나 곡하는 것이나 아픈 것이 다시 있지 아니하리니 처음 것들이 다 지나갔음이러라`,ref:`요한계시록 21:4`,engText:`'He will wipe every tear from their eyes. There will be no more death' or mourning or crying or pain, for the old order of things has passed away.`,commentary:`본문(요한계시록 21:4)은 「모든 눈물을 그 눈에서 씻기시매 다시 사망이 없고 애통하는 것이나 곡하는 것이나 아픈 것이 다시 있지 아니하리니 처음 것들이 다 지나갔음이러라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 21:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 21:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 눈물을 그 눈에서 씻기시매 다시 사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 21:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와께서 너희를 위하여 행하신 그 큰 일을 생각하여 오직 그를 경외하며 너희의 마음을 다하여 진실히 섬기라`,ref:`사무엘상 12:24`,engText:`Be sure to fear the Lord and serve him faithfully with all your heart; consider what great things he has done for you.`,commentary:`본문(사무엘상 12:24)은 「너희는 여호와께서 너희를 위하여 행하신 그 큰 일을 생각하여 오직 그를 경외하며 너희의 마음을 다하여 진실히 섬기라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사무엘상 12:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사무엘상 12:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 여호와께서 너희를 위하여 행하신 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사무엘상 12:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이같이 너희 빛을 사람 앞에 비취게 하여 저희로 너희 착한 행실을 보고 하늘에 계신 너희 아버지께 영광을 돌리게 하라`,ref:`마태복음 5:16`,engText:`In the same way, let your light shine before others, that they may see your good deeds and glorify your Father in heaven.`,commentary:`본문(마태복음 5:16)은 「이같이 너희 빛을 사람 앞에 비취게 하여 저희로 너희 착한 행실을 보고 하늘에 계신 너희 아버지께 영광을 돌리게 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 5:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 5:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이같이 너희 빛을 사람 앞에 비취게 하여…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 5:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주는 선하사 사유하기를 즐기시며 주께 부르짖는 자에게 인자함이 후하심이니이다`,ref:`시편 86:5`,engText:`You, Lord, are forgiving and good, abounding in love to all who call to you.`,commentary:`본문(시편 86:5)은 「주는 선하사 사유하기를 즐기시며 주께 부르짖는 자에게 인자함이 후하심이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 86:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 86:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주는 선하사 사유하기를 즐기시며 주께 부…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 86:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 우리에게 주신 것은 두려워하는 마음이 아니요 오직 능력과 사랑과 근신하는 마음이니`,ref:`디모데후서 1:7`,engText:`For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.`,commentary:`본문(디모데후서 1:7)은 「하나님이 우리에게 주신 것은 두려워하는 마음이 아니요 오직 능력과 사랑과 근신하는 마음이니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「디모데후서 1:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디모데후서 1:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 우리에게 주신 것은 두려워하는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디모데후서 1:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그가 내게 일러 가로되 여호와께서 스룹바벨에게 하신 말씀이 이러하니라 만군의 여호와께서 말씀하시되 이는 힘으로 되지 아니하며 능으로 되지 아니하고 오직 나의 신으로 되느니라`,ref:`스가랴 4:6`,engText:`So he said to me, "This is the word of the Lord to Zerubbabel: 'Not by might nor by power, but by my Spirit,' says the Lord Almighty."`,commentary:`본문(스가랴 4:6)은 「그가 내게 일러 가로되 여호와께서 스룹바벨에게 하신 말씀이 이러하니라 만군의 여호와께서 말씀하시되 이는 힘으로 되지 아니하며 능으로 되지 아니하고 오직 나의 신으로 되느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「스가랴 4:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(스가랴 4:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그가 내게 일러 가로되 여호와께서 스룹바…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「스가랴 4:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 사랑은 많은 물이 꺼치지 못하겠고 홍수라도 엄몰하지 못하나니 사람이 그 온 가산을 다 주고 사랑과 바꾸려 할지라도 오히려 멸시를 받으리라`,ref:`아가 8:7`,engText:`Many waters cannot quench love; rivers cannot sweep it away.`,commentary:`본문(아가 8:7)은 「이 사랑은 많은 물이 꺼치지 못하겠고 홍수라도 엄몰하지 못하나니 사람이 그 온 가산을 다 주고 사랑과 바꾸려 할지라도 오히려 멸시를 받으리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「아가 8:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(아가 8:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 사랑은 많은 물이 꺼치지 못하겠고 홍…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「아가 8:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 너희 죄를 서로 고하며 병 낫기를 위하여 서로 기도하라 의인의 간구는 역사하는 힘이 많으니라`,ref:`야고보서 5:16`,engText:`Therefore confess your sins to each other and pray for each other so that you may be healed. The prayer of a righteous person is powerful and effective.`,commentary:`본문(야고보서 5:16)은 「이러므로 너희 죄를 서로 고하며 병 낫기를 위하여 서로 기도하라 의인의 간구는 역사하는 힘이 많으니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 5:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 5:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이러므로 너희 죄를 서로 고하며 병 낫기…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 5:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너를 낮추시며 너로 주리게 하시며 또 너도 알지 못하며 네 열조도 알지 못하던 만나를 네게 먹이신 것은 사람이 떡으로만 사는 것이 아니요 여호와의 입에서 나오는 모든 말씀으로 사는 줄을 너로 알게 하려 하심이니라`,ref:`신명기 8:3`,engText:`He humbled you, causing you to hunger and then feeding you with manna, which neither you nor your ancestors had known, to teach you that man does not live on bread alone but on every word that comes from the mouth of the Lord.`,commentary:`본문(신명기 8:3)은 「너를 낮추시며 너로 주리게 하시며 또 너도 알지 못하며 네 열조도 알지 못하던 만나를 네게 먹이신 것은 사람이 떡으로만 사는 것이 아니요 여호와의 입에서 나오는 모든 말씀으로 사는 줄을 너로 알게 하려 하심이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 8:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 8:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너를 낮추시며 너로 주리게 하시며 또 너…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 8:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`도적이 오는 것은 도적질하고 죽이고 멸망시키려는 것뿐이요 내가 온 것은 양으로 생명을 얻게 하고 더 풍성히 얻게 하려는 것이라`,ref:`요한복음 10:10`,engText:`The thief comes only to steal and kill and destroy; I have come that they may have life, and have it to the full.`,commentary:`본문(요한복음 10:10)은 「도적이 오는 것은 도적질하고 죽이고 멸망시키려는 것뿐이요 내가 온 것은 양으로 생명을 얻게 하고 더 풍성히 얻게 하려는 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 10:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 10:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「도적이 오는 것은 도적질하고 죽이고 멸망…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 10:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`복 있는 사람은 악인의 꾀를 좇지 아니하며 죄인의 길에 서지 아니하며 오만한 자의 자리에 앉지 아니하고 오직 여호와의 율법을 즐거워하여 그 율법을 주야로 묵상하는 자로다`,ref:`시편 1:1-2`,engText:`Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take or sit in the company of mockers, but whose delight is in the law of the Lord.`,commentary:`본문(시편 1:1-2)은 「복 있는 사람은 악인의 꾀를 좇지 아니하며 죄인의 길에 서지 아니하며 오만한 자의 자리에 앉지 아니하고 오직 여호와의 율법을 즐거워하여 그 율법을 주야로 묵상하는 자로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 1:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 1:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「복 있는 사람은 악인의 꾀를 좇지 아니하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 1:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 하나님이 그리스도 예수 안에서 영광 가운게 그 풍성한 대로 너희 모든 쓸 것을 채우시리라`,ref:`빌립보서 4:19`,engText:`And my God will meet all your needs according to the riches of his glory in Christ Jesus.`,commentary:`본문(빌립보서 4:19)은 「나의 하나님이 그리스도 예수 안에서 영광 가운게 그 풍성한 대로 너희 모든 쓸 것을 채우시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 4:19」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 4:19)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 하나님이 그리스도 예수 안에서 영광…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 4:19」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 공법을 물 같이, 정의를 하수 같이 흘릴지로다`,ref:`아모스 5:24`,engText:`But let justice roll on like a river, righteousness like a never-failing stream!`,commentary:`본문(아모스 5:24)은 「오직 공법을 물 같이, 정의를 하수 같이 흘릴지로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「아모스 5:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(아모스 5:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 공법을 물 같이, 정의를 하수 같이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「아모스 5:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`가로되 내가 모태에서 적신이 나왔사온즉 또한 적신이 그리로 돌아가올지라 주신 자도 여호와시요 취하신 자도 여호와시오니 여호와의 이름이 찬송을 받으실지니이다 하고`,ref:`욥기 1:21`,engText:`"Naked I came from my mother's womb, and naked I will depart. The Lord gave and the Lord has taken away; may the name of the Lord be praised."`,commentary:`본문(욥기 1:21)은 「가로되 내가 모태에서 적신이 나왔사온즉 또한 적신이 그리로 돌아가올지라 주신 자도 여호와시요 취하신 자도 여호와시오니 여호와의 이름이 찬송을 받으실지니이다 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 1:21」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 1:21)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「가로되 내가 모태에서 적신이 나왔사온즉 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 1:21」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희 마음에 그리스도를 주로 삼아 거룩하게 하고 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 예비하되 온유와 두려움으로 하고`,ref:`베드로전서 3:15`,engText:`But in your hearts revere Christ as Lord. Always be prepared to give an answer to everyone who asks you to give the reason for the hope that you have.`,commentary:`본문(베드로전서 3:15)은 「너희 마음에 그리스도를 주로 삼아 거룩하게 하고 너희 속에 있는 소망에 관한 이유를 묻는 자에게는 대답할 것을 항상 예비하되 온유와 두려움으로 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 3:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 3:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희 마음에 그리스도를 주로 삼아 거룩하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 3:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와를 찬송할지로다 저가 무릇 허하신 대로 그 백성 이스라엘에게 태평을 주셨으니 그 종 모세를 빙자하여 무릇 허하신 그 선한 말씀이 하나도 이루지 않음이 없도다`,ref:`열왕기상 8:56`,engText:`Praise be to the Lord, who has given rest to his people Israel just as he promised. Not one word has failed of all the good promises he gave through his servant Moses.`,commentary:`본문(열왕기상 8:56)은 「여호와를 찬송할지로다 저가 무릇 허하신 대로 그 백성 이스라엘에게 태평을 주셨으니 그 종 모세를 빙자하여 무릇 허하신 그 선한 말씀이 하나도 이루지 않음이 없도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「열왕기상 8:56」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(열왕기상 8:56)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와를 찬송할지로다 저가 무릇 허하신 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「열왕기상 8:56」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내가 너희에게 말하노니 무엇이든지 기도하고 구하는 것은 받은 줄로 믿으라 그리하면 너희에게 그대로 되리라`,ref:`마가복음 11:24`,engText:`Therefore I tell you, whatever you ask for in prayer, believe that you have received it, and it will be yours.`,commentary:`본문(마가복음 11:24)은 「그러므로 내가 너희에게 말하노니 무엇이든지 기도하고 구하는 것은 받은 줄로 믿으라 그리하면 너희에게 그대로 되리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 11:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 11:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 내가 너희에게 말하노니 무엇이든…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 11:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 자비로우시며 은혜로우시며 노하기를 더디하시며 인자하심이 풍부하시도다`,ref:`시편 103:8`,engText:`The Lord is compassionate and gracious, slow to anger, abounding in love.`,commentary:`본문(시편 103:8)은 「여호와는 자비로우시며 은혜로우시며 노하기를 더디하시며 인자하심이 풍부하시도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 103:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 103:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 자비로우시며 은혜로우시며 노하기…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 103:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 믿음은 들음에서 나며 들음은 그리스도의 말씀으로 말미암았느니라`,ref:`로마서 10:17`,engText:`Consequently, faith comes from hearing the message, and the message is heard through the word about Christ.`,commentary:`본문(로마서 10:17)은 「그러므로 믿음은 들음에서 나며 들음은 그리스도의 말씀으로 말미암았느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 10:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 10:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 믿음은 들음에서 나며 들음은 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 10:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`일어나라 빛을 발하라 이는 네 빛이 이르렀고 여호와의 영광이 네 위에 임하였음이니라`,ref:`이사야 60:1`,engText:`Arise, shine, for your light has come, and the glory of the Lord rises upon you.`,commentary:`본문(이사야 60:1)은 「일어나라 빛을 발하라 이는 네 빛이 이르렀고 여호와의 영광이 네 위에 임하였음이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 60:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 60:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「일어나라 빛을 발하라 이는 네 빛이 이르…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 60:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`많은 재물보다 명예를 택할 것이요 은이나 금보다 은총을 더욱 택할 것이니라`,ref:`잠언 22:1`,engText:`A good name is more desirable than great riches; to be esteemed is better than silver or gold.`,commentary:`본문(잠언 22:1)은 「많은 재물보다 명예를 택할 것이요 은이나 금보다 은총을 더욱 택할 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 22:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 22:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「많은 재물보다 명예를 택할 것이요 은이나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 22:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 우리를 사랑하시는 사랑을 우리가 알고 믿었노니 하나님은 사랑이시라 사랑 안에 거하는 자는 하나님 안에 거하고 하나님도 그 안에 거하시느니라`,ref:`요한일서 4:16`,engText:`And so we know and rely on the love God has for us. God is love. Whoever lives in love lives in God, and God in them.`,commentary:`본문(요한일서 4:16)은 「하나님이 우리를 사랑하시는 사랑을 우리가 알고 믿었노니 하나님은 사랑이시라 사랑 안에 거하는 자는 하나님 안에 거하고 하나님도 그 안에 거하시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 4:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 4:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 우리를 사랑하시는 사랑을 우리가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 4:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 때에 네가 만일 잠잠하여 말이 없으면 유다인은 다른 데로 말미암아 놓임과 구원을 얻으려니와 너와 네 아비 집은 멸망하리라 네가 왕후의 위를 얻은 것이 이 때를 위함이 아닌지 누가 아느냐`,ref:`에스더 4:14`,engText:`And who knows but that you have come to your royal position for such a time as this?`,commentary:`본문(에스더 4:14)은 「이 때에 네가 만일 잠잠하여 말이 없으면 유다인은 다른 데로 말미암아 놓임과 구원을 얻으려니와 너와 네 아비 집은 멸망하리라 네가 왕후의 위를 얻은 것이 이 때를 위함이 아닌지 누가 아느냐」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「에스더 4:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에스더 4:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 때에 네가 만일 잠잠하여 말이 없으면…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에스더 4:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 너희는 그의 나라를 구하라 그리하면 이런 것을 너희에게 더하시리라`,ref:`누가복음 12:31`,engText:`But seek his kingdom, and these things will be given to you as well.`,commentary:`본문(누가복음 12:31)은 「오직 너희는 그의 나라를 구하라 그리하면 이런 것을 너희에게 더하시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 12:31」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 12:31)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 너희는 그의 나라를 구하라 그리하면…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 12:31」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 마음이 상한 자에게 가까이 하시고 중심에 통회하는 자를 구원하시는도다`,ref:`시편 34:18`,engText:`The Lord is close to the brokenhearted and saves those who are crushed in spirit.`,commentary:`본문(시편 34:18)은 「여호와는 마음이 상한 자에게 가까이 하시고 중심에 통회하는 자를 구원하시는도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 34:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 34:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 마음이 상한 자에게 가까이 하시…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 34:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람이 감당할 시험 밖에는 너희에게 당한 것이 없나니 오직 하나님은 미쁘사 너희가 감당치 못할 시험 당함을 허락지 아니하시고 시험 당할 즈음에 또한 피할 길을 내사 너희로 능히 감당하게 하시느니라`,ref:`고린도전서 10:13`,engText:`No temptation has overtaken you except what is common to mankind. And God is faithful; he will not let you be tempted beyond what you can bear. But when you are tempted, he will also provide a way out so that you can endure it.`,commentary:`본문(고린도전서 10:13)은 「사람이 감당할 시험 밖에는 너희에게 당한 것이 없나니 오직 하나님은 미쁘사 너희가 감당치 못할 시험 당함을 허락지 아니하시고 시험 당할 즈음에 또한 피할 길을 내사 너희로 능히 감당하게 하시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 10:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 10:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람이 감당할 시험 밖에는 너희에게 당한…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 10:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`만군의 여호와가 이르노라 너희의 온전한 십일조를 창고에 들여 나의 집에 양식이 있게 하고 그것으로 나를 시험하여 내가 하늘 문을 열고 너희에게 복을 쌓을 곳이 없도록 붓지 아니하나 보라`,ref:`말라기 3:10`,engText:`"Bring the whole tithe into the storehouse, that there may be food in my house. Test me in this," says the Lord Almighty, "and see if I will not throw open the floodgates of heaven and pour out so much blessing that there will not be room enough to store it."`,commentary:`본문(말라기 3:10)은 「만군의 여호와가 이르노라 너희의 온전한 십일조를 창고에 들여 나의 집에 양식이 있게 하고 그것으로 나를 시험하여 내가 하늘 문을 열고 너희에게 복을 쌓을 곳이 없도록 붓지 아니하나 보라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「말라기 3:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(말라기 3:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「만군의 여호와가 이르노라 너희의 온전한 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「말라기 3:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`철이 철을 날카롭게 하는 것 같이 사람이 그 친구의 얼굴을 빛나게 하느니라`,ref:`잠언 27:17`,engText:`As iron sharpens iron, so one person sharpens another.`,commentary:`본문(잠언 27:17)은 「철이 철을 날카롭게 하는 것 같이 사람이 그 친구의 얼굴을 빛나게 하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 27:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 27:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「철이 철을 날카롭게 하는 것 같이 사람이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 27:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`서로 돌아보아 사랑과 선행을 격려하며 모이기를 폐하는 어떤 사람들의 습관과 같이 하지 말고 오직 권하여 그 날이 가까움을 볼수록 더욱 그리하자`,ref:`히브리서 10:24-25`,engText:`And let us consider how we may spur one another on toward love and good deeds, not giving up meeting together, as some are in the habit of doing, but encouraging one another.`,commentary:`본문(히브리서 10:24-25)은 「서로 돌아보아 사랑과 선행을 격려하며 모이기를 폐하는 어떤 사람들의 습관과 같이 하지 말고 오직 권하여 그 날이 가까움을 볼수록 더욱 그리하자」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 10:24-25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 10:24-25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「서로 돌아보아 사랑과 선행을 격려하며 모…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 10:24-25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`당신들은 나를 해하려 하였으나 하나님은 그것을 선으로 바꾸사 오늘과 같이 만민의 생명을 구원하게 하시려 하셨나니`,ref:`창세기 50:20`,engText:`You intended to harm me, but God intended it for good to accomplish what is now being done, the saving of many lives.`,commentary:`본문(창세기 50:20)은 「당신들은 나를 해하려 하였으나 하나님은 그것을 선으로 바꾸사 오늘과 같이 만민의 생명을 구원하게 하시려 하셨나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 50:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 50:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「당신들은 나를 해하려 하였으나 하나님은 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 50:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 나는 부활이요 생명이니 나를 믿는 자는 죽어도 살겠고`,ref:`요한복음 11:25`,engText:`Jesus said to her, "I am the resurrection and the life. The one who believes in me will live, even though they die."`,commentary:`본문(요한복음 11:25)은 「예수께서 가라사대 나는 부활이요 생명이니 나를 믿는 자는 죽어도 살겠고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 11:25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 11:25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 가라사대 나는 부활이요 생명이니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 11:25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너의 길을 여호와께 맡기라 저를 의지하면 저가 이루시고`,ref:`시편 37:5`,engText:`Commit your way to the Lord; trust in him and he will do this.`,commentary:`본문(시편 37:5)은 「너의 길을 여호와께 맡기라 저를 의지하면 저가 이루시고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 37:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 37:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너의 길을 여호와께 맡기라 저를 의지하면…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 37:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리 가운데서 역사하시는 능력대로 우리의 온갖 구하는 것이나 생각하는 것에 더 넘치도록 능히 하실 이에게`,ref:`에베소서 3:20`,engText:`Now to him who is able to do immeasurably more than all we ask or imagine, according to his power that is at work within us.`,commentary:`본문(에베소서 3:20)은 「우리 가운데서 역사하시는 능력대로 우리의 온갖 구하는 것이나 생각하는 것에 더 넘치도록 능히 하실 이에게」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 3:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 3:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리 가운데서 역사하시는 능력대로 우리의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 3:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`또 새 영을 너희 속에 두고 새 마음을 너희에게 주되 너희 육신에서 굳은 마음을 제하고 부드러운 마음을 줄 것이며`,ref:`에스겔 36:26`,engText:`I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh.`,commentary:`본문(에스겔 36:26)은 「또 새 영을 너희 속에 두고 새 마음을 너희에게 주되 너희 육신에서 굳은 마음을 제하고 부드러운 마음을 줄 것이며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「에스겔 36:26」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에스겔 36:26)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「또 새 영을 너희 속에 두고 새 마음을 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에스겔 36:26」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`천하에 범사가 기한이 있고 모든 목적이 이룰 때가 있나니`,ref:`전도서 3:1`,engText:`There is a time for everything, and a season for every activity under the heavens.`,commentary:`본문(전도서 3:1)은 「천하에 범사가 기한이 있고 모든 목적이 이룰 때가 있나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 3:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 3:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「천하에 범사가 기한이 있고 모든 목적이 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 3:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님을 가까이 하라 그리하면 너희를 가까이 하시리라 죄인들아 손을 깨끗이 하라 두 마음을 품은 자들아 마음을 성결케 하라`,ref:`야고보서 4:8`,engText:`Come near to God and he will come near to you.`,commentary:`본문(야고보서 4:8)은 「하나님을 가까이 하라 그리하면 너희를 가까이 하시리라 죄인들아 손을 깨끗이 하라 두 마음을 품은 자들아 마음을 성결케 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 4:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 4:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님을 가까이 하라 그리하면 너희를 가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 4:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 이 모든 말씀으로 일러 가라사대 나는 너를 애굽 땅 종 되었던 집에서 인도하여 낸 너의 하나님 여호와로라 너는 나 외에는 다른 신들을 네게 있게 말지니라`,ref:`출애굽기 20:1-3`,engText:`And God spoke all these words: "I am the Lord your God, who brought you out of Egypt, out of the land of slavery. You shall have no other gods before me."`,commentary:`본문(출애굽기 20:1-3)은 「하나님이 이 모든 말씀으로 일러 가라사대 나는 너를 애굽 땅 종 되었던 집에서 인도하여 낸 너의 하나님 여호와로라 너는 나 외에는 다른 신들을 네게 있게 말지니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 20:1-3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 20:1-3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 이 모든 말씀으로 일러 가라사대…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 20:1-3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내일 일을 위하여 염려하지 말라 내일 일은 내일 염려할 것이요 한 날 괴로움은 그 날에 족하니라`,ref:`마태복음 6:34`,engText:`Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.`,commentary:`본문(마태복음 6:34)은 「그러므로 내일 일을 위하여 염려하지 말라 내일 일은 내일 염려할 것이요 한 날 괴로움은 그 날에 족하니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 6:34」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 6:34)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 내일 일을 위하여 염려하지 말라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 6:34」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 너의 갈 길을 가르쳐 보이고 너를 주목하여 훈계하리로다`,ref:`시편 32:8`,engText:`I will instruct you and teach you in the way you should go; I will counsel you with my loving eye on you.`,commentary:`본문(시편 32:8)은 「내가 너의 갈 길을 가르쳐 보이고 너를 주목하여 훈계하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 32:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 32:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 너의 갈 길을 가르쳐 보이고 너를 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 32:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`소망 중에 즐거워하며 환난 중에 참으며 기도에 항상 힘쓰며`,ref:`로마서 12:12`,engText:`Be joyful in hope, patient in affliction, faithful in prayer.`,commentary:`본문(로마서 12:12)은 「소망 중에 즐거워하며 환난 중에 참으며 기도에 항상 힘쓰며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 12:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 12:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「소망 중에 즐거워하며 환난 중에 참으며 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 12:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이는 한 아기가 우리에게 났고 한 아들을 우리에게 주신바 되었는데 그 어깨에는 정사를 메었고 그 이름은 기묘자라, 모사라, 전능하신 하나님이라, 영존하시는 아버지라, 평강의 왕이라 할 것임이라`,ref:`이사야 9:6`,engText:`For to us a child is born, to us a son is given, and the government will be on his shoulders. And he will be called Wonderful Counselor, Mighty God, Everlasting Father, Prince of Peace.`,commentary:`본문(이사야 9:6)은 「이는 한 아기가 우리에게 났고 한 아들을 우리에게 주신바 되었는데 그 어깨에는 정사를 메었고 그 이름은 기묘자라, 모사라, 전능하신 하나님이라, 영존하시는 아버지라, 평강의 왕이라 할 것임이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 9:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 9:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이는 한 아기가 우리에게 났고 한 아들을…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 9:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`교만은 패망의 선봉이요 거만한 마음은 넘어짐의 앞잡이니라`,ref:`잠언 16:18`,engText:`Pride goes before destruction, a haughty spirit before a fall.`,commentary:`본문(잠언 16:18)은 「교만은 패망의 선봉이요 거만한 마음은 넘어짐의 앞잡이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 16:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 16:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「교만은 패망의 선봉이요 거만한 마음은 넘…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 16:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`무엇보다도 열심으로 서로 사랑할지니 사랑은 허다한 죄를 덮느니라`,ref:`베드로전서 4:8`,engText:`Above all, love each other deeply, because love covers over a multitude of sins.`,commentary:`본문(베드로전서 4:8)은 「무엇보다도 열심으로 서로 사랑할지니 사랑은 허다한 죄를 덮느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 4:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 4:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「무엇보다도 열심으로 서로 사랑할지니 사랑…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 4:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다`,ref:`역대상 16:34`,engText:`Give thanks to the Lord, for he is good; his love endures forever.`,commentary:`본문(역대상 16:34)은 「여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대상 16:34」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대상 16:34)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께 감사하라 그는 선하시며 그 인자…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대상 16:34」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`새 계명을 너희에게 주노니 서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라`,ref:`요한복음 13:34`,engText:`A new command I give you: Love one another. As I have loved you, so you must love one another.`,commentary:`본문(요한복음 13:34)은 「새 계명을 너희에게 주노니 서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 13:34」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 13:34)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「새 계명을 너희에게 주노니 서로 사랑하라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 13:34」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`환난 날에 나를 부르라 내가 너를 건지리니 네가 나를 영화롭게 하리로다`,ref:`시편 50:15`,engText:`Call on me in the day of trouble; I will deliver you, and you will honor me.`,commentary:`본문(시편 50:15)은 「환난 날에 나를 부르라 내가 너를 건지리니 네가 나를 영화롭게 하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 50:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 50:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「환난 날에 나를 부르라 내가 너를 건지리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 50:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사랑은 오래 참고 사랑은 온유하며 투기하는 자가 되지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며 무례히 행치 아니하며 자기의 유익을 구치 아니하며 성내지 아니하며 악한 것을 생각지 아니하며 불의를 기뻐하지 아니하며 진리와 함께 기뻐하고 모든 것을 참으며 모든 것을 믿으며 모든 것을 바라며 모든 것을 견디느니라`,ref:`고린도전서 13:4-7`,engText:`Love is patient, love is kind. It does not envy, it does not boast, it is not proud. It does not dishonor others, it is not self-seeking, it is not easily angered, it keeps no record of wrongs.`,commentary:`본문(고린도전서 13:4-7)은 「사랑은 오래 참고 사랑은 온유하며 투기하는 자가 되지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며 무례히 행치 아니하며 자기의 유익을 구치 아니하며 성내지 아니하며 악한 것을 생각지 아니하며 불의를 기뻐하지 아니하며 진리와 함께 기뻐하고 모든 것을 참으며 모든 것을 믿으며 모든 것을 바라며 모든 것을 견디느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 13:4-7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 13:4-7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사랑은 오래 참고 사랑은 온유하며 투기하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 13:4-7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 전의 나중 영광이 이전 영광보다 크리라 만군의 여호와의 말이니라 내가 이곳에 평강을 주리라 만군의 여호와의 말이니라`,ref:`학개 2:9`,engText:`'The glory of this present house will be greater than the glory of the former house,' says the Lord Almighty. 'And in this place I will grant peace,' declares the Lord Almighty.`,commentary:`본문(학개 2:9)은 「이 전의 나중 영광이 이전 영광보다 크리라 만군의 여호와의 말이니라 내가 이곳에 평강을 주리라 만군의 여호와의 말이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「학개 2:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(학개 2:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 전의 나중 영광이 이전 영광보다 크리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「학개 2:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`지혜로운 자와 동행하면 지혜를 얻고 미련한 자와 사귀면 해를 받느니라`,ref:`잠언 13:20`,engText:`Walk with the wise and become wise, for a companion of fools suffers harm.`,commentary:`본문(잠언 13:20)은 「지혜로운 자와 동행하면 지혜를 얻고 미련한 자와 사귀면 해를 받느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 13:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 13:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「지혜로운 자와 동행하면 지혜를 얻고 미련…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 13:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`대저 하나님께로서 난 자마다 세상을 이기느니라 세상을 이긴 이김은 이것이니 우리의 믿음이니라`,ref:`요한일서 5:4`,engText:`For everyone born of God overcomes the world. This is the victory that has overcome the world, even our faith.`,commentary:`본문(요한일서 5:4)은 「대저 하나님께로서 난 자마다 세상을 이기느니라 세상을 이긴 이김은 이것이니 우리의 믿음이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 5:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 5:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「대저 하나님께로서 난 자마다 세상을 이기…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 5:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네가 네 하나님 여호와의 말씀을 삼가 듣고 내가 오늘날 네게 명하는 그 모든 명령을 지켜 행하면 네 하나님 여호와께서 너를 세계 모든 민족 위에 뛰어나게 하실 것이라 네가 네 하나님 여호와의 말씀을 순종하면 이 모든 복이 네게 임하며 네게 미치리니`,ref:`신명기 28:1-2`,engText:`If you fully obey the Lord your God and carefully follow all his commands I give you today, the Lord your God will set you high above all the nations on earth. All these blessings will come on you and accompany you if you obey the Lord your God.`,commentary:`본문(신명기 28:1-2)은 「네가 네 하나님 여호와의 말씀을 삼가 듣고 내가 오늘날 네게 명하는 그 모든 명령을 지켜 행하면 네 하나님 여호와께서 너를 세계 모든 민족 위에 뛰어나게 하실 것이라 네가 네 하나님 여호와의 말씀을 순종하면 이 모든 복이 네게 임하며 네게 미치리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 28:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 28:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네가 네 하나님 여호와의 말씀을 삼가 듣…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 28:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주라 그리하면 너희에게 줄 것이니 곧 후히 되어 누르고 흔들어 넘치도록 하여 너희에게 안겨 주리라 너희의 헤아리는 그 헤아림으로 너희도 헤아림을 도로 받을 것이니라`,ref:`누가복음 6:38`,engText:`Give, and it will be given to you. A good measure, pressed down, shaken together and running over, will be poured into your lap.`,commentary:`본문(누가복음 6:38)은 「주라 그리하면 너희에게 줄 것이니 곧 후히 되어 누르고 흔들어 넘치도록 하여 너희에게 안겨 주리라 너희의 헤아리는 그 헤아림으로 너희도 헤아림을 도로 받을 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 6:38」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 6:38)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주라 그리하면 너희에게 줄 것이니 곧 후…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 6:38」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 힘과 나의 방패시니 내 마음이 저를 의지하여 도움을 얻었도다 그러므로 내 마음이 크게 기뻐하며 내 노래로 저를 찬송하리로다`,ref:`시편 28:7`,engText:`The Lord is my strength and my shield; my heart trusts in him, and he helps me.`,commentary:`본문(시편 28:7)은 「여호와는 나의 힘과 나의 방패시니 내 마음이 저를 의지하여 도움을 얻었도다 그러므로 내 마음이 크게 기뻐하며 내 노래로 저를 찬송하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 28:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 28:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 나의 힘과 나의 방패시니 내 마…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 28:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`믿음의 선한 싸움을 싸우라 영생을 취하라 이를 위하여 네가 부르심을 입었고 많은 증인 앞에서 선한 증거를 증거하였도다`,ref:`디모데전서 6:12`,engText:`Fight the good fight of the faith. Take hold of the eternal life to which you were called when you made your good confession in the presence of many witnesses.`,commentary:`본문(디모데전서 6:12)은 「믿음의 선한 싸움을 싸우라 영생을 취하라 이를 위하여 네가 부르심을 입었고 많은 증인 앞에서 선한 증거를 증거하였도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「디모데전서 6:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디모데전서 6:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「믿음의 선한 싸움을 싸우라 영생을 취하라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디모데전서 6:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 너를 항상 인도하여 마른 곳에서도 네 영혼을 만족케 하며 네 뼈를 견고케 하리니 너는 물댄 동산 같겠고 물이 끊어지지 아니하는 샘 같을 것이라`,ref:`이사야 58:11`,engText:`The Lord will guide you always; he will satisfy your needs in a sun-scorched land and will strengthen your frame. You will be like a well-watered garden, like a spring whose waters never fail.`,commentary:`본문(이사야 58:11)은 「나 여호와가 너를 항상 인도하여 마른 곳에서도 네 영혼을 만족케 하며 네 뼈를 견고케 하리니 너는 물댄 동산 같겠고 물이 끊어지지 아니하는 샘 같을 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 58:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 58:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나 여호와가 너를 항상 인도하여 마른 곳…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 58:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네 시작은 미약하였으나 네 나중은 심히 창대하리라`,ref:`욥기 8:7`,engText:`Your beginnings will seem humble, so prosperous will your future be.`,commentary:`본문(욥기 8:7)은 「네 시작은 미약하였으나 네 나중은 심히 창대하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 8:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 8:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네 시작은 미약하였으나 네 나중은 심히 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 8:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이것들을 증거하신 이가 가라사대 내가 진실로 속히 오리라 하시거늘 아멘 주 예수여 오시옵소서`,ref:`요한계시록 22:20`,engText:`He who testifies to these things says, "Yes, I am coming soon." Amen. Come, Lord Jesus.`,commentary:`본문(요한계시록 22:20)은 「이것들을 증거하신 이가 가라사대 내가 진실로 속히 오리라 하시거늘 아멘 주 예수여 오시옵소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 22:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 22:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이것들을 증거하신 이가 가라사대 내가 진…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 22:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`다윗이 블레셋 사람에게 이르되 너는 칼과 창과 단창으로 내게 오거니와 나는 만군의 여호와의 이름 곧 네가 모욕하는 이스라엘 군대의 하나님의 이름으로 네게 가노라`,ref:`사무엘상 17:45`,engText:`David said to the Philistine, "You come against me with sword and spear and javelin, but I come against you in the name of the Lord Almighty, the God of the armies of Israel, whom you have defied."`,commentary:`본문(사무엘상 17:45)은 「다윗이 블레셋 사람에게 이르되 너는 칼과 창과 단창으로 내게 오거니와 나는 만군의 여호와의 이름 곧 네가 모욕하는 이스라엘 군대의 하나님의 이름으로 네게 가노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사무엘상 17:45」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사무엘상 17:45)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「다윗이 블레셋 사람에게 이르되 너는 칼과…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사무엘상 17:45」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`다른 이로서는 구원을 얻을 수 없나니 천하 인간에 구원을 얻을 만한 다른 이름을 우리에게 주신 일이 (없음)이니라 하였더라`,ref:`사도행전 4:12`,engText:`Salvation is found in no one else, for there is no other name under heaven given to mankind by which we must be saved.`,commentary:`본문(사도행전 4:12)은 「다른 이로서는 구원을 얻을 수 없나니 천하 인간에 구원을 얻을 만한 다른 이름을 우리에게 주신 일이 (없음)이니라 하였더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 4:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 4:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「다른 이로서는 구원을 얻을 수 없나니 천…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 4:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 새벽 날개를 치며 바다 끝에 가서 거할지라도 곧 거기서도 주의 손이 나를 인도하시며 주의 오른손이 나를 붙드시리이다`,ref:`시편 139:9-10`,engText:`If I rise on the wings of the dawn, if I settle on the far side of the sea, even there your hand will guide me, your right hand will hold me fast.`,commentary:`본문(시편 139:9-10)은 「내가 새벽 날개를 치며 바다 끝에 가서 거할지라도 곧 거기서도 주의 손이 나를 인도하시며 주의 오른손이 나를 붙드시리이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 139:9-10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 139:9-10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 새벽 날개를 치며 바다 끝에 가서 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 139:9-10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 선을 행하되 낙심하지 말지니 피곤하지 아니하면 때가 이르매 거두리라`,ref:`갈라디아서 6:9`,engText:`Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.`,commentary:`본문(갈라디아서 6:9)은 「우리가 선을 행하되 낙심하지 말지니 피곤하지 아니하면 때가 이르매 거두리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「갈라디아서 6:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(갈라디아서 6:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 선을 행하되 낙심하지 말지니 피곤…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「갈라디아서 6:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 여호와를 알자 힘써 여호와를 알자 그의 나오심은 새벽 빛 같이 일정하니 비와 같이, 땅을 적시는 늦은 비와 같이 우리에게 임하시리라 하리라`,ref:`호세아 6:3`,engText:`Let us acknowledge the Lord; let us press on to acknowledge him. As surely as the sun rises, he will appear; he will come to us like the winter rains, like the spring rains that water the earth.`,commentary:`본문(호세아 6:3)은 「그러므로 우리가 여호와를 알자 힘써 여호와를 알자 그의 나오심은 새벽 빛 같이 일정하니 비와 같이, 땅을 적시는 늦은 비와 같이 우리에게 임하시리라 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「호세아 6:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(호세아 6:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 우리가 여호와를 알자 힘써 여호…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「호세아 6:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`어떤 길은 사람의 보기에 바르나 필경은 사망의 길이니라`,ref:`잠언 14:12`,engText:`There is a way that appears to be right, but in the end it leads to death.`,commentary:`본문(잠언 14:12)은 「어떤 길은 사람의 보기에 바르나 필경은 사망의 길이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 14:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 14:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「어떤 길은 사람의 보기에 바르나 필경은 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 14:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`믿음이 없이는 기쁘시게 못하나니 하나님께 나아가는 자는 반드시 그가 계신 것과 또한 그가 자기를 찾는 자들에게 상 주시는 이심을 믿어야 할지니라`,ref:`히브리서 11:6`,engText:`And without faith it is impossible to please God, because anyone who comes to him must believe that he exists and that he rewards those who earnestly seek him.`,commentary:`본문(히브리서 11:6)은 「믿음이 없이는 기쁘시게 못하나니 하나님께 나아가는 자는 반드시 그가 계신 것과 또한 그가 자기를 찾는 자들에게 상 주시는 이심을 믿어야 할지니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 11:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 11:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「믿음이 없이는 기쁘시게 못하나니 하나님께…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 11:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`룻이 가로되 나로 어머니를 떠나며 어머니를 따르지 말고 돌아가라 강권하지 마옵소서 어머니께서 가시는 곳에 나도 가고 어머니께서 유숙하시는 곳에서 나도 유숙하겠나이다 어머니의 백성이 나의 백성이 되고 어머니의 하나님이 나의 하나님이 되시리니`,ref:`룻기 1:16`,engText:`Ruth replied, "Don't urge me to leave you or to turn back from you. Where you go I will go, and where you stay I will stay. Your people will be my people and your God my God."`,commentary:`본문(룻기 1:16)은 「룻이 가로되 나로 어머니를 떠나며 어머니를 따르지 말고 돌아가라 강권하지 마옵소서 어머니께서 가시는 곳에 나도 가고 어머니께서 유숙하시는 곳에서 나도 유숙하겠나이다 어머니의 백성이 나의 백성이 되고 어머니의 하나님이 나의 하나님이 되시리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「룻기 1:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(룻기 1:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「룻이 가로되 나로 어머니를 떠나며 어머니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「룻기 1:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이것을 너희에게 이름은 너희로 내 안에서 평안을 누리게 하려 함이라 세상에서는 너희가 환난을 당하나 담대하라 내가 세상을 이기었노라 하시니라`,ref:`요한복음 16:33`,engText:`I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world.`,commentary:`본문(요한복음 16:33)은 「이것을 너희에게 이름은 너희로 내 안에서 평안을 누리게 하려 함이라 세상에서는 너희가 환난을 당하나 담대하라 내가 세상을 이기었노라 하시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 16:33」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 16:33)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이것을 너희에게 이름은 너희로 내 안에서…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 16:33」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서는 자기에게 간구하는 모든 자 곧 진실하게 간구하는 모든 자에게 가까이 하시는도다`,ref:`시편 145:18`,engText:`The Lord is near to all who call on him, to all who call on him in truth.`,commentary:`본문(시편 145:18)은 「여호와께서는 자기에게 간구하는 모든 자 곧 진실하게 간구하는 모든 자에게 가까이 하시는도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 145:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 145:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께서는 자기에게 간구하는 모든 자 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 145:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`또 무엇을 하든지 말에나 일에나 다 주 예수의 이름으로 하고 그를 힘입어 하나님 아버지께 감사하라`,ref:`골로새서 3:17`,engText:`And whatever you do, whether in word or deed, do it all in the name of the Lord Jesus, giving thanks to God the Father through him.`,commentary:`본문(골로새서 3:17)은 「또 무엇을 하든지 말에나 일에나 다 주 예수의 이름으로 하고 그를 힘입어 하나님 아버지께 감사하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「골로새서 3:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(골로새서 3:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「또 무엇을 하든지 말에나 일에나 다 주 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「골로새서 3:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`야곱아 너를 창조하신 여호와께서 이제 말씀하시느니라 이스라엘아 너를 조성하신 자가 이제 말씀하시느니라 너는 두려워 말라 내가 너를 구속하였고 내가 너를 지명하여 불렀나니 너는 내 것이라`,ref:`이사야 43:1`,engText:`Do not fear, for I have redeemed you; I have summoned you by name; you are mine.`,commentary:`본문(이사야 43:1)은 「야곱아 너를 창조하신 여호와께서 이제 말씀하시느니라 이스라엘아 너를 조성하신 자가 이제 말씀하시느니라 너는 두려워 말라 내가 너를 구속하였고 내가 너를 지명하여 불렀나니 너는 내 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 43:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 43:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「야곱아 너를 창조하신 여호와께서 이제 말…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 43:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`경우에 합당한 말은 아로새긴 은쟁반에 금사과니라`,ref:`잠언 25:11`,engText:`Like apples of gold in settings of silver is a ruling rightly given.`,commentary:`본문(잠언 25:11)은 「경우에 합당한 말은 아로새긴 은쟁반에 금사과니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 25:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 25:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「경우에 합당한 말은 아로새긴 은쟁반에 금…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 25:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 사랑하는 형제들아 너희가 알거니와 사람마다 듣기는 속히 하고 말하기는 더디 하며 성내기도 더디하라`,ref:`야고보서 1:19`,engText:`My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry.`,commentary:`본문(야고보서 1:19)은 「내 사랑하는 형제들아 너희가 알거니와 사람마다 듣기는 속히 하고 말하기는 더디 하며 성내기도 더디하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 1:19」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 1:19)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 사랑하는 형제들아 너희가 알거니와 사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 1:19」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`야하시엘이 가로되 온 유다와 예루살렘 거민과 여호사밧 왕이여 들을지어다 여호와께서 너희에게 말씀하시기를 이 큰 무리로 인하여 두려워하거나 놀라지 말라 이 전쟁이 너희에게 속한 것이 아니요 하나님께 속한 것이니라`,ref:`역대하 20:15`,engText:`He said: "Listen, King Jehoshaphat and all who live in Judah and Jerusalem! This is what the Lord says to you: 'Do not be afraid or discouraged because of this vast army. For the battle is not yours, but God's.'"`,commentary:`본문(역대하 20:15)은 「야하시엘이 가로되 온 유다와 예루살렘 거민과 여호사밧 왕이여 들을지어다 여호와께서 너희에게 말씀하시기를 이 큰 무리로 인하여 두려워하거나 놀라지 말라 이 전쟁이 너희에게 속한 것이 아니요 하나님께 속한 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대하 20:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대하 20:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「야하시엘이 가로되 온 유다와 예루살렘 거…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대하 20:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`두세 사람이 내 이름으로 모인 곳에는 나도 그들 중에 있느니라`,ref:`마태복음 18:20`,engText:`For where two or three gather in my name, there am I with them.`,commentary:`본문(마태복음 18:20)은 「두세 사람이 내 이름으로 모인 곳에는 나도 그들 중에 있느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 18:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 18:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「두세 사람이 내 이름으로 모인 곳에는 나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 18:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 평생에 선하심과 인자하심이 정녕 나를 따르리니 내가 여호와의 집에 영원히 거하리로다`,ref:`시편 23:6`,engText:`Surely your goodness and love will follow me all the days of my life, and I will dwell in the house of the Lord forever.`,commentary:`본문(시편 23:6)은 「나의 평생에 선하심과 인자하심이 정녕 나를 따르리니 내가 여호와의 집에 영원히 거하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 23:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 23:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 평생에 선하심과 인자하심이 정녕 나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 23:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`죄의 삯은 사망이요 하나님의 은사는 그리스도 예수 우리 주 안에 있는 영생이니라`,ref:`로마서 6:23`,engText:`For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.`,commentary:`본문(로마서 6:23)은 「죄의 삯은 사망이요 하나님의 은사는 그리스도 예수 우리 주 안에 있는 영생이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 6:23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 6:23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「죄의 삯은 사망이요 하나님의 은사는 그리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 6:23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 선하시며 환난 날에 산성이시라 그는 자기에게 의뢰하는 자들을 아시느니라`,ref:`나훔 1:7`,engText:`The Lord is good, a refuge in times of trouble. He cares for those who trust in him.`,commentary:`본문(나훔 1:7)은 「여호와는 선하시며 환난 날에 산성이시라 그는 자기에게 의뢰하는 자들을 아시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「나훔 1:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(나훔 1:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 선하시며 환난 날에 산성이시라 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「나훔 1:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`한 사람이면 패하겠거니와 두 사람이면 능히 당하나니 삼겹 줄은 쉽게 끊어지지 아니하느니라`,ref:`전도서 4:12`,engText:`Though one may be overpowered, two can defend themselves. A cord of three strands is not quickly broken.`,commentary:`본문(전도서 4:12)은 「한 사람이면 패하겠거니와 두 사람이면 능히 당하나니 삼겹 줄은 쉽게 끊어지지 아니하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 4:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 4:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「한 사람이면 패하겠거니와 두 사람이면 능…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 4:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주의 약속은 어떤 이의 더디다고 생각하는 것 같이 더딘 것이 아니라 오직 너희를 대하여 오래 참으사 아무도 멸망치 않고 다 회개하기에 이르기를 원하시느니라`,ref:`베드로후서 3:9`,engText:`The Lord is not slow in keeping his promise, as some understand slowness. Instead he is patient with you, not wanting anyone to perish, but everyone to come to repentance.`,commentary:`본문(베드로후서 3:9)은 「주의 약속은 어떤 이의 더디다고 생각하는 것 같이 더딘 것이 아니라 오직 너희를 대하여 오래 참으사 아무도 멸망치 않고 다 회개하기에 이르기를 원하시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로후서 3:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로후서 3:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주의 약속은 어떤 이의 더디다고 생각하는…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로후서 3:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`영원하신 하나님이 너의 처소가 되시니 그 영원하신 팔이 네 아래 있도다 그가 네 앞에서 대적을 쫓으시며 멸하라 하시도다`,ref:`신명기 33:27`,engText:`The eternal God is your refuge, and underneath are the everlasting arms.`,commentary:`본문(신명기 33:27)은 「영원하신 하나님이 너의 처소가 되시니 그 영원하신 팔이 네 아래 있도다 그가 네 앞에서 대적을 쫓으시며 멸하라 하시도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 33:27」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 33:27)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「영원하신 하나님이 너의 처소가 되시니 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 33:27」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 저희를 보시며 가라사대 사람으로는 할 수 없으되 하나님으로는 그렇지 아니하니 하나님으로서는 다 하실 수 있느니라`,ref:`마가복음 10:27`,engText:`Jesus looked at them and said, "With man this is impossible, but not with God; all things are possible with God."`,commentary:`본문(마가복음 10:27)은 「예수께서 저희를 보시며 가라사대 사람으로는 할 수 없으되 하나님으로는 그렇지 아니하니 하나님으로서는 다 하실 수 있느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 10:27」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 10:27)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 저희를 보시며 가라사대 사람으로…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 10:27」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`지존자의 은밀한 곳에 거하는 자는 전능하신 자의 그늘 아래 거하리로다 내가 여호와를 가리켜 말하기를 저는 나의 피난처요 나의 요새요 나의 의뢰하는 하나님이라 하리니`,ref:`시편 91:1-2`,engText:`Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty. I will say of the Lord, "He is my refuge and my fortress, my God, in whom I trust."`,commentary:`본문(시편 91:1-2)은 「지존자의 은밀한 곳에 거하는 자는 전능하신 자의 그늘 아래 거하리로다 내가 여호와를 가리켜 말하기를 저는 나의 피난처요 나의 요새요 나의 의뢰하는 하나님이라 하리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 91:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 91:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「지존자의 은밀한 곳에 거하는 자는 전능하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 91:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`아무 일에든지 다툼이나 허영으로 하지 말고 오직 겸손한 마음으로 각각 자기보다 남을 낫게 여기고 각각 자기 일을 돌아볼 뿐더러 또한 각각 다른 사람들의 일을 돌아보아 나의 기쁨을 충만케 하라`,ref:`빌립보서 2:3-4`,engText:`Do nothing out of selfish ambition or vain conceit. Rather, in humility value others above yourselves, not looking to your own interests but each of you to the interests of the others.`,commentary:`본문(빌립보서 2:3-4)은 「아무 일에든지 다툼이나 허영으로 하지 말고 오직 겸손한 마음으로 각각 자기보다 남을 낫게 여기고 각각 자기 일을 돌아볼 뿐더러 또한 각각 다른 사람들의 일을 돌아보아 나의 기쁨을 충만케 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 2:3-4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 2:3-4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「아무 일에든지 다툼이나 허영으로 하지 말…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 2:3-4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 또 주의 목소리를 들은즉 이르시되 내가 누구를 보내며 누가 우리를 위하여 갈꼬 그 때에 내가 가로되 내가 여기 있나이다 나를 보내소서`,ref:`이사야 6:8`,engText:`Then I heard the voice of the Lord saying, "Whom shall I send? And who will go for us?" And I said, "Here am I. Send me!"`,commentary:`본문(이사야 6:8)은 「내가 또 주의 목소리를 들은즉 이르시되 내가 누구를 보내며 누가 우리를 위하여 갈꼬 그 때에 내가 가로되 내가 여기 있나이다 나를 보내소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 6:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 6:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 또 주의 목소리를 들은즉 이르시되 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 6:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네 재물과 네 소산물의 처음 익은 열매로 여호와를 공경하라`,ref:`잠언 3:9`,engText:`Honor the Lord with your wealth, with the firstfruits of all your crops.`,commentary:`본문(잠언 3:9)은 「네 재물과 네 소산물의 처음 익은 열매로 여호와를 공경하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 3:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 3:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네 재물과 네 소산물의 처음 익은 열매로…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 3:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 사랑하는 자마다 하나님께로 나서 하나님을 알고`,ref:`요한일서 4:7`,engText:`Dear friends, let us love one another, for love comes from God. Everyone who loves has been born of God and knows God.`,commentary:`본문(요한일서 4:7)은 「사랑하는 자들아 우리가 서로 사랑하자 사랑은 하나님께 속한 것이니 사랑하는 자마다 하나님께로 나서 하나님을 알고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 4:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 4:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사랑하는 자들아 우리가 서로 사랑하자 사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 4:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이 자기 형상 곧 하나님의 형상대로 사람을 창조하시되 남자와 여자를 창조하시고`,ref:`창세기 1:27`,engText:`So God created mankind in his own image, in the image of God he created them; male and female he created them.`,commentary:`본문(창세기 1:27)은 「하나님이 자기 형상 곧 하나님의 형상대로 사람을 창조하시되 남자와 여자를 창조하시고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 1:27」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 1:27)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이 자기 형상 곧 하나님의 형상대로…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 1:27」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 내가 곧 생명의 떡이니 내게 오는 자는 결코 주리지 아니할 터이요 나를 믿는 자는 영원히 목마르지 아니하리라`,ref:`요한복음 6:35`,engText:`Then Jesus declared, "I am the bread of life. Whoever comes to me will never go hungry, and whoever believes in me will never be thirsty."`,commentary:`본문(요한복음 6:35)은 「예수께서 가라사대 내가 곧 생명의 떡이니 내게 오는 자는 결코 주리지 아니할 터이요 나를 믿는 자는 영원히 목마르지 아니하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 6:35」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 6:35)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 가라사대 내가 곧 생명의 떡이니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 6:35」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 내 영혼아 여호와를 송축하라 내 속에 있는 것들아 다 그 성호를 송축하라 내 영혼아 여호와를 송축하며 그 모든 은택을 잊지 말지어다`,ref:`시편 103:1-2`,engText:`Praise the Lord, my soul; all my inmost being, praise his holy name. Praise the Lord, my soul, and forget not all his benefits.`,commentary:`본문(시편 103:1-2)은 「내 영혼아 여호와를 송축하라 내 속에 있는 것들아 다 그 성호를 송축하라 내 영혼아 여호와를 송축하며 그 모든 은택을 잊지 말지어다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 103:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 103:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 영혼아 여호와를 송축하라 내 속에 있…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 103:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 선한 싸움을 싸우고 나의 달려갈 길을 마치고 믿음을 지켰으니`,ref:`디모데후서 4:7`,engText:`I have fought the good fight, I have finished the race, I have kept the faith.`,commentary:`본문(디모데후서 4:7)은 「내가 선한 싸움을 싸우고 나의 달려갈 길을 마치고 믿음을 지켰으니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「디모데후서 4:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디모데후서 4:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 선한 싸움을 싸우고 나의 달려갈 길…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디모데후서 4:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러나 무릇 여호와를 의지하며 여호와를 의뢰하는 그 사람은 복을 받을 것이라 그는 물가에 심기운 나무가 그 뿌리를 강변에 뻗치고 더위가 올지라도 두려워 아니하며 그 잎이 청청하며 가무는 해에도 걱정이 없고 결실이 그치지 아니함 같으리라`,ref:`예레미야 17:7-8`,engText:`But blessed is the one who trusts in the Lord, whose confidence is in him. They will be like a tree planted by the water that sends out its roots by the stream.`,commentary:`본문(예레미야 17:7-8)은 「그러나 무릇 여호와를 의지하며 여호와를 의뢰하는 그 사람은 복을 받을 것이라 그는 물가에 심기운 나무가 그 뿌리를 강변에 뻗치고 더위가 올지라도 두려워 아니하며 그 잎이 청청하며 가무는 해에도 걱정이 없고 결실이 그치지 아니함 같으리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야 17:7-8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야 17:7-8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러나 무릇 여호와를 의지하며 여호와를 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야 17:7-8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 복을 주시므로 사람으로 부하게 하시고 근심을 겸하여 주지 아니하시느니라`,ref:`잠언 10:22`,engText:`The blessing of the Lord brings wealth, without painful toil for it.`,commentary:`본문(잠언 10:22)은 「여호와께서 복을 주시므로 사람으로 부하게 하시고 근심을 겸하여 주지 아니하시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 10:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 10:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께서 복을 주시므로 사람으로 부하게…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 10:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`돈을 사랑치 말고 있는 바를 족한 줄로 알라 그가 친히 말씀하시기를 내가 과연 너희를 버리지 아니하고 과연 너희를 떠나지 아니하리라 하셨느니라`,ref:`히브리서 13:5`,engText:`Keep your lives free from the love of money and be content with what you have, because God has said, "Never will I leave you; never will I forsake you."`,commentary:`본문(히브리서 13:5)은 「돈을 사랑치 말고 있는 바를 족한 줄로 알라 그가 친히 말씀하시기를 내가 과연 너희를 버리지 아니하고 과연 너희를 떠나지 아니하리라 하셨느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 13:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 13:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「돈을 사랑치 말고 있는 바를 족한 줄로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 13:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와는 나의 힘이요 노래시며 나의 구원이시로다 그는 나의 하나님이시니 내가 그를 찬송할 것이요 내 아비의 하나님이시니 내가 그를 높이리로다`,ref:`출애굽기 15:2`,engText:`The Lord is my strength and my defense; he has become my salvation. He is my God, and I will praise him, my father's God, and I will exalt him.`,commentary:`본문(출애굽기 15:2)은 「여호와는 나의 힘이요 노래시며 나의 구원이시로다 그는 나의 하나님이시니 내가 그를 찬송할 것이요 내 아비의 하나님이시니 내가 그를 높이리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 15:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 15:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와는 나의 힘이요 노래시며 나의 구원…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 15:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 또 너희에게 이르노니 구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니`,ref:`누가복음 11:9`,engText:`So I say to you: Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.`,commentary:`본문(누가복음 11:9)은 「내가 또 너희에게 이르노니 구하라 그러면 너희에게 주실 것이요 찾으라 그러면 찾을 것이요 문을 두드리라 그러면 너희에게 열릴 것이니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 11:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 11:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 또 너희에게 이르노니 구하라 그러면…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 11:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 날은 여호와의 정하신 것이라 이 날에 우리가 즐거워하고 기뻐하리로다`,ref:`시편 118:24`,engText:`The Lord has done it this very day; let us rejoice today and be glad.`,commentary:`본문(시편 118:24)은 「이 날은 여호와의 정하신 것이라 이 날에 우리가 즐거워하고 기뻐하리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 118:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 118:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 날은 여호와의 정하신 것이라 이 날에…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 118:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 낙심하지 아니하노니 겉 사람은 후패하나 우리의 속은 날로 새롭도다`,ref:`고린도후서 4:16`,engText:`Therefore we do not lose heart. Though outwardly we are wasting away, yet inwardly we are being renewed day by day.`,commentary:`본문(고린도후서 4:16)은 「그러므로 우리가 낙심하지 아니하노니 겉 사람은 후패하나 우리의 속은 날로 새롭도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도후서 4:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도후서 4:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 우리가 낙심하지 아니하노니 겉 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도후서 4:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`보라 그의 마음은 교만하며 그의 속에서 정직하지 못하니라 그러나 의인은 믿음으로 말미암아 살리라`,ref:`하박국 2:4`,engText:`See, the enemy is puffed up; his desires are not upright — but the righteous person will live by his faithfulness.`,commentary:`본문(하박국 2:4)은 「보라 그의 마음은 교만하며 그의 속에서 정직하지 못하니라 그러나 의인은 믿음으로 말미암아 살리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「하박국 2:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(하박국 2:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「보라 그의 마음은 교만하며 그의 속에서 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「하박국 2:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 사랑하는 자가 내게 말하여 이르기를 나의 사랑 나의 어여쁜 자야 일어나서 함께 가자`,ref:`아가 2:10`,engText:`My beloved spoke and said to me, "Arise, my darling, my beautiful one, come with me."`,commentary:`본문(아가 2:10)은 「나의 사랑하는 자가 내게 말하여 이르기를 나의 사랑 나의 어여쁜 자야 일어나서 함께 가자」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「아가 2:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(아가 2:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 사랑하는 자가 내게 말하여 이르기를…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「아가 2:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자들아 너희는 너희의 지극히 거룩한 믿음 위에 자기를 건축하며 성령으로 기도하며 하나님의 사랑 안에서 자기를 지키며 영생에 이르도록 우리 주 예수 그리스도의 긍휼을 기다리라`,ref:`유다서 1:20-21`,engText:`But you, dear friends, by building yourselves up in your most holy faith and praying in the Holy Spirit, keep yourselves in God's love as you wait for the mercy of our Lord Jesus Christ to bring you to eternal life.`,commentary:`본문(유다서 1:20-21)은 「사랑하는 자들아 너희는 너희의 지극히 거룩한 믿음 위에 자기를 건축하며 성령으로 기도하며 하나님의 사랑 안에서 자기를 지키며 영생에 이르도록 우리 주 예수 그리스도의 긍휼을 기다리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「유다서 1:20-21」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(유다서 1:20-21)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사랑하는 자들아 너희는 너희의 지극히 거…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「유다서 1:20-21」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 사자가 기드온에게 나타나 이르되 큰 용사여 여호와께서 너와 함께 계시도다`,ref:`사사기 6:12`,engText:`When the angel of the Lord appeared to Gideon, he said, "The Lord is with you, mighty warrior."`,commentary:`본문(사사기 6:12)은 「여호와의 사자가 기드온에게 나타나 이르되 큰 용사여 여호와께서 너와 함께 계시도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사사기 6:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사사기 6:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 사자가 기드온에게 나타나 이르되…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사사기 6:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`베드로가 가로되 너희가 회개하여 각각 예수 그리스도의 이름으로 세례를 받고 죄 사함을 얻으라 그리하면 성령을 선물로 받으리니`,ref:`사도행전 2:38`,engText:`Peter replied, "Repent and be baptized, every one of you, in the name of Jesus Christ for the forgiveness of your sins. And you will receive the gift of the Holy Spirit."`,commentary:`본문(사도행전 2:38)은 「베드로가 가로되 너희가 회개하여 각각 예수 그리스도의 이름으로 세례를 받고 죄 사함을 얻으라 그리하면 성령을 선물로 받으리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 2:38」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 2:38)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「베드로가 가로되 너희가 회개하여 각각 예…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 2:38」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 반석이시요 나의 구속자이신 여호와여 내 입의 말과 마음의 묵상이 주의 앞에 열납되기를 원하나이다`,ref:`시편 19:14`,engText:`May these words of my mouth and this meditation of my heart be pleasing in your sight, Lord, my Rock and my Redeemer.`,commentary:`본문(시편 19:14)은 「나의 반석이시요 나의 구속자이신 여호와여 내 입의 말과 마음의 묵상이 주의 앞에 열납되기를 원하나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 19:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 19:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 반석이시요 나의 구속자이신 여호와여…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 19:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 복음을 부끄러워하지 아니하노니 이 복음은 모든 믿는 자에게 구원을 주시는 하나님의 능력이 됨이라 첫째는 유대인에게요 또한 헬라인에게로다`,ref:`로마서 1:16`,engText:`For I am not ashamed of the gospel, because it is the power of God that brings salvation to everyone who believes.`,commentary:`본문(로마서 1:16)은 「내가 복음을 부끄러워하지 아니하노니 이 복음은 모든 믿는 자에게 구원을 주시는 하나님의 능력이 됨이라 첫째는 유대인에게요 또한 헬라인에게로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 1:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 1:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 복음을 부끄러워하지 아니하노니 이 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 1:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`산들은 떠나며 작은 산들은 옮길지라도 나의 인자는 네게서 떠나지 아니하며 화평케 하는 나의 언약은 옮기지 아니하리라 너를 긍휼히 여기는 여호와의 말이니라`,ref:`이사야 54:10`,engText:`"Though the mountains be shaken and the hills be removed, yet my unfailing love for you will not be shaken nor my covenant of peace be removed," says the Lord, who has compassion on you.`,commentary:`본문(이사야 54:10)은 「산들은 떠나며 작은 산들은 옮길지라도 나의 인자는 네게서 떠나지 아니하며 화평케 하는 나의 언약은 옮기지 아니하리라 너를 긍휼히 여기는 여호와의 말이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 54:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 54:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「산들은 떠나며 작은 산들은 옮길지라도 나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 54:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`고운 것도 거짓되고 아름다운 것도 헛되나 오직 여호와를 경외하는 여자는 칭찬을 받을 것이라`,ref:`잠언 31:30`,engText:`Charm is deceptive, and beauty is fleeting; but a woman who fears the Lord is to be praised.`,commentary:`본문(잠언 31:30)은 「고운 것도 거짓되고 아름다운 것도 헛되나 오직 여호와를 경외하는 여자는 칭찬을 받을 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 31:30」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 31:30)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「고운 것도 거짓되고 아름다운 것도 헛되나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 31:30」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 예언의 말씀을 읽는 자와 듣는 자들과 그 가운데 기록한 것을 지키는 자들이 복이 있나니 때가 가까움이라`,ref:`요한계시록 1:3`,engText:`Blessed is the one who reads aloud the words of this prophecy, and blessed are those who hear it and take to heart what is written in it, because the time is near.`,commentary:`본문(요한계시록 1:3)은 「이 예언의 말씀을 읽는 자와 듣는 자들과 그 가운데 기록한 것을 지키는 자들이 복이 있나니 때가 가까움이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 1:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 1:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 예언의 말씀을 읽는 자와 듣는 자들과…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 1:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와와 같이 거룩하신 이가 없으시니 이는 주 밖에 다른 이가 없고 우리 하나님 같은 반석도 없으심이니이다`,ref:`사무엘상 2:2`,engText:`There is no one holy like the Lord; there is no one besides you; there is no Rock like our God.`,commentary:`본문(사무엘상 2:2)은 「여호와와 같이 거룩하신 이가 없으시니 이는 주 밖에 다른 이가 없고 우리 하나님 같은 반석도 없으심이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사무엘상 2:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사무엘상 2:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와와 같이 거룩하신 이가 없으시니 이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사무엘상 2:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희가 내 안에 거하고 내 말이 너희 안에 거하면 무엇이든지 원하는 대로 구하라 그리하면 이루리라`,ref:`요한복음 15:7`,engText:`If you remain in me and my words remain in you, ask whatever you wish, and it will be done for you.`,commentary:`본문(요한복음 15:7)은 「너희가 내 안에 거하고 내 말이 너희 안에 거하면 무엇이든지 원하는 대로 구하라 그리하면 이루리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 15:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 15:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희가 내 안에 거하고 내 말이 너희 안…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 15:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와의 선하심을 맛보아 알지어다 그에게 피하는 자는 복이 있도다`,ref:`시편 34:8`,engText:`Taste and see that the Lord is good; blessed is the one who takes refuge in him.`,commentary:`본문(시편 34:8)은 「너희는 여호와의 선하심을 맛보아 알지어다 그에게 피하는 자는 복이 있도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 34:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 34:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 여호와의 선하심을 맛보아 알지어다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 34:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`서로 인자하게 하며 불쌍히 여기며 서로 용서하기를 하나님이 그리스도 안에서 너희를 용서하심과 같이 하라`,ref:`에베소서 4:32`,engText:`Be kind and compassionate to one another, forgiving each other, just as in Christ God forgave you.`,commentary:`본문(에베소서 4:32)은 「서로 인자하게 하며 불쌍히 여기며 서로 용서하기를 하나님이 그리스도 안에서 너희를 용서하심과 같이 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 4:32」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 4:32)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「서로 인자하게 하며 불쌍히 여기며 서로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 4:32」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 이름을 경외하는 너희에게는 의로운 해가 떠올라서 치료하는 광선을 발하리니 너희가 나가서 외양간에서 나온 송아지 같이 뛰리라`,ref:`말라기 4:2`,engText:`But for you who revere my name, the sun of righteousness will rise with healing in its rays. And you will go out and frolic like well-fed calves.`,commentary:`본문(말라기 4:2)은 「내 이름을 경외하는 너희에게는 의로운 해가 떠올라서 치료하는 광선을 발하리니 너희가 나가서 외양간에서 나온 송아지 같이 뛰리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「말라기 4:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(말라기 4:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 이름을 경외하는 너희에게는 의로운 해…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「말라기 4:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`마음의 즐거움은 얼굴을 빛나게 하여도 마음의 근심은 심령을 상하게 하느니라`,ref:`잠언 15:13`,engText:`A happy heart makes the face cheerful, but heartache crushes the spirit.`,commentary:`본문(잠언 15:13)은 「마음의 즐거움은 얼굴을 빛나게 하여도 마음의 근심은 심령을 상하게 하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 15:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 15:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「마음의 즐거움은 얼굴을 빛나게 하여도 마…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 15:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`시험을 참는 자는 복이 있도다 이것이 옳다 인정하심을 받은 후에 주께서 자기를 사랑하는 자들에게 약속하신 생명의 면류관을 얻을 것임이니라`,ref:`야고보서 1:12`,engText:`Blessed is the one who perseveres under trial because, having stood the test, that person will receive the crown of life that the Lord has promised to those who love him.`,commentary:`본문(야고보서 1:12)은 「시험을 참는 자는 복이 있도다 이것이 옳다 인정하심을 받은 후에 주께서 자기를 사랑하는 자들에게 약속하신 생명의 면류관을 얻을 것임이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 1:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 1:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「시험을 참는 자는 복이 있도다 이것이 옳…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 1:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`대답하되 두려워하지 말라 우리와 함께한 자가 저와 함께한 자보다 많으니라 하고`,ref:`열왕기하 6:16`,engText:`"Don't be afraid," the prophet answered. "Those who are with us are more than those who are with them."`,commentary:`본문(열왕기하 6:16)은 「대답하되 두려워하지 말라 우리와 함께한 자가 저와 함께한 자보다 많으니라 하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「열왕기하 6:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(열왕기하 6:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「대답하되 두려워하지 말라 우리와 함께한 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「열왕기하 6:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 가라사대 네 마음을 다하고 목숨을 다하고 뜻을 다하여 주 너의 하나님을 사랑하라 하셨으니 이것이 크고 첫째 되는 계명이요 둘째는 그와 같으니 네 이웃을 네 몸과 같이 사랑하라 하셨으니`,ref:`마태복음 22:37-39`,engText:`Jesus replied: "'Love the Lord your God with all your heart and with all your soul and with all your mind.' This is the first and greatest commandment. And the second is like it: 'Love your neighbor as yourself.'"`,commentary:`본문(마태복음 22:37-39)은 「예수께서 가라사대 네 마음을 다하고 목숨을 다하고 뜻을 다하여 주 너의 하나님을 사랑하라 하셨으니 이것이 크고 첫째 되는 계명이요 둘째는 그와 같으니 네 이웃을 네 몸과 같이 사랑하라 하셨으니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 22:37-39」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 22:37-39)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 가라사대 네 마음을 다하고 목숨…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 22:37-39」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님이여 내 속에 정한 마음을 창조하시고 내 안에 정직한 영을 새롭게 하소서`,ref:`시편 51:10`,engText:`Create in me a pure heart, O God, and renew a steadfast spirit within me.`,commentary:`본문(시편 51:10)은 「하나님이여 내 속에 정한 마음을 창조하시고 내 안에 정직한 영을 새롭게 하소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 51:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 51:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님이여 내 속에 정한 마음을 창조하시…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 51:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희 속에 착한 일을 시작하신 이가 그리스도 예수의 날까지 이루실 줄을 우리가 확신하노라`,ref:`빌립보서 1:6`,engText:`Being confident of this, that he who began a good work in you will carry it on to completion until the day of Christ Jesus.`,commentary:`본문(빌립보서 1:6)은 「너희 속에 착한 일을 시작하신 이가 그리스도 예수의 날까지 이루실 줄을 우리가 확신하노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 1:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 1:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희 속에 착한 일을 시작하신 이가 그리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 1:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주 여호와 이스라엘의 거룩하신 자가 말씀하시되 너희가 돌이켜 안연히 처하여야 구원을 얻을 것이요 잠잠하고 신뢰하여야 힘을 얻을 것이어늘 너희가 원치 아니하고`,ref:`이사야 30:15`,engText:`In repentance and rest is your salvation, in quietness and trust is your strength.`,commentary:`본문(이사야 30:15)은 「주 여호와 이스라엘의 거룩하신 자가 말씀하시되 너희가 돌이켜 안연히 처하여야 구원을 얻을 것이요 잠잠하고 신뢰하여야 힘을 얻을 것이어늘 너희가 원치 아니하고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 30:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 30:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주 여호와 이스라엘의 거룩하신 자가 말씀…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 30:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 알기에는 나의 구속자가 살아 계시니 후일에 그가 땅 위에 서실 것이라`,ref:`욥기 19:25`,engText:`I know that my redeemer lives, and that in the end he will stand on the earth.`,commentary:`본문(욥기 19:25)은 「내가 알기에는 나의 구속자가 살아 계시니 후일에 그가 땅 위에 서실 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 19:25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 19:25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 알기에는 나의 구속자가 살아 계시니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 19:25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 은혜의 하나님 곧 그리스도 안에서 너희를 부르사 자기의 영원한 영광에 들어가게 하신 이가 잠간 고난을 받은 너희를 친히 온전케 하시며 굳게 하시며 강하게 하시며 터를 견고케 하시리라`,ref:`베드로전서 5:10`,engText:`And the God of all grace, who called you to his eternal glory in Christ, after you have suffered a little while, will himself restore you and make you strong, firm and steadfast.`,commentary:`본문(베드로전서 5:10)은 「모든 은혜의 하나님 곧 그리스도 안에서 너희를 부르사 자기의 영원한 영광에 들어가게 하신 이가 잠간 고난을 받은 너희를 친히 온전케 하시며 굳게 하시며 강하게 하시며 터를 견고케 하시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 5:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 5:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 은혜의 하나님 곧 그리스도 안에서 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 5:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`에스라가 여호와의 율법을 연구하여 준행하며 율례와 규례를 이스라엘에게 가르치기로 결심하였었더라`,ref:`에스라 7:10`,engText:`For Ezra had devoted himself to the study and observance of the Law of the Lord, and to teaching its decrees and laws in Israel.`,commentary:`본문(에스라 7:10)은 「에스라가 여호와의 율법을 연구하여 준행하며 율례와 규례를 이스라엘에게 가르치기로 결심하였었더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「에스라 7:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에스라 7:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「에스라가 여호와의 율법을 연구하여 준행하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에스라 7:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`가라사대 무릇 사람의 할 수 없는 것을 하나님은 하실 수 있느니라`,ref:`누가복음 18:27`,engText:`Jesus replied, "What is impossible with man is possible with God."`,commentary:`본문(누가복음 18:27)은 「가라사대 무릇 사람의 할 수 없는 것을 하나님은 하실 수 있느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 18:27」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 18:27)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「가라사대 무릇 사람의 할 수 없는 것을 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 18:27」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시, 영장으로 여두둔의 법칙을 의지하여 한 노래] 나의 영혼이 잠잠히 하나님만 바람이여 나의 구원이 그에게서 나는도다`,ref:`시편 62:1`,engText:`Truly my soul finds rest in God; my salvation comes from him.`,commentary:`본문(시편 62:1)은 「[다윗의 시, 영장으로 여두둔의 법칙을 의지하여 한 노래] 나의 영혼이 잠잠히 하나님만 바람이여 나의 구원이 그에게서 나는도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 62:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 62:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[다윗의 시, 영장으로 여두둔의 법칙을 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 62:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 내 사랑하는 형제들아 견고하며 흔들리지 말며 항상 주의 일에 더욱 힘쓰는 자들이 되라 이는 너희 수고가 주 안에서 헛되지 않은 줄을 앎이니라`,ref:`고린도전서 15:58`,engText:`Therefore, my dear brothers and sisters, stand firm. Let nothing move you. Always give yourselves fully to the work of the Lord, because you know that your labor in the Lord is not in vain.`,commentary:`본문(고린도전서 15:58)은 「그러므로 내 사랑하는 형제들아 견고하며 흔들리지 말며 항상 주의 일에 더욱 힘쓰는 자들이 되라 이는 너희 수고가 주 안에서 헛되지 않은 줄을 앎이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 15:58」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 15:58)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 내 사랑하는 형제들아 견고하며 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 15:58」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나는 감사하는 목소리로 주께 제사를 드리며 나의 서원을 주께 갚겠나이다 구원은 여호와께로서 말미암나이다 하니라`,ref:`요나 2:9`,engText:`Salvation comes from the Lord.`,commentary:`본문(요나 2:9)은 「나는 감사하는 목소리로 주께 제사를 드리며 나의 서원을 주께 갚겠나이다 구원은 여호와께로서 말미암나이다 하니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요나 2:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요나 2:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나는 감사하는 목소리로 주께 제사를 드리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요나 2:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람의 걸음은 여호와께로서 말미암나니 사람이 어찌 자기의 길을 알 수 있으랴`,ref:`잠언 20:24`,engText:`A person's steps are directed by the Lord. How then can anyone understand their own way?`,commentary:`본문(잠언 20:24)은 「사람의 걸음은 여호와께로서 말미암나니 사람이 어찌 자기의 길을 알 수 있으랴」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 20:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 20:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람의 걸음은 여호와께로서 말미암나니 사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 20:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사랑하는 자여 네 영혼이 잘됨 같이 네가 범사에 잘되고 강건하기를 내가 간구하노라`,ref:`요한삼서 1:2`,engText:`Dear friend, I pray that you may enjoy good health and that all may go well with you, even as your soul is getting along well.`,commentary:`본문(요한삼서 1:2)은 「사랑하는 자여 네 영혼이 잘됨 같이 네가 범사에 잘되고 강건하기를 내가 간구하노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한삼서 1:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한삼서 1:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사랑하는 자여 네 영혼이 잘됨 같이 네가…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한삼서 1:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주여 구하오니 귀를 기울이사 종의 기도와 주의 이름을 경외하기를 기뻐하는 종들의 기도를 들으시고 오늘날 종으로 형통하여 이 사람 앞에서 은혜를 입게 하옵소서 하였나니 그 때에 내가 왕의 술관원이 되었었느니라`,ref:`느헤미야 1:11`,engText:`Lord, let your ear be attentive to the prayer of this your servant and to the prayer of your servants who delight in revering your name. Give your servant success today by granting him favor in the presence of this man.`,commentary:`본문(느헤미야 1:11)은 「주여 구하오니 귀를 기울이사 종의 기도와 주의 이름을 경외하기를 기뻐하는 종들의 기도를 들으시고 오늘날 종으로 형통하여 이 사람 앞에서 은혜를 입게 하옵소서 하였나니 그 때에 내가 왕의 술관원이 되었었느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「느헤미야 1:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(느헤미야 1:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주여 구하오니 귀를 기울이사 종의 기도와…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「느헤미야 1:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`가라사대 때가 찼고 하나님 나라가 가까웠으니 회개하고 복음을 믿으라 하시더라`,ref:`마가복음 1:15`,engText:`"The time has come," he said. "The kingdom of God has come near. Repent and believe the good news!"`,commentary:`본문(마가복음 1:15)은 「가라사대 때가 찼고 하나님 나라가 가까웠으니 회개하고 복음을 믿으라 하시더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 1:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 1:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「가라사대 때가 찼고 하나님 나라가 가까웠…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 1:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주의 궁정에서 한 날이 다른 곳에서 천 날보다 나은즉 악인의 장막에 거함보다 내 하나님 문지기로 있는 것이 좋사오니`,ref:`시편 84:10`,engText:`Better is one day in your courts than a thousand elsewhere.`,commentary:`본문(시편 84:10)은 「주의 궁정에서 한 날이 다른 곳에서 천 날보다 나은즉 악인의 장막에 거함보다 내 하나님 문지기로 있는 것이 좋사오니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 84:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 84:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주의 궁정에서 한 날이 다른 곳에서 천 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 84:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 살아도 주를 위하여 살고 죽어도 주를 위하여 죽나니 그러므로 사나 죽으나 우리가 주의 것이로라`,ref:`로마서 14:8`,engText:`If we live, we live for the Lord; and if we die, we die for the Lord. So, whether we live or die, we belong to the Lord.`,commentary:`본문(로마서 14:8)은 「우리가 살아도 주를 위하여 살고 죽어도 주를 위하여 죽나니 그러므로 사나 죽으나 우리가 주의 것이로라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 14:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 14:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 살아도 주를 위하여 살고 죽어도 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 14:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`풀은 마르고 꽃은 시드나 우리 하나님의 말씀은 영영히 서리라 하라`,ref:`이사야 40:8`,engText:`The grass withers and the flowers fall, but the word of our God endures forever.`,commentary:`본문(이사야 40:8)은 「풀은 마르고 꽃은 시드나 우리 하나님의 말씀은 영영히 서리라 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 40:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 40:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「풀은 마르고 꽃은 시드나 우리 하나님의 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 40:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 네 식물을 물 위에 던지라 여러 날 후에 도로 찾으리라`,ref:`전도서 11:1`,engText:`Ship your grain across the sea; after many days you may receive a return.`,commentary:`본문(전도서 11:1)은 「너는 네 식물을 물 위에 던지라 여러 날 후에 도로 찾으리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 11:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 11:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 네 식물을 물 위에 던지라 여러 날…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 11:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 우리가 긍휼하심을 받고 때를 따라 돕는 은혜를 얻기 위하여 은혜의 보좌 앞에 담대히 나아갈 것이니라`,ref:`히브리서 4:16`,engText:`Let us then approach God's throne of grace with confidence, so that we may receive mercy and find grace to help us in our time of need.`,commentary:`본문(히브리서 4:16)은 「그러므로 우리가 긍휼하심을 받고 때를 따라 돕는 은혜를 얻기 위하여 은혜의 보좌 앞에 담대히 나아갈 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 4:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 4:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 우리가 긍휼하심을 받고 때를 따…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 4:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`아브라함이 그 땅 이름을 여호와이레라 하였으므로 오늘까지 사람들이 이르기를 여호와의 산에서 준비되리라 하더라`,ref:`창세기 22:14`,engText:`So Abraham called that place The Lord Will Provide. And to this day it is said, "On the mountain of the Lord it will be provided."`,commentary:`본문(창세기 22:14)은 「아브라함이 그 땅 이름을 여호와이레라 하였으므로 오늘까지 사람들이 이르기를 여호와의 산에서 준비되리라 하더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 22:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 22:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「아브라함이 그 땅 이름을 여호와이레라 하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 22:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`범사에 너희에게 모본을 보였노니 곧 이같이 수고하여 약한 사람들을 돕고 또 주 예수의 친히 말씀하신 바 주는 것이 받는 것보다 복이 있다 하심을 기억하여야 할지니라`,ref:`사도행전 20:35`,engText:`In everything I did, I showed you that by this kind of hard work we must help the weak, remembering the words the Lord Jesus himself said: "It is more blessed to give than to receive."`,commentary:`본문(사도행전 20:35)은 「범사에 너희에게 모본을 보였노니 곧 이같이 수고하여 약한 사람들을 돕고 또 주 예수의 친히 말씀하신 바 주는 것이 받는 것보다 복이 있다 하심을 기억하여야 할지니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 20:35」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 20:35)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「범사에 너희에게 모본을 보였노니 곧 이같…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 20:35」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다`,ref:`시편 126:5`,engText:`Those who sow with tears will reap with songs of joy.`,commentary:`본문(시편 126:5)은 「눈물을 흘리며 씨를 뿌리는 자는 기쁨으로 거두리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 126:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 126:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「눈물을 흘리며 씨를 뿌리는 자는 기쁨으로…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 126:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`누구든지 네 연소함을 업신여기지 못하게 하고 오직 말과 행실과 사랑과 믿음과 정절에 대하여 믿는 자에게 본이 되어`,ref:`디모데전서 4:12`,engText:`Don't let anyone look down on you because you are young, but set an example for the believers in speech, in conduct, in love, in faith and in purity.`,commentary:`본문(디모데전서 4:12)은 「누구든지 네 연소함을 업신여기지 못하게 하고 오직 말과 행실과 사랑과 믿음과 정절에 대하여 믿는 자에게 본이 되어」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「디모데전서 4:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디모데전서 4:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「누구든지 네 연소함을 업신여기지 못하게 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디모데전서 4:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주 여호와께서 이 뼈들에게 말씀하시기를 내가 생기로 너희에게 들어가게 하리니 너희가 살리라`,ref:`에스겔 37:5`,engText:`This is what the Sovereign Lord says to these bones: I will make breath enter you, and you will come to life.`,commentary:`본문(에스겔 37:5)은 「주 여호와께서 이 뼈들에게 말씀하시기를 내가 생기로 너희에게 들어가게 하리니 너희가 살리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「에스겔 37:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에스겔 37:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주 여호와께서 이 뼈들에게 말씀하시기를 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에스겔 37:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`근심이 사람의 마음에 있으면 그것으로 번뇌케 하나 선한 말은 그것을 즐겁게 하느니라`,ref:`잠언 12:25`,engText:`Anxiety weighs down the heart, but a kind word cheers it up.`,commentary:`본문(잠언 12:25)은 「근심이 사람의 마음에 있으면 그것으로 번뇌케 하나 선한 말은 그것을 즐겁게 하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 12:25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 12:25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「근심이 사람의 마음에 있으면 그것으로 번…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 12:25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 위로부터 난 지혜는 첫째 성결하고 다음에 화평하고 관용하고 양순하며 궁휼과 선한 열매가 가득하고 편벽과 거짓이 없나니`,ref:`야고보서 3:17`,engText:`But the wisdom that comes from heaven is first of all pure; then peace-loving, considerate, submissive, full of mercy and good fruit, impartial and sincere.`,commentary:`본문(야고보서 3:17)은 「오직 위로부터 난 지혜는 첫째 성결하고 다음에 화평하고 관용하고 양순하며 궁휼과 선한 열매가 가득하고 편벽과 거짓이 없나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 3:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 3:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 위로부터 난 지혜는 첫째 성결하고 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 3:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러나 네가 거기서 네 하나님 여호와를 구하게 되리니 만일 마음을 다하고 성품을 다하여 그를 구하면 만나리라`,ref:`신명기 4:29`,engText:`But if from there you seek the Lord your God, you will find him if you seek him with all your heart and with all your soul.`,commentary:`본문(신명기 4:29)은 「그러나 네가 거기서 네 하나님 여호와를 구하게 되리니 만일 마음을 다하고 성품을 다하여 그를 구하면 만나리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 4:29」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 4:29)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러나 네가 거기서 네 하나님 여호와를 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 4:29」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님은 영이시니 예배하는 자가 신령과 진정으로 예배할지니라`,ref:`요한복음 4:24`,engText:`God is spirit, and his worshipers must worship in the Spirit and in truth.`,commentary:`본문(요한복음 4:24)은 「하나님은 영이시니 예배하는 자가 신령과 진정으로 예배할지니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 4:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 4:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님은 영이시니 예배하는 자가 신령과 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 4:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 Psa 곧 성전에 올라가는 노래] 형제가 연합하여 동거함이 어찌 그리 선하고 아름다운고`,ref:`시편 133:1`,engText:`How good and pleasant it is when God's people live together in unity!`,commentary:`본문(시편 133:1)은 「[다윗의 Psa 곧 성전에 올라가는 노래] 형제가 연합하여 동거함이 어찌 그리 선하고 아름다운고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 133:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 133:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[다윗의 Psa 곧 성전에 올라가는 노래…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 133:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`위엣 것을 생각하고 땅엣 것을 생각지 말라`,ref:`골로새서 3:2`,engText:`Set your minds on things above, not on earthly things.`,commentary:`본문(골로새서 3:2)은 「위엣 것을 생각하고 땅엣 것을 생각지 말라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「골로새서 3:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(골로새서 3:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「위엣 것을 생각하고 땅엣 것을 생각지 말…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「골로새서 3:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여인이 어찌 그 젖먹는 자식을 잊겠으며 자기 태에서 난 아들을 긍휼히 여기지 않겠느냐 그들은 혹시 잊을지라도 나는 너를 잊지 아니할 것이라`,ref:`이사야 49:15`,engText:`"Can a mother forget the baby at her breast and have no compassion on the child she has borne? Though she may forget, I will not forget you!"`,commentary:`본문(이사야 49:15)은 「여인이 어찌 그 젖먹는 자식을 잊겠으며 자기 태에서 난 아들을 긍휼히 여기지 않겠느냐 그들은 혹시 잊을지라도 나는 너를 잊지 아니할 것이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 49:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 49:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여인이 어찌 그 젖먹는 자식을 잊겠으며 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 49:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`악인은 쫓아 오는 자가 없어도 도망하나 의인은 사자 같이 담대하니라`,ref:`잠언 28:1`,engText:`The wicked flee though no one pursues, but the righteous are as bold as a lion.`,commentary:`본문(잠언 28:1)은 「악인은 쫓아 오는 자가 없어도 도망하나 의인은 사자 같이 담대하니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 28:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 28:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「악인은 쫓아 오는 자가 없어도 도망하나 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 28:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 너희가 더욱 힘써 너희 믿음에 덕을, 덕에 지식을, 지식에 절제를, 절제에 인내를, 인내에 경건을, 경건에 형제 우애를, 형제 우애에 사랑을 공급하라`,ref:`베드로후서 1:5-7`,engText:`For this very reason, make every effort to add to your faith goodness; and to goodness, knowledge; and to knowledge, self-control; and to self-control, perseverance; and to perseverance, godliness; and to godliness, mutual affection; and to mutual affection, love.`,commentary:`본문(베드로후서 1:5-7)은 「이러므로 너희가 더욱 힘써 너희 믿음에 덕을, 덕에 지식을, 지식에 절제를, 절제에 인내를, 인내에 경건을, 경건에 형제 우애를, 형제 우애에 사랑을 공급하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로후서 1:5-7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로후서 1:5-7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이러므로 너희가 더욱 힘써 너희 믿음에 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로후서 1:5-7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께서 가라사대 내가 친히 가리라 내가 너로 편케 하리라`,ref:`출애굽기 33:14`,engText:`The Lord replied, "My Presence will go with you, and I will give you rest."`,commentary:`본문(출애굽기 33:14)은 「여호와께서 가라사대 내가 친히 가리라 내가 너로 편케 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 33:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 33:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께서 가라사대 내가 친히 가리라 내…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 33:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`마음이 청결한 자는 복이 있나니 저희가 하나님을 볼 것임이요`,ref:`마태복음 5:8`,engText:`Blessed are the pure in heart, for they will see God.`,commentary:`본문(마태복음 5:8)은 「마음이 청결한 자는 복이 있나니 저희가 하나님을 볼 것임이요」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 5:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 5:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「마음이 청결한 자는 복이 있나니 저희가 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 5:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`호흡이 있는 자마다 여호와를 찬양할지어다 할렐루야`,ref:`시편 150:6`,engText:`Let everything that has breath praise the Lord. Praise the Lord.`,commentary:`본문(시편 150:6)은 「호흡이 있는 자마다 여호와를 찬양할지어다 할렐루야」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 150:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 150:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「호흡이 있는 자마다 여호와를 찬양할지어다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 150:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라`,ref:`고린도후서 9:7`,engText:`Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.`,commentary:`본문(고린도후서 9:7)은 「각각 그 마음에 정한 대로 할 것이요 인색함으로나 억지로 하지 말지니 하나님은 즐겨 내는 자를 사랑하시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도후서 9:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도후서 9:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「각각 그 마음에 정한 대로 할 것이요 인…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도후서 9:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`만일 그럴 것이면 왕이여 우리가 섬기는 우리 하나님이 우리를 극렬히 타는 풀무 가운데서 능히 건져 내시겠고 왕의 손에서도 건져내시리이다 그리 아니하실지라도 왕이여 우리가 왕의 신들을 섬기지도 아니하고 왕의 세우신 금 신상에게 절하지도 아니할 줄을 아옵소서`,ref:`다니엘 3:17-18`,engText:`If we are thrown into the blazing furnace, the God we serve is able to deliver us from it, and he will deliver us from Your Majesty's hand. But even if he does not, we want you to know, Your Majesty, that we will not serve your gods or worship the image of gold you have set up.`,commentary:`본문(다니엘 3:17-18)은 「만일 그럴 것이면 왕이여 우리가 섬기는 우리 하나님이 우리를 극렬히 타는 풀무 가운데서 능히 건져 내시겠고 왕의 손에서도 건져내시리이다 그리 아니하실지라도 왕이여 우리가 왕의 신들을 섬기지도 아니하고 왕의 세우신 금 신상에게 절하지도 아니할 줄을 아옵소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「다니엘 3:17-18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(다니엘 3:17-18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「만일 그럴 것이면 왕이여 우리가 섬기는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「다니엘 3:17-18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나를 사랑하는 자들이 나의 사랑을 입으며 나를 간절히 찾는 자가 나를 만날 것이니라`,ref:`잠언 8:17`,engText:`I love those who love me, and those who seek me find me.`,commentary:`본문(잠언 8:17)은 「나를 사랑하는 자들이 나의 사랑을 입으며 나를 간절히 찾는 자가 나를 만날 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 8:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 8:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나를 사랑하는 자들이 나의 사랑을 입으며…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 8:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이 세상도 그 정욕도 지나가되 오직 하나님의 뜻을 행하는 이는 영원히 거하느니라`,ref:`요한일서 2:17`,engText:`The world and its desires pass away, but whoever does the will of God lives forever.`,commentary:`본문(요한일서 2:17)은 「이 세상도 그 정욕도 지나가되 오직 하나님의 뜻을 행하는 이는 영원히 거하느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 2:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 2:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이 세상도 그 정욕도 지나가되 오직 하나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 2:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`야베스가 이스라엘 하나님께 아뢰어 가로되 원컨대 주께서 내게 복에 복을 더하사 나의 지경을 넓히시고 주의 손으로 나를 도우사 나로 환난을 벗어나 근심이 없게 하옵소서 하였더니 하나님이 그 구하는 것을 허락하셨더라`,ref:`역대상 4:10`,engText:`Jabez cried out to the God of Israel, "Oh, that you would bless me and enlarge my territory! Let your hand be with me, and keep me from harm so that I will be free from pain." And God granted his request.`,commentary:`본문(역대상 4:10)은 「야베스가 이스라엘 하나님께 아뢰어 가로되 원컨대 주께서 내게 복에 복을 더하사 나의 지경을 넓히시고 주의 손으로 나를 도우사 나로 환난을 벗어나 근심이 없게 하옵소서 하였더니 하나님이 그 구하는 것을 허락하셨더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대상 4:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대상 4:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「야베스가 이스라엘 하나님께 아뢰어 가로되…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대상 4:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람이 만일 온 천하를 얻고도 제 목숨을 잃으면 무엇이 유익하리요`,ref:`마가복음 8:36`,engText:`What good is it for someone to gain the whole world, yet forfeit their soul?`,commentary:`본문(마가복음 8:36)은 「사람이 만일 온 천하를 얻고도 제 목숨을 잃으면 무엇이 유익하리요」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 8:36」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 8:36)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람이 만일 온 천하를 얻고도 제 목숨을…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 8:36」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주께서 생명의 길로 내게 보이시리니 주의 우편에는 영원한 즐거움이 있나이다`,ref:`시편 16:11`,engText:`You make known to me the path of life; you will fill me with joy in your presence, with eternal pleasures at your right hand.`,commentary:`본문(시편 16:11)은 「주께서 생명의 길로 내게 보이시리니 주의 우편에는 영원한 즐거움이 있나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 16:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 16:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주께서 생명의 길로 내게 보이시리니 주의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 16:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`소망의 하나님이 모든 기쁨과 평강을 믿음 안에서 너희에게 충만케 하사 성령의 능력으로 소망이 넘치게 하시기를 원하노라`,ref:`로마서 15:13`,engText:`May the God of hope fill you with all joy and peace as you trust in him, so that you may overflow with hope by the power of the Holy Spirit.`,commentary:`본문(로마서 15:13)은 「소망의 하나님이 모든 기쁨과 평강을 믿음 안에서 너희에게 충만케 하사 성령의 능력으로 소망이 넘치게 하시기를 원하노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 15:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 15:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「소망의 하나님이 모든 기쁨과 평강을 믿음…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 15:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그들이 부르기 전에 내가 응답하겠고 그들이 말을 마치기 전에 내가 들을 것이며`,ref:`이사야 65:24`,engText:`Before they call I will answer; while they are still speaking I will hear.`,commentary:`본문(이사야 65:24)은 「그들이 부르기 전에 내가 응답하겠고 그들이 말을 마치기 전에 내가 들을 것이며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 65:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 65:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그들이 부르기 전에 내가 응답하겠고 그들…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 65:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`볼지어다 하나님께 징계받는 자에게는 복이 있나니 그런즉 너는 전능자의 경책을 업신여기지 말지니라 하나님은 아프게 하시다가 싸매시며 상하게 하시다가 그 손으로 고치시나니`,ref:`욥기 5:17-18`,engText:`Blessed is the one whom God corrects; so do not despise the discipline of the Almighty. For he wounds, but he also binds up; he injures, but his hands also heal.`,commentary:`본문(욥기 5:17-18)은 「볼지어다 하나님께 징계받는 자에게는 복이 있나니 그런즉 너는 전능자의 경책을 업신여기지 말지니라 하나님은 아프게 하시다가 싸매시며 상하게 하시다가 그 손으로 고치시나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 5:17-18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 5:17-18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「볼지어다 하나님께 징계받는 자에게는 복이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 5:17-18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 우리에게 구름 같이 둘러싼 허다한 증인들이 있으니 모든 무거운 것과 얽매이기 쉬운 죄를 벗어 버리고 인내로써 우리 앞에 당한 경주를 경주하며`,ref:`히브리서 12:1`,engText:`Therefore, since we are surrounded by such a great cloud of witnesses, let us throw off everything that hinders and the sin that so easily entangles. And let us run with perseverance the race marked out for us.`,commentary:`본문(히브리서 12:1)은 「이러므로 우리에게 구름 같이 둘러싼 허다한 증인들이 있으니 모든 무거운 것과 얽매이기 쉬운 죄를 벗어 버리고 인내로써 우리 앞에 당한 경주를 경주하며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 12:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 12:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이러므로 우리에게 구름 같이 둘러싼 허다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 12:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 도는 완전하고 여호와의 말씀은 정미하니 저는 자기에게 피하는 모든 자에게 방패시로다`,ref:`사무엘하 22:31`,engText:`As for God, his way is perfect: The Lord's word is flawless; he shields all who take refuge in him.`,commentary:`본문(사무엘하 22:31)은 「하나님의 도는 완전하고 여호와의 말씀은 정미하니 저는 자기에게 피하는 모든 자에게 방패시로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사무엘하 22:31」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사무엘하 22:31)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님의 도는 완전하고 여호와의 말씀은 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사무엘하 22:31」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`인자의 온 것은 잃어버린 자를 찾아 구원하려 함이니라`,ref:`누가복음 19:10`,engText:`For the Son of Man came to seek and to save the lost.`,commentary:`본문(누가복음 19:10)은 「인자의 온 것은 잃어버린 자를 찾아 구원하려 함이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 19:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 19:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「인자의 온 것은 잃어버린 자를 찾아 구원…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 19:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리에게 우리 날 계수함을 가르치사 지혜의 마음을 얻게 하소서`,ref:`시편 90:12`,engText:`Teach us to number our days, that we may gain a heart of wisdom.`,commentary:`본문(시편 90:12)은 「우리에게 우리 날 계수함을 가르치사 지혜의 마음을 얻게 하소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 90:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 90:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리에게 우리 날 계수함을 가르치사 지혜…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 90:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`푯대를 향하여 그리스도 예수 안에서 하나님이 위에서 부르신 부름의 상을 위하여 좇아가노라`,ref:`빌립보서 3:14`,engText:`I press on toward the goal to win the prize for which God has called me heavenward in Christ Jesus.`,commentary:`본문(빌립보서 3:14)은 「푯대를 향하여 그리스도 예수 안에서 하나님이 위에서 부르신 부름의 상을 위하여 좇아가노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 3:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 3:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「푯대를 향하여 그리스도 예수 안에서 하나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 3:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 너를 복중에 짓기 전에 너를 알았고 네가 태에서 나오기 전에 너를 구별하였고 너를 열방의 선지자로 세웠노라 하시기로`,ref:`예레미야 1:5`,engText:`"Before I formed you in the womb I knew you, before you were born I set you apart; I appointed you as a prophet to the nations."`,commentary:`본문(예레미야 1:5)은 「내가 너를 복중에 짓기 전에 너를 알았고 네가 태에서 나오기 전에 너를 구별하였고 너를 열방의 선지자로 세웠노라 하시기로」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야 1:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야 1:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 너를 복중에 짓기 전에 너를 알았고…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야 1:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`가산이 적어도 여호와를 경외하는 것이 크게 부하고 번뇌하는 것보다 나으니라`,ref:`잠언 15:16`,engText:`Better a little with the fear of the Lord than great wealth with turmoil.`,commentary:`본문(잠언 15:16)은 「가산이 적어도 여호와를 경외하는 것이 크게 부하고 번뇌하는 것보다 나으니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 15:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 15:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「가산이 적어도 여호와를 경외하는 것이 크…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 15:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네가 장차 받을 고난을 두려워 말라 볼지어다 마귀가 장차 너희 가운데서 몇 사람을 옥에 던져 시험을 받게 하리니 너희가 십 일 동안 환난을 받으리라 네가 죽도록 충성하라 그리하면 내가 생명의 면류관을 네게 주리라`,ref:`요한계시록 2:10`,engText:`Do not be afraid of what you are about to suffer. Be faithful, even to the point of death, and I will give you life as your victor's crown.`,commentary:`본문(요한계시록 2:10)은 「네가 장차 받을 고난을 두려워 말라 볼지어다 마귀가 장차 너희 가운데서 몇 사람을 옥에 던져 시험을 받게 하리니 너희가 십 일 동안 환난을 받으리라 네가 죽도록 충성하라 그리하면 내가 생명의 면류관을 네게 주리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 2:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 2:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네가 장차 받을 고난을 두려워 말라 볼지…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 2:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 눈은 온 땅을 두루 감찰하사 전심으로 자기에게 향하는 자를 위하여 능력을 베푸시나니 이 일은 왕이 망령되이 행하였은즉 이후부터는 왕에게 전쟁이 있으리이다 하매`,ref:`역대하 16:9`,engText:`For the eyes of the Lord range throughout the earth to strengthen those whose hearts are fully committed to him.`,commentary:`본문(역대하 16:9)은 「여호와의 눈은 온 땅을 두루 감찰하사 전심으로 자기에게 향하는 자를 위하여 능력을 베푸시나니 이 일은 왕이 망령되이 행하였은즉 이후부터는 왕에게 전쟁이 있으리이다 하매」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대하 16:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대하 16:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 눈은 온 땅을 두루 감찰하사 전…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대하 16:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 마음에 근심하지 말라 하나님을 믿으니 또 나를 믿으라`,ref:`요한복음 14:1`,engText:`Do not let your hearts be troubled. You believe in God; believe also in me.`,commentary:`본문(요한복음 14:1)은 「너희는 마음에 근심하지 말라 하나님을 믿으니 또 나를 믿으라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 14:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 14:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 마음에 근심하지 말라 하나님을 믿…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 14:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`청년이 무엇으로 그 행실을 깨끗케 하리이까 주의 말씀을 따라 삼갈 것이니이다`,ref:`시편 119:9`,engText:`How can a young person stay on the path of purity? By living according to your word.`,commentary:`본문(시편 119:9)은 「청년이 무엇으로 그 행실을 깨끗케 하리이까 주의 말씀을 따라 삼갈 것이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 119:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 119:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「청년이 무엇으로 그 행실을 깨끗케 하리이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 119:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주는 미쁘사 너희를 굳게 하시고 악한 자에게서 지키시리라`,ref:`데살로니가후서 3:3`,engText:`But the Lord is faithful, and he will strengthen you and protect you from the evil one.`,commentary:`본문(데살로니가후서 3:3)은 「주는 미쁘사 너희를 굳게 하시고 악한 자에게서 지키시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「데살로니가후서 3:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(데살로니가후서 3:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주는 미쁘사 너희를 굳게 하시고 악한 자…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「데살로니가후서 3:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`보라 하나님은 나의 구원이시라 내가 의뢰하고 두려움이 없으리니 주 여호와는 나의 힘이시며 나의 노래시며 나의 구원이심이라`,ref:`이사야 12:2`,engText:`Surely God is my salvation; I will trust and not be afraid. The Lord, the Lord himself, is my strength and my defense; he has become my salvation.`,commentary:`본문(이사야 12:2)은 「보라 하나님은 나의 구원이시라 내가 의뢰하고 두려움이 없으리니 주 여호와는 나의 힘이시며 나의 노래시며 나의 구원이심이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 12:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 12:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「보라 하나님은 나의 구원이시라 내가 의뢰…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 12:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`사람을 두려워하면 올무에 걸리게 되거니와 여호와를 의지하는 자는 안전하리라`,ref:`잠언 29:25`,engText:`Fear of man will prove to be a snare, but whoever trusts in the Lord is kept safe.`,commentary:`본문(잠언 29:25)은 「사람을 두려워하면 올무에 걸리게 되거니와 여호와를 의지하는 자는 안전하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 29:25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 29:25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「사람을 두려워하면 올무에 걸리게 되거니와…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 29:25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주 앞에서 낮추라 그리하면 주께서 너희를 높이시리라`,ref:`야고보서 4:10`,engText:`Humble yourselves before the Lord, and he will lift you up.`,commentary:`본문(야고보서 4:10)은 「주 앞에서 낮추라 그리하면 주께서 너희를 높이시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 4:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 4:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주 앞에서 낮추라 그리하면 주께서 너희를…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 4:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 이스라엘 자손의 온 회중에게 고하여 이르라 너희는 거룩하라 나 여호와 너희 하나님이 거룩함이니라`,ref:`레위기 19:2`,engText:`Speak to the entire assembly of Israel and say to them: 'Be holy because I, the Lord your God, am holy.'`,commentary:`본문(레위기 19:2)은 「너는 이스라엘 자손의 온 회중에게 고하여 이르라 너희는 거룩하라 나 여호와 너희 하나님이 거룩함이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「레위기 19:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(레위기 19:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 이스라엘 자손의 온 회중에게 고하여…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「레위기 19:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 그를 힘입어 살며 기동하며 있느니라 너희 시인 중에도 어떤 사람들의 말과 같이 우리가 그의 소생이라 하니`,ref:`사도행전 17:28`,engText:`For in him we live and move and have our being.`,commentary:`본문(사도행전 17:28)은 「우리가 그를 힘입어 살며 기동하며 있느니라 너희 시인 중에도 어떤 사람들의 말과 같이 우리가 그의 소생이라 하니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 17:28」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 17:28)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 그를 힘입어 살며 기동하며 있느니…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 17:28」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 간구하는 날에 주께서 응답하시고 내 영혼을 장려하여 강하게 하셨나이다`,ref:`시편 138:3`,engText:`When I called, you answered me; you greatly emboldened me.`,commentary:`본문(시편 138:3)은 「내가 간구하는 날에 주께서 응답하시고 내 영혼을 장려하여 강하게 하셨나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 138:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 138:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 간구하는 날에 주께서 응답하시고 내…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 138:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람에게 구원을 주시는 하나님의 은혜가 나타나`,ref:`디도서 2:11`,engText:`For the grace of God has appeared that offers salvation to all people.`,commentary:`본문(디도서 2:11)은 「모든 사람에게 구원을 주시는 하나님의 은혜가 나타나」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「디도서 2:11」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디도서 2:11)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 사람에게 구원을 주시는 하나님의 은…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디도서 2:11」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 그 때에 너희를 이끌고 그 때에 너희를 모을지라 내가 너희 목전에서 너희 사로잡힘을 돌이킬 때에 너희로 천하 만민 중에서 명성과 칭찬을 얻게 하리라 나 여호와의 말이니라`,ref:`스바냐 3:20`,engText:`At that time I will gather you; at that time I will bring you home.`,commentary:`본문(스바냐 3:20)은 「내가 그 때에 너희를 이끌고 그 때에 너희를 모을지라 내가 너희 목전에서 너희 사로잡힘을 돌이킬 때에 너희로 천하 만민 중에서 명성과 칭찬을 얻게 하리라 나 여호와의 말이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「스바냐 3:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(스바냐 3:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 그 때에 너희를 이끌고 그 때에 너…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「스바냐 3:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`형통한 날에는 기뻐하고 곤고한 날에는 생각하라 하나님이 이 두가지를 병행하게 하사 사람으로 그 장래 일을 능히 헤아려 알지 못하게 하셨느니라`,ref:`전도서 7:14`,engText:`When times are good, be happy; but when times are bad, consider this: God has made the one as well as the other.`,commentary:`본문(전도서 7:14)은 「형통한 날에는 기뻐하고 곤고한 날에는 생각하라 하나님이 이 두가지를 병행하게 하사 사람으로 그 장래 일을 능히 헤아려 알지 못하게 하셨느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 7:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 7:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「형통한 날에는 기뻐하고 곤고한 날에는 생…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 7:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 우리 주 예수 그리스도의 아버지 하나님이 그 많으신 긍휼대로 예수 그리스도의 죽은 자 가운데서 부활하심으로 말미암아 우리를 거듭나게 하사 산 소망이 있게 하시며`,ref:`베드로전서 1:3`,engText:`Praise be to the God and Father of our Lord Jesus Christ! In his great mercy he has given us new birth into a living hope through the resurrection of Jesus Christ from the dead.`,commentary:`본문(베드로전서 1:3)은 「찬송하리로다 우리 주 예수 그리스도의 아버지 하나님이 그 많으신 긍휼대로 예수 그리스도의 죽은 자 가운데서 부활하심으로 말미암아 우리를 거듭나게 하사 산 소망이 있게 하시며」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 1:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 1:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「찬송하리로다 우리 주 예수 그리스도의 아…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 1:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그런즉 너는 알라 오직 네 하나님 여호와는 하나님이시요 신실하신 하나님이시라 그를 사랑하고 그 계명을 지키는 자에게는 천 대까지 그 언약을 이행하시며 인애를 베푸시되`,ref:`신명기 7:9`,engText:`Know therefore that the Lord your God is God; he is the faithful God, keeping his covenant of love to a thousand generations of those who love him and keep his commandments.`,commentary:`본문(신명기 7:9)은 「그런즉 너는 알라 오직 네 하나님 여호와는 하나님이시요 신실하신 하나님이시라 그를 사랑하고 그 계명을 지키는 자에게는 천 대까지 그 언약을 이행하시며 인애를 베푸시되」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 7:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 7:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그런즉 너는 알라 오직 네 하나님 여호와…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 7:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`시험에 들지 않게 깨어 있어 기도하라 마음에는 원이로되 육신이 약하도다 하시고`,ref:`마태복음 26:41`,engText:`Watch and pray so that you will not fall into temptation. The spirit is willing, but the flesh is weak.`,commentary:`본문(마태복음 26:41)은 「시험에 들지 않게 깨어 있어 기도하라 마음에는 원이로되 육신이 약하도다 하시고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 26:41」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 26:41)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「시험에 들지 않게 깨어 있어 기도하라 마…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 26:41」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 주의 도를 내게 보이시고 주의 길을 내게 가르치소서`,ref:`시편 25:4`,engText:`Show me your ways, Lord, teach me your paths.`,commentary:`본문(시편 25:4)은 「여호와여 주의 도를 내게 보이시고 주의 길을 내게 가르치소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 25:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 25:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와여 주의 도를 내게 보이시고 주의 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 25:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람이 죄를 범하였으매 하나님의 영광에 이르지 못하더니`,ref:`로마서 3:23`,engText:`For all have sinned and fall short of the glory of God.`,commentary:`본문(로마서 3:23)은 「모든 사람이 죄를 범하였으매 하나님의 영광에 이르지 못하더니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 3:23」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 3:23)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 사람이 죄를 범하였으매 하나님의 영…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 3:23」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 네 허물을 빽빽한 구름의 사라짐 같이, 네 죄를 안개의 사라짐 같이 도말하였으니 너는 내게로 돌아오라 내가 너를 구속하였음이니라`,ref:`이사야 44:22`,engText:`I have swept away your offenses like a cloud, your sins like the morning mist. Return to me, for I have redeemed you.`,commentary:`본문(이사야 44:22)은 「내가 네 허물을 빽빽한 구름의 사라짐 같이, 네 죄를 안개의 사라짐 같이 도말하였으니 너는 내게로 돌아오라 내가 너를 구속하였음이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 44:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 44:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 네 허물을 빽빽한 구름의 사라짐 같…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 44:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`선한 말은 꿀송이 같아서 마음에 달고 뼈에 양약이 되느니라`,ref:`잠언 16:24`,engText:`Gracious words are a honeycomb, sweet to the soul and healing to the bones.`,commentary:`본문(잠언 16:24)은 「선한 말은 꿀송이 같아서 마음에 달고 뼈에 양약이 되느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 16:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 16:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「선한 말은 꿀송이 같아서 마음에 달고 뼈…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 16:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`보라 아버지께서 어떠한 사랑을 우리에게 주사 하나님의 자녀라 일컬음을 얻게 하셨는고 우리가 그러하도다 그러므로 세상이 우리를 알지 못함은 그를 알지 못함이니라`,ref:`요한일서 3:1`,engText:`See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!`,commentary:`본문(요한일서 3:1)은 「보라 아버지께서 어떠한 사랑을 우리에게 주사 하나님의 자녀라 일컬음을 얻게 하셨는고 우리가 그러하도다 그러므로 세상이 우리를 알지 못함은 그를 알지 못함이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 3:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 3:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「보라 아버지께서 어떠한 사랑을 우리에게 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 3:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`아브람이 여호와를 믿으니 여호와께서 이를 그의 의로 여기시고`,ref:`창세기 15:6`,engText:`Abram believed the Lord, and he credited it to him as righteousness.`,commentary:`본문(창세기 15:6)은 「아브람이 여호와를 믿으니 여호와께서 이를 그의 의로 여기시고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 15:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 15:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「아브람이 여호와를 믿으니 여호와께서 이를…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 15:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 계명은 곧 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라 하는 이것이니라`,ref:`요한복음 15:12`,engText:`My command is this: Love each other as I have loved you.`,commentary:`본문(요한복음 15:12)은 「내 계명은 곧 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라 하는 이것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 15:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 15:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 계명은 곧 내가 너희를 사랑한 것 같…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 15:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시, 영장으로 한 노래] 내가 여호와를 기다리고 기다렸더니 귀를 기울이사 나의 부르짖음을 들으셨도다`,ref:`시편 40:1`,engText:`I waited patiently for the Lord; he turned to me and heard my cry.`,commentary:`본문(시편 40:1)은 「[다윗의 시, 영장으로 한 노래] 내가 여호와를 기다리고 기다렸더니 귀를 기울이사 나의 부르짖음을 들으셨도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 40:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 40:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[다윗의 시, 영장으로 한 노래] 내가 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 40:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`세월을 아끼라 때가 악하니라`,ref:`에베소서 5:16`,engText:`Making the most of every opportunity, because the days are evil.`,commentary:`본문(에베소서 5:16)은 「세월을 아끼라 때가 악하니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 5:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 5:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「세월을 아끼라 때가 악하니라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 5:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`시온의 딸아 크게 기뻐할지어다 예루살렘의 딸아 즐거이 부를지어다 보라 네 왕이 네게 임하나니 그는 공의로우며 구원을 베풀며 겸손하여서 나귀를 타나니 나귀의 작은 것 곧 나귀새끼니라`,ref:`스가랴 9:9`,engText:`Rejoice greatly, Daughter Zion! Shout, Daughter Jerusalem! See, your king comes to you, righteous and victorious, lowly and riding on a donkey.`,commentary:`본문(스가랴 9:9)은 「시온의 딸아 크게 기뻐할지어다 예루살렘의 딸아 즐거이 부를지어다 보라 네 왕이 네게 임하나니 그는 공의로우며 구원을 베풀며 겸손하여서 나귀를 타나니 나귀의 작은 것 곧 나귀새끼니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「스가랴 9:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(스가랴 9:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「시온의 딸아 크게 기뻐할지어다 예루살렘의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「스가랴 9:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나의 사랑하는 자는 내게 속하였고 나는 그에게 속하였구나 그가 백합화 가운데서 양떼를 먹이는구나`,ref:`아가 2:16`,engText:`My beloved is mine and I am his; he browses among the lilies.`,commentary:`본문(아가 2:16)은 「나의 사랑하는 자는 내게 속하였고 나는 그에게 속하였구나 그가 백합화 가운데서 양떼를 먹이는구나」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「아가 2:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(아가 2:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나의 사랑하는 자는 내게 속하였고 나는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「아가 2:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이러므로 우리가 예수로 말미암아 항상 찬미의 제사를 하나님께 드리자 이는 그 이름을 증거하는 입술의 열매니라`,ref:`히브리서 13:15`,engText:`Through Jesus, therefore, let us continually offer to God a sacrifice of praise — the fruit of lips that openly profess his name.`,commentary:`본문(히브리서 13:15)은 「이러므로 우리가 예수로 말미암아 항상 찬미의 제사를 하나님께 드리자 이는 그 이름을 증거하는 입술의 열매니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 13:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 13:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이러므로 우리가 예수로 말미암아 항상 찬…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 13:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`세계가 다 내게 속하였나니 너희가 내 말을 잘 듣고 내 언약을 지키면 너희는 열국 중에서 내 소유가 되겠고`,ref:`출애굽기 19:5`,engText:`Now if you obey me fully and keep my covenant, then out of all nations you will be my treasured possession.`,commentary:`본문(출애굽기 19:5)은 「세계가 다 내게 속하였나니 너희가 내 말을 잘 듣고 내 언약을 지키면 너희는 열국 중에서 내 소유가 되겠고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 19:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 19:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「세계가 다 내게 속하였나니 너희가 내 말…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 19:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`지극히 높은 곳에서는 하나님께 영광이요 땅에서는 기뻐하심을 입은 사람들 중에 평화로다 하니라`,ref:`누가복음 2:14`,engText:`Glory to God in the highest heaven, and on earth peace to those on whom his favor rests.`,commentary:`본문(누가복음 2:14)은 「지극히 높은 곳에서는 하나님께 영광이요 땅에서는 기뻐하심을 입은 사람들 중에 평화로다 하니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 2:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 2:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「지극히 높은 곳에서는 하나님께 영광이요 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 2:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 육체와 마음은 쇠잔하나 하나님은 내 마음의 반석이시요 영원한 분깃이시라`,ref:`시편 73:26`,engText:`My flesh and my heart may fail, but God is the strength of my heart and my portion forever.`,commentary:`본문(시편 73:26)은 「내 육체와 마음은 쇠잔하나 하나님은 내 마음의 반석이시요 영원한 분깃이시라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 73:26」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 73:26)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 육체와 마음은 쇠잔하나 하나님은 내 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 73:26」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희 모든 일을 사랑으로 행하라`,ref:`고린도전서 16:14`,engText:`Do everything in love.`,commentary:`본문(고린도전서 16:14)은 「너희 모든 일을 사랑으로 행하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 16:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 16:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희 모든 일을 사랑으로 행하라…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 16:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 여호와를 만날 만한 때에 찾으라 가까이 계실 때에 그를 부르라`,ref:`이사야 55:6`,engText:`Seek the Lord while he may be found; call on him while he is near.`,commentary:`본문(이사야 55:6)은 「너희는 여호와를 만날 만한 때에 찾으라 가까이 계실 때에 그를 부르라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 55:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 55:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 여호와를 만날 만한 때에 찾으라 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 55:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내 아들아 나의 법을 잊어버리지 말고 네 마음으로 나의 명령을 지키라 그리하면 그것이 너로 장수하여 많은 해를 누리게 하며 평강을 더하게 하리라`,ref:`잠언 3:1-2`,engText:`My son, do not forget my teaching, but keep my commands in your heart, for they will prolong your life many years and bring you peace and prosperity.`,commentary:`본문(잠언 3:1-2)은 「내 아들아 나의 법을 잊어버리지 말고 네 마음으로 나의 명령을 지키라 그리하면 그것이 너로 장수하여 많은 해를 누리게 하며 평강을 더하게 하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 3:1-2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 3:1-2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내 아들아 나의 법을 잊어버리지 말고 네…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 3:1-2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`또 사랑은 이것이니 우리가 그 계명을 좇아 행하는 것이요 계명은 이것이니 너희가 처음부터 들은 바와 같이 그 가운데서 행하라 하심이라`,ref:`요한이서 1:6`,engText:`And this is love: that we walk in obedience to his commands. As you have heard from the beginning, his command is that you walk in love.`,commentary:`본문(요한이서 1:6)은 「또 사랑은 이것이니 우리가 그 계명을 좇아 행하는 것이요 계명은 이것이니 너희가 처음부터 들은 바와 같이 그 가운데서 행하라 하심이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한이서 1:6」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한이서 1:6)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「또 사랑은 이것이니 우리가 그 계명을 좇…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한이서 1:6」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호수아가 또 백성에게 이르되 너희는 스스로 성결케 하라 여호와께서 내일 너희 가운데 기사를 행하시리라`,ref:`여호수아 3:5`,engText:`Joshua told the people, "Consecrate yourselves, for tomorrow the Lord will do amazing things among you."`,commentary:`본문(여호수아 3:5)은 「여호수아가 또 백성에게 이르되 너희는 스스로 성결케 하라 여호와께서 내일 너희 가운데 기사를 행하시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「여호수아 3:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(여호수아 3:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호수아가 또 백성에게 이르되 너희는 스…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「여호수아 3:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 무엇이든지 남에게 대접을 받고자 하는대로 너희도 남을 대접하라 이것이 율법이요 선지자니라`,ref:`마태복음 7:12`,engText:`So in everything, do to others what you would have them do to you, for this sums up the Law and the Prophets.`,commentary:`본문(마태복음 7:12)은 「그러므로 무엇이든지 남에게 대접을 받고자 하는대로 너희도 남을 대접하라 이것이 율법이요 선지자니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 7:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 7:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 무엇이든지 남에게 대접을 받고자…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 7:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[안식일의 찬송 시] 지존자여 십현금과 비파와 수금의 정숙한 소리로 여호와께 감사하며 주의 이름을 찬양하며 아침에 주의 인자하심을 나타내며 밤마다 주의 성실하심을 베풂이 좋으니이다`,ref:`시편 92:1`,engText:`It is good to praise the Lord and make music to your name, O Most High.`,commentary:`본문(시편 92:1)은 「[안식일의 찬송 시] 지존자여 십현금과 비파와 수금의 정숙한 소리로 여호와께 감사하며 주의 이름을 찬양하며 아침에 주의 인자하심을 나타내며 밤마다 주의 성실하심을 베풂이 좋으니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 92:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 92:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[안식일의 찬송 시] 지존자여 십현금과 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 92:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 그는 우리 주 예수 그리스도의 하나님이시요 자비의 아버지시요 모든 위로의 하나님이시며 우리의 모든 환난 중에서 우리를 위로하사 우리로 하여금 하나님께 받는 위로로써 모든 환난 중에 있는 자들을 능히 위로하게 하시는 이시로다`,ref:`고린도후서 1:3-4`,engText:`Praise be to the God and Father of our Lord Jesus Christ, the Father of compassion and the God of all comfort, who comforts us in all our troubles.`,commentary:`본문(고린도후서 1:3-4)은 「찬송하리로다 그는 우리 주 예수 그리스도의 하나님이시요 자비의 아버지시요 모든 위로의 하나님이시며 우리의 모든 환난 중에서 우리를 위로하사 우리로 하여금 하나님께 받는 위로로써 모든 환난 중에 있는 자들을 능히 위로하게 하시는 이시로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도후서 1:3-4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도후서 1:3-4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「찬송하리로다 그는 우리 주 예수 그리스도…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도후서 1:3-4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`구원자들이 시온 산에 올라와서 에서의 산을 심판하리니 나라가 여호와께 속하리라`,ref:`오바댜 1:21`,engText:`And the kingdom will be the Lord's.`,commentary:`본문(오바댜 1:21)은 「구원자들이 시온 산에 올라와서 에서의 산을 심판하리니 나라가 여호와께 속하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「오바댜 1:21」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(오바댜 1:21)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「구원자들이 시온 산에 올라와서 에서의 산…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「오바댜 1:21」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`구제를 좋아하는 자는 풍족하여질 것이요 남을 윤택하게 하는 자는 윤택하여지리라`,ref:`잠언 11:25`,engText:`A generous person will prosper; whoever refreshes others will be refreshed.`,commentary:`본문(잠언 11:25)은 「구제를 좋아하는 자는 풍족하여질 것이요 남을 윤택하게 하는 자는 윤택하여지리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 11:25」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 11:25)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「구제를 좋아하는 자는 풍족하여질 것이요 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 11:25」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나는 알파와 오메가요 처음과 나중이요 시작과 끝이라`,ref:`요한계시록 22:13`,engText:`I am the Alpha and the Omega, the First and the Last, the Beginning and the End.`,commentary:`본문(요한계시록 22:13)은 「나는 알파와 오메가요 처음과 나중이요 시작과 끝이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 22:13」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 22:13)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나는 알파와 오메가요 처음과 나중이요 시…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 22:13」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와 하나님이여 이러므로 주는 광대하시니 이는 우리 귀로 들은 대로는 주와 같은 이가 없고 주 외에는 참 신이 (없음)이니이다`,ref:`사무엘하 7:22`,engText:`How great you are, Sovereign Lord! There is no one like you, and there is no God but you, as we have heard with our own ears.`,commentary:`본문(사무엘하 7:22)은 「여호와 하나님이여 이러므로 주는 광대하시니 이는 우리 귀로 들은 대로는 주와 같은 이가 없고 주 외에는 참 신이 (없음)이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「사무엘하 7:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사무엘하 7:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와 하나님이여 이러므로 주는 광대하시…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사무엘하 7:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네 마음을 다하고 목숨을 다하고 뜻을 다하고 힘을 다하여 주 너의 하나님을 사랑하라 하신 것이요`,ref:`마가복음 12:30`,engText:`Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength.`,commentary:`본문(마가복음 12:30)은 「네 마음을 다하고 목숨을 다하고 뜻을 다하고 힘을 다하여 주 너의 하나님을 사랑하라 하신 것이요」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 12:30」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 12:30)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네 마음을 다하고 목숨을 다하고 뜻을 다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 12:30」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다`,ref:`시편 107:1`,engText:`Give thanks to the Lord, for he is good; his love endures forever.`,commentary:`본문(시편 107:1)은 「여호와께 감사하라 그는 선하시며 그 인자하심이 영원함이로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 107:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 107:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와께 감사하라 그는 선하시며 그 인자…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 107:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그리스도께서 우리로 자유케 하려고 자유를 주셨으니 그러므로 굳세게 서서 다시는 종의 멍에를 메지 말라`,ref:`갈라디아서 5:1`,engText:`It is for freedom that Christ has set us free. Stand firm, then, and do not let yourselves be burdened again by a yoke of slavery.`,commentary:`본문(갈라디아서 5:1)은 「그리스도께서 우리로 자유케 하려고 자유를 주셨으니 그러므로 굳세게 서서 다시는 종의 멍에를 메지 말라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「갈라디아서 5:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(갈라디아서 5:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그리스도께서 우리로 자유케 하려고 자유를…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「갈라디아서 5:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`땅 끝의 모든 백성아 나를 앙망하라 그리하며 구원을 얻으리라 나는 하나님이라 다른 이가 (없음)이니라`,ref:`이사야 45:22`,engText:`Turn to me and be saved, all you ends of the earth; for I am God, and there is no other.`,commentary:`본문(이사야 45:22)은 「땅 끝의 모든 백성아 나를 앙망하라 그리하며 구원을 얻으리라 나는 하나님이라 다른 이가 (없음)이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 45:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 45:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「땅 끝의 모든 백성아 나를 앙망하라 그리…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 45:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너는 내일 일을 자랑하지 말라 하루 동안에 무슨 일이 날는지 네가 알 수 (없음)이니라`,ref:`잠언 27:1`,engText:`Do not boast about tomorrow, for you do not know what a day may bring.`,commentary:`본문(잠언 27:1)은 「너는 내일 일을 자랑하지 말라 하루 동안에 무슨 일이 날는지 네가 알 수 (없음)이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 27:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 27:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너는 내일 일을 자랑하지 말라 하루 동안…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 27:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`오직 우리 주 곧 구주 예수 그리스도의 은혜와 저를 아는 지식에서 자라가라 영광이 이제와 영원한 날까지 저에게 있을지어다`,ref:`베드로후서 3:18`,engText:`But grow in the grace and knowledge of our Lord and Savior Jesus Christ. To him be glory both now and forever! Amen.`,commentary:`본문(베드로후서 3:18)은 「오직 우리 주 곧 구주 예수 그리스도의 은혜와 저를 아는 지식에서 자라가라 영광이 이제와 영원한 날까지 저에게 있을지어다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로후서 3:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로후서 3:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「오직 우리 주 곧 구주 예수 그리스도의 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로후서 3:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`누가 주의 이 많은 백성을 재판할 수 있사오리이까 지혜로운 마음을 종에게 주사 주의 백성을 재판하여 선악을 분별하게 하옵소서`,ref:`열왕기상 3:9`,engText:`So give your servant a discerning heart to govern your people and to distinguish between right and wrong.`,commentary:`본문(열왕기상 3:9)은 「누가 주의 이 많은 백성을 재판할 수 있사오리이까 지혜로운 마음을 종에게 주사 주의 백성을 재판하여 선악을 분별하게 하옵소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「열왕기상 3:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(열왕기상 3:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「누가 주의 이 많은 백성을 재판할 수 있…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「열왕기상 3:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`영생은 곧 유일하신 참 하나님과 그의 보내신 자 예수 그리스도를 아는 것이니이다`,ref:`요한복음 17:3`,engText:`Now this is eternal life: that they know you, the only true God, and Jesus Christ, whom you have sent.`,commentary:`본문(요한복음 17:3)은 「영생은 곧 유일하신 참 하나님과 그의 보내신 자 예수 그리스도를 아는 것이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 17:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 17:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「영생은 곧 유일하신 참 하나님과 그의 보…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 17:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 영광을 우리에게 돌리지 마옵소서 우리에게 돌리지 마옵소서 오직 주의 인자하심과 진실하심을 인하여 주의 이름에 돌리옵소서`,ref:`시편 115:1`,engText:`Not to us, Lord, not to us but to your name be the glory, because of your love and faithfulness.`,commentary:`본문(시편 115:1)은 「여호와여 영광을 우리에게 돌리지 마옵소서 우리에게 돌리지 마옵소서 오직 주의 인자하심과 진실하심을 인하여 주의 이름에 돌리옵소서」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 115:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 115:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와여 영광을 우리에게 돌리지 마옵소서…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 115:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 너희가 그리스도 예수를 주로 받았으니 그 안에서 행하되 그 안에 뿌리를 박으며 세움을 입어 교훈을 받은 대로 믿음에 굳게 서서 감사함을 넘치게 하라`,ref:`골로새서 2:6-7`,engText:`So then, just as you received Christ Jesus as Lord, continue to live your lives in him, rooted and built up in him, strengthened in the faith as you were taught, and overflowing with thankfulness.`,commentary:`본문(골로새서 2:6-7)은 「그러므로 너희가 그리스도 예수를 주로 받았으니 그 안에서 행하되 그 안에 뿌리를 박으며 세움을 입어 교훈을 받은 대로 믿음에 굳게 서서 감사함을 넘치게 하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「골로새서 2:6-7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(골로새서 2:6-7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 너희가 그리스도 예수를 주로 받…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「골로새서 2:6-7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`나 여호와가 옛적에 이스라엘에게 나타나 이르기를 내가 무궁한 사랑으로 너를 사랑하는 고로 인자함으로 너를 인도하였다 하였노라`,ref:`예레미야 31:3`,engText:`The Lord appeared to us in the past, saying: "I have loved you with an everlasting love; I have drawn you with unfailing kindness."`,commentary:`본문(예레미야 31:3)은 「나 여호와가 옛적에 이스라엘에게 나타나 이르기를 내가 무궁한 사랑으로 너를 사랑하는 고로 인자함으로 너를 인도하였다 하였노라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「예레미야 31:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(예레미야 31:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「나 여호와가 옛적에 이스라엘에게 나타나 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「예레미야 31:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 신이 나를 지으셨고 전능자의 기운이 나를 살리시느니라`,ref:`욥기 33:4`,engText:`The Spirit of God has made me; the breath of the Almighty gives me life.`,commentary:`본문(욥기 33:4)은 「하나님의 신이 나를 지으셨고 전능자의 기운이 나를 살리시느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「욥기 33:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(욥기 33:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님의 신이 나를 지으셨고 전능자의 기…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「욥기 33:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희는 도를 행하는 자가 되고 듣기만 하여 자신을 속이는 자가 되지 말라`,ref:`야고보서 1:22`,engText:`Do not merely listen to the word, and so deceive yourselves. Do what it says.`,commentary:`본문(야고보서 1:22)은 「너희는 도를 행하는 자가 되고 듣기만 하여 자신을 속이는 자가 되지 말라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「야고보서 1:22」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(야고보서 1:22)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희는 도를 행하는 자가 되고 듣기만 하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「야고보서 1:22」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 광대하심과 권능과 영광과 이김과 위엄이 다 주께 속하였사오니 천지에 있는 것이 다 주의 것이로소이다 여호와여 주권도 주께 속하였사오니 주는 높으사 만유의 머리심이니이다 부와 귀가 주께로 말미암고 또 주는 만유의 주재가 되사 손에 권세와 능력이 있사오니 모든 자를 크게 하심과 강하게 하심이 주의 손에 있나이다`,ref:`역대상 29:11-12`,engText:`Yours, Lord, is the greatness and the power and the glory and the majesty and the splendor, for everything in heaven and earth is yours. Yours, Lord, is the kingdom; you are exalted as head over all. Wealth and honor come from you; you are the ruler of all things.`,commentary:`본문(역대상 29:11-12)은 「여호와여 광대하심과 권능과 영광과 이김과 위엄이 다 주께 속하였사오니 천지에 있는 것이 다 주의 것이로소이다 여호와여 주권도 주께 속하였사오니 주는 높으사 만유의 머리심이니이다 부와 귀가 주께로 말미암고 또 주는 만유의 주재가 되사 손에 권세와 능력이 있사오니 모든 자를 크게 하심과 강하게 하심이 주의 손에 있나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대상 29:11-12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대상 29:11-12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와여 광대하심과 권능과 영광과 이김과…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대상 29:11-12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`베드로가 입을 열어 가로되 내가 참으로 하나님은 사람의 외모를 취하지 아니하시고`,ref:`사도행전 10:34`,engText:`Then Peter began to speak: "I now realize how true it is that God does not show favoritism."`,commentary:`본문(사도행전 10:34)은 「베드로가 입을 열어 가로되 내가 참으로 하나님은 사람의 외모를 취하지 아니하시고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+초대교회 성도들은 성령의 권능을 힘입어 박해와 환난 속에서도 담대하게 부활의 주님을 증거했습니다. 우리 또한 내 힘이 아닌 성령의 충만함을 덧입을 때 세상을 변화시키는 강력한 복음의 증인으로 쓰임받게 됩니다.
+
+오늘 하루 「사도행전 10:34」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(사도행전 10:34)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「베드로가 입을 열어 가로되 내가 참으로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「사도행전 10:34」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`아침에 나로 주의 인자한 말씀을 듣게 하소서 내가 주를 의뢰함이니이다 나의 다닐 길을 알게 하소서 내가 내 영혼을 주께 받듦이니이다`,ref:`시편 143:8`,engText:`Let the morning bring me word of your unfailing love, for I have put my trust in you. Show me the way I should go, for to you I entrust my life.`,commentary:`본문(시편 143:8)은 「아침에 나로 주의 인자한 말씀을 듣게 하소서 내가 주를 의뢰함이니이다 나의 다닐 길을 알게 하소서 내가 내 영혼을 주께 받듦이니이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 143:8」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 143:8)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「아침에 나로 주의 인자한 말씀을 듣게 하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 143:8」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 성경은 하나님의 감동으로 된 것으로 교훈과 책망과 바르게 함과 의로 교육하기에 유익하니`,ref:`디모데후서 3:16`,engText:`All Scripture is God-breathed and is useful for teaching, rebuking, correcting and training in righteousness.`,commentary:`본문(디모데후서 3:16)은 「모든 성경은 하나님의 감동으로 된 것으로 교훈과 책망과 바르게 함과 의로 교육하기에 유익하니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「디모데후서 3:16」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(디모데후서 3:16)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 성경은 하나님의 감동으로 된 것으로…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「디모데후서 3:16」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와의 속량함을 얻은 자들이 돌아오되 노래하며 시온에 이르러 그 머리 위에 영영한 희락을 띠고 기쁨과 즐거움을 얻으리니 슬픔과 탄식이 달아나리로다`,ref:`이사야 35:10`,engText:`And those the Lord has rescued will return. They will enter Zion with singing; everlasting joy will crown their heads. Gladness and joy will overtake them, and sorrow and sighing will flee away.`,commentary:`본문(이사야 35:10)은 「여호와의 속량함을 얻은 자들이 돌아오되 노래하며 시온에 이르러 그 머리 위에 영영한 희락을 띠고 기쁨과 즐거움을 얻으리니 슬픔과 탄식이 달아나리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 35:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 35:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와의 속량함을 얻은 자들이 돌아오되 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 35:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`의인의 길은 돋는 햇볕 같아서 점점 빛나서 원만한 광명에 이르거니와`,ref:`잠언 4:18`,engText:`The path of the righteous is like the morning sun, shining ever brighter till the full light of day.`,commentary:`본문(잠언 4:18)은 「의인의 길은 돋는 햇볕 같아서 점점 빛나서 원만한 광명에 이르거니와」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 4:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 4:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「의인의 길은 돋는 햇볕 같아서 점점 빛나…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 4:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`우리가 이 소망이 있는 것은 영혼의 닻 같아서 튼튼하고 견고하여 휘장 안에 들어가나니`,ref:`히브리서 6:19`,engText:`We have this hope as an anchor for the soul, firm and secure.`,commentary:`본문(히브리서 6:19)은 「우리가 이 소망이 있는 것은 영혼의 닻 같아서 튼튼하고 견고하여 휘장 안에 들어가나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 6:19」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 6:19)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「우리가 이 소망이 있는 것은 영혼의 닻 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 6:19」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이스라엘아 네 하나님 여호와께서 네게 요구하시는 것이 무엇이냐 곧 네 하나님 여호와를 경외하여 그 모든 도를 행하고 그를 사랑하며 마음을 다하고 성품을 다하여 네 하나님 여호와를 섬기고`,ref:`신명기 10:12`,engText:`And now, Israel, what does the Lord your God ask of you but to fear the Lord your God, to walk in obedience to him, to love him, to serve the Lord your God with all your heart and with all your soul.`,commentary:`본문(신명기 10:12)은 「이스라엘아 네 하나님 여호와께서 네게 요구하시는 것이 무엇이냐 곧 네 하나님 여호와를 경외하여 그 모든 도를 행하고 그를 사랑하며 마음을 다하고 성품을 다하여 네 하나님 여호와를 섬기고」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「신명기 10:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(신명기 10:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이스라엘아 네 하나님 여호와께서 네게 요…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「신명기 10:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`예수께서 대답하여 가라사대 기록되었으되 사람이 떡으로만 살 것이 아니요 하나님의 입으로 나오는 모든 말씀으로 살 것이라 하였느니라 하시니`,ref:`마태복음 4:4`,engText:`Jesus answered, "It is written: 'Man shall not live on bread alone, but on every word that comes from the mouth of God.'"`,commentary:`본문(마태복음 4:4)은 「예수께서 대답하여 가라사대 기록되었으되 사람이 떡으로만 살 것이 아니요 하나님의 입으로 나오는 모든 말씀으로 살 것이라 하였느니라 하시니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 4:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 4:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「예수께서 대답하여 가라사대 기록되었으되 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 4:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`상심한 자를 고치시며 저희 상처를 싸매시는도다`,ref:`시편 147:3`,engText:`He heals the brokenhearted and binds up their wounds.`,commentary:`본문(시편 147:3)은 「상심한 자를 고치시며 저희 상처를 싸매시는도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 147:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 147:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「상심한 자를 고치시며 저희 상처를 싸매시…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 147:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라`,ref:`빌립보서 4:4`,engText:`Rejoice in the Lord always. I will say it again: Rejoice!`,commentary:`본문(빌립보서 4:4)은 「주 안에서 항상 기뻐하라 내가 다시 말하노니 기뻐하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「빌립보서 4:4」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(빌립보서 4:4)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주 안에서 항상 기뻐하라 내가 다시 말하…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「빌립보서 4:4」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희가 자기를 위하여 의를 심고 긍휼을 거두라 지금이 곧 여호와를 찾을 때니 너희 묵은 땅을 기경하라 마침내 여호와께서 임하사 의를 비처럼 너희에게 내리시리라`,ref:`호세아 10:12`,engText:`Sow righteousness for yourselves, reap the fruit of unfailing love, and break up your unplowed ground; for it is time to seek the Lord, until he comes and showers his righteousness on you.`,commentary:`본문(호세아 10:12)은 「너희가 자기를 위하여 의를 심고 긍휼을 거두라 지금이 곧 여호와를 찾을 때니 너희 묵은 땅을 기경하라 마침내 여호와께서 임하사 의를 비처럼 너희에게 내리시리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「호세아 10:12」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(호세아 10:12)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희가 자기를 위하여 의를 심고 긍휼을 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「호세아 10:12」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`의와 인자를 따라 구하는 자는 생명과 의와 영광을 얻느니라`,ref:`잠언 21:21`,engText:`Whoever pursues righteousness and love finds life, prosperity and honor.`,commentary:`본문(잠언 21:21)은 「의와 인자를 따라 구하는 자는 생명과 의와 영광을 얻느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 21:21」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 21:21)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「의와 인자를 따라 구하는 자는 생명과 의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 21:21」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그를 향하여 우리의 가진 바 담대한 것이 이것이니 그의 뜻대로 무엇을 구하면 들으심이라`,ref:`요한일서 5:14`,engText:`This is the confidence we have in approaching God: that if we ask anything according to his will, he hears us.`,commentary:`본문(요한일서 5:14)은 「그를 향하여 우리의 가진 바 담대한 것이 이것이니 그의 뜻대로 무엇을 구하면 들으심이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「요한일서 5:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한일서 5:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그를 향하여 우리의 가진 바 담대한 것이…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한일서 5:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그 밤에 여호와께서 그에게 나타나 가라사대 나는 네 아비 아브라함의 하나님이니 두려워 말라 내 종 아브라함을 위하여 내가 너와 함께 있어 네게 복을 주어 네 자손으로 번성케 하리라 하신지라`,ref:`창세기 26:24`,engText:`That night the Lord appeared to him and said, "I am the God of your father Abraham. Do not be afraid, for I am with you; I will bless you and will increase the number of your descendants for the sake of my servant Abraham."`,commentary:`본문(창세기 26:24)은 「그 밤에 여호와께서 그에게 나타나 가라사대 나는 네 아비 아브라함의 하나님이니 두려워 말라 내 종 아브라함을 위하여 내가 너와 함께 있어 네게 복을 주어 네 자손으로 번성케 하리라 하신지라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「창세기 26:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(창세기 26:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그 밤에 여호와께서 그에게 나타나 가라사…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「창세기 26:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 너희에게 이르노니 이와 같이 죄인 하나가 회개하면 하늘에서는 회개할 것 없는 의인 아흔아홉을 인하여 기뻐하는 것보다 더하리라`,ref:`누가복음 15:7`,engText:`I tell you that in the same way there will be more rejoicing in heaven over one sinner who repents than over ninety-nine righteous persons who do not need to repent.`,commentary:`본문(누가복음 15:7)은 「내가 너희에게 이르노니 이와 같이 죄인 하나가 회개하면 하늘에서는 회개할 것 없는 의인 아흔아홉을 인하여 기뻐하는 것보다 더하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「누가복음 15:7」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(누가복음 15:7)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 너희에게 이르노니 이와 같이 죄인 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「누가복음 15:7」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그 노염은 잠간이요 그 은총은 평생이로다 저녁에는 울음이 기숙할지라도 아침에는 기쁨이 오리로다`,ref:`시편 30:5`,engText:`For his anger lasts only a moment, but his favor lasts a lifetime; weeping may stay for the night, but rejoicing comes in the morning.`,commentary:`본문(시편 30:5)은 「그 노염은 잠간이요 그 은총은 평생이로다 저녁에는 울음이 기숙할지라도 아침에는 기쁨이 오리로다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 30:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 30:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그 노염은 잠간이요 그 은총은 평생이로다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 30:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`그러므로 이제 그리스도 예수 안에 있는 자에게는 결코 정죄함이 없나니`,ref:`로마서 8:1`,engText:`Therefore, there is now no condemnation for those who are in Christ Jesus.`,commentary:`본문(로마서 8:1)은 「그러므로 이제 그리스도 예수 안에 있는 자에게는 결코 정죄함이 없나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「로마서 8:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(로마서 8:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「그러므로 이제 그리스도 예수 안에 있는 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「로마서 8:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`여호와여 주는 나의 하나님이시라 내가 주를 높이고 주의 이름을 찬송하오리니 주는 기사를 옛적의 정하신 뜻대로 성실함과 진실함으로 행하셨음이라`,ref:`이사야 25:1`,engText:`Lord, you are my God; I will exalt you and praise your name, for in perfect faithfulness you have done wonderful things, things planned long ago.`,commentary:`본문(이사야 25:1)은 「여호와여 주는 나의 하나님이시라 내가 주를 높이고 주의 이름을 찬송하오리니 주는 기사를 옛적의 정하신 뜻대로 성실함과 진실함으로 행하셨음이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 25:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 25:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「여호와여 주는 나의 하나님이시라 내가 주…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 25:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`무릇 네 손이 일을 당하는 대로 힘을 다하여 할지어다 네가 장차 들어갈 음부에는 일도 없고 계획도 없고 지식도 없고 지혜도 (없음)이니라`,ref:`전도서 9:10`,engText:`Whatever your hand finds to do, do it with all your might.`,commentary:`본문(전도서 9:10)은 「무릇 네 손이 일을 당하는 대로 힘을 다하여 할지어다 네가 장차 들어갈 음부에는 일도 없고 계획도 없고 지식도 없고 지혜도 (없음)이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「전도서 9:10」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(전도서 9:10)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「무릇 네 손이 일을 당하는 대로 힘을 다…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「전도서 9:10」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`친히 나무에 달려 그 몸으로 우리 죄를 담당하셨으니 이는 우리로 죄에 대하여 죽고 의에 대하여 살게 하려 하심이라 저가 채찍에 맞음으로 너희는 나음을 얻었나니`,ref:`베드로전서 2:24`,engText:`"He himself bore our sins" in his body on the cross, so that we might die to sins and live for righteousness; "by his wounds you have been healed."`,commentary:`본문(베드로전서 2:24)은 「친히 나무에 달려 그 몸으로 우리 죄를 담당하셨으니 이는 우리로 죄에 대하여 죽고 의에 대하여 살게 하려 하심이라 저가 채찍에 맞음으로 너희는 나음을 얻었나니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「베드로전서 2:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(베드로전서 2:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「친히 나무에 달려 그 몸으로 우리 죄를 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「베드로전서 2:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 사자를 네 앞서 보내어 길에서 너를 보호하여 너로 내가 예비한 곳에 이르게 하리니`,ref:`출애굽기 23:20`,engText:`See, I am sending an angel ahead of you to guard you along the way and to bring you to the place I have prepared.`,commentary:`본문(출애굽기 23:20)은 「내가 사자를 네 앞서 보내어 길에서 너를 보호하여 너로 내가 예비한 곳에 이르게 하리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「출애굽기 23:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(출애굽기 23:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 사자를 네 앞서 보내어 길에서 너를…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「출애굽기 23:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`내가 진실로 진실로 너희에게 이르노니 한 알의 밀이 땅에 떨어져 죽지 아니하면 한 알 그대로 있고 죽으면 많은 열매를 맺느니라`,ref:`요한복음 12:24`,engText:`Very truly I tell you, unless a kernel of wheat falls to the ground and dies, it remains only a single seed. But if it dies, it produces many seeds.`,commentary:`본문(요한복음 12:24)은 「내가 진실로 진실로 너희에게 이르노니 한 알의 밀이 땅에 떨어져 죽지 아니하면 한 알 그대로 있고 죽으면 많은 열매를 맺느니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「요한복음 12:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한복음 12:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「내가 진실로 진실로 너희에게 이르노니 한…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한복음 12:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님을 찬송하리로다 저가 내 기도를 물리치지 아니하시고 그 인자하심을 내게서 거두지도 아니하셨도다`,ref:`시편 66:20`,engText:`Praise be to God, who has not rejected my prayer or withheld his love from me!`,commentary:`본문(시편 66:20)은 「하나님을 찬송하리로다 저가 내 기도를 물리치지 아니하시고 그 인자하심을 내게서 거두지도 아니하셨도다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 66:20」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 66:20)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님을 찬송하리로다 저가 내 기도를 물…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 66:20」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`찬송하리로다 하나님 곧 우리 주 예수 그리스도의 아버지께서 그리스도 안에서 하늘에 속한 모든 신령한 복으로 우리에게 복 주시되`,ref:`에베소서 1:3`,engText:`Praise be to the God and Father of our Lord Jesus Christ, who has blessed us in the heavenly realms with every spiritual blessing in Christ.`,commentary:`본문(에베소서 1:3)은 「찬송하리로다 하나님 곧 우리 주 예수 그리스도의 아버지께서 그리스도 안에서 하늘에 속한 모든 신령한 복으로 우리에게 복 주시되」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「에베소서 1:3」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(에베소서 1:3)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「찬송하리로다 하나님 곧 우리 주 예수 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「에베소서 1:3」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`주와 같은 신이 어디 있으리이까 주께서는 죄악을 사유하시며 그 기업의 남은 자의 허물을 넘기시며 인애를 기뻐하심으로 노를 항상 품지 아니하시나이다`,ref:`미가 7:18`,engText:`Who is a God like you, who pardons sin and forgives the transgression of the remnant of his inheritance? You do not stay angry forever but delight to show mercy.`,commentary:`본문(미가 7:18)은 「주와 같은 신이 어디 있으리이까 주께서는 죄악을 사유하시며 그 기업의 남은 자의 허물을 넘기시며 인애를 기뻐하심으로 노를 항상 품지 아니하시나이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「미가 7:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(미가 7:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「주와 같은 신이 어디 있으리이까 주께서는…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「미가 7:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`하나님의 말씀은 다 순전하며 하나님은 그를 의지하는 자의 방패시니라`,ref:`잠언 30:5`,engText:`Every word of God is flawless; he is a shield to those who take refuge in him.`,commentary:`본문(잠언 30:5)은 「하나님의 말씀은 다 순전하며 하나님은 그를 의지하는 자의 방패시니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 30:5」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 30:5)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「하나님의 말씀은 다 순전하며 하나님은 그…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 30:5」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이는 보좌 가운데 계신 어린 양이 저희의 목자가 되사 생명수 샘으로 인도하시고 하나님께서 저희 눈에서 모든 눈물을 씻어 주실 것임이러라`,ref:`요한계시록 7:17`,engText:`For the Lamb at the center of the throne will be their shepherd; "he will lead them to springs of living water." "And God will wipe away every tear from their eyes."`,commentary:`본문(요한계시록 7:17)은 「이는 보좌 가운데 계신 어린 양이 저희의 목자가 되사 생명수 샘으로 인도하시고 하나님께서 저희 눈에서 모든 눈물을 씻어 주실 것임이러라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「요한계시록 7:17」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(요한계시록 7:17)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이는 보좌 가운데 계신 어린 양이 저희의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「요한계시록 7:17」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`보라 나는 오늘날 온 세상이 가는 길로 가려니와 너희 하나님 여호와께서 너희에게 대하여 말씀하신 모든 선한 일이 하나도 틀리지 아니하고 다 너희에게 응하여 그 중에 하나도 어김이 (없음)을 너희 모든 사람의 마음과 뜻에 아는 바라`,ref:`여호수아 23:14`,engText:`You know with all your heart and soul that not one of all the good promises the Lord your God gave you has failed. Every promise has been fulfilled; not one has failed.`,commentary:`본문(여호수아 23:14)은 「보라 나는 오늘날 온 세상이 가는 길로 가려니와 너희 하나님 여호와께서 너희에게 대하여 말씀하신 모든 선한 일이 하나도 틀리지 아니하고 다 너희에게 응하여 그 중에 하나도 어김이 (없음)을 너희 모든 사람의 마음과 뜻에 아는 바라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+천지를 창조하시고 언약 백성을 신실하게 이끄시는 하나님의 크신 손길은 어제나 오늘이나 영원토록 동일합니다. 광야 같은 세상 속에서도 불기둥과 구름기둥으로 인도하시는 주님을 신뢰하며 순종의 걸음을 내딛으십시오.
+
+오늘 하루 「여호수아 23:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(여호수아 23:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「보라 나는 오늘날 온 세상이 가는 길로 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「여호수아 23:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`이에 예수께서 제자들에게 이르시되 아무든지 나를 따라 오려거든 자기를 부인하고 자기 십자가를 지고 나를 좇을 것이니라`,ref:`마태복음 16:24`,engText:`Then Jesus said to his disciples, "Whoever wants to be my disciple must deny themselves and take up their cross and follow me."`,commentary:`본문(마태복음 16:24)은 「이에 예수께서 제자들에게 이르시되 아무든지 나를 따라 오려거든 자기를 부인하고 자기 십자가를 지고 나를 좇을 것이니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마태복음 16:24」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마태복음 16:24)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「이에 예수께서 제자들에게 이르시되 아무든…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마태복음 16:24」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[에스라인 에단의 마스길] 내가 여호와의 인자하심을 영원히 노래하며 주의 성실하심을 내 입으로 대대에 알게 하리이다`,ref:`시편 89:1`,engText:`I will sing of the Lord's great love forever; with my mouth I will make your faithfulness known through all generations.`,commentary:`본문(시편 89:1)은 「[에스라인 에단의 마스길] 내가 여호와의 인자하심을 영원히 노래하며 주의 성실하심을 내 입으로 대대에 알게 하리이다」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+시편 기자는 인생의 고난과 환난, 기쁨과 감사의 모든 순간마다 오직 여호와 하나님만을 피난처요 반석으로 삼았습니다. 세상의 파도가 거세게 밀려올지라도 하나님의 변함없는 언약을 붙들 때 흔들리지 않는 평안과 구원의 기쁨을 누릴 수 있습니다.
+
+오늘 하루 「시편 89:1」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(시편 89:1)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「[에스라인 에단의 마스길] 내가 여호와의…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「시편 89:1」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`십자가의 도가 멸망하는 자들에게는 미련한 것이요 구원을 얻는 우리에게는 하나님의 능력이라`,ref:`고린도전서 1:18`,engText:`For the message of the cross is foolishness to those who are perishing, but to us who are being saved it is the power of God.`,commentary:`본문(고린도전서 1:18)은 「십자가의 도가 멸망하는 자들에게는 미련한 것이요 구원을 얻는 우리에게는 하나님의 능력이라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+사도 바울은 오직 십자가의 은혜로 구원받은 성도가 이제는 그리스도 안에서 새로운 피조물로서 어떻게 거룩하고 담대하게 살아갈 것인가를 권면합니다. 나를 위해 목숨 버리신 주님을 위해 오늘 하루도 사랑과 충성으로 헌신하십시오.
+
+오늘 하루 「고린도전서 1:18」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(고린도전서 1:18)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「십자가의 도가 멸망하는 자들에게는 미련한…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「고린도전서 1:18」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`네가 물 가운데로 지날 때에 내가 함께할 것이라 강을 건널 때에 물이 너를 침몰치 못할 것이며 네가 불 가운데로 행할 때에 타지도 아니할 것이요 불꽃이 너를 사르지도 못하리니`,ref:`이사야 43:2`,engText:`When you pass through the waters, I will be with you; and when you pass through the rivers, they will not sweep over you. When you walk through the fire, you will not be burned; the flames will not set you ablaze.`,commentary:`본문(이사야 43:2)은 「네가 물 가운데로 지날 때에 내가 함께할 것이라 강을 건널 때에 물이 너를 침몰치 못할 것이며 네가 불 가운데로 행할 때에 타지도 아니할 것이요 불꽃이 너를 사르지도 못하리니」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+선지자들을 통하여 선포된 이 예언과 약속은 역사의 주관자이신 하나님의 구원 계획이 어떠한 어둠 속에서도 반드시 성취됨을 증거합니다. 낙심치 말고 시대를 이끄시는 전능하신 하나님을 바라볼 때 하늘의 새 힘과 비전이 부어집니다.
+
+오늘 하루 「이사야 43:2」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(이사야 43:2)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「네가 물 가운데로 지날 때에 내가 함께할…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「이사야 43:2」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`노하기를 더디하는 자는 용사보다 낫고 자기의 마음을 다스리는 자는 성을 빼앗는 자보다 나으니라`,ref:`잠언 16:32`,engText:`Better a patient person than a warrior, one with self-control than one who takes a city.`,commentary:`본문(잠언 16:32)은 「노하기를 더디하는 자는 용사보다 낫고 자기의 마음을 다스리는 자는 성을 빼앗는 자보다 나으니라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성경의 지혜는 세상의 약삭빠른 처세술이 아니라 여호와 하나님을 경외하는 거룩한 겸손에서 시작됩니다. 내 생각과 욕심을 버리고 주님의 말씀에 귀를 기울일 때 하나님께서 의와 생명의 길로 우리의 걸음을 밝히 비추어 주십니다.
+
+오늘 하루 「잠언 16:32」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(잠언 16:32)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「노하기를 더디하는 자는 용사보다 낫고 자…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「잠언 16:32」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`모든 사람으로 더불어 화평함과 거룩함을 좆으라 이것이 없이는 아무도 주를 보지 못하리라`,ref:`히브리서 12:14`,engText:`Make every effort to live in peace with everyone and to be holy; without holiness no one will see the Lord.`,commentary:`본문(히브리서 12:14)은 「모든 사람으로 더불어 화평함과 거룩함을 좆으라 이것이 없이는 아무도 주를 보지 못하리라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+성도의 믿음은 단순한 입술의 고백에 그치지 않고 고난 속에서도 인내하며 사랑과 행함으로 증명되어야 합니다. 영원한 대제사장이신 예수님만을 굳게 붙잡고 믿음의 경주를 끝까지 완주하는 복된 성도가 되십시오.
+
+오늘 하루 「히브리서 12:14」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(히브리서 12:14)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「모든 사람으로 더불어 화평함과 거룩함을 …」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「히브리서 12:14」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`너희가 만일 여호와께 돌아오면 너희 형제와 너희 자녀가 사로잡은 자에게서 자비를 입어 다시 이 땅으로 돌아오리라 너희 하나님 여호와는 은혜로우시고 자비하신지라 너희가 그에게로 돌아오면 그 얼굴을 너희에게서 돌이키지 아니하시리라 하였더라`,ref:`역대하 30:9`,engText:`For the Lord your God is gracious and compassionate. He will not turn his face from you if you return to him.`,commentary:`본문(역대하 30:9)은 「너희가 만일 여호와께 돌아오면 너희 형제와 너희 자녀가 사로잡은 자에게서 자비를 입어 다시 이 땅으로 돌아오리라 너희 하나님 여호와는 은혜로우시고 자비하신지라 너희가 그에게로 돌아오면 그 얼굴을 너희에게서 돌이키지 아니하시리라 하였더라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+하나님의 말씀은 살았고 운동력이 있어 우리의 심령과 골수를 찔러 쪼개며 가장 온전한 길로 인도하십니다. 어두운 세상을 비추는 말씀의 등불을 따라 오늘도 믿음으로 승리하십시오.
+
+오늘 하루 「역대하 30:9」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(역대하 30:9)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「너희가 만일 여호와께 돌아오면 너희 형제…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「역대하 30:9」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`또 가라사대 너희는 온 천하에 다니며 만민에게 복음을 전파하라`,ref:`마가복음 16:15`,engText:`He said to them, "Go into all the world and preach the gospel to all creation."`,commentary:`본문(마가복음 16:15)은 「또 가라사대 너희는 온 천하에 다니며 만민에게 복음을 전파하라」이라는 말씀을 통하여 우리에게 살아계신 하나님의 거룩한 음성을 들려줍니다.
+예수 그리스도께서 친히 선포하신 이 천국 복음은 우리 영혼에 참된 생명과 자유를 선물합니다. 주님의 십자가 사랑을 가슴에 품고 날마다 제자의 길을 걸어갈 때 주님께서 친히 세상 끝날까지 함께하시며 승리를 주십니다.
+
+오늘 하루 「마가복음 16:15」의 말씀을 마음 판에 깊이 새기고, 말씀이 실제 삶의 능력이 되는 은혜를 풍성히 경험하시기를 축복합니다.`,questions:[`오늘 본문(마가복음 16:15)을 묵상할 때 하나님께서 나의 마음에 가장 깊이 주시는 깨달음은 무엇인가?`,`오늘 하루 나의 삶(가정, 일터, 이웃 관계)에서 이 말씀을 어떻게 실천하고 순종하겠습니까?`,`환경이나 감정에 휘둘리지 않고 「또 가라사대 너희는 온 천하에 다니며 만…」의 약속을 온전히 신뢰하고 있는가?`],prayer:`사랑과 은혜가 풍성하신 하나님 아버지,
+오늘도 귀한 생명의 말씀 「마가복음 16:15」을 통하여 저의 영혼을 깨우시고 갈 길을 비추어 주시니 감사드립니다.
+말씀을 듣는 것에 그치지 않고 믿음과 순종으로 온전히 반응하는 신실한 자녀가 되게 하옵소서.
+오늘 하루 만나는 모든 사람에게 주님의 사랑과 평안을 흘려보내는 축복의 통로가 되게 하옵소서.
+예수 그리스도의 이름으로 기도드립니다. 아멘.`},{text:`[다윗의 시] 여호와는 나의 목자시니 내가 부족함이 없으리로다`,ref:`시편 23:1`,engText:`The Lord is my shepherd, I lack nothing.`,commentary:`본문(시편 23:1)은 다윗의 평생 신앙고백으로, 선한 목자 되신 하나님 안에서 누리는 참된 만족과 평안을 노래합니다.
+스스로 길을 찾을 수 없는 연약한 양과 같은 우리에게 주님은 완전한 인도자이자 보호자가 되십니다. 주님이 나의 목자가 되실 때 부족함이 없는 이유는 모든 필요를 가장 선하게 채우시기 때문입니다.
+
+내 생각과 조급함을 내려놓고 목자의 세미한 음성에 귀 기울이며 따를 때 푸른 풀밭과 쉴 만한 물가로 인도함을 받게 됩니다.`,questions:[`내 인생의 주도권을 내가 쥐려 하지 않고 선한 목자이신 주님께 온전히 맡기고 있는가?`,`세상의 결핍에 불안해하기보다 목자 되신 하나님 한 분만으로 만족하고 감사하고 있는가?`,`오늘 하루 목자의 인도하심을 신뢰하며 한 걸음 한 걸음 순종할 준비가 되어 있는가?`],prayer:`선한 목자 되신 주님,
+연약한 저를 친히 기르시고 가장 안전하고 복된 길로 인도해 주시니 감사합니다.
+내 고집과 명철을 의지하지 않고 오직 목자 되신 주님의 음성에만 순종하는 양이 되게 하소서.
+험한 골짜기를 지날 때에도 주님의 지팡이와 막대기를 의지하여 담대히 걷게 하옵소서.
 예수님의 이름으로 기도드립니다. 아멘.`}];function SR(e=new Date){let t=e.getFullYear(),n=e-new Date(t,0,0),r=Math.floor(n/(1e3*60*60*24));return xR[Math.abs(t*365+r)%xR.length]}var CR=`bible_notification_settings`,wR={enabled:!1,morningTime:`06:00`,sound:!0,topics:{dailyVerse:!0,prayerWall:!0,announcements:!0}};function TR(){try{let e=localStorage.getItem(CR);return e?{...wR,...JSON.parse(e)}:wR}catch{return wR}}async function ER(e,t=null){try{if(localStorage.setItem(CR,JSON.stringify(e)),e.morningTime){let[t,n]=e.morningTime.split(`:`).map(Number);localStorage.setItem(`push_hour`,String(isNaN(t)?6:t)),localStorage.setItem(`push_minute`,String(isNaN(n)?0:n))}localStorage.setItem(`push_enabled`,e.enabled?`true`:`false`),await DR(e,t)}catch(e){console.error(`설정 저장 실패:`,e)}}async function DR(e,t=null){try{let n=localStorage.getItem(`fcm_token`),r=t?.uid||localStorage.getItem(`fcm_device_uid`);if(!r&&!n)return;let i=r||`anon_${n.slice(-16)}`,[a,o]=(e.morningTime||`06:00`).split(`:`).map(Number),s={enabled:!!e.enabled,notifHour:isNaN(a)?6:a,notifMinute:isNaN(o)?0:o,topics:e.topics||{dailyVerse:!0,prayerWall:!0,announcements:!0},updatedAt:m_()};n&&(s.token=n),t?.uid&&(s.uid=t.uid,s.email=t.email||``,s.displayName=t.displayName||``),await U_(Ag(Q,`fcmTokens`,i),s,{merge:!0})}catch(e){console.warn(`Firestore fcmTokens 동기화 건너뜀:`,e?.message)}}async function OR(e=null){if(!(`Notification`in window))return{ok:!1,error:`이 브라우저는 웹 알림을 지원하지 않습니다.`};try{let t=await Notification.requestPermission();if(t!==`granted`)return{ok:!1,error:`알림 권한이 거부되었습니다. 브라우저 설정에서 권한을 허용해주세요.`};let n=null;if(`serviceWorker`in navigator)try{n=await navigator.serviceWorker.register(`/bible-platform/firebase-messaging-sw.js`),await navigator.serviceWorker.ready}catch(e){console.warn(`서비스워커 등록 경고:`,e)}let r=null;try{xD&&(r=await hD(xD,{vapidKey:SD,serviceWorkerRegistration:n||void 0}))}catch(e){console.warn(`FCM 토큰 발급 경고 (로컬 알림으로 폴백):`,e.message)}r&&localStorage.setItem(`fcm_token`,r);let i=TR(),[a,o]=(i.morningTime||`06:00`).split(`:`).map(Number),s=isNaN(a)?6:a,c=isNaN(o)?0:o,l=e?.uid||(r?`anon_${r.slice(-16)}`:`device_${Date.now()}`);if(localStorage.setItem(`fcm_device_uid`,l),r)try{await U_(Ag(Q,`fcmTokens`,l),{uid:e?.uid||l,email:e?.email||``,displayName:e?.displayName||`성도`,token:r,enabled:!0,notifHour:s,notifMinute:c,topics:i.topics||{dailyVerse:!0,prayerWall:!0,announcements:!0},updatedAt:m_()},{merge:!0})}catch(e){console.warn(`FCM 토큰 DB 저장 건너뜀:`,e.message)}let u={...i,enabled:!0};return localStorage.setItem(CR,JSON.stringify(u)),localStorage.setItem(`push_enabled`,`true`),localStorage.setItem(`push_hour`,String(s)),localStorage.setItem(`push_minute`,String(c)),{ok:!0,token:r,permission:t}}catch(e){return console.error(`알림 권한 요청 실패:`,e),{ok:!1,error:e.message}}}function kR(e,t={}){if(!(`Notification`in window)||Notification.permission!==`granted`)return!1;let n={icon:`https://mjuy1-debug.github.io/bible-platform/icon-192.png`,badge:`https://mjuy1-debug.github.io/bible-platform/icon-192.png`,tag:`bible-notification`,vibrate:[300,150,300],renotify:!0,requireInteraction:!0,...t};try{return navigator.serviceWorker&&navigator.serviceWorker.controller?navigator.serviceWorker.ready.then(t=>{t.showNotification(e,n)}):new Notification(e,n),!0}catch(e){return console.error(`알림 발송 실패:`,e),!1}}function AR(e=!1){if(!(`Notification`in window)||Notification.permission!==`granted`)return!1;let t=TR();if(!t.enabled&&!e)return!1;let n=new Date,r=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,`0`)}-${String(n.getDate()).padStart(2,`0`)}`;if(localStorage.getItem(`last_daily_verse_notif_date`)===r&&!e)return!1;if(!e){let[e,r]=(t.morningTime||`06:00`).split(`:`).map(Number),i=n.getHours(),a=n.getMinutes(),o=i===(isNaN(e)?6:e),s=a-(isNaN(r)?0:r);if(!o||!(s>=0&&s<10))return!1}let i=SR(),a=kR(`☀️ [화도벧엘교회] 오늘의 은혜로운 말씀`,{body:`"${i.text}"\n- ${i.ref} -`,tag:`daily-verse-${r}`,data:{url:window.location.origin+window.location.pathname}});return a&&localStorage.setItem(`last_daily_verse_notif_date`,r),a}function jR(){let e=SR();return kR(`☀️ [화도벧엘교회] 오늘의 은혜로운 말씀`,{body:`"${e.text}"\n- ${e.ref} -`,tag:`test-daily-verse`})}async function MR(e){let t=SR(),n=new Date,r=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,`0`)}-${String(n.getDate()).padStart(2,`0`)}`,i={type:`daily_verse`,title:`☀️ [화도벧엘교회] 오늘의 은혜로운 말씀`,body:`"${t.text}"\n- ${t.ref} -`,verseText:t.text,verseRef:t.ref,senderUid:e?.uid||`admin`,senderName:e?.displayName||`관리자`,createdAt:m_(),dateStr:r},{addDoc:a,collection:o}=await y(async()=>{let{addDoc:e,collection:t}=await Promise.resolve().then(()=>X_);return{addDoc:e,collection:t}},void 0);return a(o(Q,`broadcastNotifications`),i)}function NR({isOpen:e,onClose:t}){let{currentUser:n,showToast:r}=(0,m.useContext)(CD),[i,a]=(0,m.useState)(TR),[o,s]=(0,m.useState)(typeof window<`u`&&`Notification`in window?Notification.permission:`default`),[c,l]=(0,m.useState)(!1);(0,m.useEffect)(()=>{e&&(a(TR()),`Notification`in window&&s(Notification.permission))},[e]);let u=async()=>{if(!i.enabled||o!==`granted`){l(!0);let e=await OR(n);if(l(!1),e.ok){s(`granted`);let e={...i,enabled:!0};a(e),await ER(e,n),r&&r(`🔔 말씀 알림이 성공적으로 설정되었습니다!`)}else r&&r(`❌ 알림 설정 실패: ${e.error}`)}else{let e={...i,enabled:!1};a(e),await ER(e,n),r&&r(`말씀 알림이 일시 중지되었습니다.`)}},d=async e=>{let t=e.target.value,r={...i,morningTime:t};a(r),await ER(r,n)},f=async e=>{let t={...i,topics:{...i.topics,[e]:!i.topics[e]}};a(t),await ER(t,n)};return e?(0,q.jsx)(TI,{children:(0,q.jsx)(`div`,{style:{position:`fixed`,inset:0,zIndex:9999,background:`rgba(0, 0, 0, 0.75)`,backdropFilter:`blur(6px)`,display:`flex`,alignItems:`center`,justifyContent:`center`,padding:`16px`},onClick:t,children:(0,q.jsxs)($.div,{initial:{opacity:0,scale:.92,y:20},animate:{opacity:1,scale:1,y:0},exit:{opacity:0,scale:.92,y:20},onClick:e=>e.stopPropagation(),style:{background:`var(--bg-secondary)`,border:`1px solid var(--glass-border)`,borderRadius:`24px`,maxWidth:`480px`,width:`100%`,padding:`clamp(1.2rem, 4vw, 1.8rem)`,color:`var(--text-primary)`,boxShadow:`0 20px 50px rgba(0, 0, 0, 0.6)`,boxSizing:`border-box`,position:`relative`},children:[(0,q.jsx)(`button`,{onClick:t,style:{position:`absolute`,top:`16px`,right:`16px`,background:`none`,border:`none`,color:`var(--text-secondary)`,cursor:`pointer`,padding:`6px`},children:(0,q.jsx)(Ni,{size:20})}),(0,q.jsxs)(`div`,{style:{display:`flex`,alignItems:`center`,gap:`12px`,marginBottom:`1.2rem`},children:[(0,q.jsx)(`div`,{style:{width:`44px`,height:`44px`,borderRadius:`14px`,background:`rgba(212, 175, 55, 0.15)`,border:`1px solid rgba(212, 175, 55, 0.3)`,display:`flex`,alignItems:`center`,justifyContent:`center`,color:`var(--accent-gold)`},children:(0,q.jsx)(Wn,{size:24})}),(0,q.jsxs)(`div`,{children:[(0,q.jsx)(`h2`,{style:{margin:0,fontSize:`1.25rem`,fontWeight:800,color:`var(--text-primary)`},children:`말씀 & 묵상 알림 설정`}),(0,q.jsx)(`span`,{style:{fontSize:`0.8rem`,color:`var(--text-secondary)`},children:`매일 아침 은혜로운 말씀으로 하루를 시작하세요`})]})]}),(0,q.jsxs)(`div`,{style:{background:i.enabled&&o===`granted`?`rgba(212, 175, 55, 0.12)`:`rgba(255, 255, 255, 0.03)`,border:`1px solid ${i.enabled&&o===`granted`?`var(--accent-gold)`:`var(--glass-border)`}`,borderRadius:`16px`,padding:`14px 16px`,display:`flex`,justifyContent:`space-between`,alignItems:`center`,marginBottom:`1rem`},children:[(0,q.jsxs)(`div`,{children:[(0,q.jsx)(`div`,{style:{fontSize:`0.95rem`,fontWeight:800,color:`var(--text-primary)`},children:i.enabled&&o===`granted`?`알림이 켜져 있습니다`:`말씀 알림 켜기`}),(0,q.jsx)(`div`,{style:{fontSize:`0.78rem`,color:`var(--text-secondary)`},children:o===`granted`?`브라우저 알림 권한 허용됨 ✅`:`클릭하여 알림 권한을 허용해주세요`})]}),(0,q.jsx)(`button`,{onClick:u,disabled:c,style:{padding:`8px 16px`,borderRadius:`12px`,background:i.enabled&&o===`granted`?`var(--accent-gold)`:`rgba(255, 255, 255, 0.1)`,border:`none`,color:i.enabled&&o===`granted`?`#111`:`var(--text-primary)`,fontSize:`0.85rem`,fontWeight:800,cursor:`pointer`,display:`flex`,alignItems:`center`,gap:`6px`},children:c?`연결 중...`:i.enabled&&o===`granted`?(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(tr,{size:16}),` 켜짐`]}):(0,q.jsxs)(q.Fragment,{children:[(0,q.jsx)(Gn,{size:16}),` 켜기`]})})]}),(0,q.jsxs)(`div`,{style:{display:`flex`,flexDirection:`column`,gap:`10px`,marginBottom:`1.2rem`},children:[(0,q.jsxs)(`div`,{style:{display:`flex`,justifyContent:`space-between`,alignItems:`center`,padding:`12px 14px`,borderRadius:`12px`,background:`var(--bg-primary)`,border:`1px solid var(--glass-border)`},children:[(0,q.jsxs)(`div`,{style:{display:`flex`,alignItems:`center`,gap:`8px`},children:[(0,q.jsx)(fr,{size:16,color:`var(--accent-gold)`}),(0,q.jsx)(`span`,{style:{fontSize:`0.88rem`,fontWeight:600,color:`var(--text-primary)`},children:`아침 말씀 알림 시간`})]}),(0,q.jsx)(`input`,{type:`time`,value:i.morningTime,onChange:d,style:{background:`var(--bg-secondary)`,border:`1px solid var(--glass-border)`,color:`var(--text-primary)`,borderRadius:`8px`,padding:`4px 8px`,fontSize:`0.9rem`,fontWeight:700,outline:`none`}})]}),[{key:`dailyVerse`,label:`📖 매일 아침 오늘의 말씀`,desc:`새벽/아침 시간 은혜의 구절 배달`},{key:`prayerWall`,label:`🙏 중보 기도 새 나눔`,desc:`성도들의 새로운 기도 제목 소식`},{key:`announcements`,label:`📢 교회 주보 및 공지사항`,desc:`예배 및 주요 교회 일정 알림`}].map(e=>(0,q.jsxs)(`div`,{onClick:()=>f(e.key),style:{display:`flex`,justifyContent:`space-between`,alignItems:`center`,padding:`12px 14px`,borderRadius:`12px`,background:`var(--bg-primary)`,border:`1px solid var(--glass-border)`,cursor:`pointer`},children:[(0,q.jsxs)(`div`,{children:[(0,q.jsx)(`div`,{style:{fontSize:`0.86rem`,fontWeight:700,color:`var(--text-primary)`},children:e.label}),(0,q.jsx)(`div`,{style:{fontSize:`0.74rem`,color:`var(--text-secondary)`},children:e.desc})]}),(0,q.jsx)(`div`,{style:{width:`20px`,height:`20px`,borderRadius:`6px`,border:`1.5px solid ${i.topics[e.key]?`var(--accent-gold)`:`var(--glass-border)`}`,background:i.topics[e.key]?`var(--accent-gold)`:`transparent`,display:`flex`,alignItems:`center`,justifyContent:`center`,color:`#1a1a2e`},children:i.topics[e.key]&&(0,q.jsx)(tr,{size:14,strokeWidth:3})})]},e.key))]}),(0,q.jsxs)(`div`,{style:{display:`flex`,gap:`8px`},children:[(0,q.jsxs)(`button`,{onClick:()=>{if(o!==`granted`){r&&r(`먼저 상단의 알림 권한을 켜주세요! 🔔`);return}jR()?r&&r(`✨ 화면 상단에 테스트 알림이 발송되었습니다!`):r&&r(`알림 발송에 실패했습니다. 브라우저 권한을 확인해주세요.`)},style:{flex:1,padding:`12px`,borderRadius:`12px`,background:`rgba(255, 255, 255, 0.06)`,border:`1px solid var(--glass-border)`,color:`var(--text-primary)`,fontSize:`0.86rem`,fontWeight:700,cursor:`pointer`,display:`flex`,alignItems:`center`,justifyContent:`center`,gap:`6px`},children:[(0,q.jsx)(ai,{size:15,color:`var(--accent-gold)`}),` 테스트 알림 보내기`]}),(0,q.jsx)(`button`,{onClick:t,style:{padding:`12px 24px`,borderRadius:`12px`,background:`var(--accent-gold)`,border:`none`,color:`#111`,fontSize:`0.86rem`,fontWeight:800,cursor:`pointer`},children:`완료`})]})]})})}):null}var PR=[{to:`/schedule`,icon:Zn,label:`일정`},{to:`/sermon`,icon:Wr,label:`말씀`},{to:`/read`,icon:qn,label:`읽기`},{to:`/hymns`,icon:Kr,label:`찬송가`},{to:`/search`,icon:ii,label:`찾기`},{to:`/plan`,icon:Qn,label:`플랜`},{to:`/devotion`,icon:Kn,label:`묵상`},{to:`/favorites`,icon:Er,label:`즐겨찾기`},{to:`/prayer`,icon:wr,label:`기도 노트`},{to:`/prayer-wall`,icon:Hr,label:`중보 기도`},{to:`/groups`,icon:Di,label:`소그룹`},{to:`/bulletin`,icon:qr,label:`주보`},{to:`/memorize`,icon:Xn,label:`암송 훈련`},{to:`/bible-map`,icon:zr,label:`성경 지도`},{to:`/stats`,icon:er,label:`통계`},{to:`/ai`,icon:fi,label:`AI 도우미`},{to:`/profile`,icon:Ei,label:`프로필`}],FR=()=>{let{theme:e,toggleTheme:t}=(0,m.useContext)(Ri),{memberProfile:n,isAdmin:r,openInstallModal:i,isStandalone:a}=(0,m.useContext)(CD),o=Ue(),[s,c]=(0,m.useState)(!1),[l,u]=(0,m.useState)(!1),d=e=>o.pathname===e;return(0,q.jsxs)(q.Fragment,{children:[(0,q.jsxs)(`nav`,{style:{position:`fixed`,top:0,width:`100%`,zIndex:1e3,background:`var(--glass-bg)`,backdropFilter:`blur(16px)`,WebkitBackdropFilter:`blur(16px)`,borderBottom:`1px solid var(--glass-border)`},children:[(0,q.jsxs)(`div`,{style:{maxWidth:`1200px`,margin:`0 auto`,display:`flex`,justifyContent:`space-between`,alignItems:`center`,padding:`0 1.5rem`,height:`var(--navbar-height)`},children:[(0,q.jsx)(fn,{to:`/`,style:{fontFamily:`var(--font-serif)`,fontSize:`1.3rem`,fontWeight:700,color:`var(--accent-gold)`,flexShrink:0},children:`BethelChurch 말씀묵상`}),(0,q.jsxs)(`div`,{style:{display:`flex`,gap:`1.2rem`,alignItems:`center`},className:`desktop-nav`,children:[PR.map(({to:e,icon:t,label:n})=>(0,q.jsxs)(fn,{to:e,style:{display:`flex`,alignItems:`center`,gap:`0.35rem`,fontSize:`0.88rem`,fontWeight:500,color:d(e)?`var(--accent-gold)`:`var(--text-secondary)`,textDecoration:`none`,transition:`color 0.2s`,paddingBottom:`2px`,borderBottom:d(e)?`2px solid var(--accent-gold)`:`2px solid transparent`,whiteSpace:`nowrap`},children:[(0,q.jsx)(t,{size:15}),` `,n]},e)),r&&(0,q.jsxs)(fn,{to:`/admin`,style:{display:`flex`,alignItems:`center`,gap:`0.35rem`,fontSize:`0.82rem`,fontWeight:600,color:d(`/admin`)?`var(--accent-gold)`:`rgba(212,175,55,0.7)`,textDecoration:`none`,background:`rgba(212,175,55,0.1)`,border:`1px solid rgba(212,175,55,0.3)`,borderRadius:`999px`,padding:`0.25rem 0.75rem`,whiteSpace:`nowrap`},children:[(0,q.jsx)(ui,{size:13}),` 관리자`]}),!a&&(0,q.jsx)(`button`,{onClick:i,title:`홈 화면에 앱 설치`,style:{display:`inline-flex`,alignItems:`center`,gap:`4px`,padding:`0.3rem 0.75rem`,borderRadius:`999px`,background:`linear-gradient(135deg, rgba(212,175,55,0.2), rgba(168,85,247,0.2))`,border:`1px solid var(--accent-gold)`,color:`var(--accent-gold)`,fontSize:`0.8rem`,fontWeight:700,cursor:`pointer`,whiteSpace:`nowrap`},children:`📱 앱 설치`}),(0,q.jsx)(`button`,{onClick:()=>u(!0),title:`말씀 알림 설정`,style:{color:`var(--accent-gold)`,display:`flex`,padding:`0.4rem`,minWidth:`36px`,minHeight:`36px`,alignItems:`center`,justifyContent:`center`,background:`rgba(212, 175, 55, 0.1)`,border:`1px solid rgba(212,175,55,0.3)`,borderRadius:`50%`,cursor:`pointer`},children:(0,q.jsx)(Gn,{size:18})}),(0,q.jsx)(`button`,{onClick:t,style:{color:`var(--text-secondary)`,display:`flex`,marginLeft:`0.3rem`,padding:`0.4rem`,minWidth:`36px`,minHeight:`36px`,alignItems:`center`,justifyContent:`center`},children:e===`light`?(0,q.jsx)(Gr,{size:19}):(0,q.jsx)(gi,{size:19})})]}),(0,q.jsxs)(`div`,{style:{display:`none`},className:`mobile-nav`,children:[!a&&(0,q.jsx)(`button`,{onClick:i,style:{background:`rgba(212,175,55,0.15)`,border:`1px solid rgba(212,175,55,0.5)`,borderRadius:`8px`,padding:`4px 8px`,color:`var(--accent-gold)`,fontSize:`0.75rem`,fontWeight:800,marginRight:`0.4rem`,cursor:`pointer`,display:`flex`,alignItems:`center`,gap:`3px`},children:`📱 설치`}),(0,q.jsx)(`button`,{onClick:()=>u(!0),style:{color:`var(--accent-gold)`,marginRight:`0.4rem`,display:`flex`,padding:`0.4rem`,background:`none`,border:`none`,cursor:`pointer`},children:(0,q.jsx)(Gn,{size:20})}),(0,q.jsx)(`button`,{onClick:t,style:{color:`var(--text-secondary)`,marginRight:`0.8rem`,display:`flex`,padding:`0.4rem`},children:e===`light`?(0,q.jsx)(Gr,{size:20}):(0,q.jsx)(gi,{size:20})}),(0,q.jsx)(`button`,{onClick:()=>c(!s),style:{color:`var(--text-primary)`,display:`flex`,padding:`0.4rem`,minWidth:`44px`,minHeight:`44px`,alignItems:`center`,justifyContent:`center`},children:s?(0,q.jsx)(Ni,{size:24}):(0,q.jsx)(Vr,{size:24})})]})]}),s&&(0,q.jsxs)(`div`,{style:{background:`var(--bg-primary)`,backdropFilter:`blur(20px)`,WebkitBackdropFilter:`blur(20px)`,borderTop:`1px solid var(--glass-border)`,display:`flex`,flexDirection:`column`,padding:`1rem 1.25rem calc(var(--bottomnav-height, 64px) + 2.5rem)`,gap:`0.35rem`,maxHeight:`calc(100vh - var(--navbar-height))`,overflowY:`auto`,WebkitOverflowScrolling:`touch`,boxShadow:`0 20px 40px rgba(0,0,0,0.6)`},className:`mobile-menu custom-scrollbar`,children:[r&&(0,q.jsxs)(fn,{to:`/admin`,style:{display:`flex`,alignItems:`center`,gap:`0.75rem`,padding:`0.85rem 1rem`,borderRadius:`14px`,color:`#ffd700`,fontSize:`1rem`,fontWeight:700,background:`linear-gradient(135deg, rgba(212,175,55,0.22), rgba(184,134,11,0.1))`,border:`1px solid rgba(212,175,55,0.45)`,marginBottom:`0.5rem`,boxShadow:`0 4px 15px rgba(212,175,55,0.15)`,flexShrink:0},onClick:()=>c(!1),children:[(0,q.jsx)(ui,{size:22,color:`#ffd700`}),` 👑 성도 가입 승인 관리`]}),!a&&(0,q.jsxs)(`button`,{onClick:()=>{i(),c(!1)},style:{display:`flex`,alignItems:`center`,gap:`0.75rem`,padding:`0.85rem 1rem`,borderRadius:`14px`,color:`#fff`,fontSize:`1rem`,fontWeight:800,background:`linear-gradient(135deg, rgba(212,175,55,0.3) 0%, rgba(168,85,247,0.3) 100%)`,border:`1px solid var(--accent-gold)`,marginBottom:`0.6rem`,cursor:`pointer`,boxShadow:`0 4px 15px rgba(212,175,55,0.2)`,flexShrink:0,textAlign:`left`},children:[(0,q.jsx)(`span`,{style:{fontSize:`1.2rem`},children:`📱`}),` 홈 화면에 앱 설치하기`]}),(0,q.jsx)(`div`,{style:{display:`grid`,gridTemplateColumns:`repeat(2, 1fr)`,gap:`0.5rem`},children:PR.map(({to:e,icon:t,label:n})=>(0,q.jsxs)(fn,{to:e,style:{display:`flex`,alignItems:`center`,gap:`0.65rem`,padding:`0.8rem 0.85rem`,borderRadius:`12px`,color:d(e)?`var(--accent-gold)`:`var(--text-primary)`,fontSize:`0.92rem`,fontWeight:d(e)?700:500,background:d(e)?`rgba(212,175,55,0.15)`:`var(--glass-bg)`,border:`1px solid ${d(e)?`rgba(212,175,55,0.35)`:`var(--glass-border)`}`,transition:`all 0.15s`,minHeight:`46px`},onClick:()=>c(!1),children:[(0,q.jsx)(t,{size:18,color:d(e)?`var(--accent-gold)`:`var(--text-secondary)`}),(0,q.jsx)(`span`,{style:{overflow:`hidden`,textOverflow:`ellipsis`,whiteSpace:`nowrap`},children:n})]},e))})]}),(0,q.jsx)(`style`,{children:`
         @media (max-width: 900px) {
           .desktop-nav { display: none !important; }
