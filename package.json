@@ -1,4 +1,10 @@
 {
+  "name": "bible-platform-workspace",
+  "scripts": {
+    "dev": "npm run dev --prefix bible-platform",
+    "build": "npm run build --prefix bible-platform",
+    "admin": "npm run admin --prefix bible-platform"
+  },
   "dependencies": {
     "firebase": "^12.12.0"
   }
