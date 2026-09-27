@@ -121,6 +121,7 @@ export const SAMPLE_EVENTS = [
 
 
 
+
   // ── 사용자/교회 일정 ──
   { id: 1, title: '신년감사예배', date: '2026-01-04', time: '11:00', category: 'church', description: `2026년 신년 감사예배` },
   { id: 2, title: '삼일절 특별기도회', date: '2026-03-01', time: '06:00', category: 'church', description: `나라를 위한 특별 기도회` },
@@ -217,10 +218,10 @@ export const SAMPLE_EVENTS = [
 준비된 믿음과 기도로 맞이 합시다` },
   { id: 45, title: '“ 청년부특별기도회 “', date: '2026-09-15', time: '21:00', endDate: '2026-09-17', category: ['joseph'], description: `- 날      짜 : 9/15-17(화-목),9PM
 - 성      경 : 시편64-66,하루 한장씩` },
-  { id: 46, title: '“ 3/4분기 선교헌신예배 “', date: '2026-09-20', category: ['normal', 'church'], description: `“ 3/4분기 선교헌신예배 “가 있습니다.
+  { id: 46, title: '“ 3/4분기 선교헌신예배 “', date: '2026-09-20', category: ['church'], description: `“ 3/4분기 선교헌신예배 “가 있습니다.
 
 - 날      짜 : 9/20(셋주)` },
-  { id: 47, title: '“ 3/4분기 전도대회 “', date: '2026-09-27', category: ['church'], description: `“ 3/4분기 전도대회 “도 있습니다. 
+  { id: 47, title: '“ 3/4분기 전도대회 “', date: '2026-09-20', category: ['church'], description: `“ 3/4분기 전도대회 “도 있습니다. 
 기도로 준비 바랍니다.
 
 - 날       짜 : 9/27(넷주)
@@ -230,6 +231,38 @@ export const SAMPLE_EVENTS = [
 
 - 날      짜 : 9/11-12(금-토)
 - 봉      사 : 요안나,루디아,갈렙,여호수아` },
+  { id: 49, title: '“ 루디아 가을 나들이 ＂갑니다.', date: '2026-10-04', category: ['lydia'], description: `8
+“ 루디아 가을 나들이 ＂갑니다.
+
+- 날      짜 : 10/4(첫주)오전 예배 후
+- 회      비 : 10,000
+- 장      소 : 자라섬
+- 활      동 : 산책&보트
+- 운      전 : 남전도회(차량2대 운행)` },
+  { id: 50, title: '“ 10월달 월삭예배 “', date: '2026-10-01', category: ['church'], description: `“ 10월달 월삭예배 “로 드립니다. 
+
+- 시    간 : 5AM` },
+  { id: 51, title: '교회에어컨청소', date: '2026-10-11', category: ['joshua', 'caleb'], description: `교회 에어컨 청소` },
+  { id: 52, title: '교회창립주일', date: '2026-10-18', category: ['church'], description: `2026년도 “ 창립기념예배 & 전가족출석주일 “로 하나님께 영광을 올리려고 합니다. 
+전교인은 기도로 준비 바랍니다.
+
+- 날       짜 : 10/18(셋주)
+- 주       최 : 전도부
+      - 행       사 : 시상식,찬양,칸타타,수화,우쿠렐라연주
+- 준비기도 : 제1차 부장님들                       
+          날짜 : 9/28-10/2(월-금),9PM
+          성경 : 요6-10,하루1장` },
+  { id: 53, title: '남전도연합헌신예배', date: '2026-10-25', category: ['joshua', 'caleb'], description: `남전도연합헌신예배` },
+  { id: 54, title: '요안나&루디아 여전도회 프리마켓행사', date: '2026-11-07', category: ['joanna', 'lydia'], description: `요안나&루디아 여전도회 프리마켓행사` },
+  { id: 55, title: '교회김장', date: '2026-11-13', endDate: '2026-11-14', category: ['church'], description: `교회김장` },
+  { id: 56, title: '“ 제15차 필리핀 선교지 방문 “', date: '2027-03-15', endDate: '2027-03-20', category: ['normal', 'church'], description: `“ 제15차 필리핀 선교지 방문 “을 위해  
+많은 관심과 기도 부탁드립니다.
+
+- 날      짜 : 27.3/15-20(월-토)
+- 방      문 : 팔라완,비난고난,나보타스교회
+- 방 문 자 : 목사님,사모님,김송곤,조영희,이정숙,서점순,오경덕, 오빛나,이보미,노의진,김주은,김주성,김연분,서영이 ( 총14명 )
+
+※ 선교팀은 더욱 기도로 준비해 주시기바랍니다.` },
 ];
 
 /**
