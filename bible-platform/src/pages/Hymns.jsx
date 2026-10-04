@@ -37,92 +37,20 @@ export default function Hymns() {
     localStorage.setItem('favorite_hymns', JSON.stringify(updated));
   };
 
-  // 찬송가 가사 스마트 파싱: 마지막 절에 붙어있는 후렴을 운율/절끝 어미 기반으로 정밀 분리 → 각 절 뒤에 삽입
-  const parseHymnLyrics = (lyrics) => {
-    if (!lyrics || lyrics.length < 2) return lyrics;
-    const last = lyrics[lyrics.length - 1];
-    const verses = lyrics.slice(0, -1);
-    const avgLen = verses.reduce((s, l) => s + l.length, 0) / verses.length;
+  // 찬송가 가사 표시 리스트 구성 (각 절과 분리된 후렴을 확실하게 순서대로 매핑)
+  const getHymnDisplayList = (hymn) => {
+    if (!hymn || !hymn.lyrics) return [];
+    const list = [];
+    const chorus = hymn.chorus ? hymn.chorus.trim() : null;
 
-    // 이미 [후렴]이 별도 항목으로 존재하면 그대로 반환
-    if (lyrics.some(l => l.startsWith('[후렴]') || l.trim().startsWith('[후렴]'))) return lyrics;
-
-    // 마지막 절이 다른 절 평균보다 1.35배 이상 길어야 후렴이 붙어있다고 판단
-    if (last.length <= avgLen * 1.35) return lyrics;
-
-    let cutIndex = -1;
-
-    // 1. 앞선 절들의 공통 종결 어구(2~5단어)가 마지막 절에 존재하는지 확인 (예: 458장 '영원하신 팔에 안기세')
-    for (let windowSize = 5; windowSize >= 2; windowSize--) {
-      for (const v of verses) {
-        const vWords = v.split(/\s+/).filter(Boolean);
-        if (vWords.length >= windowSize) {
-          const endingPhrase = vWords.slice(-windowSize).join(' ');
-          const foundIdx = last.indexOf(endingPhrase);
-          if (foundIdx !== -1 && foundIdx > avgLen * 0.45 && foundIdx + endingPhrase.length < last.length) {
-            cutIndex = foundIdx + endingPhrase.length;
-            break;
-          }
-        }
+    hymn.lyrics.forEach((verse) => {
+      list.push({ type: 'verse', text: verse });
+      if (chorus) {
+        list.push({ type: 'chorus', text: chorus });
       }
-      if (cutIndex !== -1) break;
-    }
+    });
 
-    // 2. 종결 어구가 없는 경우: 앞선 절들의 종결 어미(글자) 및 한국어 서술어 종결 어미 매칭 (예: 102장 '변치 못해', 96장 '밝아지네')
-    if (cutIndex === -1) {
-      const verseEndings = verses.map(v => {
-        const words = v.trim().split(/\s+/).filter(Boolean);
-        return words[words.length - 1] || '';
-      });
-      const endingChars = verseEndings.map(w => w.slice(-1)).filter(Boolean);
-      const lastWords = last.split(/\s+/).filter(Boolean);
-      const avgWords = Math.round(verses.reduce((s, l) => s + l.split(/\s+/).filter(Boolean).length, 0) / verses.length);
-
-      let bestWordIdx = avgWords;
-      let found = false;
-
-      for (const offset of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]) {
-        const testIdx = avgWords + offset;
-        if (testIdx > 0 && testIdx < lastWords.length) {
-          const w = lastWords[testIdx - 1];
-          const lastChar = w.slice(-1);
-          if (endingChars.includes(lastChar)) {
-            bestWordIdx = testIdx;
-            found = true;
-            break;
-          }
-        }
-      }
-
-      if (!found) {
-        for (const offset of [0, 1, -1, 2, -2, 3, -3, 4, -4]) {
-          const testIdx = avgWords + offset;
-          if (testIdx > 0 && testIdx < lastWords.length) {
-            const w = lastWords[testIdx - 1];
-            if (/[네세리라도다며해어아였네겠네소서오옵소서]$/.test(w)) {
-              bestWordIdx = testIdx;
-              break;
-            }
-          }
-        }
-      }
-
-      const lastVerse = lastWords.slice(0, bestWordIdx).join(' ').trim();
-      const chorus = '[후렴] ' + lastWords.slice(bestWordIdx).join(' ').trim();
-      const result = [];
-      for (const v of verses) { result.push(v); result.push(chorus); }
-      result.push(lastVerse);
-      result.push(chorus);
-      return result;
-    } else {
-      const lastVerse = last.slice(0, cutIndex).trim();
-      const chorus = '[후렴] ' + last.slice(cutIndex).trim();
-      const result = [];
-      for (const v of verses) { result.push(v); result.push(chorus); }
-      result.push(lastVerse);
-      result.push(chorus);
-      return result;
-    }
+    return list;
   };
 
   // 찬송가 목록 필터링 (검색 & 카테고리)
@@ -149,16 +77,30 @@ export default function Hymns() {
     });
   }, [searchQuery, selectedCategory, favoriteHymns]);
 
-  // 가사 복사
+  // 가사 복사 (각 절과 분리된 후렴을 정확하고 아름답게 포맷팅)
   const handleCopyLyrics = (hymn) => {
-    const text = `[통일찬송가 ${hymn.num}장 (새 ${hymn.newNum}장)] ${hymn.title}\n\n${hymn.lyrics.join('\n\n')}\n\n벧엘교회 말씀묵상 앱`;
-    navigator.clipboard.writeText(text);
+    let formattedText = `[통일찬송가 ${hymn.num}장 (새 ${hymn.newNum}장)] ${hymn.title}\n\n`;
+    hymn.lyrics.forEach((verse) => {
+      formattedText += `${verse}\n`;
+      if (hymn.chorus) {
+        formattedText += `[후렴] ${hymn.chorus}\n\n`;
+      } else {
+        formattedText += '\n';
+      }
+    });
+    formattedText += `벧엘교회 말씀묵상 앱`;
+    navigator.clipboard.writeText(formattedText.trim());
     if (showToast) showToast('가사가 클립보드에 복사되었습니다! 📋');
   };
 
   // 카카오톡 공유
   const handleShareKakao = (hymn) => {
-    const shareText = `🎵 [통일찬송가 ${hymn.num}장 (새 ${hymn.newNum}장)] ${hymn.title}\n\n${hymn.lyrics.slice(0, 2).join('\n')}\n...\n벧엘교회 말씀묵상에서 찬양 가사를 확인해보세요!`;
+    let shareText = `🎵 [통일찬송가 ${hymn.num}장 (새 ${hymn.newNum}장)] ${hymn.title}\n\n${hymn.lyrics[0] || ''}\n`;
+    if (hymn.chorus) {
+      shareText += `[후렴] ${hymn.chorus}\n`;
+    }
+    shareText += `...\n벧엘교회 말씀묵상에서 찬양 가사를 확인해보세요!`;
+
     if (navigator.share) {
       navigator.share({
         title: `찬송가 ${hymn.num}장 - ${hymn.title}`,
@@ -526,29 +468,51 @@ export default function Hymns() {
                   lineHeight: 1.8, wordBreak: 'keep-all', overflowWrap: 'break-word',
                   fontSize: `${fontSize}px`, color: 'var(--text-primary)'
                 }}>
-                  {parseHymnLyrics(selectedHymn.lyrics).map((verse, idx) => {
-                    const isChorus = verse.startsWith('[후렴]');
-                    const displayText = isChorus ? verse.replace(/^\[후렴\]\s*/, '') : verse;
+                  {getHymnDisplayList(selectedHymn).map((item, idx) => {
+                    const isChorus = item.type === 'chorus';
                     return (
                       <div key={idx} style={{
-                        marginBottom: '1.2rem',
-                        padding: '12px 16px',
+                        marginBottom: isChorus ? '1.5rem' : '0.6rem',
+                        padding: isChorus ? '12px 16px' : '10px 16px',
                         borderRadius: '12px',
-                        background: isChorus ? 'rgba(212, 175, 55, 0.08)' : 'rgba(255,255,255,0.02)',
-                        borderLeft: isChorus ? '3px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.15)'
+                        background: isChorus ? 'rgba(212, 175, 55, 0.09)' : 'rgba(255,255,255,0.02)',
+                        borderLeft: isChorus ? '4px solid var(--accent-gold)' : '3px solid rgba(255,255,255,0.2)',
+                        boxShadow: isChorus ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'
                       }}>
-                        {isChorus && (
-                          <span style={{
-                            display: 'inline-block', marginBottom: '4px',
-                            fontSize: `${Math.max(10, fontSize - 4)}px`,
+                        {isChorus ? (
+                          <div style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '4px', marginBottom: '6px',
+                            padding: '2px 8px', borderRadius: '10px',
+                            background: 'rgba(212, 175, 55, 0.2)', border: '1px solid rgba(212, 175, 55, 0.4)',
+                            fontSize: `${Math.max(11, fontSize - 5)}px`,
                             fontWeight: 800, color: 'var(--accent-gold)',
                             letterSpacing: '0.05em'
                           }}>
-                            ♪ 후렴
-                          </span>
+                            ♪ [후렴]
+                          </div>
+                        ) : (
+                          /* 일반 절의 경우 절 번호 하이라이트 */
+                          item.text.match(/^(\d+)\.\s*/) && (
+                            <div style={{
+                              display: 'inline-block', marginBottom: '4px',
+                              padding: '1px 7px', borderRadius: '6px',
+                              background: 'rgba(255,255,255,0.08)',
+                              fontSize: `${Math.max(11, fontSize - 5)}px`,
+                              fontWeight: 700, color: 'var(--text-secondary)'
+                            }}>
+                              {item.text.match(/^(\d+)\./)[1]}절
+                            </div>
+                          )
                         )}
-                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                          {displayText}
+                        <p style={{
+                          margin: 0,
+                          whiteSpace: 'pre-wrap',
+                          color: isChorus ? 'var(--text-primary)' : 'var(--text-primary)',
+                          fontStyle: isChorus ? 'italic' : 'normal',
+                          fontWeight: isChorus ? 500 : 400
+                        }}>
+                          {/* 절 번호가 뱃지로 표시되었으면 본문에서는 숫자. 제거하거나 깔끔하게 표시 */}
+                          {item.text}
                         </p>
                       </div>
                     );
