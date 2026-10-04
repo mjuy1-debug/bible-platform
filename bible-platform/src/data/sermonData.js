@@ -11,7 +11,7 @@ export const SERMONS = [
     "file": "/pdfs/sermon_1791113146356.pdf"
   },
   {
-    "id": 1790586399423,
+    "id": 1789616138427,
     "title": "영에 속한 사람들",
     "date": "2026-09-27",
     "preacher": "김석주 목사님",
@@ -22,7 +22,7 @@ export const SERMONS = [
     "file": "/pdfs/sermon_1790586397528.pdf"
   },
   {
-    "id": 1790509571942,
+    "id": 1789924492801,
     "title": "하나님께서 받으시는 예배",
     "date": "2026-09-20",
     "preacher": "김석주 목사님",
