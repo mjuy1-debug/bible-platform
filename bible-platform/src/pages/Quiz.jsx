@@ -86,7 +86,13 @@ export default function Quiz() {
       setSelectedCategory(location.state.category);
     }
     if (location.state?.quizId && quizzes.length > 0 && !activeQuiz) {
-      const target = quizzes.find(q => String(q.id) === String(location.state.quizId));
+      const targetId = String(location.state.quizId);
+      const cleanSermonId = targetId.replace('sermon_', '');
+      const target = quizzes.find(q =>
+        String(q.id) === targetId ||
+        String(q.sermonId) === cleanSermonId ||
+        String(q.id) === `sermon_${cleanSermonId}`
+      );
       if (target) {
         handleStartQuiz(target);
       }
@@ -110,7 +116,9 @@ export default function Quiz() {
     const unsub = onSnapshot(q, (snap) => {
       if (!snap.empty) {
         const loaded = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        setQuizzes([...loaded, ...BIBLE_QUIZ_LIST]);
+        const loadedIds = new Set(loaded.map(l => String(l.id)));
+        const filteredStatic = BIBLE_QUIZ_LIST.filter(b => !loadedIds.has(String(b.id)));
+        setQuizzes([...loaded, ...filteredStatic]);
       }
     }, (err) => console.warn('퀴즈 동기화:', err));
 

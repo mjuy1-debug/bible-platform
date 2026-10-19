@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText, Save, Bookmark } from 'lucide-react';
+import { Play, Plus, X, Edit2, Trash2, Download, ExternalLink, Share2, Check, Loader, Video, FileText, Save, Bookmark, Sparkles, Key, ChevronDown, ChevronUp, CheckCircle, RefreshCw } from 'lucide-react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
-import { db } from '../services/firebase';
-import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { db, storage } from '../services/firebase';
+import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, getDoc } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { generateSermonQuiz, getGeminiApiKey, saveGeminiApiKey } from '../services/aiQuizService';
 import SermonNotesPanel from '../components/SermonNotesPanel';
 import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 
@@ -35,6 +37,35 @@ export default function Sermons() {
   // Deploy button state
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStatus, setDeployStatus] = useState('');
+
+  // AI Quiz states
+  const [quizDraft, setQuizDraft] = useState(null);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+  const [isQuizExpanded, setIsQuizExpanded] = useState(false);
+  const [includeQuiz, setIncludeQuiz] = useState(true);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [isSavingApiKey, setIsSavingApiKey] = useState(false);
+
+  // Firestore 실시간 설교 목록 동기화 (모바일/PC 어디서나 등록 즉시 반영)
+  useEffect(() => {
+    const q = query(collection(db, 'sermons'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const remoteSermons = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      const map = new Map();
+      // 1. 정적 기본 설교 데이터 로드
+      SERMONS.forEach(s => map.set(String(s.id), s));
+      // 2. Firestore 설교 데이터로 병합 및 덮어쓰기
+      remoteSermons.forEach(s => map.set(String(s.id), { ...map.get(String(s.id)), ...s }));
+      const mergedList = Array.from(map.values());
+      mergedList.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setSermons(mergedList);
+    }, (err) => {
+      console.warn('설교 Firestore 실시간 동기화 오류 (정적 데이터 사용):', err);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Auto-open sermon when arriving via a shared link (?id=xxxxx)
   useEffect(() => {
@@ -191,7 +222,85 @@ export default function Sermons() {
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
 
-  // Admin Save Function (Updates State Instantly + Uploads PDF via Local Admin Server)
+  // AI 퀴즈 자동 생성 핸들러
+  const handleGenerateAiQuiz = async () => {
+    if (!newEvent.title.trim()) {
+      alert('설교 제목을 먼저 입력해주세요.');
+      return;
+    }
+    if (!newEvent.scripture.trim()) {
+      alert('성경 본문 구절(예: 마태복음 16:13-20)을 먼저 입력해주세요.');
+      return;
+    }
+
+    const apiKey = await getGeminiApiKey();
+    if (!apiKey) {
+      setApiKeyInput('');
+      setShowApiKeyModal(true);
+      return;
+    }
+
+    setIsGeneratingQuiz(true);
+    try {
+      const generated = await generateSermonQuiz(newEvent, apiKey);
+      setQuizDraft(generated);
+      setIsQuizExpanded(true);
+      setIncludeQuiz(true);
+      if (showToast) showToast('✨ 10문항 설교 퀴즈가 성공적으로 생성되었습니다!');
+    } catch (err) {
+      console.error('AI 퀴즈 생성 오류:', err);
+      if (err.message === 'API_KEY_INVALID' || err.message === 'NO_API_KEY') {
+        alert('Gemini API 키가 등록되지 않았거나 유효하지 않습니다. 무료 API 키를 등록해주세요.');
+        setShowApiKeyModal(true);
+      } else {
+        alert('퀴즈 생성 중 오류가 발생했습니다: ' + err.message);
+      }
+    } finally {
+      setIsGeneratingQuiz(false);
+    }
+  };
+
+  // API 키 저장 핸들러
+  const handleSaveApiKey = async (e) => {
+    if (e) e.preventDefault();
+    if (!apiKeyInput.trim()) {
+      alert('API 키를 입력해주세요.');
+      return;
+    }
+    setIsSavingApiKey(true);
+    try {
+      await saveGeminiApiKey(apiKeyInput.trim());
+      setShowApiKeyModal(false);
+      if (showToast) showToast('✅ Gemini API 키가 클라우드 및 기기에 저장되었습니다!');
+      // 키 저장 완료 후 자동으로 퀴즈 생성 재시도
+      setTimeout(() => {
+        handleGenerateAiQuiz();
+      }, 300);
+    } catch (err) {
+      alert('API 키 저장 실패: ' + err.message);
+    } finally {
+      setIsSavingApiKey(false);
+    }
+  };
+
+  // 퀴즈 문항 수정 헬퍼
+  const handleUpdateQuizQuestion = (qIdx, field, val) => {
+    if (!quizDraft || !quizDraft.questions) return;
+    const updated = [...quizDraft.questions];
+    updated[qIdx] = { ...updated[qIdx], [field]: val };
+    setQuizDraft({ ...quizDraft, questions: updated });
+  };
+
+  const handleUpdateQuizOption = (qIdx, optIdx, val) => {
+    if (!quizDraft || !quizDraft.questions) return;
+    const updatedQuestions = [...quizDraft.questions];
+    const updatedOpts = [...updatedQuestions[qIdx].options];
+    updatedOpts[optIdx] = val;
+    updatedQuestions[qIdx] = { ...updatedQuestions[qIdx], options: updatedOpts };
+    setQuizDraft({ ...quizDraft, questions: updatedQuestions });
+  };
+
+  // Admin Save Function (Firebase Firestore + Firebase Storage 실시간 저장)
   const handleSaveSermon = async (e) => {
     if (e) e.preventDefault();
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.videoUrl.trim()) {
@@ -204,38 +313,43 @@ export default function Sermons() {
 
     let finalFileUrl = newEvent.file || '';
 
-    // 1. If user selected a new PDF, upload directly to local admin server
+    // 1. PDF 업로드 (온라인 Firebase Storage 우선, 실패 시 로컬 서버 폴백)
     if (selectedRawBase64) {
       const safeName = `sermon_${Date.now()}.pdf`;
-      
       try {
-        setSaveProgressText('로컬 관리자 서버에 PDF 저장 중...');
-        const res = await fetch('http://localhost:3001/api/admin/upload-pdf', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fileName: safeName,
-            fileData: selectedRawBase64.data
-          }),
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          if (data.ok) {
-            finalFileUrl = data.fileUrl;
-            console.log('✅ 로컬 서버 PDF 저장 성공:', finalFileUrl);
+        setSaveProgressText('클라우드 저장소(Firebase Storage)에 PDF 업로드 중...');
+        const storageRef = ref(storage, `sermons/${safeName}`);
+        await uploadString(storageRef, selectedRawBase64.data, 'data_url');
+        finalFileUrl = await getDownloadURL(storageRef);
+        console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
+      } catch (storageErr) {
+        console.warn('Firebase Storage 업로드 실패, 로컬 서버 시도:', storageErr.message);
+        try {
+          const res = await fetch('http://localhost:3001/api/admin/upload-pdf', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fileName: safeName,
+              fileData: selectedRawBase64.data
+            }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.ok) finalFileUrl = data.fileUrl;
           }
-        }
-      } catch (localErr) {
-        console.warn('로컬 서버 연결 안 됨 (임시 Base64 저장):', localErr.message);
-        if (selectedRawBase64.data.length < 1000000) {
-          finalFileUrl = selectedRawBase64.data;
+        } catch (localErr) {
+          if (selectedRawBase64.data.length < 1000000) {
+            finalFileUrl = selectedRawBase64.data;
+          }
         }
       }
     }
 
-    // 2. Update React State immediately (No permission errors!)
+    const sermonId = editSermon ? editSermon.id : Date.now();
+
+    // 2. 설교 데이터 페이로드
     const sermonPayload = {
+      id: sermonId,
       title: newEvent.title.trim(),
       date: newEvent.date,
       preacher: newEvent.preacher?.trim() || '김석주 목사님',
@@ -244,35 +358,59 @@ export default function Sermons() {
       externalLink: newEvent.externalLink?.trim() || '',
       summary: newEvent.summary?.trim() || '',
       file: finalFileUrl,
+      hasQuiz: !!(includeQuiz && quizDraft),
+      updatedAt: serverTimestamp(),
     };
 
+    // 3. React 로컬 상태 즉시 갱신
     let updatedList;
     if (editSermon) {
       updatedList = sermons.map(s => s.id === editSermon.id ? { ...s, ...sermonPayload } : s);
-      if (showToast) showToast('설교가 수정되었습니다. 아래 [변경사항 저장하기]를 눌러 배포하세요! ✨');
     } else {
-      updatedList = [{ id: Date.now(), ...sermonPayload }, ...sermons];
-      if (showToast) showToast('새 설교가 추가되었습니다. 아래 [변경사항 저장하기]를 눌러 배포하세요! 🎉');
+      updatedList = [sermonPayload, ...sermons];
     }
-
     updatedList.sort((a, b) => new Date(b.date) - new Date(a.date));
     setSermons(updatedList);
 
-    // 3. Silent Firestore backup sync (doesn't throw or block on permissions)
+    // 4. Firestore 실시간 클라우드 DB 저장 (어디서든 즉시 반영!)
     try {
-      if (editSermon) {
-        const col = editSermon.collectionName || 'bulletins';
-        setDoc(doc(db, col, String(editSermon.id)), { ...sermonPayload, isSermon: true, updatedAt: serverTimestamp() }, { merge: true }).catch(() => {});
-      } else {
-        addDoc(collection(db, 'bulletins'), { ...sermonPayload, isSermon: true, createdAt: serverTimestamp() }).catch(() => {});
+      setSaveProgressText('클라우드 DB에 설교 저장 중...');
+      await setDoc(doc(db, 'sermons', String(sermonId)), sermonPayload, { merge: true });
+
+      // 퀴즈도 함께 등록할 경우 quizzes 컬렉션에 동시 저장
+      if (includeQuiz && quizDraft) {
+        setSaveProgressText('클라우드 DB에 10문항 설교 퀴즈 동시 등록 중...');
+        const quizPayload = {
+          ...quizDraft,
+          id: `sermon_${sermonId}`,
+          sermonId: sermonId,
+          title: sermonPayload.title,
+          date: sermonPayload.date,
+          range: sermonPayload.scripture,
+          bookName: quizDraft.bookName || sermonPayload.scripture?.split(' ')[0] || '성경',
+          updatedAt: serverTimestamp(),
+          createdAt: serverTimestamp(),
+        };
+        await setDoc(doc(db, 'quizzes', `sermon_${sermonId}`), quizPayload, { merge: true });
       }
-    } catch {
-      // Ignore background sync errors
+
+      if (showToast) {
+        if (includeQuiz && quizDraft) {
+          showToast('🎉 설교와 AI 퀴즈 10문항이 클라우드에 성공적으로 등록되었습니다!');
+        } else {
+          showToast('🎉 설교 말씀이 클라우드에 성공적으로 등록되었습니다!');
+        }
+      }
+    } catch (dbErr) {
+      console.error('Firestore 저장 오류:', dbErr);
+      alert('클라우드 저장 중 오류가 발생했습니다: ' + dbErr.message);
     }
 
     setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
     setSelectedRawBase64(null);
     setEditSermon(null);
+    setQuizDraft(null);
+    setIsQuizExpanded(false);
     setShowAddForm(false);
     setIsSaving(false);
     setSaveProgressText('');
@@ -320,10 +458,12 @@ export default function Sermons() {
     }
   };
 
-  const handleEdit = (sermon, e) => {
+  const handleEdit = async (sermon, e) => {
     e.stopPropagation();
     setEditSermon(sermon);
     setSelectedRawBase64(null);
+    setQuizDraft(null);
+    setIsQuizExpanded(false);
     setNewEvent({
       title: sermon.title || '',
       date: sermon.date || new Date().toISOString().slice(0, 10),
@@ -335,15 +475,36 @@ export default function Sermons() {
       fileName: sermon.file ? '첨부된 PDF 파일 있음' : '',
       externalLink: sermon.externalLink || ''
     });
+
+    // 기존 퀴즈가 Firestore에 등록되어 있는지 확인하여 로드
+    try {
+      const quizSnap = await getDoc(doc(db, 'quizzes', `sermon_${sermon.id}`));
+      if (quizSnap.exists()) {
+        setQuizDraft(quizSnap.data());
+        setIncludeQuiz(true);
+      }
+    } catch (err) {
+      console.warn('기존 퀴즈 조회 건너뜀:', err);
+    }
+
     setShowAddForm(true);
   };
 
-  const handleDelete = (id, e) => {
+  const handleDelete = async (id, e) => {
     e.stopPropagation();
-    if (!window.confirm("정말 이 말씀을 삭제하시겠습니까?")) return;
+    if (!window.confirm("정말 이 말씀을 삭제하시겠습니까? (연결된 퀴즈도 함께 삭제됩니다)")) return;
 
     setSermons(sermons.filter(s => s.id !== id));
-    if (showToast) showToast('삭제되었습니다. 아래 [변경사항 저장하기]를 눌러 배포하세요.');
+    
+    // Firestore에서도 실시간 삭제
+    try {
+      await deleteDoc(doc(db, 'sermons', String(id)));
+      await deleteDoc(doc(db, 'quizzes', `sermon_${id}`));
+    } catch (delErr) {
+      console.warn('Firestore 삭제 오류:', delErr);
+    }
+
+    if (showToast) showToast('설교와 퀴즈가 클라우드에서 삭제되었습니다.');
   };
 
   return (
@@ -461,7 +622,223 @@ export default function Sermons() {
 
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>설교 요약 및 나눔 질문</label>
-                  <textarea placeholder="설교 핵심 요약이나 묵상 질문을 자유롭게 입력하세요." value={newEvent.summary} onChange={e => setNewEvent({...newEvent, summary: e.target.value})} className="input-field" style={{ width: '100%', minHeight: '120px', resize: 'vertical' }} />
+                  <textarea placeholder="설교 핵심 요약이나 묵상 질문을 자유롭게 입력하세요. (AI가 이 내용을 분석하여 정밀한 퀴즈를 출제합니다)" value={newEvent.summary} onChange={e => setNewEvent({...newEvent, summary: e.target.value})} className="input-field" style={{ width: '100%', minHeight: '110px', resize: 'vertical' }} />
+                </div>
+
+                {/* ── AI 설교 퀴즈 10문항 자동 생성 카드 ── */}
+                <div style={{
+                  gridColumn: '1 / -1',
+                  background: 'linear-gradient(135deg, rgba(212,175,55,0.08), rgba(147,51,234,0.08))',
+                  border: '1.5px solid rgba(212,175,55,0.35)',
+                  borderRadius: '12px',
+                  padding: '1.2rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.9rem'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '1.1rem' }}>🤖</span>
+                      <strong style={{ color: 'var(--accent-gold)', fontSize: '0.95rem' }}>설교 퀴즈 자동 생성 (AI 10문항)</strong>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKeyModal(true)}
+                        style={{
+                          background: 'rgba(255,255,255,0.06)',
+                          border: '1px solid var(--glass-border)',
+                          borderRadius: '20px',
+                          color: 'var(--text-secondary)',
+                          padding: '0.3rem 0.7rem',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        <Key size={12} /> Gemini 키 설정
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleGenerateAiQuiz}
+                        disabled={isGeneratingQuiz}
+                        style={{
+                          background: isGeneratingQuiz ? 'rgba(212,175,55,0.3)' : 'linear-gradient(135deg, #d4af37, #9333ea)',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '20px',
+                          padding: '0.45rem 1.1rem',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: isGeneratingQuiz ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          boxShadow: '0 4px 12px rgba(147,51,234,0.25)',
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        {isGeneratingQuiz ? <Loader size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                        {isGeneratingQuiz ? '10문제 출제 분석 중...' : (quizDraft ? '퀴즈 다시 생성' : 'AI 퀴즈 10문제 자동 생성')}
+                      </button>
+                    </div>
+                  </div>
+
+                  <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+                    위 설교 제목, 본문, 요약문을 AI가 종합 분석하여 성도님들을 위한 <strong>4지선다형 10문제</strong>를 즉시 출제합니다. 스마트폰에서도 3초 만에 생성됩니다.
+                  </p>
+
+                  {/* 퀴즈 생성 완료 후 카드 */}
+                  {quizDraft && (
+                    <div style={{ marginTop: '0.4rem', borderTop: '1px dashed rgba(212,175,55,0.3)', paddingTop: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.85rem', color: '#10b981', fontWeight: 600 }}>
+                          <input
+                            type="checkbox"
+                            checked={includeQuiz}
+                            onChange={e => setIncludeQuiz(e.target.checked)}
+                            style={{ accentColor: '#10b981', width: '16px', height: '16px' }}
+                          />
+                          <CheckCircle size={15} /> 설교 등록 시 10문항 퀴즈를 퀴즈방에 동시 등록
+                        </label>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsQuizExpanded(!isQuizExpanded)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--accent-gold)',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {isQuizExpanded ? '문제 목록 접기' : '생성된 10문제 검토 및 수정하기'}
+                          {isQuizExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                        </button>
+                      </div>
+
+                      {/* 10문항 상세 목록 펼치기 */}
+                      <AnimatePresence>
+                        {isQuizExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            style={{ overflow: 'hidden', marginTop: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}
+                          >
+                            {quizDraft.questions.map((q, qIdx) => (
+                              <div
+                                key={qIdx}
+                                style={{
+                                  background: 'rgba(0,0,0,0.25)',
+                                  border: '1px solid var(--glass-border)',
+                                  borderRadius: '8px',
+                                  padding: '0.9rem',
+                                  fontSize: '0.82rem'
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                  <span style={{
+                                    background: 'var(--accent-gold)',
+                                    color: '#1a1a2e',
+                                    borderRadius: '50%',
+                                    width: '22px',
+                                    height: '22px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 700,
+                                    fontSize: '0.75rem'
+                                  }}>
+                                    {qIdx + 1}
+                                  </span>
+                                  <input
+                                    type="text"
+                                    value={q.question}
+                                    onChange={e => handleUpdateQuizQuestion(qIdx, 'question', e.target.value)}
+                                    className="input-field"
+                                    style={{ flex: 1, padding: '0.35rem 0.6rem', fontSize: '0.82rem' }}
+                                  />
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.4rem', marginLeft: '1.8rem', marginBottom: '0.6rem' }}>
+                                  {q.options.map((opt, optIdx) => (
+                                    <label
+                                      key={optIdx}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        background: q.correct === optIdx ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.02)',
+                                        border: q.correct === optIdx ? '1px solid #10b981' : '1px solid var(--glass-border)',
+                                        borderRadius: '6px',
+                                        padding: '0.3rem 0.5rem',
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      <input
+                                        type="radio"
+                                        name={`quiz_correct_${qIdx}`}
+                                        checked={q.correct === optIdx}
+                                        onChange={() => handleUpdateQuizQuestion(qIdx, 'correct', optIdx)}
+                                        style={{ accentColor: '#10b981' }}
+                                      />
+                                      <span style={{ fontSize: '0.72rem', color: q.correct === optIdx ? '#10b981' : 'var(--text-secondary)', fontWeight: q.correct === optIdx ? 700 : 400 }}>
+                                        {optIdx + 1}.
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={opt}
+                                        onChange={e => handleUpdateQuizOption(qIdx, optIdx, e.target.value)}
+                                        style={{
+                                          background: 'transparent',
+                                          border: 'none',
+                                          color: 'var(--text-primary)',
+                                          fontSize: '0.78rem',
+                                          width: '100%',
+                                          outline: 'none'
+                                        }}
+                                      />
+                                    </label>
+                                  ))}
+                                </div>
+
+                                <div style={{ marginLeft: '1.8rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                                  <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                    <input
+                                      type="text"
+                                      placeholder="힌트 구절 (예: 마 16:16)"
+                                      value={q.hintRef || ''}
+                                      onChange={e => handleUpdateQuizQuestion(qIdx, 'hintRef', e.target.value)}
+                                      className="input-field"
+                                      style={{ width: '130px', padding: '0.25rem 0.5rem', fontSize: '0.74rem' }}
+                                    />
+                                    <input
+                                      type="text"
+                                      placeholder="해설 입력"
+                                      value={q.explanation || ''}
+                                      onChange={e => handleUpdateQuizQuestion(qIdx, 'explanation', e.target.value)}
+                                      className="input-field"
+                                      style={{ flex: 1, padding: '0.25rem 0.5rem', fontSize: '0.74rem' }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -471,11 +848,104 @@ export default function Sermons() {
                 </button>
                 <button type="submit" disabled={isSaving} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.6rem', borderRadius: '8px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.8 : 1 }}>
                   {isSaving ? <Loader size={16} className="animate-spin" /> : null}
-                  {isSaving ? (saveProgressText || '저장 중...') : (editSermon ? '수정 완료' : '등록하기')}
+                  {isSaving ? (saveProgressText || '저장 중...') : (editSermon ? '수정 완료 (클라우드 반영)' : '등록하기 (클라우드 반영)')}
                 </button>
               </div>
             </form>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Gemini API 키 설정 모달 ── */}
+      <AnimatePresence>
+        {showApiKeyModal && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(6px)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem'
+          }}>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card"
+              style={{
+                maxWidth: '460px',
+                width: '100%',
+                padding: '1.6rem',
+                border: '1.5px solid var(--accent-gold)',
+                background: '#131325'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Key size={18} /> Google Gemini API 키 설정
+                </h3>
+                <button type="button" onClick={() => setShowApiKeyModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '1rem' }}>
+                설교 말씀을 바탕으로 10문항 퀴즈를 자동 생성하기 위해 <strong>Google Gemini API 키</strong>가 필요합니다.
+                구글 계정만 있으면 <strong>완전 무료</strong>로 1분 만에 발급받으실 수 있습니다.
+              </p>
+
+              <form onSubmit={handleSaveApiKey}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>
+                    Gemini API Key (AIzaSy...)
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="AIzaSy..."
+                    value={apiKeyInput}
+                    onChange={e => setApiKeyInput(e.target.value)}
+                    className="input-field"
+                    style={{ width: '100%' }}
+                    required
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.2rem', padding: '0.8rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                  <a
+                    href="https://aistudio.google.com/app/apikey"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontSize: '0.78rem', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'underline' }}
+                  >
+                    👉 Google AI Studio에서 무료 API 키 발급받기 (새 창)
+                  </a>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px' }}>
+                    * 한 번 저장하시면 클라우드 설정에 안전하게 보관되어 다른 기기에서도 자동으로 연동됩니다.
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKeyModal(false)}
+                    style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.85rem' }}
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSavingApiKey}
+                    style={{ padding: '0.5rem 1.3rem', borderRadius: '6px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSavingApiKey ? 'not-allowed' : 'pointer', fontSize: '0.85rem' }}
+                  >
+                    {isSavingApiKey ? '저장 중...' : '저장 및 적용'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
