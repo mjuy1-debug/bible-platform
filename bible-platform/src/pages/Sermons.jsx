@@ -8,6 +8,7 @@ import { db, storage } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { generateSermonQuiz, getGeminiApiKey, saveGeminiApiKey } from '../services/aiQuizService';
+import { uploadPdfToGitHub, getGitHubToken, saveGitHubToken } from '../services/githubUploadService';
 import SermonNotesPanel from '../components/SermonNotesPanel';
 import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 
@@ -49,6 +50,13 @@ export default function Sermons() {
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [isSavingApiKey, setIsSavingApiKey] = useState(false);
+
+  // GitHub PDF Upload states
+  const [showGitHubTokenModal, setShowGitHubTokenModal] = useState(false);
+  const [githubTokenInput, setGithubTokenInput] = useState('');
+  const [isSavingGitHubToken, setIsSavingGitHubToken] = useState(false);
+  const [isGitHubUploading, setIsGitHubUploading] = useState(false);
+  const [gitHubUploadStatus, setGitHubUploadStatus] = useState('');
 
   // Firestore 실시간 설교 목록 동기화 (모바일/PC 어디서나 등록 즉시 반영)
   useEffect(() => {
@@ -213,6 +221,70 @@ export default function Sermons() {
     setSelectedPdfFile(null);
     setSelectedRawBase64(null);
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
+  };
+
+  // ── GitHub 저장소(public/pdfs/)로 PDF 자동 업로드 및 커밋 ──
+  const handleUploadPdfToGitHub = async () => {
+    if (!selectedPdfFile) {
+      alert('먼저 첨부할 PDF 파일을 선택해주세요.');
+      return;
+    }
+
+    const token = await getGitHubToken();
+    if (!token) {
+      setGithubTokenInput('');
+      setShowGitHubTokenModal(true);
+      return;
+    }
+
+    setIsGitHubUploading(true);
+    setGitHubUploadStatus('깃허브(GitHub) 저장소로 PDF 전송 및 자동 커밋 중...');
+
+    try {
+      const result = await uploadPdfToGitHub(selectedPdfFile, token);
+      if (result.ok) {
+        setNewEvent(prev => ({
+          ...prev,
+          file: result.fileUrl,
+          fileName: `${selectedPdfFile.name} (GitHub 커밋 완료)`
+        }));
+        setGitHubUploadStatus(`✅ 깃허브 커밋 완료! (${result.fileUrl})`);
+        if (showToast) showToast('🎉 GitHub 저장소에 PDF 파일이 성공적으로 커밋되었습니다!');
+      }
+    } catch (err) {
+      console.error('GitHub PDF 업로드 실패:', err);
+      if (err.message === 'GITHUB_TOKEN_INVALID' || err.message === 'NO_GITHUB_TOKEN') {
+        alert('GitHub 토큰이 등록되지 않았거나 권한이 없습니다. GitHub Personal Access Token을 설정해주세요.');
+        setShowGitHubTokenModal(true);
+      } else {
+        alert('GitHub 업로드 중 오류가 발생했습니다: ' + err.message);
+      }
+      setGitHubUploadStatus(`❌ 깃허브 업로드 실패 (${err.message})`);
+    } finally {
+      setIsGitHubUploading(false);
+    }
+  };
+
+  const handleSaveGitHubToken = async (e) => {
+    if (e) e.preventDefault();
+    if (!githubTokenInput.trim()) {
+      alert('GitHub 토큰을 입력해주세요.');
+      return;
+    }
+    setIsSavingGitHubToken(true);
+    try {
+      await saveGitHubToken(githubTokenInput.trim());
+      setShowGitHubTokenModal(false);
+      if (showToast) showToast('✅ GitHub 토큰이 클라우드에 안전하게 저장되었습니다!');
+      // 저장 후 바로 업로드 재시도
+      setTimeout(() => {
+        handleUploadPdfToGitHub();
+      }, 300);
+    } catch (err) {
+      alert('GitHub 토큰 저장 실패: ' + err.message);
+    } finally {
+      setIsSavingGitHubToken(false);
+    }
   };
 
   // PDF 단독 업로드 핸들러 (설교/퀴즈 등록과 완전 분리하여 독립 실행)
@@ -677,38 +749,62 @@ export default function Sermons() {
                     💡 설교 말씀과 10문항 퀴즈는 PDF 파일 없이도 아래 <strong>[등록하기]</strong> 버튼을 누르면 1초 만에 등록됩니다!
                   </p>
 
-                  {/* 방식 1: 파일 선택 및 단독 업로드 버튼 */}
+                  {/* 파일 선택 및 GitHub 자동 업로드 버튼 */}
                   <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
                     <input type="file" accept="application/pdf,.pdf" onChange={handleFileSelect} className="input-field" style={{ flex: '1 1 200px' }} />
+                    
                     {selectedPdfFile && (
-                      <button
-                        type="button"
-                        onClick={handleUploadPdfOnly}
-                        disabled={isPdfUploading}
-                        style={{
-                          background: isPdfUploading ? 'rgba(212,175,55,0.2)' : 'var(--accent-gold)',
-                          color: '#1a1a2e',
-                          border: 'none',
-                          borderRadius: '6px',
-                          padding: '0.5rem 0.9rem',
-                          fontSize: '0.78rem',
-                          fontWeight: 700,
-                          cursor: isPdfUploading ? 'not-allowed' : 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {isPdfUploading ? <Loader size={14} className="animate-spin" /> : <Save size={14} />}
-                        {isPdfUploading ? 'PDF 전송 중...' : '이 PDF만 단독 업로드'}
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={handleUploadPdfToGitHub}
+                          disabled={isGitHubUploading}
+                          style={{
+                            background: isGitHubUploading ? 'rgba(147,51,234,0.3)' : 'linear-gradient(135deg, #1f2937, #9333ea)',
+                            color: '#fff',
+                            border: '1px solid rgba(147,51,234,0.5)',
+                            borderRadius: '6px',
+                            padding: '0.5rem 0.9rem',
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            cursor: isGitHubUploading ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            boxShadow: '0 2px 8px rgba(147,51,234,0.3)',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          {isGitHubUploading ? <Loader size={14} className="animate-spin" /> : <span>🐙</span>}
+                          {isGitHubUploading ? '깃허브로 커밋 중...' : '깃허브(GitHub)로 PDF 자동 업로드'}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setShowGitHubTokenModal(true)}
+                          title="GitHub 토큰 설정"
+                          style={{
+                            background: 'rgba(255,255,255,0.06)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '6px',
+                            color: 'var(--text-secondary)',
+                            padding: '0.5rem 0.6rem',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                        >
+                          <Key size={13} /> 토큰
+                        </button>
+                      </div>
                     )}
                   </div>
 
-                  {pdfUploadStatus && (
-                    <div style={{ fontSize: '0.78rem', color: pdfUploadStatus.includes('✅') ? '#10b981' : '#f59e0b', fontWeight: 600 }}>
-                      {pdfUploadStatus}
+                  {gitHubUploadStatus && (
+                    <div style={{ fontSize: '0.78rem', color: gitHubUploadStatus.includes('✅') ? '#10b981' : '#f59e0b', fontWeight: 600 }}>
+                      {gitHubUploadStatus}
                     </div>
                   )}
 
@@ -1055,6 +1151,99 @@ export default function Sermons() {
                     style={{ padding: '0.5rem 1.3rem', borderRadius: '6px', border: 'none', background: 'var(--accent-gold)', color: '#1a1a2e', fontWeight: 700, cursor: isSavingApiKey ? 'not-allowed' : 'pointer', fontSize: '0.85rem' }}
                   >
                     {isSavingApiKey ? '저장 중...' : '저장 및 적용'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+
+      {/* ── GitHub Access Token 설정 모달 ── */}
+      <AnimatePresence>
+        {showGitHubTokenModal && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.78)',
+            backdropFilter: 'blur(6px)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem'
+          }}>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card"
+              style={{
+                maxWidth: '480px',
+                width: '100%',
+                padding: '1.6rem',
+                border: '1.5px solid #9333ea',
+                background: '#131325'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>🐙</span> GitHub 토큰 (PDF 자동 업로드용) 설정
+                </h3>
+                <button type="button" onClick={() => setShowGitHubTokenModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '1rem' }}>
+                모바일이나 다른 PC에서 <strong>GitHub 저장소(public/pdfs/)</strong>로 PDF 파일을 직접 커밋/업로드하기 위해 <strong>GitHub Personal Access Token (토큰)</strong>이 필요합니다.
+              </p>
+
+              <form onSubmit={handleSaveGitHubToken}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', display: 'block' }}>
+                    GitHub Personal Access Token (ghp_...)
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    value={githubTokenInput}
+                    onChange={e => setGithubTokenInput(e.target.value)}
+                    className="input-field"
+                    style={{ width: '100%' }}
+                    required
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.2rem', padding: '0.8rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                  <a
+                    href="https://github.com/settings/tokens/new?scopes=repo&description=bible-platform-pdf-upload"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontSize: '0.78rem', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'underline' }}
+                  >
+                    👉 GitHub에서 'repo' 권한 토큰 발급받기 (새 창 링크)
+                  </a>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'block', marginTop: '4px' }}>
+                    * 1회만 등록하시면 클라우드에 영구 보관되어 모든 기기(스마트폰/태블릿/PC)에서 자동으로 연동됩니다!
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowGitHubTokenModal(false)}
+                    style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.85rem' }}
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSavingGitHubToken}
+                    style={{ padding: '0.5rem 1.3rem', borderRadius: '6px', border: 'none', background: 'linear-gradient(135deg, #9333ea, #c084fc)', color: '#fff', fontWeight: 700, cursor: isSavingGitHubToken ? 'not-allowed' : 'pointer', fontSize: '0.85rem' }}
+                  >
+                    {isSavingGitHubToken ? '저장 중...' : '토큰 저장 및 PDF 업로드'}
                   </button>
                 </div>
               </form>
