@@ -6,7 +6,7 @@ import { SERMONS } from '../data/sermonData';
 import { UserContext } from '../context/UserContext';
 import { db, storage } from '../services/firebase';
 import { collection, doc, setDoc, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, getDoc } from 'firebase/firestore';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { generateSermonQuiz, getGeminiApiKey, saveGeminiApiKey } from '../services/aiQuizService';
 import SermonNotesPanel from '../components/SermonNotesPanel';
 import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
@@ -30,6 +30,7 @@ export default function Sermons() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editSermon, setEditSermon] = useState(null);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
+  const [selectedPdfFile, setSelectedPdfFile] = useState(null);
   const [selectedRawBase64, setSelectedRawBase64] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveProgressText, setSaveProgressText] = useState('');
@@ -184,7 +185,7 @@ export default function Sermons() {
     }
   };
 
-  // File Select Handler
+  // File Select Handler (원본 File 객체 보관으로 대용량 PDF 업로드 최적화)
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -198,26 +199,16 @@ export default function Sermons() {
       ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
       : `${(file.size / 1024).toFixed(0)} KB`;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setSelectedRawBase64({
-        name: file.name,
-        data: reader.result,
-        sizeStr: fileSizeStr
-      });
-      setNewEvent(prev => ({
-        ...prev,
-        fileName: `${file.name} (${fileSizeStr})`
-      }));
-      if (showToast) showToast(`PDF 파일이 준비되었습니다! (${fileSizeStr}) 📄`);
-    };
-    reader.onerror = () => {
-      alert('파일을 읽는 중 오류가 발생했습니다.');
-    };
-    reader.readAsDataURL(file);
+    setSelectedPdfFile(file);
+    setNewEvent(prev => ({
+      ...prev,
+      fileName: `${file.name} (${fileSizeStr})`
+    }));
+    if (showToast) showToast(`PDF 파일이 준비되었습니다! (${fileSizeStr}) 📄`);
   };
 
   const handleRemoveFile = () => {
+    setSelectedPdfFile(null);
     setSelectedRawBase64(null);
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
@@ -313,33 +304,93 @@ export default function Sermons() {
 
     let finalFileUrl = newEvent.file || '';
 
-    // 1. PDF 업로드 (온라인 Firebase Storage 우선, 실패 시 로컬 서버 폴백)
-    if (selectedRawBase64) {
-      const safeName = `sermon_${Date.now()}.pdf`;
+    // 1. PDF 업로드 (Firebase Storage uploadBytesResumable로 대용량도 실시간 진행률 표시하며 안전 업로드)
+    if (selectedPdfFile || selectedRawBase64) {
+      const fileToUpload = selectedPdfFile;
+      const safeName = `sermon_${Date.now()}_${(fileToUpload?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+
       try {
-        setSaveProgressText('클라우드 저장소(Firebase Storage)에 PDF 업로드 중...');
+        setSaveProgressText('클라우드 저장소(Firebase Storage)에 PDF 업로드 준비 중...');
         const storageRef = ref(storage, `sermons/${safeName}`);
-        await uploadString(storageRef, selectedRawBase64.data, 'data_url');
-        finalFileUrl = await getDownloadURL(storageRef);
-        console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
-      } catch (storageErr) {
-        console.warn('Firebase Storage 업로드 실패, 로컬 서버 시도:', storageErr.message);
-        try {
-          const res = await fetch('http://localhost:3001/api/admin/upload-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fileName: safeName,
-              fileData: selectedRawBase64.data
-            }),
+
+        if (fileToUpload) {
+          // 원본 바이너리 File 객체를 스트림으로 직접 업로드 (16MB 등 대용량 파일 완벽 지원)
+          await new Promise((resolve, reject) => {
+            const uploadTask = uploadBytesResumable(storageRef, fileToUpload, {
+              contentType: 'application/pdf'
+            });
+
+            uploadTask.on(
+              'state_changed',
+              (snapshot) => {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setSaveProgressText(`클라우드에 PDF 업로드 중... (${progress}%)`);
+              },
+              (err) => {
+                console.error('Firebase Storage 업로드 중 에러:', err);
+                reject(err);
+              },
+              async () => {
+                try {
+                  finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                  console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
+                  resolve();
+                } catch (urlErr) {
+                  reject(urlErr);
+                }
+              }
+            );
           });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.ok) finalFileUrl = data.fileUrl;
+        } else if (selectedRawBase64?.data) {
+          const uploadTask = uploadBytesResumable(storageRef, await (await fetch(selectedRawBase64.data)).blob(), {
+            contentType: 'application/pdf'
+          });
+          await new Promise((resolve, reject) => {
+            uploadTask.on('state_changed', null, reject, async () => {
+              finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+              resolve();
+            });
+          });
+        }
+      } catch (storageErr) {
+        console.error('Firebase Storage 업로드 실패:', storageErr);
+
+        // 로컬 개발 환경(localhost)에서만 로컬 관리자 서버 시도 (3초 타임아웃 걸어 모바일/외부 멈춤 방지)
+        const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        if (isLocalHost && selectedRawBase64?.data) {
+          try {
+            setSaveProgressText('로컬 관리자 서버에 PDF 백업 저장 중...');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const res = await fetch('http://localhost:3001/api/admin/upload-pdf', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              signal: controller.signal,
+              body: JSON.stringify({
+                fileName: safeName,
+                fileData: selectedRawBase64.data
+              }),
+            });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.ok) finalFileUrl = data.fileUrl;
+            }
+          } catch (localErr) {
+            console.warn('로컬 서버 업로드 건너뜀:', localErr.message);
           }
-        } catch (localErr) {
-          if (selectedRawBase64.data.length < 1000000) {
-            finalFileUrl = selectedRawBase64.data;
+        }
+
+        // 클라우드 업로드에 실패한 경우 사용자에게 명확히 알림 및 선택권 제공 (작성한 퀴즈 유실 방지)
+        if (!finalFileUrl) {
+          const proceed = window.confirm(
+            `클라우드 PDF 업로드 중 오류가 발생했습니다 (${storageErr.code || storageErr.message}).\n` +
+            `PDF 파일 없이 설교와 출제된 퀴즈 내용만 먼저 저장하시겠습니까?\n(취소 시 현재 입력 및 퀴즈 내용이 그대로 유지됩니다)`
+          );
+          if (!proceed) {
+            setIsSaving(false);
+            setSaveProgressText('');
+            return;
           }
         }
       }
@@ -407,6 +458,7 @@ export default function Sermons() {
     }
 
     setNewEvent({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
+    setSelectedPdfFile(null);
     setSelectedRawBase64(null);
     setEditSermon(null);
     setQuizDraft(null);
@@ -461,6 +513,7 @@ export default function Sermons() {
   const handleEdit = async (sermon, e) => {
     e.stopPropagation();
     setEditSermon(sermon);
+    setSelectedPdfFile(null);
     setSelectedRawBase64(null);
     setQuizDraft(null);
     setIsQuizExpanded(false);
@@ -524,6 +577,7 @@ export default function Sermons() {
               setEditSermon(null);
             } else {
               setEditSermon(null);
+              setSelectedPdfFile(null);
               setSelectedRawBase64(null);
               setNewEvent({
                 title: '',
@@ -604,7 +658,7 @@ export default function Sermons() {
                     <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <FileText size={16} /> 설교 요약 PDF 파일 첨부 (선택)
                     </label>
-                    {(newEvent.fileName || selectedRawBase64 || newEvent.file) && (
+                    {(newEvent.fileName || selectedPdfFile || selectedRawBase64 || newEvent.file) && (
                       <button type="button" onClick={handleRemoveFile} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px' }}>
                         <X size={14} /> 첨부 취소
                       </button>
