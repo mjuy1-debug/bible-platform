@@ -31,6 +31,8 @@ export default function Sermons() {
   const [editSermon, setEditSermon] = useState(null);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', preacher: '', scripture: '', videoUrl: '', summary: '', file: '', fileName: '', externalLink: '' });
   const [selectedPdfFile, setSelectedPdfFile] = useState(null);
+  const [isPdfUploading, setIsPdfUploading] = useState(false);
+  const [pdfUploadStatus, setPdfUploadStatus] = useState('');
   const [selectedRawBase64, setSelectedRawBase64] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveProgressText, setSaveProgressText] = useState('');
@@ -213,6 +215,78 @@ export default function Sermons() {
     setNewEvent(prev => ({ ...prev, file: '', fileName: '' }));
   };
 
+  // PDF 단독 업로드 핸들러 (설교/퀴즈 등록과 완전 분리하여 독립 실행)
+  const handleUploadPdfOnly = async () => {
+    if (!selectedPdfFile) {
+      alert('먼저 첨부할 PDF 파일을 선택해주세요.');
+      return;
+    }
+    setIsPdfUploading(true);
+    setPdfUploadStatus('클라우드 업로드 시작...');
+
+    const safeName = `sermon_${Date.now()}_${selectedPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+    const storageRef = ref(storage, `sermons/${safeName}`);
+
+    try {
+      await new Promise((resolve, reject) => {
+        let isDone = false;
+        const uploadTask = uploadBytesResumable(storageRef, selectedPdfFile, {
+          contentType: 'application/pdf'
+        });
+
+        // 8초 타임아웃
+        const timer = setTimeout(() => {
+          if (!isDone) {
+            isDone = true;
+            try { uploadTask.cancel(); } catch (e) {}
+            reject(new Error('클라우드 저장소(Storage) 응답 시간 초과 (CORS 또는 권한 제한)'));
+          }
+        }, 8000);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round((snapshot.bytesTransferred / (snapshot.totalBytes || 1)) * 100);
+            setPdfUploadStatus(`업로드 중... ${progress}%`);
+          },
+          (err) => {
+            if (!isDone) {
+              isDone = true;
+              clearTimeout(timer);
+              reject(err);
+            }
+          },
+          async () => {
+            if (!isDone) {
+              isDone = true;
+              clearTimeout(timer);
+              try {
+                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                setNewEvent(prev => ({ ...prev, file: downloadUrl }));
+                setPdfUploadStatus('✅ 클라우드 업로드 성공!');
+                if (showToast) showToast('✅ PDF 파일이 클라우드에 성공적으로 업로드되었습니다!');
+                resolve();
+              } catch (e) {
+                reject(e);
+              }
+            }
+          }
+        );
+      });
+    } catch (err) {
+      console.warn('PDF 단독 업로드 오류:', err);
+      setPdfUploadStatus(`❌ 업로드 불가 (CORS/권한 제한)`);
+      alert(
+        `PDF 클라우드 파일 업로드가 지원되지 않는 환경입니다.\n(${err.message})\n\n` +
+        `💡 해결 방법:\n` +
+        `1. 설교와 10문항 퀴즈는 아래 [등록하기] 버튼을 누르면 지금 즉시 등록됩니다!\n` +
+        `2. PDF 파일은 구글 드라이브 등에 올리신 후 '공유 링크'를 아래 [PDF 링크 직접 입력] 칸에 넣으시면 누구나 편하게 볼 수 있습니다.`
+      );
+    } finally {
+      setIsPdfUploading(false);
+    }
+  };
+
   // AI 퀴즈 자동 생성 핸들러
   const handleGenerateAiQuiz = async () => {
     if (!newEvent.title.trim()) {
@@ -304,105 +378,29 @@ export default function Sermons() {
 
     let finalFileUrl = newEvent.file || '';
 
-    // 1. PDF 업로드 (Firebase Storage uploadBytesResumable로 대용량도 실시간 진행률 표시하며 안전 업로드)
-    if (selectedPdfFile || selectedRawBase64) {
-      const fileToUpload = selectedPdfFile;
-      const safeName = `sermon_${Date.now()}_${(fileToUpload?.name || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-
+    // 1. PDF 업로드가 미리 완료되었거나 링크가 있으면 사용 (설교/퀴즈 저장을 절대 지연시키지 않음)
+    if (selectedPdfFile && !finalFileUrl) {
+      setSaveProgressText('PDF 파일 클라우드 저장 시도 중 (최대 3초)...');
       try {
-        setSaveProgressText('클라우드 저장소(Firebase Storage)에 PDF 업로드 준비 중...');
+        const safeName = `sermon_${Date.now()}_${selectedPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
         const storageRef = ref(storage, `sermons/${safeName}`);
-
-        if (fileToUpload) {
-          // 원본 바이너리 File 객체를 스트림으로 업로드 (8초 타임아웃 가드 포함)
-          await new Promise((resolve, reject) => {
-            let isDone = false;
-            const uploadTask = uploadBytesResumable(storageRef, fileToUpload, {
-              contentType: 'application/pdf'
-            });
-
-            // 8초 타임아웃 가드: 0%에서 멈출 경우 무한 대기를 방지하고 즉시 reject
-            const timeoutTimer = setTimeout(() => {
-              if (!isDone) {
-                isDone = true;
-                try { uploadTask.cancel(); } catch (e) {}
-                reject(new Error('클라우드 저장소(Storage) 응답 시간 초과 (CORS 또는 권한 제한)'));
-              }
-            }, 8000);
-
-            uploadTask.on(
-              'state_changed',
-              (snapshot) => {
-                const progress = Math.round((snapshot.bytesTransferred / (snapshot.totalBytes || 1)) * 100);
-                setSaveProgressText(`클라우드에 PDF 업로드 중... (${progress}%)`);
-              },
-              (err) => {
-                if (!isDone) {
-                  isDone = true;
-                  clearTimeout(timeoutTimer);
-                  console.error('Firebase Storage 업로드 에러:', err);
-                  reject(err);
-                }
-              },
-              async () => {
-                if (!isDone) {
-                  isDone = true;
-                  clearTimeout(timeoutTimer);
-                  try {
-                    finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                    console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
-                    resolve();
-                  } catch (urlErr) {
-                    reject(urlErr);
-                  }
-                }
-              }
-            );
-          });
-        }
-      } catch (storageErr) {
-        console.error('Firebase Storage 업로드 실패:', storageErr);
-
-        // 로컬 개발 환경(localhost)에서만 로컬 관리자 서버 시도 (3초 타임아웃 걸어 모바일/외부 멈춤 방지)
-        const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-        if (isLocalHost && selectedRawBase64?.data) {
-          try {
-            setSaveProgressText('로컬 관리자 서버에 PDF 백업 저장 중...');
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
-            const res = await fetch('http://localhost:3001/api/admin/upload-pdf', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              signal: controller.signal,
-              body: JSON.stringify({
-                fileName: safeName,
-                fileData: selectedRawBase64.data
-              }),
-            });
-            clearTimeout(timeoutId);
-            if (res.ok) {
-              const data = await res.json();
-              if (data.ok) finalFileUrl = data.fileUrl;
+        await new Promise((resolve) => {
+          let done = false;
+          const uploadTask = uploadBytesResumable(storageRef, selectedPdfFile, { contentType: 'application/pdf' });
+          const t = setTimeout(() => {
+            if (!done) { done = true; try { uploadTask.cancel(); } catch(e){} resolve(); }
+          }, 3000);
+          uploadTask.on('state_changed', null, () => { if (!done) { done = true; clearTimeout(t); resolve(); } }, async () => {
+            if (!done) {
+              done = true;
+              clearTimeout(t);
+              try { finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref); } catch(e){}
+              resolve();
             }
-          } catch (localErr) {
-            console.warn('로컬 서버 업로드 건너뜀:', localErr.message);
-          }
-        }
-
-        // 클라우드 PDF 업로드가 지연/차단된 경우, 정성껏 작성하신 퀴즈와 설교가 날아가지 않도록 즉시 분리 저장 제안
-        if (!finalFileUrl) {
-          const proceed = window.confirm(
-            `⚠️ PDF 클라우드 업로드가 지연되었습니다: ${storageErr.message || storageErr.code || '연결 지연'}\n\n` +
-            `정성껏 출제/수정하신 [설교 말씀과 10문항 퀴즈]를 먼저 즉시 등록하시겠습니까?\n\n` +
-            `• [확인] 누름: 설교와 10문항 퀴즈가 클라우드에 1초 만에 등록 완료됩니다! (PDF는 나중에 수정에서 추가 가능)\n` +
-            `• [취소] 누름: 등록을 취소하고 현재 입력 화면(퀴즈 내용 포함)을 그대로 유지합니다.`
-          );
-          if (!proceed) {
-            setIsSaving(false);
-            setSaveProgressText('');
-            return;
-          }
-        }
+          });
+        });
+      } catch (err) {
+        console.warn('PDF 자동 저장 건너뜀 (설교/퀴즈 즉시 등록 진행):', err);
       }
     }
 
@@ -662,24 +660,76 @@ export default function Sermons() {
                   <input type="text" placeholder="https://..." value={newEvent.externalLink || ''} onChange={e => setNewEvent({...newEvent, externalLink: e.target.value})} className="input-field" style={{ width: '100%' }} />
                 </div>
                 
-                {/* PDF Upload Section */}
-                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.6rem', background: 'rgba(255,255,255,0.03)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {/* PDF Upload Section (설교/퀴즈와 분리된 독립형 PDF 관리) */}
+                <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '0.8rem', background: 'rgba(255,255,255,0.03)', padding: '1.2rem', borderRadius: '10px', border: '1px solid var(--glass-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <label style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <FileText size={16} /> 설교 요약 PDF 파일 첨부 (선택)
+                      <FileText size={16} /> 설교 요약 PDF 첨부 (선택 사항)
                     </label>
-                    {(newEvent.fileName || selectedPdfFile || selectedRawBase64 || newEvent.file) && (
+                    {(newEvent.fileName || selectedPdfFile || newEvent.file) && (
                       <button type="button" onClick={handleRemoveFile} style={{ background: 'transparent', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px' }}>
                         <X size={14} /> 첨부 취소
                       </button>
                     )}
                   </div>
-                  
-                  <input type="file" accept="application/pdf,.pdf" onChange={handleFileSelect} className="input-field" />
-                  
-                  {newEvent.fileName && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontSize: '0.85rem', marginTop: '0.2rem', fontWeight: 600 }}>
-                      <Check size={16} /> {newEvent.fileName} (첨부 준비 완료)
+
+                  <p style={{ margin: 0, fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                    💡 설교 말씀과 10문항 퀴즈는 PDF 파일 없이도 아래 <strong>[등록하기]</strong> 버튼을 누르면 1초 만에 등록됩니다!
+                  </p>
+
+                  {/* 방식 1: 파일 선택 및 단독 업로드 버튼 */}
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <input type="file" accept="application/pdf,.pdf" onChange={handleFileSelect} className="input-field" style={{ flex: '1 1 200px' }} />
+                    {selectedPdfFile && (
+                      <button
+                        type="button"
+                        onClick={handleUploadPdfOnly}
+                        disabled={isPdfUploading}
+                        style={{
+                          background: isPdfUploading ? 'rgba(212,175,55,0.2)' : 'var(--accent-gold)',
+                          color: '#1a1a2e',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '0.5rem 0.9rem',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          cursor: isPdfUploading ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {isPdfUploading ? <Loader size={14} className="animate-spin" /> : <Save size={14} />}
+                        {isPdfUploading ? 'PDF 전송 중...' : '이 PDF만 단독 업로드'}
+                      </button>
+                    )}
+                  </div>
+
+                  {pdfUploadStatus && (
+                    <div style={{ fontSize: '0.78rem', color: pdfUploadStatus.includes('✅') ? '#10b981' : '#f59e0b', fontWeight: 600 }}>
+                      {pdfUploadStatus}
+                    </div>
+                  )}
+
+                  {/* 방식 2: 구글 드라이브나 외부 PDF 링크 직접 입력 (모바일 권장) */}
+                  <div style={{ marginTop: '0.2rem' }}>
+                    <label style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginBottom: '0.2rem', display: 'block' }}>
+                      또는 PDF 링크 직접 입력 (구글 드라이브 / 웹 링크 - 모바일 권장)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="https://drive.google.com/... 또는 웹 PDF 링크"
+                      value={newEvent.file || ''}
+                      onChange={e => setNewEvent(prev => ({ ...prev, file: e.target.value.trim() }))}
+                      className="input-field"
+                      style={{ width: '100%', fontSize: '0.8rem' }}
+                    />
+                  </div>
+
+                  {newEvent.file && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontSize: '0.8rem', fontWeight: 600 }}>
+                      <Check size={14} /> PDF 연결 완료: {newEvent.file.length > 50 ? newEvent.file.slice(0, 50) + '...' : newEvent.file}
                     </div>
                   )}
                 </div>
