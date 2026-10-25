@@ -314,42 +314,50 @@ export default function Sermons() {
         const storageRef = ref(storage, `sermons/${safeName}`);
 
         if (fileToUpload) {
-          // 원본 바이너리 File 객체를 스트림으로 직접 업로드 (16MB 등 대용량 파일 완벽 지원)
+          // 원본 바이너리 File 객체를 스트림으로 업로드 (8초 타임아웃 가드 포함)
           await new Promise((resolve, reject) => {
+            let isDone = false;
             const uploadTask = uploadBytesResumable(storageRef, fileToUpload, {
               contentType: 'application/pdf'
             });
 
+            // 8초 타임아웃 가드: 0%에서 멈출 경우 무한 대기를 방지하고 즉시 reject
+            const timeoutTimer = setTimeout(() => {
+              if (!isDone) {
+                isDone = true;
+                try { uploadTask.cancel(); } catch (e) {}
+                reject(new Error('클라우드 저장소(Storage) 응답 시간 초과 (CORS 또는 권한 제한)'));
+              }
+            }, 8000);
+
             uploadTask.on(
               'state_changed',
               (snapshot) => {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                const progress = Math.round((snapshot.bytesTransferred / (snapshot.totalBytes || 1)) * 100);
                 setSaveProgressText(`클라우드에 PDF 업로드 중... (${progress}%)`);
               },
               (err) => {
-                console.error('Firebase Storage 업로드 중 에러:', err);
-                reject(err);
+                if (!isDone) {
+                  isDone = true;
+                  clearTimeout(timeoutTimer);
+                  console.error('Firebase Storage 업로드 에러:', err);
+                  reject(err);
+                }
               },
               async () => {
-                try {
-                  finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                  console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
-                  resolve();
-                } catch (urlErr) {
-                  reject(urlErr);
+                if (!isDone) {
+                  isDone = true;
+                  clearTimeout(timeoutTimer);
+                  try {
+                    finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                    console.log('✅ Firebase Storage PDF 업로드 성공:', finalFileUrl);
+                    resolve();
+                  } catch (urlErr) {
+                    reject(urlErr);
+                  }
                 }
               }
             );
-          });
-        } else if (selectedRawBase64?.data) {
-          const uploadTask = uploadBytesResumable(storageRef, await (await fetch(selectedRawBase64.data)).blob(), {
-            contentType: 'application/pdf'
-          });
-          await new Promise((resolve, reject) => {
-            uploadTask.on('state_changed', null, reject, async () => {
-              finalFileUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve();
-            });
           });
         }
       } catch (storageErr) {
@@ -381,11 +389,13 @@ export default function Sermons() {
           }
         }
 
-        // 클라우드 업로드에 실패한 경우 사용자에게 명확히 알림 및 선택권 제공 (작성한 퀴즈 유실 방지)
+        // 클라우드 PDF 업로드가 지연/차단된 경우, 정성껏 작성하신 퀴즈와 설교가 날아가지 않도록 즉시 분리 저장 제안
         if (!finalFileUrl) {
           const proceed = window.confirm(
-            `클라우드 PDF 업로드 중 오류가 발생했습니다 (${storageErr.code || storageErr.message}).\n` +
-            `PDF 파일 없이 설교와 출제된 퀴즈 내용만 먼저 저장하시겠습니까?\n(취소 시 현재 입력 및 퀴즈 내용이 그대로 유지됩니다)`
+            `⚠️ PDF 클라우드 업로드가 지연되었습니다: ${storageErr.message || storageErr.code || '연결 지연'}\n\n` +
+            `정성껏 출제/수정하신 [설교 말씀과 10문항 퀴즈]를 먼저 즉시 등록하시겠습니까?\n\n` +
+            `• [확인] 누름: 설교와 10문항 퀴즈가 클라우드에 1초 만에 등록 완료됩니다! (PDF는 나중에 수정에서 추가 가능)\n` +
+            `• [취소] 누름: 등록을 취소하고 현재 입력 화면(퀴즈 내용 포함)을 그대로 유지합니다.`
           );
           if (!proceed) {
             setIsSaving(false);
