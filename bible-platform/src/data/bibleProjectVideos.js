@@ -6,6 +6,23 @@ export const BP_OFFICIAL_HOME = 'https://bibleproject.com/korean/';
 
 // 1. 52주 주간 통독 골든벨 전용 맵
 export const WEEKLY_VIDEOS_MAP = {
+  "sermon_1793710648133": {
+    "id": "sermon_1793710648133",
+    "weekTitle": "🎤 2026.11.01 설교 ✦ 아브라함을 생각하사",
+    "bookRange": "창세기 19:23-29",
+    "videos": [
+      {
+        "title": "🔥 소돔과 고모라의 심판과 롯의 구원 (창세기 18-19장)",
+        "summary": "의인 열 명을 향한 아브라함의 중보 기도와 소돔의 멸망 중 아브라함을 생각하사 롯을 건져내신 은혜",
+        "points": [
+          "아브라함의 6번에 걸친 끈질긴 중보 기도",
+          "세상을 바라보다 소금기둥이 된 롯의 아내",
+          "언약의 핏줄과 십자가 중보자 예수 그리스도의 모형"
+        ],
+        "searchQuery": "바이블프로젝트 창세기 소돔과 고모라 아브라함 중보기도"
+      }
+    ]
+  },
   "1": {
     "weekTitle": "제1주차 ✦ 천지창조와 족장들의 믿음 (1)",
     "bookRange": "창세기 1~23장",
