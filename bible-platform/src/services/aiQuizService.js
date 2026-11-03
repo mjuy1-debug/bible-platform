@@ -40,6 +40,47 @@ export const saveGeminiApiKey = async (key) => {
   }
 };
 
+// 사용 가능한 모델 목록을 API로부터 직접 조회하여 generateContent 지원 모델을 우선 선택
+export const getAvailableGenerateModels = async (apiKey) => {
+  const defaultFallback = [
+    'gemini-2.5-flash',
+    'gemini-3.8-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-2.5-pro'
+  ];
+
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.models)) {
+        // generateContent 지원 모델 필터링
+        const validModels = data.models
+          .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+          .map(m => m.name.replace(/^models\//, ''));
+
+        // flash 계열 우선 정렬
+        const sorted = validModels.sort((a, b) => {
+          const aFlash = a.includes('flash') ? 1 : 0;
+          const bFlash = b.includes('flash') ? 1 : 0;
+          return bFlash - aFlash;
+        });
+
+        if (sorted.length > 0) {
+          console.log('실제 조회된 Gemini 지원 모델 목록:', sorted);
+          return sorted;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Gemini 모델 목록 조회 실패, 기본 목록 사용:', err);
+  }
+
+  return defaultFallback;
+};
+
 // 3. 설교 기반 10문항 퀴즈 자동 생성 함수
 export const generateSermonQuiz = async (sermonInfo, explicitApiKey = '') => {
   const apiKey = explicitApiKey || await getGeminiApiKey();
@@ -87,8 +128,8 @@ ${summary || '본문 말씀을 중심으로 설교 메시지와 연결하여 출
   ]
 }`;
 
-  // 모델 호출 시도 (gemini-2.5-flash -> 실패 시 gemini-1.5-flash 폴백)
-  const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+  // 지원 모델 목록 확인 (API 실시간 조회 + 광범위 폴백 목록)
+  const models = await getAvailableGenerateModels(apiKey);
   let lastError = null;
 
   for (const model of models) {
