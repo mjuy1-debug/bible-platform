@@ -58,16 +58,56 @@ export default function Sermons() {
   const [isGitHubUploading, setIsGitHubUploading] = useState(false);
   const [gitHubUploadStatus, setGitHubUploadStatus] = useState('');
 
-  // Firestore 실시간 설교 목록 동기화 (모바일/PC 어디서나 등록 즉시 반영)
+  // 삭제된 설교 ID 목록 (로컬스토리지 + Firestore 클라우드 영구 동기화)
+  const [deletedIds, setDeletedIds] = useState(() => {
+    try {
+      const local = localStorage.getItem('joshua_deleted_sermon_ids');
+      return local ? JSON.parse(local) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Firestore 실시간 설교 목록 동기화 (삭제 목록 필터링 적용)
   useEffect(() => {
+    // 0. Firestore에서 삭제된 설교 목록(deletedSermons) 실시간 구독
+    const unsubDeleted = onSnapshot(doc(db, 'churchConfig', 'deletedSermons'), (docSnap) => {
+      if (docSnap.exists()) {
+        const remoteDeleted = docSnap.data()?.ids || [];
+        setDeletedIds(prev => {
+          const merged = Array.from(new Set([...prev, ...remoteDeleted]));
+          localStorage.setItem('joshua_deleted_sermon_ids', JSON.stringify(merged));
+          return merged;
+        });
+      }
+    }, (err) => console.warn('삭제 목록 동기화 오류:', err));
+
     const q = query(collection(db, 'sermons'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const remoteSermons = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      
+      // 최신 deletedIds 가져오기
+      let currentDeleted = [];
+      try {
+        const local = localStorage.getItem('joshua_deleted_sermon_ids');
+        if (local) currentDeleted = JSON.parse(local);
+      } catch {}
+
+      const deletedSet = new Set(currentDeleted.map(String));
       const map = new Map();
-      // 1. 정적 기본 설교 데이터 로드
-      SERMONS.forEach(s => map.set(String(s.id), s));
-      // 2. Firestore 설교 데이터로 병합 및 덮어쓰기
-      remoteSermons.forEach(s => map.set(String(s.id), { ...map.get(String(s.id)), ...s }));
+      
+      // 1. 정적 기본 설교 데이터 로드 (삭제된 ID 제외)
+      SERMONS.forEach(s => {
+        if (!deletedSet.has(String(s.id))) {
+          map.set(String(s.id), s);
+        }
+      });
+      // 2. Firestore 설교 데이터로 병합 및 덮어쓰기 (삭제된 ID 제외)
+      remoteSermons.forEach(s => {
+        if (!deletedSet.has(String(s.id))) {
+          map.set(String(s.id), { ...map.get(String(s.id)), ...s });
+        }
+      });
       const mergedList = Array.from(map.values());
       mergedList.sort((a, b) => new Date(b.date) - new Date(a.date));
       setSermons(mergedList);
@@ -75,7 +115,10 @@ export default function Sermons() {
       console.warn('설교 Firestore 실시간 동기화 오류 (정적 데이터 사용):', err);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubDeleted();
+      unsubscribe();
+    };
   }, []);
 
   // Auto-open sermon when arriving via a shared link (?id=xxxxx)
@@ -131,7 +174,9 @@ export default function Sermons() {
 
   const getThumbnail = (url) => {
     const id = extractId(url);
-    return id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : 'https://images.unsplash.com/photo-1544427920-c49ccfb85579?w=600&auto=format&fit=crop&q=80';
+    if (id) return `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+    const base = import.meta.env.BASE_URL || '/';
+    return `${base.endsWith('/') ? base : base + '/'}og_image_v2.png`;
   };
 
   // Get active PDF URL for preview
@@ -627,12 +672,24 @@ export default function Sermons() {
     e.stopPropagation();
     if (!window.confirm("정말 이 말씀을 삭제하시겠습니까? (연결된 퀴즈도 함께 삭제됩니다)")) return;
 
-    setSermons(sermons.filter(s => s.id !== id));
-    
-    // Firestore에서도 실시간 삭제
+    // 즉시 화면에서 제거
+    setSermons(prev => prev.filter(s => String(s.id) !== String(id)));
+
+    // 삭제된 ID 저장 (정적 데이터가 다시 부활하지 못하도록 영구 방지)
+    const newDelIds = Array.from(new Set([...deletedIds, String(id)]));
+    setDeletedIds(newDelIds);
+    try {
+      localStorage.setItem('joshua_deleted_sermon_ids', JSON.stringify(newDelIds));
+    } catch {}
+
+    // Firestore에서도 실시간 삭제 및 삭제 ID 목록 영구 보존
     try {
       await deleteDoc(doc(db, 'sermons', String(id)));
       await deleteDoc(doc(db, 'quizzes', `sermon_${id}`));
+      await setDoc(doc(db, 'churchConfig', 'deletedSermons'), {
+        ids: newDelIds,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
     } catch (delErr) {
       console.warn('Firestore 삭제 오류:', delErr);
     }
