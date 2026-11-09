@@ -37,18 +37,20 @@ export function parseDateSafe(dateVal, fallbackText = '') {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// 설교 데이터 정규화 (잘못 등록된 날짜 자동 보정)
+// 설교 데이터 정규화 (공백 무관 완벽 매칭 및 잘못 등록된 날짜 자동 보정)
 export function normalizeSermon(s) {
   if (!s) return s;
   let date = s.date;
-  const title = String(s.title || '');
-  if (title.includes('마귀를 대적하라') && (!date || date > '2026-10-25')) {
+  const cleanTitle = String(s.title || '').replace(/[\s\-_✦🎤✝️]/g, '').toLowerCase();
+  
+  if (cleanTitle.includes('마귀를대적하라')) {
     date = '2026-10-25';
-  } else if (title.includes('아브라함을 생각하사') && (!date || date > '2026-11-01')) {
+  } else if (cleanTitle.includes('아브라함을생각하사')) {
     date = '2026-11-01';
-  } else if (title.includes('하나님의 소유') && (!date || date < '2026-11-08')) {
+  } else if (cleanTitle.includes('하나님의소유')) {
     date = '2026-11-08';
   }
+  
   if (typeof date === 'string') {
     const match = date.match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
     if (match) {
@@ -64,8 +66,17 @@ export default function Sermons() {
   const navigate = useNavigate();
 
   const [sermons, setSermons] = useState(() => {
-    return [...SERMONS]
-      .map(normalizeSermon)
+    const raw = [...SERMONS].map(normalizeSermon);
+    const dedupMap = new Map();
+    raw.forEach(s => {
+      const cleanKey = String(s.title || '').replace(/[\s\-_✦🎤✝️]/g, '').toLowerCase();
+      if (!cleanKey) {
+        dedupMap.set(String(s.id), s);
+      } else if (!dedupMap.has(cleanKey)) {
+        dedupMap.set(cleanKey, s);
+      }
+    });
+    return Array.from(dedupMap.values())
       .sort((a, b) => parseDateSafe(b.date, b.summary) - parseDateSafe(a.date, a.summary));
   });
   
@@ -158,8 +169,31 @@ export default function Sermons() {
           map.set(String(s.id), { ...map.get(String(s.id)), ...s });
         }
       });
-      const mergedList = Array.from(map.values())
-        .map(normalizeSermon);
+      // 3. 중복 설교 제거 (제목 정규화 키 기준 - 정적 공식 데이터 우선 보존)
+      const rawList = Array.from(map.values()).map(normalizeSermon);
+      const uniqueTitleMap = new Map();
+      
+      rawList.forEach(s => {
+        const cleanKey = String(s.title || '').replace(/[\s\-_✦🎤✝️]/g, '').toLowerCase();
+        if (!cleanKey) {
+          uniqueTitleMap.set(String(s.id), s);
+          return;
+        }
+        if (!uniqueTitleMap.has(cleanKey)) {
+          uniqueTitleMap.set(cleanKey, s);
+        } else {
+          // 이미 같은 제목의 설교가 있으면 공식 정적 설교(SERMONS)를 기본 베이스로 유지하고 최신 필드만 병합
+          const existing = uniqueTitleMap.get(cleanKey);
+          const isStaticOfficial = SERMONS.some(staticS => String(staticS.id) === String(s.id));
+          if (isStaticOfficial) {
+            uniqueTitleMap.set(cleanKey, { ...existing, ...s });
+          } else {
+            uniqueTitleMap.set(cleanKey, { ...s, ...existing });
+          }
+        }
+      });
+
+      const mergedList = Array.from(uniqueTitleMap.values());
       mergedList.sort((a, b) => parseDateSafe(b.date, b.summary) - parseDateSafe(a.date, a.summary));
       setSermons(mergedList);
     }, (err) => {
