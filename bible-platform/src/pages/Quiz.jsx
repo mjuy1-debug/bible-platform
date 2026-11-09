@@ -20,6 +20,64 @@ function YouTubeIcon({ size = 16, color = 'currentColor' }) {
   );
 }
 
+// 설교 퀴즈 정규화 및 날짜 보정
+export function normalizeQuiz(q) {
+  if (!q) return q;
+  let date = q.date;
+  const cleanTitle = String(q.title || q.roundTitle || '').replace(/[\s\-_✦🎤✝️]/g, '').toLowerCase();
+  if (cleanTitle.includes('마귀를대적하라')) {
+    date = '2026-10-25';
+  } else if (cleanTitle.includes('아브라함을생각하사')) {
+    date = '2026-11-01';
+  } else if (cleanTitle.includes('하나님의소유')) {
+    date = '2026-11-08';
+  }
+  return { ...q, date };
+}
+
+// 퀴즈 목록 중복 제거 및 주일 설교 최신 날짜순 엄격 정렬
+export function processQuizzes(list) {
+  if (!Array.isArray(list)) return [];
+  const normalized = list.map(normalizeQuiz);
+  const dedupMap = new Map();
+
+  normalized.forEach(q => {
+    const isSermon = q.category === '🎤 주일 설교 퀴즈' || String(q.id).startsWith('sermon_');
+    if (!isSermon) {
+      dedupMap.set(String(q.id), q);
+      return;
+    }
+    // 주일 설교 퀴즈는 제목 정규화 키로 중복 완벽 제거
+    const cleanKey = String(q.title || q.roundTitle || '').replace(/[\s\-_✦🎤✝️]/g, '').toLowerCase();
+    if (!cleanKey) {
+      dedupMap.set(String(q.id), q);
+      return;
+    }
+    if (!dedupMap.has(cleanKey)) {
+      dedupMap.set(cleanKey, q);
+    } else {
+      // 중복 시 정적 데이터(BIBLE_QUIZ_LIST)를 우선 보존
+      const existing = dedupMap.get(cleanKey);
+      const isStatic = BIBLE_QUIZ_LIST.some(b => String(b.id) === String(q.id));
+      if (isStatic) {
+        dedupMap.set(cleanKey, { ...existing, ...q });
+      }
+    }
+  });
+
+  const result = Array.from(dedupMap.values());
+  // 주일 설교 퀴즈는 날짜 내림차순(최신순)으로 정렬
+  const sermonQuizzes = result
+    .filter(q => q.category === '🎤 주일 설교 퀴즈' || String(q.id).startsWith('sermon_'))
+    .sort((a, b) => {
+      const timeA = new Date(a.date || '2000-01-01').getTime();
+      const timeB = new Date(b.date || '2000-01-01').getTime();
+      return timeB - timeA;
+    });
+  const otherQuizzes = result.filter(q => q.category !== '🎤 주일 설교 퀴즈' && !String(q.id).startsWith('sermon_'));
+  return [...sermonQuizzes, ...otherQuizzes];
+}
+
 export default function Quiz() {
   const { currentUser, memberProfile, showToast } = useContext(UserContext);
   const navigate = useNavigate();
@@ -28,7 +86,7 @@ export default function Quiz() {
   // 메인 모드: 'category' (주제별 골든벨), 'daily' (오늘의 퀴즈), 'survival' (무한 서바이벌), 'wrongNotes' (오답노트)
   const [activeMode, setActiveMode] = useState('category');
   const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [quizzes, setQuizzes] = useState(BIBLE_QUIZ_LIST);
+  const [quizzes, setQuizzes] = useState(() => processQuizzes(BIBLE_QUIZ_LIST));
   
   // 퀴즈 진행 상태
   const [activeQuiz, setActiveQuiz] = useState(null);
@@ -138,7 +196,8 @@ export default function Quiz() {
         const loaded = snap.docs.map(d => ({ id: d.id, ...d.data() }));
         const loadedIds = new Set(loaded.map(l => String(l.id)));
         const filteredStatic = BIBLE_QUIZ_LIST.filter(b => !loadedIds.has(String(b.id)));
-        setQuizzes([...loaded, ...filteredStatic]);
+        const mergedRaw = [...loaded, ...filteredStatic];
+        setQuizzes(processQuizzes(mergedRaw));
       }
     }, (err) => console.warn('퀴즈 동기화:', err));
 
