@@ -85,15 +85,35 @@ export default function Quiz() {
     if (location.state?.category) {
       setSelectedCategory(location.state.category);
     }
-    if (location.state?.quizId && quizzes.length > 0 && !activeQuiz) {
-      const targetId = String(location.state.quizId);
+    if ((location.state?.quizId || location.state?.sermonTitle) && quizzes.length > 0 && !activeQuiz) {
+      const targetId = location.state.quizId ? String(location.state.quizId) : '';
       const cleanSermonId = targetId.replace('sermon_', '');
-      const target = quizzes.find(q =>
-        String(q.id) === targetId ||
-        String(q.sermonId) === cleanSermonId ||
-        String(q.id) === `sermon_${cleanSermonId}`
-      );
+      const sermonTitle = location.state.sermonTitle ? String(location.state.sermonTitle).trim() : '';
+      const cleanTitle = sermonTitle.replace(/\s+/g, '');
+      const sermonDate = location.state.sermonDate ? String(location.state.sermonDate).trim() : '';
+
+      // 1. ID 매칭 -> 2. 제목 매칭 -> 3. 날짜 매칭 3중 검색
+      const target = quizzes.find(q => {
+        // (1) ID 일치
+        if (targetId && (String(q.id) === targetId || String(q.sermonId) === cleanSermonId || String(q.id) === `sermon_${cleanSermonId}`)) {
+          return true;
+        }
+        // (2) 설교 제목 일치 ("하나님의 소유" <-> "하나님의 소유된 자" 등 상호 포함)
+        if (cleanTitle) {
+          const qTitle = String(q.title || '').replace(/\s+/g, '');
+          const qRoundTitle = String(q.roundTitle || '').replace(/\s+/g, '');
+          if (qTitle && (qTitle.includes(cleanTitle) || cleanTitle.includes(qTitle))) return true;
+          if (qRoundTitle && (qRoundTitle.includes(cleanTitle) || cleanTitle.includes(qRoundTitle))) return true;
+        }
+        // (3) 주일 설교 퀴즈 중 날짜 일치
+        if (sermonDate && (q.category === '🎤 주일 설교 퀴즈' || String(q.id).startsWith('sermon_'))) {
+          if (q.date === sermonDate || String(q.description || '').includes(sermonDate)) return true;
+        }
+        return false;
+      });
+
       if (target) {
+        console.log('🎯 설교 퀴즈 자동 시작 매칭 완료:', target.roundTitle || target.title);
         handleStartQuiz(target);
       }
     }

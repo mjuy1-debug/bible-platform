@@ -12,12 +12,62 @@ import { uploadPdfToGitHub, getGitHubToken, saveGitHubToken } from '../services/
 import SermonNotesPanel from '../components/SermonNotesPanel';
 import YouTubeSyncPlayer from '../components/YouTubeSyncPlayer';
 
+// 날짜 안전 정규화 및 타임스탬프 계산 함수 (정렬 오류 완전 방지)
+export function parseDateSafe(dateVal, fallbackText = '') {
+  if (!dateVal && !fallbackText) return 0;
+  if (typeof dateVal === 'object' && dateVal?.seconds) {
+    return dateVal.seconds * 1000;
+  }
+  if (dateVal instanceof Date) {
+    return isNaN(dateVal.getTime()) ? 0 : dateVal.getTime();
+  }
+  const str = dateVal ? String(dateVal).trim() : '';
+  let match = str.match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
+  if (!match && fallbackText) {
+    match = String(fallbackText).match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
+  }
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const day = parseInt(match[3], 10);
+    const d = new Date(year, month, day);
+    if (!isNaN(d.getTime())) return d.getTime();
+  }
+  const parsed = new Date(str).getTime();
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+// 설교 데이터 정규화 (잘못 등록된 날짜 자동 보정)
+export function normalizeSermon(s) {
+  if (!s) return s;
+  let date = s.date;
+  const title = String(s.title || '');
+  if (title.includes('마귀를 대적하라') && (!date || date > '2026-10-25')) {
+    date = '2026-10-25';
+  } else if (title.includes('아브라함을 생각하사') && (!date || date > '2026-11-01')) {
+    date = '2026-11-01';
+  } else if (title.includes('하나님의 소유') && (!date || date < '2026-11-08')) {
+    date = '2026-11-08';
+  }
+  if (typeof date === 'string') {
+    const match = date.match(/(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})/);
+    if (match) {
+      date = `${match[1]}-${match[2].padStart(2, '0')}-${match[3].padStart(2, '0')}`;
+    }
+  }
+  return { ...s, date };
+}
+
 export default function Sermons() {
   const { currentUser, isAdmin: contextIsAdmin, showToast } = useContext(UserContext);
   const isAdmin = import.meta.env.DEV || contextIsAdmin;
   const navigate = useNavigate();
 
-  const [sermons, setSermons] = useState([...SERMONS].sort((a, b) => new Date(b.date) - new Date(a.date)));
+  const [sermons, setSermons] = useState(() => {
+    return [...SERMONS]
+      .map(normalizeSermon)
+      .sort((a, b) => parseDateSafe(b.date, b.summary) - parseDateSafe(a.date, a.summary));
+  });
   
   // Modals state
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -108,8 +158,9 @@ export default function Sermons() {
           map.set(String(s.id), { ...map.get(String(s.id)), ...s });
         }
       });
-      const mergedList = Array.from(map.values());
-      mergedList.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const mergedList = Array.from(map.values())
+        .map(normalizeSermon);
+      mergedList.sort((a, b) => parseDateSafe(b.date, b.summary) - parseDateSafe(a.date, a.summary));
       setSermons(mergedList);
     }, (err) => {
       console.warn('설교 Firestore 실시간 동기화 오류 (정적 데이터 사용):', err);
@@ -545,7 +596,8 @@ export default function Sermons() {
     } else {
       updatedList = [sermonPayload, ...sermons];
     }
-    updatedList.sort((a, b) => new Date(b.date) - new Date(a.date));
+    updatedList = updatedList.map(normalizeSermon);
+    updatedList.sort((a, b) => parseDateSafe(b.date, b.summary) - parseDateSafe(a.date, a.summary));
     setSermons(updatedList);
 
     // 4. Firestore 실시간 클라우드 DB 저장 (어디서든 즉시 반영!)
@@ -1377,7 +1429,15 @@ export default function Sermons() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate('/quiz', { state: { category: '🎤 주일 설교 퀴즈', quizId: `sermon_${sermon.id}` } });
+                      navigate('/quiz', {
+                        state: {
+                          category: '🎤 주일 설교 퀴즈',
+                          quizId: `sermon_${sermon.id}`,
+                          sermonTitle: sermon.title,
+                          sermonDate: sermon.date,
+                          scripture: sermon.scripture
+                        }
+                      });
                     }}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -1496,7 +1556,15 @@ export default function Sermons() {
                     onClick={() => {
                       const targetId = selectedVideo.id;
                       setSelectedVideo(null);
-                      navigate('/quiz', { state: { category: '🎤 주일 설교 퀴즈', quizId: `sermon_${targetId}` } });
+                      navigate('/quiz', {
+                        state: {
+                          category: '🎤 주일 설교 퀴즈',
+                          quizId: `sermon_${targetId}`,
+                          sermonTitle: selectedVideo?.title,
+                          sermonDate: selectedVideo?.date,
+                          scripture: selectedVideo?.scripture
+                        }
+                      });
                     }}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
