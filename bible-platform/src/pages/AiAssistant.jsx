@@ -63,6 +63,9 @@ const callGemini = async (messages, apiKey) => {
     if (res.status === 400 || res.status === 403) {
       throw new Error('API_KEY_INVALID');
     }
+    if (res.status === 429 || msg.includes('prepayment') || msg.includes('credits are depleted') || msg.includes('quota')) {
+      throw new Error('CREDITS_DEPLETED');
+    }
     throw new Error(msg);
   }
   const data = await res.json();
@@ -157,6 +160,9 @@ const AiAssistant = () => {
       } catch (geminiErr) {
         if (geminiErr.message === 'API_KEY_INVALID') {
           reply = '⚠️ API 키가 유효하지 않습니다.\n\n설정(⚙️)에서 올바른 Gemini API 키를 다시 입력해 주세요.\n\n키 발급: https://aistudio.google.com/apikey';
+          setShowSettings(true);
+        } else if (geminiErr.message === 'CREDITS_DEPLETED') {
+          reply = '💳 Gemini API 선불 크레딧이 소진되었습니다.\n\n해결 방법:\n① Google AI Studio에서 새 API 키를 발급받아 설정(⚙️)에서 교체하거나\n② https://ai.studio/projects 에서 크레딧을 충전해 주세요.\n\n새 키 발급 (무료): https://aistudio.google.com/apikey';
           setShowSettings(true);
         } else {
           reply = `죄송합니다. AI 연결에 실패했습니다.\n\n오류: ${geminiErr.message}`;
