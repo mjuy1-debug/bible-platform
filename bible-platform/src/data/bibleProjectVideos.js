@@ -6,6 +6,33 @@ export const BP_OFFICIAL_HOME = 'https://bibleproject.com/korean/';
 
 // 1. 52주 주간 통독 골든벨 전용 맵
 export const WEEKLY_VIDEOS_MAP = {
+  "sermon_1794999700522": {
+    "id": "sermon_1794999700522",
+    "weekTitle": "🎤 2026.11.15 설교 ✦ 감사의 능력",
+    "bookRange": "시편 50:23",
+    "videos": [
+      {
+        "title": "📖 시편 50편 개요 (감사로 제사를 드리는 자와 참된 예배)",
+        "summary": "형식적인 제사가 아닌, 자기를 깨뜨리고 마음 중심의 감사로 드리는 참된 예배와 하나님의 구원",
+        "points": [
+          "감사로 제사를 드리는 자가 나를 영화롭게 하나니 (시 50:23)",
+          "상대방의 마음을 깊이 생각(Think)하는 데서 시작되는 감사(Thank)",
+          "아브라함의 순종(여호와 이레)과 옥합을 깨뜨린 여인의 최상의 헌신"
+        ],
+        "searchQuery": "바이블프로젝트 시편 50편 감사 참된 예배"
+      },
+      {
+        "title": "✝️ 바이블프로젝트 시편 (Psalms) 전체 개요와 지혜",
+        "summary": "탄식에서 찬양과 감사로 나아가는 시편의 구속사적 구조와 하나님의 선하심을 노래하는 시편의 영성",
+        "points": [
+          "시편 5권의 구조와 기도와 찬양의 여정",
+          "하나님의 은혜를 기억하고 찬양하는 참된 예배자",
+          "삶의 모든 묶인 문제를 풀어내는 감사의 능력"
+        ],
+        "searchQuery": "바이블프로젝트 시편 개요"
+      }
+    ]
+  },
   "sermon_1794145945852": {
     "id": "sermon_1794145945852",
     "weekTitle": "🎤 2026.11.08 설교 ✦ 하나님의 소유된 자",
@@ -11958,6 +11985,22 @@ export function getBibleProjectVideos(quiz) {
   const rawTitle = (quiz.roundTitle || '').replace(/^\[.*?\]\s*/, '').trim();
   const desc = quiz.description || '';
   const bookName = quiz.bookName || '창세기';
+
+  // 0. 설교 퀴즈 및 직접 매핑 (sermon_xxx 등)
+  if (WEEKLY_VIDEOS_MAP[quizId]) {
+    const wData = WEEKLY_VIDEOS_MAP[quizId];
+    return {
+      title: wData.weekTitle,
+      range: wData.bookRange,
+      relationReason: `🌟 [${wData.weekTitle} 직결 영상 리스트]`,
+      channel: '바이블프로젝트 & 성경 말씀 스토리',
+      officialHome: BP_OFFICIAL_HOME,
+      videos: wData.videos.map(v => ({
+        ...v,
+        searchUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(v.searchQuery)}`
+      }))
+    };
+  }
 
   // 1. 주간 골든벨 퀴즈 (week_01 ~ week_52) 매핑
   const weekMatch = quizId.match(/^week_(\d+)/i);
