@@ -516,11 +516,20 @@ export default function Sermons() {
       if (showToast) showToast('✨ 10문항 설교 퀴즈가 성공적으로 생성되었습니다!');
     } catch (err) {
       console.error('AI 퀴즈 생성 오류:', err);
-      if (err.message === 'API_KEY_INVALID' || err.message === 'NO_API_KEY') {
+      const msg = err.message || '';
+      if (msg === 'API_KEY_INVALID' || msg === 'NO_API_KEY') {
         alert('Gemini API 키가 등록되지 않았거나 유효하지 않습니다. 무료 API 키를 등록해주세요.');
         setShowApiKeyModal(true);
+      } else if (msg.includes('prepayment credits') || msg.includes('depleted') || msg.includes('billing')) {
+        alert(
+          '⚠️ Google Gemini API 선불 크레딧이 소진되었습니다.\n\n' +
+          '💡 완전 무료로 해결하는 방법:\n' +
+          'Google AI Studio(aistudio.google.com/app/apikey)에서 [결제 계정 연동 없는 새 무료 프로젝트]의 API 키를 발급받으시면 신용카드 결제 없이 영구 무료로 사용하실 수 있습니다.\n\n' +
+          '확인을 누르시면 새 API 키를 입력할 수 있는 설정창이 열립니다.'
+        );
+        setShowApiKeyModal(true);
       } else {
-        alert('퀴즈 생성 중 오류가 발생했습니다: ' + err.message);
+        alert('퀴즈 생성 중 오류가 발생했습니다: ' + msg);
       }
     } finally {
       setIsGeneratingQuiz(false);
